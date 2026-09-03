@@ -2,14 +2,14 @@
 
 API do GoHome.
 
-## 🛠️ Stack proposta
+## 🛠️ Stack
 
 - **Runtime:** Node.js 20+
 - **Linguagem:** TypeScript
-- **Framework:** NestJS (ou Express)
-- **Base de dados:** PostgreSQL 15+ com PostGIS (índices geográficos)
-- **ORM:** Prisma ou TypeORM
-- **Cache/filas:** Redis
+- **Framework:** NestJS (com base em Express)
+- **Base de dados:** A definir
+- **ORM:** A definir (opções: Prisma, TypeORM, Drizzle)
+- **Cache/filas:** A definir
 - **Storage:** S3-compatible (AWS S3, Cloudflare R2, MinIO)
 - **Chat tempo real:** Socket.io
 - **Autenticação:** JWT + refresh tokens

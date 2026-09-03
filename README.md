@@ -57,7 +57,7 @@ Plataforma nacional onde:
 gohome/
 ├── docs/           # DDR e documentação do produto
 ├── design/         # Mockups, protótipos, assets visuais
-├── mobile/         # App Android (Kotlin/Compose ou React Native)
+├── mobile/         # App mobile (React Native + Expo)
 ├── backend/        # API (Node.js/TypeScript)
 ├── admin/          # Painel administrativo web
 └── .github/        # Templates de issues e PRs
@@ -80,12 +80,12 @@ Detalhes completos na Secção 2A e 55A do DDR.
 
 ---
 
-## 🛠️ Stack tecnológica (proposta)
+## 🛠️ Stack tecnológica
 
-- **Mobile:** Kotlin + Jetpack Compose (Android nativo)
+- **Mobile:** React Native + Expo (Android prioritário, iOS na fase seguinte)
 - **Backend:** Node.js + TypeScript + NestJS
-- **Base de dados:** PostgreSQL + PostGIS
-- **Cache/filas:** Redis
+- **Base de dados:** A definir
+- **Cache/filas:** A definir
 - **Storage:** S3-compatible
 - **Chat tempo real:** WebSocket (Socket.io)
 - **Mapas:** Google Maps SDK

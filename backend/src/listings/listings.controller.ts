@@ -1,10 +1,11 @@
 import {
   Controller, Get, Post, Patch, Delete,
-  Param, Body, UseGuards, Request,
+  Param, Body, Query, UseGuards, Request,
 } from '@nestjs/common';
 import type { Request as ExpressRequest } from 'express';
 import { ListingsService } from './listings.service';
 import { CreateListingDto } from './dto/create-listing.dto';
+import { SearchListingsDto } from './dto/search-listings.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth/jwt-auth.guard';
 
 interface AuthenticatedRequest extends ExpressRequest {
@@ -14,6 +15,11 @@ interface AuthenticatedRequest extends ExpressRequest {
 @Controller('listings')
 export class ListingsController {
   constructor(private listingsService: ListingsService) {}
+
+  @Get('search')
+  async search(@Query() dto: SearchListingsDto) {
+    return this.listingsService.search(dto);
+  }
 
   @Get()
   async findAll() {

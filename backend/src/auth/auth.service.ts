@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, ConflictException, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
@@ -18,12 +18,20 @@ export class AuthService {
       throw new ConflictException('Já existe uma conta com este email.');
     }
 
+    if (!dto.acceptedTerms) {
+      throw new BadRequestException('É necessário aceitar os termos e a política de não-reembolso.');
+    }
+
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
     const user = await this.usersService.create({
       name: dto.name,
       email: dto.email,
       password: hashedPassword,
+      phone: dto.phone,
+      isProcurador: dto.isProcurador ?? true,
+      isAnunciante: dto.isAnunciante ?? false,
+      termsAcceptedAt: new Date(),
     });
 
     return this.generateToken(user.id, user.email);

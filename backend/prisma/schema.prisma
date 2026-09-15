@@ -13,13 +13,83 @@ enum Role {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(PROCURADOR)
+  id                String    @id @default(uuid())
+  name              String
+  email             String    @unique
+  password          String
+  phone             String?
+  isProcurador      Boolean   @default(true)
+  isAnunciante      Boolean   @default(false)
+  emailVerified     Boolean   @default(false)
+  emailVerifiedAt   DateTime?
+  termsAcceptedAt   DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  listings          Listing[]
+  @@map("users")
+}
+
+enum ListingPurpose {
+  ARRENDAR
+  VENDER
+  RESERVAR
+}
+
+enum ListingStatus {
+  ACTIVO
+  RESERVADO
+  VENDIDO
+  ARRENDADO
+  EXPIRADO
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  listings  Listing[]
+  createdAt DateTime   @default(now())
+
+  @@map("categories")
+}
+
+model Listing {
+  id          String         @id @default(uuid())
+  ownerId     String
+  owner       User           @relation(fields: [ownerId], references: [id])
+  categoryId  String
+  category    Category       @relation(fields: [categoryId], references: [id])
+
+  title       String
+  purpose     ListingPurpose
+  description String
+
+  price         Decimal  @db.Decimal(12, 2)
+  pricePeriod   String?  // ex: "mensal" — só aplicável a arrendamento
+
+  province      String
+  district      String
+  city          String
+  neighborhood  String
+  latitude      Float
+  longitude     Float
+  exactLocationAfterUnlock Boolean @default(true)
+
+  bedrooms      Int?
+  bathrooms     Int?
+  area          Float?
+  furnished     Boolean?
+  hasWater      Boolean?
+  hasElectricity Boolean?
+  hasWifi       Boolean?
+  hasParking    Boolean?
+
+  conditions    String?
+  availability  String?
+
+  status        ListingStatus @default(ACTIVO)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("users")
+  @@map("listings")
 }

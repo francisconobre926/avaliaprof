@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsString, MinLength, IsBoolean, IsOptional, IsPhoneNumber } from 'class-validator';
 
 export class RegisterDto {
   @IsString()
@@ -11,4 +11,19 @@ export class RegisterDto {
   @IsString()
   @MinLength(6)
   password: string;
+
+  @IsOptional()
+  @IsPhoneNumber('MZ')
+  phone?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isProcurador?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isAnunciante?: boolean;
+
+  @IsBoolean()
+  acceptedTerms: boolean;
 }

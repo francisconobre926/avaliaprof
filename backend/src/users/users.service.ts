@@ -1,6 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
+interface CreateUserData {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  isProcurador?: boolean;
+  isAnunciante?: boolean;
+  termsAcceptedAt?: Date;
+}
+
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
@@ -9,7 +19,10 @@ export class UsersService {
     id: true,
     name: true,
     email: true,
-    role: true,
+    phone: true,
+    isProcurador: true,
+    isAnunciante: true,
+    emailVerified: true,
     createdAt: true,
     updatedAt: true,
   };
@@ -30,7 +43,7 @@ export class UsersService {
     return user;
   }
 
-  async create(data: { name: string; email: string; password: string }) {
+  async create(data: CreateUserData) {
     return this.prisma.user.create({ data });
   }
 

@@ -26,17 +26,16 @@ function toRad(deg: number): number {
 export function obfuscateLocation(
   lat: number, lng: number, seed: string, radiusMeters = 500,
 ): { lat: number; lng: number } {
-  // Gera um número "aleatório" mas fixo a partir do seed (id do anúncio)
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {
     hash = (hash << 5) - hash + seed.charCodeAt(i);
     hash |= 0;
   }
   const angle = (Math.abs(hash) % 360) * (Math.PI / 180);
-  const distanceRatio = (Math.abs(hash) % 100) / 100; // 0 a 1
+  const distanceRatio = (Math.abs(hash) % 100) / 100;
   const distanceMeters = distanceRatio * radiusMeters;
 
-  const earthRadius = 6371000; // metros
+  const earthRadius = 6371000;
   const deltaLat = (distanceMeters * Math.cos(angle)) / earthRadius;
   const deltaLng =
     (distanceMeters * Math.sin(angle)) /
@@ -46,4 +45,21 @@ export function obfuscateLocation(
     lat: lat + (deltaLat * 180) / Math.PI,
     lng: lng + (deltaLng * 180) / Math.PI,
   };
+}
+
+/**
+ * Transforma um listing (com latitude/longitude reais) num objeto seguro para
+ * mostrar publicamente: remove as coordenadas exactas e adiciona as aproximadas.
+ * Usar sempre antes do desbloqueio (DDR secção 14).
+ */
+export function toPublicListing<T extends { id: string; latitude: number; longitude: number }>(
+  listing: T,
+): Omit<T, 'latitude' | 'longitude'> & { approxLatitude: number; approxLongitude: number } {
+  const { latitude, longitude, ...rest } = listing;
+  const approx = obfuscateLocation(latitude, longitude, listing.id);
+  return {
+    ...rest,
+    approxLatitude: approx.lat,
+    approxLongitude: approx.lng,
+  } as Omit<T, 'latitude' | 'longitude'> & { approxLatitude: number; approxLongitude: number };
 }

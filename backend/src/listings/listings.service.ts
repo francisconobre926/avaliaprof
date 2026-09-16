@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateListingDto } from './dto/create-listing.dto';
 import { SearchListingsDto, SortBy } from './dto/search-listings.dto';
-import { haversineDistanceKm, obfuscateLocation } from '../common/utils/geo.util';
+import { haversineDistanceKm, obfuscateLocation, toPublicListing } from '../common/utils/geo.util';
 
 @Injectable()
 export class ListingsService {
@@ -19,11 +19,12 @@ export class ListingsService {
   }
 
   async findAll() {
-    return this.prisma.listing.findMany({
+    const listings = await this.prisma.listing.findMany({
       where: { status: 'ACTIVO' },
       orderBy: { createdAt: 'desc' },
       include: { category: true },
     });
+    return listings.map(toPublicListing);
   }
 
   async findById(id: string) {
@@ -34,11 +35,19 @@ export class ListingsService {
     if (!listing) {
       throw new NotFoundException('Anúncio não encontrado.');
     }
+    return toPublicListing(listing);
+  }
+
+  private async findRawById(id: string) {
+    const listing = await this.prisma.listing.findUnique({ where: { id } });
+    if (!listing) {
+      throw new NotFoundException('Anúncio não encontrado.');
+    }
     return listing;
   }
 
   async update(id: string, ownerId: string, dto: Partial<CreateListingDto>) {
-    const listing = await this.findById(id);
+    const listing = await this.findRawById(id);
     if (listing.ownerId !== ownerId) {
       throw new ForbiddenException('Não tens permissão para editar este anúncio.');
     }
@@ -46,7 +55,7 @@ export class ListingsService {
   }
 
   async remove(id: string, ownerId: string) {
-    const listing = await this.findById(id);
+    const listing = await this.findRawById(id);
     if (listing.ownerId !== ownerId) {
       throw new ForbiddenException('Não tens permissão para remover este anúncio.');
     }
@@ -89,7 +98,7 @@ export class ListingsService {
       }),
     };
 
-    let listings = await this.prisma.listing.findMany({
+    const listings = await this.prisma.listing.findMany({
       where,
       include: { category: true },
     });

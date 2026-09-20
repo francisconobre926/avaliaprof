@@ -7,6 +7,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ListingsModule } from './listings/listings.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { UnlocksModule } from './unlocks/unlocks.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { FavoritesModule } from './favorites/favorites.module';
     CategoriesModule,
     ListingsModule,
     FavoritesModule,
+    UnlocksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

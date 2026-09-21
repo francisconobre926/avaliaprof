@@ -94,6 +94,7 @@ model Listing {
   updatedAt DateTime @updatedAt
   favorites Favorite[]
   unlocks   Unlock[]
+  media     Media[]
 
   @@map("listings")
 }
@@ -127,4 +128,23 @@ model Unlock {
 
   @@unique([userId, listingId])
   @@map("unlocks")
+}
+
+enum MediaType {
+  IMAGEM
+  VIDEO
+}
+
+model Media {
+  id        String    @id @default(uuid())
+  listingId String
+  listing   Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  type      MediaType
+  url       String
+  key       String
+  order     Int       @default(0)
+  size      Int
+  createdAt DateTime  @default(now())
+
+  @@map("media")
 }

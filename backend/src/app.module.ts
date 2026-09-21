@@ -8,6 +8,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { ListingsModule } from './listings/listings.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { UnlocksModule } from './unlocks/unlocks.module';
+import { MediaModule } from './media/media.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UnlocksModule } from './unlocks/unlocks.module';
     ListingsModule,
     FavoritesModule,
     UnlocksModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

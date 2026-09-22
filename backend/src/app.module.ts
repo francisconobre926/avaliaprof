@@ -9,6 +9,7 @@ import { ListingsModule } from './listings/listings.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { UnlocksModule } from './unlocks/unlocks.module';
 import { MediaModule } from './media/media.module';
+import { ChatsModule } from './chats/chats.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { MediaModule } from './media/media.module';
     FavoritesModule,
     UnlocksModule,
     MediaModule,
+    ChatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

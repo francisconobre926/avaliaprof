@@ -28,6 +28,9 @@ model User {
   listings          Listing[]
   favorites         Favorite[]
   unlocks           Unlock[]
+  chatsAsProcurador Chat[]    @relation("ChatsProcurador")
+  chatsAsAnunciante Chat[]    @relation("ChatsAnunciante")
+  messages          Message[]
   @@map("users")
 }
 
@@ -95,6 +98,7 @@ model Listing {
   favorites Favorite[]
   unlocks   Unlock[]
   media     Media[]
+  chats     Chat[]
 
   @@map("listings")
 }
@@ -147,4 +151,48 @@ model Media {
   createdAt DateTime  @default(now())
 
   @@map("media")
+}
+
+enum ChatStatus {
+  ATIVO
+  ARQUIVADO
+  BLOQUEADO
+  SUSPENSO
+}
+
+enum MessageType {
+  TEXTO
+  IMAGEM
+  LOCALIZACAO
+  LINK
+}
+
+model Chat {
+  id            String     @id @default(uuid())
+  listingId     String
+  listing       Listing    @relation(fields: [listingId], references: [id])
+  procuradorId  String
+  procurador    User       @relation("ChatsProcurador", fields: [procuradorId], references: [id])
+  anuncianteId  String
+  anunciante    User       @relation("ChatsAnunciante", fields: [anuncianteId], references: [id])
+  status        ChatStatus @default(ATIVO)
+  messages      Message[]
+  createdAt     DateTime   @default(now())
+
+  @@unique([listingId, procuradorId])
+  @@map("chats")
+}
+
+model Message {
+  id        String      @id @default(uuid())
+  chatId    String
+  chat      Chat        @relation(fields: [chatId], references: [id])
+  senderId  String
+  sender    User        @relation(fields: [senderId], references: [id])
+  content   String
+  type      MessageType @default(TEXTO)
+  readAt    DateTime?
+  createdAt DateTime    @default(now())
+
+  @@map("messages")
 }

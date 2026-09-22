@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, ConflictException, Inject } from '@nestj
 import { PrismaService } from '../prisma/prisma.service';
 import type { PaymentGateway } from '../payments/gateways/payment-gateway.interface';
 import { PAYMENT_GATEWAY } from '../payments/gateways/payment-gateway.interface';
+import { ChatsService } from '../chats/chats.service';
 
 const UNLOCK_PRICE_MT = 50;
 
@@ -10,6 +11,7 @@ export class UnlocksService {
   constructor(
     private prisma: PrismaService,
     @Inject(PAYMENT_GATEWAY) private paymentGateway: PaymentGateway,
+    private chatsService: ChatsService,
   ) {}
 
   async unlock(userId: string, listingId: string, payerPhone: string) {
@@ -42,8 +44,10 @@ export class UnlocksService {
       throw new ConflictException('Pagamento não confirmado. Tenta novamente.');
     }
 
+    // Activa o chat interno imediatamente após confirmação do pagamento (DDR secção 17A)
+    await this.chatsService.createOrGetChat(listingId, userId);
+
     // TODO: notificar o anunciante (push) — módulo notifications ainda não existe
-    // TODO: activar chat interno — módulo chat ainda não existe
 
     return this.getFullListingInfo(listingId);
   }

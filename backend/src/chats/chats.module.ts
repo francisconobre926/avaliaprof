@@ -5,16 +5,18 @@ import { ChatsService } from './chats.service';
 import { ChatsController } from './chats.controller';
 import { ChatsGateway } from './chats.gateway';
 import { PrismaModule } from '../prisma/prisma.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
-    PrismaModule,
-    PassportModule.register({ defaultStrategy: 'jwt' }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || 'dev-secret-change-me',
-      signOptions: { expiresIn: '7d' },
-    }),
-  ],
+  PrismaModule,
+  NotificationsModule,
+  PassportModule.register({ defaultStrategy: 'jwt' }),
+  JwtModule.register({
+    secret: process.env.JWT_SECRET || 'dev-secret-change-me',
+    signOptions: { expiresIn: '7d' },
+  }),
+],
   controllers: [ChatsController],
   providers: [ChatsService, ChatsGateway],
   exports: [ChatsService],

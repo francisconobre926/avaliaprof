@@ -31,6 +31,9 @@ model User {
   chatsAsProcurador Chat[]    @relation("ChatsProcurador")
   chatsAsAnunciante Chat[]    @relation("ChatsAnunciante")
   messages          Message[]
+  notifications           Notification[]
+  deviceTokens            DeviceToken[]
+  notificationPreferences NotificationPreference[]
   @@map("users")
 }
 
@@ -195,4 +198,45 @@ model Message {
   createdAt DateTime    @default(now())
 
   @@map("messages")
+}
+
+enum NotificationType {
+  DESBLOQUEIO_RECEBIDO
+  NOVA_MENSAGEM
+  SISTEMA
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  type      NotificationType
+  title     String
+  body      String
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@map("notifications")
+}
+
+model DeviceToken {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  platform  String?
+  createdAt DateTime @default(now())
+
+  @@map("device_tokens")
+}
+
+model NotificationPreference {
+  id      String           @id @default(uuid())
+  userId  String
+  user    User             @relation(fields: [userId], references: [id])
+  type    NotificationType
+  enabled Boolean          @default(true)
+
+  @@unique([userId, type])
+  @@map("notification_preferences")
 }

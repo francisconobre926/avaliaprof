@@ -10,6 +10,7 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { UnlocksModule } from './unlocks/unlocks.module';
 import { MediaModule } from './media/media.module';
 import { ChatsModule } from './chats/chats.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ChatsModule } from './chats/chats.module';
     UnlocksModule,
     MediaModule,
     ChatsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

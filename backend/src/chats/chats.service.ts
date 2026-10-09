@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class ChatsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private notifications: NotificationsService,){}
 
   /**
    * Cria o chat automaticamente após o desbloqueio pago (DDR secção 17A).
@@ -62,15 +63,37 @@ export class ChatsService {
     });
   }
 
-  async sendMessage(chatId: string, senderId: string, content: string, type: 'TEXTO' | 'IMAGEM' | 'LOCALIZACAO' | 'LINK') {
-    const chat = await this.assertParticipant(chatId, senderId);
-    if (chat.status !== 'ATIVO') {
-      throw new BadRequestException('Esta conversa não está activa.');
-    }
-    return this.prisma.message.create({
-      data: { chatId, senderId, content, type },
-    });
+async sendMessage(chatId: string, senderId: string, content: string, type: 'TEXTO' | 'IMAGEM' | 'LOCALIZACAO' | 'LINK') {
+  const chat = await this.assertParticipant(chatId, senderId);
+  if (chat.status !== 'ATIVO') {
+    throw new BadRequestException('Esta conversa não está activa.');
   }
+  const message = await this.prisma.message.create({
+    data: { chatId, senderId, content, type },
+  });
+
+  // Notifica a outra parte (DDR 17A)
+  const recipientId = chat.procuradorId === senderId ? chat.anuncianteId : chat.procuradorId;
+  const sender = await this.prisma.user.findUnique({
+    where: { id: senderId },
+    select: { name: true },
+  });
+  const preview =
+    type === 'TEXTO' ? content.slice(0, 100)
+    : type === 'IMAGEM' ? 'Enviou uma imagem'
+    : type === 'LOCALIZACAO' ? 'Partilhou uma localização'
+    : 'Enviou um link';
+
+  await this.notifications.notify(
+    recipientId,
+    'NOVA_MENSAGEM',
+    `Nova mensagem de ${sender?.name ?? 'utilizador'}`,
+    preview,
+    { chatId, type: 'NOVA_MENSAGEM' },
+  );
+
+  return message;
+}
 
   async markAsRead(chatId: string, userId: string) {
     await this.assertParticipant(chatId, userId);

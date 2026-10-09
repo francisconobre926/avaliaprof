@@ -11,6 +11,8 @@ import { UnlocksModule } from './unlocks/unlocks.module';
 import { MediaModule } from './media/media.module';
 import { ChatsModule } from './chats/chats.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { PricingModule } from './pricing/pricing.module';
 
 @Module({
   imports: [
@@ -24,6 +26,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     MediaModule,
     ChatsModule,
     NotificationsModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],

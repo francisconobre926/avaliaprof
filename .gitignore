@@ -148,7 +148,7 @@ $RECYCLE.BIN/
 
 # ========== Storage e uploads locais ==========
 uploads/
-storage/
+/storage/
 tmp/
 temp/
 *.tmp

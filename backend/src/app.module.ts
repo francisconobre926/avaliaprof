@@ -17,6 +17,7 @@ import { PublicationsModule } from './publications/publications.module';
 import { ReportsModule } from './reports/reports.module';
 import { SearchRequestsModule } from './search-requests/search-requests.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { VerificationsModule } from './verifications/verifications.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     ReportsModule,
     SearchRequestsModule,
     ReviewsModule,
+    VerificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -20,6 +20,7 @@ model User {
   phone                   String?
   isProcurador            Boolean                  @default(true)
   isAnunciante            Boolean                  @default(false)
+  isAdmin                Boolean                  @default(false)
   emailVerified           Boolean                  @default(false)
   emailVerifiedAt         DateTime?
   termsAcceptedAt         DateTime?
@@ -34,6 +35,8 @@ model User {
   notifications           Notification[]
   deviceTokens            DeviceToken[]
   notificationPreferences NotificationPreference[]
+  reportsMade     Report[] @relation("ReportsMade")
+  reportsResolved Report[] @relation("ReportsResolved")
 
   @@map("users")
 }
@@ -51,6 +54,7 @@ enum ListingStatus {
   ARRENDADO
   EXPIRADO
   RASCUNHO
+  SUSPENSO
 }
 
 model Category {
@@ -105,6 +109,7 @@ model Listing {
   unlocks      Unlock[]
   media        Media[]
   publications ListingPublication[]
+  reports      Report[]
   publishedAt  DateTime?
   expiresAt    DateTime?
   chats        Chat[]
@@ -281,4 +286,39 @@ model ListingPublication {
   createdAt        DateTime                 @default(now())
 
   @@index([listingId])
+}
+
+enum ReportReason {
+  FRAUDE
+  INFORMACAO_FALSA
+  IMOVEL_INDISPONIVEL
+  CONTEUDO_IMPROPRIO
+  DUPLICADO
+  OUTRO
+}
+
+enum ReportStatus {
+  PENDENTE
+  PROCEDENTE
+  IMPROCEDENTE
+}
+
+model Report {
+  id             String       @id @default(uuid())
+  listingId      String
+  listing        Listing      @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  reporterId     String
+  reporter       User         @relation("ReportsMade", fields: [reporterId], references: [id])
+  reason         ReportReason
+  details        String?
+  status         ReportStatus @default(PENDENTE)
+  resolvedById   String?
+  resolvedBy     User?        @relation("ReportsResolved", fields: [resolvedById], references: [id])
+  resolvedAt     DateTime?
+  resolutionNote String?
+  createdAt      DateTime     @default(now())
+
+  @@unique([reporterId, listingId])
+  @@index([status])
+  @@map("reports")
 }

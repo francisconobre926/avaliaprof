@@ -19,6 +19,7 @@ import { SearchRequestsModule } from './search-requests/search-requests.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { VerificationsModule } from './verifications/verifications.module';
 import { PromotionsModule } from './promotions/promotions.module';
+import { ReferralsModule } from './referrals/referrals.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { PromotionsModule } from './promotions/promotions.module';
     ReviewsModule,
     VerificationsModule,
     PromotionsModule,
+    ReferralsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

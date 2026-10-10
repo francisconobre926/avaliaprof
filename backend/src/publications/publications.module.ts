@@ -8,12 +8,14 @@ import { PAYMENT_GATEWAY } from '../payments/gateways/payment-gateway.interface'
 import { MockPaymentGateway } from '../payments/gateways/mock-payment.gateway';
 import { ListingExpirationService } from './listing-expiration.service';
 import { SearchRequestsModule } from '../search-requests/search-requests.module';
+import { ReferralsModule } from '../referrals/referrals.module';
 
 @Module({
   imports: [
     PrismaModule,
     PricingModule,
     SearchRequestsModule,
+    ReferralsModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   controllers: [PublicationsController],

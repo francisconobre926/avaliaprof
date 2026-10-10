@@ -13,6 +13,7 @@ import { ChatsModule } from './chats/chats.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PricingModule } from './pricing/pricing.module';
+import { PublicationsModule } from './publications/publications.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { PricingModule } from './pricing/pricing.module';
     ChatsModule,
     NotificationsModule,
     ScheduleModule.forRoot(),
+    PublicationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

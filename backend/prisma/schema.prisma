@@ -288,6 +288,7 @@ model ListingPublication {
   listing          Listing                  @relation(fields: [listingId], references: [id], onDelete: Cascade)
   userId           String
   pricingRuleId    String?
+  promotionId      String?
   amount           Decimal                  @db.Decimal(12, 2)
   durationDays     Int
   paymentReference String
@@ -393,4 +394,19 @@ model Verification {
   @@index([userId, status])
   @@index([status])
   @@map("verifications")
+}
+
+model Promotion {
+  id              String   @id @default(uuid())
+  name            String
+  city            String
+  discountPercent Int      @default(50)
+  startsAt        DateTime
+  endsAt          DateTime
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([city, isActive])
+  @@map("promotions")
 }

@@ -3,7 +3,10 @@ import { PrismaService } from '../prisma/prisma.service';
 
 export interface PublishPrice {
   ruleId: string;
-  amount: number;
+  originalAmount: number;
+  discountPercent: number;
+  promotionId: string | null;
+  amount: number; // valor final a cobrar
   durationDays: number;
 }
 
@@ -33,9 +36,29 @@ export class PricingService {
     const score = (r: (typeof rules)[number]) => (r.city ? 2 : 0) + (r.categoryId ? 1 : 0);
     const best = [...rules].sort((a, b) => score(b) - score(a))[0];
 
+        const originalAmount = Number(best.amount); // o Prisma devolve Decimal
+
+    // Promoção activa para a cidade do anúncio (a de maior desconto ganha)
+    const now = new Date();
+    const promotion = await this.prisma.promotion.findFirst({
+      where: {
+        isActive: true,
+        startsAt: { lte: now },
+        endsAt: { gte: now },
+        city: { equals: city, mode: 'insensitive' },
+      },
+      orderBy: { discountPercent: 'desc' },
+    });
+
+    const discountPercent = promotion?.discountPercent ?? 0;
+    const amount = Math.round(originalAmount * (100 - discountPercent)) / 100;
+
     return {
       ruleId: best.id,
-      amount: Number(best.amount), // o Prisma devolve Decimal, convertemos para número
+      originalAmount,
+      discountPercent,
+      promotionId: promotion?.id ?? null,
+      amount,
       durationDays: best.durationDays,
     };
   }

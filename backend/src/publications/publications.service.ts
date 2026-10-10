@@ -10,17 +10,22 @@ import { PrismaService } from '../prisma/prisma.service';
 import { PricingService } from '../pricing/pricing.service';
 import type { PaymentGateway } from '../payments/gateways/payment-gateway.interface';
 import { PAYMENT_GATEWAY } from '../payments/gateways/payment-gateway.interface';
+import { Logger } from '@nestjs/common';
+import { SearchRequestsService } from '../search-requests/search-requests.service';
 
 const MIN_IMAGES_TO_PUBLISH = 3;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 @Injectable()
 export class PublicationsService {
+  private logger = new Logger('PublicationsService');
+
   constructor(
     private prisma: PrismaService,
     private pricing: PricingService,
     @Inject(PAYMENT_GATEWAY) private paymentGateway: PaymentGateway,
-  ) {}
+    private searchRequests: SearchRequestsService,
+  ){}
 
   /** Cotação do preço de publicação, sem cobrar nada. */
   async getQuote(userId: string, listingId: string) {
@@ -66,7 +71,7 @@ export class PublicationsService {
     }
 
     const now = new Date();
-    return this.prisma.listing.update({
+    const published = await this.prisma.listing.update({
       where: { id: listingId },
       data: {
         status: 'ACTIVO',
@@ -74,6 +79,13 @@ export class PublicationsService {
         expiresAt: new Date(now.getTime() + price.durationDays * DAY_MS),
       },
     });
+
+    // Não espera nem bloqueia: um erro nos avisos não pode estragar a publicação
+    void this.searchRequests
+      .notifyMatches(published)
+      .catch((e) => this.logger.error('Falha ao avisar pedidos compatíveis', e));
+
+    return published;
   }
 
   private async getOwnedListing(userId: string, listingId: string) {

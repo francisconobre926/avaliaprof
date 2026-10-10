@@ -7,11 +7,13 @@ import { PricingModule } from '../pricing/pricing.module';
 import { PAYMENT_GATEWAY } from '../payments/gateways/payment-gateway.interface';
 import { MockPaymentGateway } from '../payments/gateways/mock-payment.gateway';
 import { ListingExpirationService } from './listing-expiration.service';
+import { SearchRequestsModule } from '../search-requests/search-requests.module';
 
 @Module({
   imports: [
     PrismaModule,
     PricingModule,
+    SearchRequestsModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   controllers: [PublicationsController],

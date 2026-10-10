@@ -18,6 +18,7 @@ import { ReportsModule } from './reports/reports.module';
 import { SearchRequestsModule } from './search-requests/search-requests.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { VerificationsModule } from './verifications/verifications.module';
+import { PromotionsModule } from './promotions/promotions.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { VerificationsModule } from './verifications/verifications.module';
     SearchRequestsModule,
     ReviewsModule,
     VerificationsModule,
+    PromotionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

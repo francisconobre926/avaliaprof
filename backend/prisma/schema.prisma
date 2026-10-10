@@ -43,6 +43,10 @@ model User {
   identityVerifiedAt    DateTime?
   verifications         Verification[] @relation("UserVerifications")
   verificationsReviewed Verification[] @relation("VerificationsReviewed")
+  referralCode      String?  @unique
+  creditBalance     Decimal  @default(0) @db.Decimal(12, 2)
+  referralsMade     Referral[] @relation("ReferralsMade")
+  referralReceived  Referral?  @relation("ReferralReceived")
 
   @@map("users")
 }
@@ -294,6 +298,7 @@ model ListingPublication {
   paymentReference String
   status           PublicationPaymentStatus
   createdAt        DateTime                 @default(now())
+  creditUsed       Decimal  @default(0) @db.Decimal(12, 2)
 
   @@index([listingId])
 }
@@ -409,4 +414,24 @@ model Promotion {
 
   @@index([city, isActive])
   @@map("promotions")
+}
+
+enum ReferralStatus {
+  PENDENTE
+  PAGO
+}
+
+model Referral {
+  id          String         @id @default(uuid())
+  referrerId  String
+  referrer    User           @relation("ReferralsMade", fields: [referrerId], references: [id])
+  referredId  String         @unique
+  referred    User           @relation("ReferralReceived", fields: [referredId], references: [id])
+  status      ReferralStatus @default(PENDENTE)
+  bonusAmount Decimal?       @db.Decimal(12, 2)
+  paidAt      DateTime?
+  createdAt   DateTime       @default(now())
+
+  @@index([referrerId, status])
+  @@map("referrals")
 }

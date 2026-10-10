@@ -40,6 +40,9 @@ model User {
   reviewsGiven    Review[] @relation("ReviewsGiven")
   reviewsReceived Review[] @relation("ReviewsReceived")
   searchRequests SearchRequest[]
+  identityVerifiedAt    DateTime?
+  verifications         Verification[] @relation("UserVerifications")
+  verificationsReviewed Verification[] @relation("VerificationsReviewed")
 
   @@map("users")
 }
@@ -367,4 +370,27 @@ model Review {
   @@unique([chatId, authorId])
   @@index([targetId])
   @@map("reviews")
+}
+
+enum VerificationStatus {
+  PENDENTE
+  APROVADO
+  REJEITADO
+}
+
+model Verification {
+  id              String             @id @default(uuid())
+  userId          String
+  user            User               @relation("UserVerifications", fields: [userId], references: [id], onDelete: Cascade)
+  status          VerificationStatus @default(PENDENTE)
+  note            String?
+  reviewedById    String?
+  reviewedBy      User?              @relation("VerificationsReviewed", fields: [reviewedById], references: [id])
+  reviewedAt      DateTime?
+  rejectionReason String?
+  createdAt       DateTime           @default(now())
+
+  @@index([userId, status])
+  @@index([status])
+  @@map("verifications")
 }

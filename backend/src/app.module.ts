@@ -14,6 +14,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PricingModule } from './pricing/pricing.module';
 import { PublicationsModule } from './publications/publications.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { PublicationsModule } from './publications/publications.module';
     NotificationsModule,
     ScheduleModule.forRoot(),
     PublicationsModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

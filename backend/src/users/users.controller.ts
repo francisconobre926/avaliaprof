@@ -1,4 +1,17 @@
-import { Controller, Get, Patch, Param, Body, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Delete,
+  Param,
+  Body,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  Request,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import type { Request as ExpressRequest } from 'express';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -24,8 +37,25 @@ export class UsersController {
     return this.usersService.update(req.user.userId, dto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('me/photo')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadPhoto(
+    @Request() req: AuthenticatedRequest,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.usersService.setPhoto(req.user.userId, file);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('me/photo')
+  async removePhoto(@Request() req: AuthenticatedRequest) {
+    return this.usersService.removePhoto(req.user.userId);
+  }
+
+  // Perfil público: sem email nem telefones
   @Get(':id')
   async getById(@Param('id') id: string) {
-    return this.usersService.findById(id);
+    return this.usersService.findPublicById(id);
   }
 }

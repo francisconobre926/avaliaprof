@@ -18,6 +18,11 @@ model User {
   email                   String                   @unique
   password                String
   phone                   String?
+  advertiserType          AdvertiserType?
+  alternatePhone          String?
+  contactChannels         ContactChannel[] @default([CHAT])
+  photoUrl                String?
+  photoKey                String?
   isProcurador            Boolean                  @default(true)
   isAnunciante            Boolean                  @default(false)
   isAdmin                 Boolean                  @default(false)
@@ -452,4 +457,18 @@ model AuditLog {
   @@index([adminId])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+enum AdvertiserType {
+  PROPRIETARIO
+  AGENTE
+  IMOBILIARIA
+  ORGANIZACAO
+}
+
+enum ContactChannel {
+  CHAT
+  TELEFONE
+  WHATSAPP
+  EMAIL
 }

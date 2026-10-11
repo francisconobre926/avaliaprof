@@ -12,7 +12,7 @@ fi
 # O ?schema=public do Prisma não é válido para o libpq, por isso cortamos a query
 url="${DATABASE_URL%%\?*}"
 
-re='^postgres(ql)?://([^:@/]+):([^@/]*)@([^:/]+)(:([0-9]+))?/([^/?]+)$'
+re='^postgres(ql)?://([^:@/]+):([^@/]*)@([^:/@]+)(:([0-9]+))?/([^/?]+)$'
 if [[ ! "$url" =~ $re ]]; then
   echo "DATABASE_URL com formato inesperado. Esperado: postgresql://utilizador:password@host:porta/base" >&2
   echo "Se a password tiver caracteres especiais, escreve-os em percent-encoding (ex: @ passa a %40)." >&2

@@ -21,6 +21,7 @@ import { VerificationsModule } from './verifications/verifications.module';
 import { PromotionsModule } from './promotions/promotions.module';
 import { ReferralsModule } from './referrals/referrals.module';
 import { AuditModule } from './audit/audit.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { AuditModule } from './audit/audit.module';
     PromotionsModule,
     ReferralsModule,
     AuditModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

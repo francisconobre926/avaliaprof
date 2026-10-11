@@ -1,0 +1,6 @@
+[Unit]
+Description=Backup da base de dados do GoHome
+
+[Service]
+Type=oneshot
+ExecStart=%h/Projetos/gohome/infrastructure/scripts/backup-db.sh

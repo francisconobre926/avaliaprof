@@ -1,6 +1,11 @@
 import {
-  WebSocketGateway, WebSocketServer, SubscribeMessage,
-  MessageBody, ConnectedSocket, OnGatewayConnection, OnGatewayDisconnect,
+  WebSocketGateway,
+  WebSocketServer,
+  SubscribeMessage,
+  MessageBody,
+  ConnectedSocket,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
@@ -25,8 +30,13 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(client: AuthenticatedSocket) {
     try {
-      const token = client.handshake.auth?.token || client.handshake.headers?.authorization?.replace('Bearer ', '');
+      const token =
+        client.handshake.auth?.token ||
+        client.handshake.headers?.authorization?.replace('Bearer ', '');
       const payload = this.jwtService.verify(token);
+      if (payload.scope === '2fa') {
+        throw new Error('Token temporário não é válido para o chat.');
+      }
       client.userId = payload.sub;
       this.logger.log(`Cliente ligado: ${client.userId}`);
     } catch {
@@ -51,7 +61,12 @@ export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('sendMessage')
   async handleSendMessage(
     @ConnectedSocket() client: AuthenticatedSocket,
-    @MessageBody() data: { chatId: string; content: string; type?: 'TEXTO' | 'IMAGEM' | 'LOCALIZACAO' | 'LINK' },
+    @MessageBody()
+    data: {
+      chatId: string;
+      content: string;
+      type?: 'TEXTO' | 'IMAGEM' | 'LOCALIZACAO' | 'LINK';
+    },
   ) {
     if (!client.userId) return;
 

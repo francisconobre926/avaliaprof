@@ -20,6 +20,7 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { VerificationsModule } from './verifications/verifications.module';
 import { PromotionsModule } from './promotions/promotions.module';
 import { ReferralsModule } from './referrals/referrals.module';
+import { AuditModule } from './audit/audit.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { ReferralsModule } from './referrals/referrals.module';
     VerificationsModule,
     PromotionsModule,
     ReferralsModule,
+    AuditModule,
   ],
   controllers: [AppController],
   providers: [AppService],

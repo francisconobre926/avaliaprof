@@ -25,6 +25,13 @@ export class RolesGuard implements CanActivate {
     if (!user || !requiredRoles.includes(user.role)) {
       throw new ForbiddenException('Não tens permissão para esta acção.');
     }
+
+    // DDR secção 31: o admin só actua depois da verificação em dois passos
+    if (user.role === Role.ADMIN && !user.twoFactorVerified) {
+      throw new ForbiddenException(
+        'É necessário concluir a verificação em dois passos (2FA).',
+      );
+    }
     return true;
   }
 }

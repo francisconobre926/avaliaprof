@@ -20,7 +20,8 @@ model User {
   phone                   String?
   isProcurador            Boolean                  @default(true)
   isAnunciante            Boolean                  @default(false)
-  isAdmin                Boolean                  @default(false)
+  isAdmin                 Boolean                  @default(false)
+  auditLogs               AuditLog[]
   emailVerified           Boolean                  @default(false)
   emailVerifiedAt         DateTime?
   termsAcceptedAt         DateTime?
@@ -47,6 +48,8 @@ model User {
   creditBalance     Decimal  @default(0) @db.Decimal(12, 2)
   referralsMade     Referral[] @relation("ReferralsMade")
   referralReceived  Referral?  @relation("ReferralReceived")
+  twoFactorSecret  String?
+  twoFactorEnabled Boolean @default(false)
 
   @@map("users")
 }
@@ -434,4 +437,19 @@ model Referral {
 
   @@index([referrerId, status])
   @@map("referrals")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  adminId    String
+  admin      User     @relation(fields: [adminId], references: [id])
+  action     String
+  targetType String?
+  targetId   String?
+  details    Json?
+  createdAt  DateTime @default(now())
+
+  @@index([adminId])
+  @@index([createdAt])
+  @@map("audit_logs")
 }

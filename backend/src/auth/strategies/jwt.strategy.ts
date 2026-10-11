@@ -14,7 +14,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: { sub: string; email: string }) {
+  async validate(payload: {
+    sub: string;
+    email: string;
+    scope?: string;
+    twoFactorVerified?: boolean;
+  }) {
+    // O token temporário do 2FA nunca serve como token de acesso
+    if (payload.scope === '2fa') {
+      throw new UnauthorizedException();
+    }
+
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
       select: { id: true, email: true, isAdmin: true, isAnunciante: true },
@@ -30,6 +40,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         : Role.SEEKER;
 
     // userId e email mantêm-se, por isso os outros controllers não mudam
-    return { userId: user.id, email: user.email, role };
+    return {
+      userId: user.id,
+      email: user.email,
+      role,
+      twoFactorVerified: payload.twoFactorVerified === true,
+    };
   }
 }

@@ -3,15 +3,11 @@ import { PassportModule } from '@nestjs/passport';
 import { MediaService } from './media.service';
 import { MediaController } from './media.controller';
 import { PrismaModule } from '../prisma/prisma.module';
-import { STORAGE_PROVIDER } from './storage/storage-provider.interface';
-import { R2StorageProvider } from './storage/r2-storage.provider';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
-  imports: [PrismaModule, PassportModule.register({ defaultStrategy: 'jwt' })],
+  imports: [PrismaModule, StorageModule, PassportModule.register({ defaultStrategy: 'jwt' })],
   controllers: [MediaController],
-  providers: [
-    MediaService,
-    { provide: STORAGE_PROVIDER, useClass: R2StorageProvider },
-  ],
+  providers: [MediaService],
 })
 export class MediaModule {}

@@ -7,6 +7,9 @@ import { NotificationsService } from '../notifications/notifications.service';
 
 const UNLOCK_PRICE_MT = 50;
 
+// Só se desbloqueia o que está disponível
+const UNAVAILABLE_STATUSES = ['RASCUNHO', 'SUSPENSO', 'EXPIRADO', 'REMOVIDO'];
+
 @Injectable()
 export class UnlocksService {
   constructor(
@@ -28,6 +31,11 @@ export class UnlocksService {
     if (existing) {
       // Regra do DDR: "mesmo utilizador não paga novamente pelo mesmo anúncio"
       return this.getFullListingInfo(listingId);
+    }
+
+    // Nunca cobrar por um anúncio que não está disponível
+    if (UNAVAILABLE_STATUSES.includes(listing.status)) {
+      throw new NotFoundException('Anúncio não encontrado.');
     }
 
     const chargeResult = await this.paymentGateway.charge(UNLOCK_PRICE_MT, payerPhone);

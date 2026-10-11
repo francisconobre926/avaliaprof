@@ -1,13 +1,26 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  Inject,
+  Logger,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateListingDto } from './dto/create-listing.dto';
 import { SearchListingsDto, SortBy } from './dto/search-listings.dto';
 import { haversineDistanceKm, obfuscateLocation, toPublicListing } from '../common/utils/geo.util';
+import type { StorageProvider } from '../media/storage/storage-provider.interface';
+import { STORAGE_PROVIDER } from '../media/storage/storage-provider.interface';
 
 @Injectable()
 export class ListingsService {
-  constructor(private prisma: PrismaService) {}
+  private logger = new Logger('ListingsService');
+
+  constructor(
+    private prisma: PrismaService,
+    @Inject(STORAGE_PROVIDER) private storage: StorageProvider,
+  ) {}
 
   async create(ownerId: string, dto: CreateListingDto) {
     return this.prisma.listing.create({
@@ -27,12 +40,21 @@ export class ListingsService {
     return listings.map(toPublicListing);
   }
 
-  async findById(id: string) {
+  /**
+   * Um anúncio removido nunca é visível. Rascunhos e suspensos só o dono os vê,
+   * por isso o controller deve passar o viewerId quando houver sessão iniciada.
+   */
+  async findById(id: string, viewerId?: string) {
     const listing = await this.prisma.listing.findUnique({
       where: { id },
       include: { category: true },
     });
-    if (!listing) {
+    if (!listing || listing.status === 'REMOVIDO') {
+      throw new NotFoundException('Anúncio não encontrado.');
+    }
+
+    const isHiddenStatus = listing.status === 'RASCUNHO' || listing.status === 'SUSPENSO';
+    if (isHiddenStatus && listing.ownerId !== viewerId) {
       throw new NotFoundException('Anúncio não encontrado.');
     }
     return toPublicListing(listing);
@@ -51,15 +73,49 @@ export class ListingsService {
     if (listing.ownerId !== ownerId) {
       throw new ForbiddenException('Não tens permissão para editar este anúncio.');
     }
+    if (listing.status === 'REMOVIDO') {
+      throw new NotFoundException('Anúncio não encontrado.');
+    }
     return this.prisma.listing.update({ where: { id }, data: dto });
   }
 
+  /**
+   * "Remover" não apaga a linha: o anúncio passa a REMOVIDO e sai do público.
+   * Perde as fotos, o vídeo e os favoritos, mas mantém desbloqueios, conversas
+   * e pagamentos, que o histórico e as métricas de receita precisam de ter.
+   */
   async remove(id: string, ownerId: string) {
     const listing = await this.findRawById(id);
     if (listing.ownerId !== ownerId) {
       throw new ForbiddenException('Não tens permissão para remover este anúncio.');
     }
-    return this.prisma.listing.delete({ where: { id } });
+    if (listing.status === 'REMOVIDO') {
+      throw new NotFoundException('Anúncio não encontrado.');
+    }
+
+    const files = await this.prisma.media.findMany({
+      where: { listingId: id },
+      select: { key: true },
+    });
+
+    // Tudo ou nada: se algo falhar, o anúncio fica como estava
+    await this.prisma.$transaction([
+      this.prisma.media.deleteMany({ where: { listingId: id } }),
+      this.prisma.favorite.deleteMany({ where: { listingId: id } }),
+      this.prisma.listing.update({ where: { id }, data: { status: 'REMOVIDO' } }),
+    ]);
+
+    // Os ficheiros só se apagam depois de a base de dados estar certa, para
+    // nunca ficar um registo a apontar para um ficheiro que já não existe.
+    // Se algum falhar, fica no log com a chave para limpeza manual.
+    const results = await Promise.allSettled(files.map((f) => this.storage.delete(f.key)));
+    results.forEach((r, i) => {
+      if (r.status === 'rejected') {
+        this.logger.warn(`Ficheiro órfão no R2: ${files[i].key}`);
+      }
+    });
+
+    return { success: true };
   }
 
   async search(dto: SearchListingsDto) {

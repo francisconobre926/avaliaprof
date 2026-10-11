@@ -167,7 +167,9 @@ export class PublicationsService {
 
   private async getOwnedListing(userId: string, listingId: string) {
     const listing = await this.prisma.listing.findUnique({ where: { id: listingId } });
-    if (!listing) throw new NotFoundException('Anúncio não encontrado.');
+    if (!listing || listing.status === 'REMOVIDO') {
+      throw new NotFoundException('Anúncio não encontrado.');
+    }
     if (listing.ownerId !== userId) {
       throw new ForbiddenException('Só o dono do anúncio o pode publicar.');
     }

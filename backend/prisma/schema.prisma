@@ -283,6 +283,9 @@ model PricingRule {
   amount       Decimal   @db.Decimal(12, 2)
   durationDays Int       @default(30)
   isActive     Boolean   @default(true)
+  purpose  ListingPurpose?
+  minPrice Decimal?        @db.Decimal(14, 2) // exclusivo: valor acima disto
+  maxPrice Decimal?        @db.Decimal(14, 2) // inclusivo: até este valor
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

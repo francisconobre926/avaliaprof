@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import type { ListingPurpose } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 
 export interface PublishPrice {
@@ -10,33 +11,52 @@ export interface PublishPrice {
   durationDays: number;
 }
 
+export interface PriceableListing {
+  categoryId: string;
+  city: string;
+  purpose: ListingPurpose;
+  price: unknown; // Decimal do Prisma ou número
+}
+
 @Injectable()
 export class PricingService {
   constructor(private prisma: PrismaService) {}
 
   /**
-   * Devolve a regra de preço mais específica para a categoria e cidade.
-   * Pontuação: cidade pesa 2, categoria pesa 1, regra geral pesa 0.
+   * Escolhe a taxa de publicação do DDR (secções 18 a 20) pela finalidade e pelo
+   * valor do anúncio. Uma regra de cidade ou de categoria pode sobrepor-se.
+   * Pontuação: cidade 4, categoria 2, finalidade 1.
    */
-  async getPublishPrice(categoryId: string, city: string): Promise<PublishPrice> {
-    const rules = await this.prisma.pricingRule.findMany({
+  async getPublishPrice(listing: PriceableListing): Promise<PublishPrice> {
+    const listingPrice = Number(listing.price);
+
+    const candidates = await this.prisma.pricingRule.findMany({
       where: {
         isActive: true,
         AND: [
-          { OR: [{ categoryId }, { categoryId: null }] },
-          { OR: [{ city: { equals: city, mode: 'insensitive' } }, { city: null }] },
+          { OR: [{ categoryId: listing.categoryId }, { categoryId: null }] },
+          { OR: [{ city: { equals: listing.city, mode: 'insensitive' } }, { city: null }] },
+          { OR: [{ purpose: listing.purpose }, { purpose: null }] },
         ],
       },
     });
+
+    // O valor tem de cair na faixa: acima do mínimo (exclusivo) e até ao máximo (inclusivo)
+    const rules = candidates.filter(
+      (r) =>
+        (r.minPrice === null || listingPrice > Number(r.minPrice)) &&
+        (r.maxPrice === null || listingPrice <= Number(r.maxPrice)),
+    );
 
     if (rules.length === 0) {
       throw new NotFoundException('Não existe tabela de preços para este anúncio.');
     }
 
-    const score = (r: (typeof rules)[number]) => (r.city ? 2 : 0) + (r.categoryId ? 1 : 0);
+    const score = (r: (typeof rules)[number]) =>
+      (r.city ? 4 : 0) + (r.categoryId ? 2 : 0) + (r.purpose ? 1 : 0);
     const best = [...rules].sort((a, b) => score(b) - score(a))[0];
 
-        const originalAmount = Number(best.amount); // o Prisma devolve Decimal
+    const originalAmount = Number(best.amount); // o Prisma devolve Decimal
 
     // Promoção activa para a cidade do anúncio (a de maior desconto ganha)
     const now = new Date();
@@ -45,7 +65,7 @@ export class PricingService {
         isActive: true,
         startsAt: { lte: now },
         endsAt: { gte: now },
-        city: { equals: city, mode: 'insensitive' },
+        city: { equals: listing.city, mode: 'insensitive' },
       },
       orderBy: { discountPercent: 'desc' },
     });

@@ -34,7 +34,7 @@ export class PublicationsService {
   /** Cotação do preço de publicação, sem cobrar nada. */
   async getQuote(userId: string, listingId: string) {
     const listing = await this.getOwnedListing(userId, listingId);
-    const price = await this.pricing.getPublishPrice(listing.categoryId, listing.city);
+    const price = await this.pricing.getPublishPrice(listing);
     const creditAvailable = await this.getCredit(userId);
     const creditToUse = Math.min(creditAvailable, price.amount);
 
@@ -64,7 +64,7 @@ export class PublicationsService {
     }
 
     // O preço vem sempre do servidor, nunca do cliente
-    const price = await this.pricing.getPublishPrice(listing.categoryId, listing.city);
+    const price = await this.pricing.getPublishPrice(listing);
 
     // O crédito cobre primeiro; o resto vai para o gateway
     const creditAvailable = await this.getCredit(userId);

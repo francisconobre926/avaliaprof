@@ -1,3 +1,4 @@
+import { getCorsOrigins } from '../config/env';
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -16,7 +17,7 @@ interface AuthenticatedSocket extends Socket {
   userId?: string;
 }
 
-@WebSocketGateway({ cors: { origin: '*' } })
+@WebSocketGateway({ cors: { origin: getCorsOrigins().length > 0 ? getCorsOrigins() : false } })
 export class ChatsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;

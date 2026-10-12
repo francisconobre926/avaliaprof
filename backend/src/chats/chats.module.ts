@@ -1,3 +1,4 @@
+import { getJwtSecret } from '../config/env';
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
@@ -13,7 +14,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
   NotificationsModule,
   PassportModule.register({ defaultStrategy: 'jwt' }),
   JwtModule.register({
-    secret: process.env.JWT_SECRET || 'dev-secret-change-me',
+    secret: getJwtSecret(),
     signOptions: { expiresIn: '7d' },
   }),
 ],

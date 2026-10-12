@@ -1,4 +1,5 @@
 import { Controller, Post, Get, Param, Body, UseGuards, Request } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import type { Request as ExpressRequest } from 'express';
 import { UnlocksService } from './unlocks.service';
 import { UnlockListingDto } from './dto/unlock-listing.dto';
@@ -18,6 +19,8 @@ export class UnlocksController {
     return this.unlocksService.getMyUnlocks(req.user.userId);
   }
 
+  // Pagamento: poucas tentativas por minuto
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post(':listingId')
   async unlock(
     @Request() req: AuthenticatedRequest,

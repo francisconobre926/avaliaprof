@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Param, Body, UseGuards, Request } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import type { Request as ExpressRequest } from 'express';
 import { PublicationsService } from './publications.service';
 import { PublishListingDto } from './dto/publish-listing.dto';
@@ -21,6 +22,8 @@ export class PublicationsController {
     return this.publicationsService.getQuote(req.user.userId, listingId);
   }
 
+  // Pagamento: poucas tentativas por minuto
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post(':listingId')
   async publish(
     @Request() req: AuthenticatedRequest,

@@ -22,6 +22,9 @@ import { PromotionsModule } from './promotions/promotions.module';
 import { ReferralsModule } from './referrals/referrals.module';
 import { AuditModule } from './audit/audit.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { HttpThrottlerGuard } from './common/guards/http-throttler.guard';
 
 @Module({
   imports: [
@@ -45,8 +48,9 @@ import { AnalyticsModule } from './analytics/analytics.module';
     ReferralsModule,
     AuditModule,
     AnalyticsModule,
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, { provide: APP_GUARD, useClass: HttpThrottlerGuard }],
 })
 export class AppModule {}

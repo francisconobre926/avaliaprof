@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import { CreateListingDto } from './create-listing.dto';
 
 // Herda a validação de cada campo e torna-os todos opcionais.

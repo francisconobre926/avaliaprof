@@ -1,114 +1,114 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# GoHome 1.1 — Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST + WebSocket do GoHome ("Encontra o teu espaço"), em NestJS, TypeScript e PostgreSQL.
+Serve a app móvel (React Native + Expo) e o painel administrativo (Next.js).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+> As regras de negócio estão no DDR v1.1. Se este README contradisser o DDR, vale o DDR.
 
-## Description
+## Requisitos
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Node.js 20 ou superior
+- PostgreSQL (e o cliente `pg_dump`, para os backups)
+- `ffmpeg` (inclui o `ffprobe`): usado para validar a duração máxima do vídeo dos anúncios
+- Uma conta Cloudflare R2 (armazenamento de fotos e vídeos) e um projecto Firebase (push)
 
-## Project setup
+## Primeiros passos
 
 ```bash
-$ npm install
+cd backend
+npm install
+cp .env.example .env        # depois preenche os valores (ver abaixo)
+npx prisma migrate deploy   # cria as tabelas
+npx prisma generate
+npm run start:dev
 ```
 
-## Compile and run the project
+O servidor arranca em `http://localhost:3000`. Se faltar o `JWT_SECRET` ou o
+`LOCATION_SECRET`, **recusa-se a arrancar**, de propósito.
+
+## Variáveis de ambiente
+
+O ficheiro `.env.example` lista todas, com comentários. As obrigatórias:
+
+| Variável | Para quê | Como gerar |
+|---|---|---|
+| `DATABASE_URL` | Ligação ao PostgreSQL | A password não pode ter `@ : / ? #` |
+| `JWT_SECRET` | Assina os tokens de sessão | `openssl rand -hex 32` |
+| `LOCATION_SECRET` | Decide o deslocamento da localização aproximada | `openssl rand -hex 32` |
+
+Opcionais ou por funcionalidade: `CORS_ORIGINS` (painel de admin), `SWAGGER_ENABLED`,
+`R2_*` (upload de ficheiros) e `FIREBASE_CREDENTIALS_PATH` (push). Sem as credenciais do
+Firebase o push fica desactivado, mas o resto funciona.
+
+**Nunca** faças commit do `.env`, das chaves do R2 nem do ficheiro de credenciais do Firebase.
+
+## Dados iniciais
 
 ```bash
-# development
-$ npm run start
+# Preço geral de publicação (valor de exemplo, ajustável)
+npx ts-node prisma/seed-pricing.ts
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Promover uma conta já registada a admin
+npx ts-node prisma/seed-admin.ts email@exemplo.com
 ```
 
-## Run tests
+Os admins têm de concluir o 2FA (TOTP) para usar as rotas `/admin/*`.
+
+## Documentação da API
+
+- **Swagger interactivo:** `http://localhost:3000/docs` (só fora de produção, ou com
+  `SWAGGER_ENABLED=true`). Carrega em *Authorize* e cola o token do login.
+- **Contrato legível:** [`docs/api-contract.md`](../docs/api-contract.md): regras, limites e privacidade.
+- **Especificação OpenAPI:** `http://localhost:3000/docs-json`.
+
+## Estrutura
+
+```
+src/
+├── main.ts, app.module.ts
+├── config/        leitura dos segredos e variáveis (env.ts)
+├── common/        guards, decorators, enums e utilitários partilhados
+├── prisma/        acesso à base de dados
+├── auth/ users/ categories/ listings/ media/ favorites/
+├── unlocks/ payments/ chats/ notifications/
+├── pricing/ publications/ promotions/ referrals/
+├── search-requests/ reports/ reviews/ verifications/
+├── analytics/ audit/
+prisma/            schema, migrations e scripts de seed
+```
+
+Cada módulo segue controller (recebe e valida), service (regras de negócio) e DTOs.
+
+## Pagamentos
+
+Os pagamentos usam um **gateway simulado** (`MockPaymentGateway`). O M-Pesa real entra
+implementando a interface `PaymentGateway` e trocando o provider nos módulos
+`unlocks` e `publications`.
+
+## Segurança, em resumo
+
+- Segredos obrigatórios e `helmet` activo.
+- CORS restrito às origens da lista `CORS_ORIGINS`.
+- Limite de pedidos: 100 por minuto por IP; 5 por minuto no login, registo, 2FA e pagamentos.
+- Email e telefone dos anunciantes só depois do desbloqueio; a localização exacta só para
+  quem desbloqueou e para o dono.
+- Preços e descontos são sempre calculados no servidor.
+
+## Backups
 
 ```bash
-# unit tests
-$ npm run test
+# Backup manual (guarda em ~/gohome-backups)
+../infrastructure/scripts/backup-db.sh
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Prova que o backup mais recente restaura, numa base temporária
+../infrastructure/scripts/restore-test.sh
 ```
 
-## Deployment
+O agendamento diário (02:30) está em `infrastructure/systemd/`.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Convenções
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Observability
-
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
-
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
-
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observer](https://observer.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- Commits no formato Conventional Commits: `feat(listings): ...`, `fix(auth): ...`.
+- Trabalho em `feature/*` ou `fix/*`, com PR para `develop`. Nunca `push --force` em `main` ou `develop`.
+- Depois de cada `prisma migrate`, corre `npx prisma generate` e reinicia o servidor de TypeScript do editor.
+- Não uses `prisma format` antes de uma migration: pode inventar relações.

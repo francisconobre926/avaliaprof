@@ -33,3 +33,14 @@ export function getCorsOrigins(): string[] {
     .map((o) => o.trim())
     .filter(Boolean);
 }
+
+/**
+ * A documentação Swagger lista todas as rotas da API, por isso só fica ligada fora de
+ * produção. Para a ligar (ou desligar) à força, define SWAGGER_ENABLED=true ou false.
+ */
+export function isSwaggerEnabled(): boolean {
+  const flag = process.env.SWAGGER_ENABLED;
+  if (flag === 'true') return true;
+  if (flag === 'false') return false;
+  return process.env.NODE_ENV !== 'production';
+}

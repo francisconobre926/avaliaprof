@@ -5,6 +5,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { TwoFactorCodeDto, TwoFactorLoginDto } from './dto/two-factor.dto';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+import { Throttle } from '@nestjs/throttler';
 
 interface AuthenticatedRequest extends ExpressRequest {
   user: { userId: string; email: string };
@@ -14,16 +15,19 @@ interface AuthenticatedRequest extends ExpressRequest {
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('register')
   async register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('login')
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('2fa/login')
   async loginWithTwoFactor(@Body() dto: TwoFactorLoginDto) {
     return this.authService.loginWithTwoFactor(dto.tempToken, dto.code);

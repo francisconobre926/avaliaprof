@@ -39,8 +39,8 @@ export class AuthController {
     return this.authService.setupTwoFactor(req.user.userId);
   }
 
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Post('2fa/enable')
   async enableTwoFactor(@Request() req: AuthenticatedRequest, @Body() dto: TwoFactorCodeDto) {
     return this.authService.enableTwoFactor(req.user.userId, dto.code);

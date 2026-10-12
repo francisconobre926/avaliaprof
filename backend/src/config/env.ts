@@ -11,6 +11,21 @@ export function getJwtSecret(): string {
   return secret;
 }
 
+/**
+ * Segredo que decide o deslocamento da localização aproximada dos anúncios.
+ * Se mudar, todas as posições aproximadas passam a outro sítio (sem prejuízo para
+ * os dados, mas visível), por isso guarda-o junto com os outros segredos.
+ */
+export function getLocationSecret(): string {
+  const secret = process.env.LOCATION_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error(
+      'LOCATION_SECRET em falta ou com menos de 32 caracteres. Gera um com: openssl rand -hex 32',
+    );
+  }
+  return secret;
+}
+
 /** Origens de browser autorizadas (ex.: o painel de admin). As apps móveis não precisam de CORS. */
 export function getCorsOrigins(): string[] {
   return (process.env.CORS_ORIGINS ?? '')

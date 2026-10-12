@@ -4,9 +4,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
-import { getCorsOrigins } from './config/env';
+import { getCorsOrigins, getJwtSecret, getLocationSecret } from './config/env';
 
 async function bootstrap() {
+  // Falhar ao arrancar é melhor do que falhar no primeiro pedido
+  getJwtSecret();
+  getLocationSecret();
+
   const app = await NestFactory.create(AppModule);
 
   app.use(helmet());

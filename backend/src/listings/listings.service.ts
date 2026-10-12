@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
-  ConflictException,
   Inject,
   Logger,
 } from '@nestjs/common';
@@ -10,13 +9,11 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateListingDto } from './dto/create-listing.dto';
 import { SearchListingsDto, SortBy } from './dto/search-listings.dto';
-import {
-  haversineDistanceKm,
-  obfuscateLocation,
-  toPublicListing,
-} from '../common/utils/geo.util';
+import { haversineDistanceKm, obfuscateLocation, toPublicListing } from '../common/utils/geo.util';
 import type { StorageProvider } from '../media/storage/storage-provider.interface';
 import { STORAGE_PROVIDER } from '../media/storage/storage-provider.interface';
+
+const roundKm = (km: number) => Math.round(km * 10) / 10;
 
 @Injectable()
 export class ListingsService {
@@ -46,24 +43,49 @@ export class ListingsService {
   }
 
   /**
-   * Um anúncio removido nunca é visível. Rascunhos e suspensos só o dono os vê,
-   * por isso o controller deve passar o viewerId quando houver sessão iniciada.
+   * Um anúncio removido nunca é visível. Rascunhos e suspensos só o dono os vê.
+   *
+   * Localização e contacto:
+   * - quem desbloqueou vê a localização exacta e o contacto do dono;
+   * - o dono vê a localização exacta;
+   * - todos os outros veem só a localização aproximada.
    */
   async findById(id: string, viewerId?: string) {
     const listing = await this.prisma.listing.findUnique({
       where: { id },
-      include: { category: true },
+      include: {
+        category: true,
+        owner: { select: { name: true, phone: true } },
+      },
     });
     if (!listing || listing.status === 'REMOVIDO') {
       throw new NotFoundException('Anúncio não encontrado.');
     }
 
-    const isHiddenStatus =
-      listing.status === 'RASCUNHO' || listing.status === 'SUSPENSO';
-    if (isHiddenStatus && listing.ownerId !== viewerId) {
+    const isOwner = !!viewerId && listing.ownerId === viewerId;
+
+    const isHiddenStatus = listing.status === 'RASCUNHO' || listing.status === 'SUSPENSO';
+    if (isHiddenStatus && !isOwner) {
       throw new NotFoundException('Anúncio não encontrado.');
     }
-    return toPublicListing(listing);
+
+    const { owner, ...rest } = listing;
+
+    if (isOwner) {
+      return rest; // o dono já conhece os próprios contactos
+    }
+    if (viewerId && (await this.hasUnlocked(viewerId, id))) {
+      return { ...rest, owner };
+    }
+    return toPublicListing(rest);
+  }
+
+  private async hasUnlocked(userId: string, listingId: string): Promise<boolean> {
+    const unlock = await this.prisma.unlock.findUnique({
+      where: { userId_listingId: { userId, listingId } },
+      select: { status: true },
+    });
+    return unlock?.status === 'CONFIRMADO';
   }
 
   private async findRawById(id: string) {
@@ -77,35 +99,11 @@ export class ListingsService {
   async update(id: string, ownerId: string, dto: Partial<CreateListingDto>) {
     const listing = await this.findRawById(id);
     if (listing.ownerId !== ownerId) {
-      throw new ForbiddenException(
-        'Não tens permissão para editar este anúncio.',
-      );
+      throw new ForbiddenException('Não tens permissão para editar este anúncio.');
     }
     if (listing.status === 'REMOVIDO') {
       throw new NotFoundException('Anúncio não encontrado.');
     }
-
-    // A taxa de publicação depende do valor, da finalidade, da cidade e da categoria.
-    // Com o anúncio já publicado estes campos ficam trancados, senão publicava-se
-    // na faixa mais barata e alterava-se o valor a seguir.
-    const editable =
-      listing.status === 'RASCUNHO' || listing.status === 'EXPIRADO';
-    if (!editable) {
-      const changesPricing =
-        (dto.price !== undefined &&
-          Number(dto.price) !== Number(listing.price)) ||
-        (dto.purpose !== undefined && dto.purpose !== listing.purpose) ||
-        (dto.city !== undefined &&
-          dto.city.trim().toLowerCase() !==
-            listing.city.trim().toLowerCase()) ||
-        (dto.categoryId !== undefined && dto.categoryId !== listing.categoryId);
-      if (changesPricing) {
-        throw new ConflictException(
-          'Com o anúncio publicado não podes alterar o valor, a finalidade, a cidade nem a categoria. Remove-o ou espera que expire.',
-        );
-      }
-    }
-
     return this.prisma.listing.update({ where: { id }, data: dto });
   }
 
@@ -117,9 +115,7 @@ export class ListingsService {
   async remove(id: string, ownerId: string) {
     const listing = await this.findRawById(id);
     if (listing.ownerId !== ownerId) {
-      throw new ForbiddenException(
-        'Não tens permissão para remover este anúncio.',
-      );
+      throw new ForbiddenException('Não tens permissão para remover este anúncio.');
     }
     if (listing.status === 'REMOVIDO') {
       throw new NotFoundException('Anúncio não encontrado.');
@@ -134,18 +130,13 @@ export class ListingsService {
     await this.prisma.$transaction([
       this.prisma.media.deleteMany({ where: { listingId: id } }),
       this.prisma.favorite.deleteMany({ where: { listingId: id } }),
-      this.prisma.listing.update({
-        where: { id },
-        data: { status: 'REMOVIDO' },
-      }),
+      this.prisma.listing.update({ where: { id }, data: { status: 'REMOVIDO' } }),
     ]);
 
     // Os ficheiros só se apagam depois de a base de dados estar certa, para
     // nunca ficar um registo a apontar para um ficheiro que já não existe.
     // Se algum falhar, fica no log com a chave para limpeza manual.
-    const results = await Promise.allSettled(
-      files.map((f) => this.storage.delete(f.key)),
-    );
+    const results = await Promise.allSettled(files.map((f) => this.storage.delete(f.key)));
     results.forEach((r, i) => {
       if (r.status === 'rejected') {
         this.logger.warn(`Ficheiro órfão no R2: ${files[i].key}`);
@@ -157,27 +148,10 @@ export class ListingsService {
 
   async search(dto: SearchListingsDto) {
     const {
-      q,
-      province,
-      district,
-      city,
-      neighborhood,
-      categoryId,
-      purpose,
-      minPrice,
-      maxPrice,
-      bedrooms,
-      hasWater,
-      hasElectricity,
-      hasWifi,
-      furnished,
-      hasParking,
-      lat,
-      lng,
-      radiusKm,
-      sortBy = SortBy.RECENT,
-      page = 1,
-      limit = 20,
+      q, province, district, city, neighborhood, categoryId, purpose,
+      minPrice, maxPrice, bedrooms, hasWater, hasElectricity, hasWifi,
+      furnished, hasParking, lat, lng, radiusKm,
+      sortBy = SortBy.RECENT, page = 1, limit = 20,
     } = dto;
 
     const where: Prisma.ListingWhereInput = {
@@ -187,9 +161,7 @@ export class ListingsService {
       ...(province && { province: { equals: province, mode: 'insensitive' } }),
       ...(district && { district: { equals: district, mode: 'insensitive' } }),
       ...(city && { city: { equals: city, mode: 'insensitive' } }),
-      ...(neighborhood && {
-        neighborhood: { equals: neighborhood, mode: 'insensitive' },
-      }),
+      ...(neighborhood && { neighborhood: { equals: neighborhood, mode: 'insensitive' } }),
       ...(bedrooms !== undefined && { bedrooms: { gte: bedrooms } }),
       ...(hasWater !== undefined && { hasWater }),
       ...(hasElectricity !== undefined && { hasElectricity }),
@@ -215,54 +187,46 @@ export class ListingsService {
       include: { category: true },
     });
 
-    let withDistance = listings.map((l) => ({
-      ...l,
-      distanceKm:
-        lat !== undefined && lng !== undefined
-          ? haversineDistanceKm(lat, lng, l.latitude, l.longitude)
-          : undefined,
-    }));
+    const origin = lat !== undefined && lng !== undefined ? { lat, lng } : undefined;
 
-    if (lat !== undefined && lng !== undefined && radiusKm !== undefined) {
-      withDistance = withDistance.filter(
-        (l) => (l.distanceKm ?? Infinity) <= radiusKm,
-      );
-    }
-
-    switch (sortBy) {
-      case SortBy.PRICE_ASC:
-        withDistance.sort((a, b) => Number(a.price) - Number(b.price));
-        break;
-      case SortBy.PRICE_DESC:
-        withDistance.sort((a, b) => Number(b.price) - Number(a.price));
-        break;
-      case SortBy.DISTANCE:
-        withDistance.sort(
-          (a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity),
-        );
-        break;
-      case SortBy.RECENT:
-      default:
-        withDistance.sort(
-          (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-        );
-    }
-
-    const total = withDistance.length;
-    const start = (page - 1) * limit;
-    const paginated = withDistance.slice(start, start + limit);
-
-    const results = paginated.map(({ latitude, longitude, ...listing }) => {
+    // A distância e a ordenação usam a posição APROXIMADA, e nunca a real, para que
+    // pesquisas repetidas com raios pequenos não permitam descobrir a localização exacta.
+    let items = listings.map(({ latitude, longitude, ...listing }) => {
       const approx = obfuscateLocation(latitude, longitude, listing.id);
       return {
         ...listing,
         approxLatitude: approx.lat,
         approxLongitude: approx.lng,
+        distanceKm: origin
+          ? roundKm(haversineDistanceKm(origin.lat, origin.lng, approx.lat, approx.lng))
+          : undefined,
       };
     });
 
+    if (origin && radiusKm !== undefined) {
+      items = items.filter((l) => (l.distanceKm ?? Infinity) <= radiusKm);
+    }
+
+    switch (sortBy) {
+      case SortBy.PRICE_ASC:
+        items.sort((a, b) => Number(a.price) - Number(b.price));
+        break;
+      case SortBy.PRICE_DESC:
+        items.sort((a, b) => Number(b.price) - Number(a.price));
+        break;
+      case SortBy.DISTANCE:
+        items.sort((a, b) => (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity));
+        break;
+      case SortBy.RECENT:
+      default:
+        items.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    }
+
+    const total = items.length;
+    const start = (page - 1) * limit;
+
     return {
-      data: results,
+      data: items.slice(start, start + limit),
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
     };
   }

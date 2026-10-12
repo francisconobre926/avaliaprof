@@ -1,3 +1,6 @@
+import { createHmac } from 'crypto';
+import { getLocationSecret } from '../../config/env';
+
 /**
  * Calcula a distância em quilómetros entre duas coordenadas (fórmula de Haversine).
  */
@@ -19,21 +22,26 @@ function toRad(deg: number): number {
 }
 
 /**
- * Desloca uma coordenada de forma determinística (sempre igual para o mesmo listingId),
- * dentro de um raio máximo em metros — usado para esconder a localização exacta
- * antes do desbloqueio (secção 14 do DDR).
+ * Desloca uma coordenada de forma determinística (sempre igual para o mesmo seed),
+ * entre um raio mínimo e um máximo, para esconder a localização exacta antes do
+ * desbloqueio (secção 14 do DDR).
+ *
+ * O deslocamento depende de um segredo do servidor (HMAC), por isso quem conhece o
+ * listingId e o algoritmo não consegue recalculá-lo. O raio mínimo garante que a
+ * posição mostrada nunca coincide com a real.
  */
 export function obfuscateLocation(
-  lat: number, lng: number, seed: string, radiusMeters = 500,
+  lat: number, lng: number, seed: string,
+  minMeters = 150, maxMeters = 500,
 ): { lat: number; lng: number } {
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) {
-    hash = (hash << 5) - hash + seed.charCodeAt(i);
-    hash |= 0;
-  }
-  const angle = (Math.abs(hash) % 360) * (Math.PI / 180);
-  const distanceRatio = (Math.abs(hash) % 100) / 100;
-  const distanceMeters = distanceRatio * radiusMeters;
+  const digest = createHmac('sha256', getLocationSecret()).update(seed).digest();
+
+  // Dois números independentes em [0, 1), de bytes diferentes do HMAC
+  const angle = (digest.readUInt32BE(0) / 0x100000000) * 2 * Math.PI;
+  const ratio = digest.readUInt32BE(4) / 0x100000000;
+
+  // A raiz quadrada espalha os pontos de forma uniforme na área da coroa
+  const distanceMeters = Math.sqrt(minMeters ** 2 + ratio * (maxMeters ** 2 - minMeters ** 2));
 
   const earthRadius = 6371000;
   const deltaLat = (distanceMeters * Math.cos(angle)) / earthRadius;

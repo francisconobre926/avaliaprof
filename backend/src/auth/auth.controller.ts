@@ -32,7 +32,7 @@ export class AuthController {
   async loginWithTwoFactor(@Body() dto: TwoFactorLoginDto) {
     return this.authService.loginWithTwoFactor(dto.tempToken, dto.code);
   }
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  
   @UseGuards(JwtAuthGuard)
   @Post('2fa/setup')
   async setupTwoFactor(@Request() req: AuthenticatedRequest) {

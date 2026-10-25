@@ -1,0 +1,165 @@
+/**
+ * Button — Componente de botão profissional GoHome
+ *
+ * Variantes: primary | secondary | outline | ghost | danger
+ * Tamanhos: sm | md | lg
+ * Suporta: icon, loading state, haptic feedback, fullWidth
+ */
+
+import React from 'react';
+import {
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+  View,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as Haptics from 'expo-haptics';
+import { Ionicons } from '@expo/vector-icons';
+import { useCores } from '../../store/themeStore';
+import { Sombras } from '../../theme/colors';
+
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+export type ButtonSize = 'sm' | 'md' | 'lg';
+
+interface ButtonProps {
+  label: string;
+  onPress: () => void;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  icon?: keyof typeof Ionicons.glyphMap;
+  iconRight?: boolean;
+  loading?: boolean;
+  disabled?: boolean;
+  fullWidth?: boolean;
+  haptic?: boolean;
+  style?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
+}
+
+export const Button: React.FC<ButtonProps> = ({
+  label,
+  onPress,
+  variant = 'primary',
+  size = 'md',
+  icon,
+  iconRight = false,
+  loading = false,
+  disabled = false,
+  fullWidth = false,
+  haptic = true,
+  style,
+  labelStyle,
+}) => {
+  const cores = useCores();
+
+  const handlePress = () => {
+    if (disabled || loading) return;
+    if (haptic) Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onPress();
+  };
+
+  // Tamanhos
+  const sizeStyles: Record<ButtonSize, { padV: number; padH: number; font: number; icon: number; height: number }> = {
+    sm: { padV: 8, padH: 14, font: 13, icon: 16, height: 36 },
+    md: { padV: 12, padH: 20, font: 15, icon: 18, height: 48 },
+    lg: { padV: 16, padH: 24, font: 16, icon: 20, height: 56 },
+  };
+  const sz = sizeStyles[size];
+
+  // Cores por variante
+  const corTexto = (() => {
+    if (variant === 'primary' || variant === 'danger') return '#FFFFFF';
+    if (variant === 'secondary') return cores.textoPrincipal;
+    if (variant === 'outline' || variant === 'ghost') return cores.principal;
+    return '#FFFFFF';
+  })();
+
+  const corFundo = (() => {
+    if (disabled) return cores.bordaSubtil;
+    if (variant === 'secondary') return cores.fundoSuave;
+    if (variant === 'danger') return cores.erro;
+    if (variant === 'outline' || variant === 'ghost') return 'transparent';
+    return 'transparent'; // primary usa gradiente
+  })();
+
+  const corBorda = variant === 'outline' ? cores.principal : 'transparent';
+
+  const containerBase: ViewStyle = {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: sz.padV,
+    paddingHorizontal: sz.padH,
+    minHeight: sz.height,
+    borderRadius: sz.height / 2,
+    borderWidth: variant === 'outline' ? 1.5 : 0,
+    borderColor: corBorda,
+    backgroundColor: corFundo,
+    opacity: disabled ? 0.6 : 1,
+    overflow: 'hidden',
+    width: fullWidth ? '100%' : undefined,
+    gap: 8,
+    ...(variant === 'primary' || variant === 'danger' ? Sombras.sm : {}),
+  };
+
+  const renderConteudo = () => (
+    <>
+      {loading ? (
+        <ActivityIndicator color={corTexto} size="small" />
+      ) : (
+        <>
+          {icon && !iconRight && (
+            <Ionicons name={icon} size={sz.icon} color={corTexto} />
+          )}
+          <Text
+            style={[
+              { color: corTexto, fontSize: sz.font, fontWeight: '700' },
+              labelStyle,
+            ]}
+            numberOfLines={1}
+          >
+            {label}
+          </Text>
+          {icon && iconRight && (
+            <Ionicons name={icon} size={sz.icon} color={corTexto} />
+          )}
+        </>
+      )}
+    </>
+  );
+
+  return (
+    <TouchableOpacity
+      onPress={handlePress}
+      disabled={disabled || loading}
+      activeOpacity={0.85}
+      style={[containerBase, style]}
+    >
+      {variant === 'primary' && !disabled && (
+        <LinearGradient
+          colors={cores.gradiente}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
+      <View style={styles.conteudoLinha}>{renderConteudo()}</View>
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  conteudoLinha: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+});
+
+export default Button;

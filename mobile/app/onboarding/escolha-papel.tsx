@@ -16,21 +16,23 @@ import {
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 const C = {
   background: '#F5F9FF',
-  backgroundLight: '#EAF4FF',
+  backgroundLight: '#EAF2FA',
   surface: '#FFFFFF',
   surfaceLight: '#F0F7FF',
-  blue: '#087CF0',
+  blue: '#0A6BC0',
   blueLight: '#19B5FF',
   blueDeep: '#034B9B',
   orange: '#FF6A00',
   orangeLight: '#FFAB19',
   white: '#F5F8FF',
   muted: '#647D99',
-  border: '#D8E6F5',
+  border: '#E7E5DF',
   green: '#45E5B0',
 };
 
@@ -156,7 +158,7 @@ export default function EscolhaPapelScreen() {
       {/* Fundo tecnológico */}
       <View pointerEvents="none" style={StyleSheet.absoluteFill}>
         <LinearGradient
-          colors={['#EAF4FF', '#F8FBFF', '#FFFFFF']}
+          colors={['#EAF2FA', '#F8FBFF', '#FFFFFF']}
           locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -313,7 +315,7 @@ export default function EscolhaPapelScreen() {
 
                 <View style={styles.cartaoTopo}>
                   <View style={styles.iconBoxLaranja}>
-                    <MaterialCommunityIcons
+                    <Icone
                       name="home-search-outline"
                       size={31}
                       color={C.orangeLight}
@@ -356,7 +358,7 @@ export default function EscolhaPapelScreen() {
                   </Text>
 
                   <Ionicons
-                    name="arrow-up-right"
+                    name="arrow-forward"
                     size={20}
                     color={C.orangeLight}
                   />
@@ -380,7 +382,7 @@ export default function EscolhaPapelScreen() {
                 accessibilityLabel="Quero anunciar imóveis, produtos ou serviços"
               >
                 <LinearGradient
-                  colors={['#EAF4FF', '#FFFFFF']}
+                  colors={['#EAF2FA', '#FFFFFF']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={StyleSheet.absoluteFill}
@@ -395,7 +397,7 @@ export default function EscolhaPapelScreen() {
 
                 <View style={styles.cartaoTopo}>
                   <View style={styles.iconBoxAzul}>
-                    <MaterialCommunityIcons
+                    <Icone
                       name="storefront-outline"
                       size={31}
                       color={C.blueLight}
@@ -438,7 +440,7 @@ export default function EscolhaPapelScreen() {
                   </Text>
 
                   <Ionicons
-                    name="arrow-up-right"
+                    name="arrow-forward"
                     size={20}
                     color={C.blueLight}
                   />
@@ -604,7 +606,7 @@ const styles = StyleSheet.create({
   indicadorTexto: {
     color: C.muted,
     fontSize: 9,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.8,
   },
 
@@ -628,28 +630,28 @@ const styles = StyleSheet.create({
   etiquetaTexto: {
     color: C.blueLight,
     fontSize: 9,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.5,
   },
   titulo: {
-    color: '#17324D',
+    color: '#1E2836',
     fontSize: 34,
     lineHeight: 41,
-    fontWeight: '900',
+    fontFamily: Fonte.tituloBold,
     letterSpacing: -1.2,
   },
   tituloDestaque: {
     color: C.orange,
   },
   subtitulo: {
-    color: '#536B86',
-    fontSize: 14,
+    color: '#5B616B',
+    fontFamily: Fonte.corpo, fontSize: 14,
     lineHeight: 22,
     marginTop: 12,
   },
   subtituloSecundario: {
     color: C.muted,
-    fontSize: 12,
+    fontFamily: Fonte.corpo, fontSize: 12,
     lineHeight: 19,
     marginTop: 4,
   },
@@ -713,9 +715,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   numeroCartaoTexto: {
-    color: '#7187A2',
+    color: '#8E939B',
     fontSize: 10,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.5,
   },
   setaLaranja: {
@@ -739,15 +741,15 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(25,181,255,0.22)',
   },
   cartaoTitulo: {
-    color: '#17324D',
+    color: '#1E2836',
     fontSize: 21,
     lineHeight: 27,
-    fontWeight: '900',
+    fontFamily: Fonte.tituloBold,
     letterSpacing: -0.5,
   },
   cartaoDescricao: {
-    color: '#536B86',
-    fontSize: 13,
+    color: '#5B616B',
+    fontFamily: Fonte.corpo, fontSize: 13,
     lineHeight: 20,
     marginTop: 7,
   },
@@ -773,8 +775,8 @@ const styles = StyleSheet.create({
   },
   featureTexto: {
     flex: 1,
-    color: '#536B86',
-    fontSize: 12,
+    color: '#5B616B',
+    fontFamily: Fonte.corpo, fontSize: 12,
     lineHeight: 18,
   },
 
@@ -798,12 +800,12 @@ const styles = StyleSheet.create({
   cartaoAcaoLaranja: {
     color: C.orangeLight,
     fontSize: 13,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
   },
   cartaoAcaoAzul: {
     color: C.blueLight,
     fontSize: 13,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
   },
 
   // Rodapé
@@ -826,8 +828,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rodapeTexto: {
-    color: '#536B86',
-    fontSize: 11,
+    color: '#5B616B',
+    fontFamily: Fonte.corpo, fontSize: 11,
     flexShrink: 1,
     textAlign: 'center',
   },
@@ -840,12 +842,12 @@ const styles = StyleSheet.create({
   assinaturaLinha: {
     width: 19,
     height: 1,
-    backgroundColor: '#D8E6F5',
+    backgroundColor: '#E7E5DF',
   },
   assinaturaTexto: {
-    color: '#7187A2',
+    color: '#8E939B',
     fontSize: 8,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.25,
   },
 });

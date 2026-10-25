@@ -2,7 +2,7 @@
  * app/(anunciante)/publicar.tsx — VERSÃO PROFISSIONAL
  *
  * Fixes implementados:
- *   ✓ Header FIXO/STICKY (nunca desaparece com scroll)
+ *   ✓ Topo FIXO: TopBar partilhada (título do passo + voltar) e progresso por baixo
  *   ✓ KeyboardAvoidingView envolvendo TUDO (teclado nunca cobre inputs)
  *   ✓ Android: behavior='height' + listener keyboardDidShow com scroll ao campo focado
  *   ✓ iOS: behavior='padding' + offset correcto
@@ -26,7 +26,6 @@ import {
   Keyboard,
   useWindowDimensions,
   Animated,
-  StatusBar,
   Alert,
   Modal,
   Pressable,
@@ -34,9 +33,9 @@ import {
   findNodeHandle,
   UIManager,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { useRouter, useNavigation, useLocalSearchParams } from 'expo-router';
@@ -62,18 +61,21 @@ import CampoDinamico from '../../src/components/CampoDinamico';
 import ModalVerificacaoOCR from '../../src/components/ModalVerificacaoOCR';
 import { ModoSimulacao } from '../../src/utils/verificarImagensOCR';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
+import TopBar from '../../src/components/TopBar';
 // ============================================================
 // CORES GOHOME OFICIAIS
 // ============================================================
-const AZUL_MARCA = '#0082DE';
-const AZUL_ESCURO = '#0061A6';
-const AZUL_HERO = '#003A66';
-const LARANJA_MARCA = '#FE8A00';
-const LARANJA_ESCURO = '#CB6E00';
-const LARANJA_PALE = '#FFF4E6';
-const VERDE_SUCESSO = '#2E7D32';
-const VERMELHO_ERRO = '#D32F2F';
-const AMARELO_AVISO = '#F57C00';
+const AZUL_MARCA = '#0A6BC0';
+const AZUL_ESCURO = '#08508F';
+const AZUL_HERO = '#0A6BC0';
+const LARANJA_MARCA = '#E8760A';
+const LARANJA_ESCURO = '#B95A05';
+const LARANJA_PALE = '#FBF0E3';
+const VERDE_SUCESSO = '#2F7A4F';
+const VERMELHO_ERRO = '#C2412D';
+const AMARELO_AVISO = '#E8760A';
 
 // Cinzas neutros profissionais
 const CINZA_FUNDO = '#F7F8FA';
@@ -659,7 +661,7 @@ export default function PublicarScreen() {
       if (formularioDinamico) {
         for (const seccao of formularioDinamico.seccoes) {
           for (const campo of seccao.campos) {
-            if (campo.tipo === 'texto' || campo.tipo === 'texto_longo' || campo.tipo === 'textarea') {
+            if (campo.tipo === 'texto' || campo.tipo === 'textarea') {
               const valor = caracteristicas[campo.id];
               if (typeof valor === 'string') {
                 if (/[0-9٠-٩@#]/.test(valor) || temPalavrasNumero(valor)) {
@@ -849,53 +851,42 @@ export default function PublicarScreen() {
   // ============ RENDER ============
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-
-      {/* ============ HEADER FIXO STICKY ============ */}
-      <SafeAreaView edges={['top']} style={styles.headerSticky}>
-        <View style={styles.headerTop}>
-          <TouchableOpacity onPress={voltar} style={styles.btnHeader} activeOpacity={0.7}>
-            <Ionicons name="arrow-back" size={22} color={TEXTO_FORTE} />
-          </TouchableOpacity>
-          <View style={styles.headerCenter}>
-            <Text style={styles.headerTituloTexto} numberOfLines={1}>
-              {tituloPasso}
-            </Text>
-            <Text style={styles.headerSubtitulo}>
-              Passo {passo} de 5
-              {modo === 'editar' && ' · Modo edição'}
-            </Text>
-          </View>
-          {modo === 'editar' ? (
-            <View style={[styles.badgeModoEditar, { backgroundColor: AZUL_MARCA }]}>
-              <MaterialCommunityIcons name="pencil" size={14} color="#FFFFFF" />
+      {/* ============ TOPO FIXO: TopBar + progresso ============ */}
+      <TopBar
+        titulo={tituloPasso}
+        onVoltar={voltar}
+        acoes={
+          modo === 'editar' ? (
+            <View style={styles.badgeModoEditar} accessibilityLabel="Modo edição">
+              <Icone name="pencil" size={13} color="#FFFFFF" />
+              <Text style={styles.badgeModoEditarTexto}>Edição</Text>
             </View>
           ) : (
-            <View style={{ width: 40 }} />
-          )}
-        </View>
+            <View />
+          )
+        }
+      />
 
+      <View style={styles.progressoSticky}>
         {/* Barra de progresso */}
         <View style={styles.progressoWrap}>
+          <Text style={styles.progressoLegenda}>
+            Passo {passo} de 5
+            {modo === 'editar' && ' · Modo edição'}
+          </Text>
           <View style={styles.progressoTrack}>
             <Animated.View
               style={[
                 styles.progressoFill,
                 {
+                  backgroundColor: corPrimaria,
                   width: slideAnim.interpolate({
                     inputRange: [1, 5],
                     outputRange: ['20%', '100%'],
                   }),
                 },
               ]}
-            >
-              <LinearGradient
-                colors={gradientPrimario}
-                style={StyleSheet.absoluteFill}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-              />
-            </Animated.View>
+            />
           </View>
           <View style={styles.passosIndicadores}>
             {[1, 2, 3, 4, 5].map((n) => (
@@ -911,7 +902,7 @@ export default function PublicarScreen() {
             ))}
           </View>
         </View>
-      </SafeAreaView>
+      </View>
 
       {/* ============ ÁREA SCROLLÁVEL + FOOTER COM KEYBOARD AVOIDING ============ */}
       <View style={{ flex: 1 }}>
@@ -928,7 +919,7 @@ export default function PublicarScreen() {
         >
           {modo === 'editar' && (
             <View style={styles.avisoEdicaoBox}>
-              <MaterialCommunityIcons name="information" size={18} color={AZUL_MARCA} />
+              <Icone name="information" size={18} color={AZUL_MARCA} />
               <Text style={styles.avisoEdicaoTexto}>
                 Mudanças de texto, fotos e características são grátis. Mudar categoria, finalidade ou subir de faixa de preço exige pagamento da diferença.
               </Text>
@@ -975,7 +966,7 @@ export default function PublicarScreen() {
               {tipo === 'outro' && (
                 <View style={styles.categoriaPersonalizadaBox}>
                   <View style={styles.categoriaPersonalizadaCabecalho}>
-                    <MaterialCommunityIcons name="lightbulb-on-outline" size={22} color={corPrimaria} />
+                    <Icone name="lightbulb-on-outline" size={22} color={corPrimaria} />
                     <View style={{ flex: 1 }}>
                       <Text style={styles.categoriaPersonalizadaTitulo}>O que pretendes anunciar?</Text>
                       <Text style={styles.categoriaPersonalizadaDescricao}>
@@ -1035,7 +1026,7 @@ export default function PublicarScreen() {
           {passo === 2 && (
             <View style={styles.passoContent}>
               <View style={styles.avisoRegrasBox}>
-                <MaterialCommunityIcons name="shield-lock" size={20} color={VERMELHO_ERRO} />
+                <Icone name="shield-lock" size={20} color={VERMELHO_ERRO} />
                 <View style={{ flex: 1 }}>
                   <Text style={styles.avisoRegrasTitulo}>Nenhum número ou contacto no texto</Text>
                   <Text style={styles.avisoRegrasTexto}>
@@ -1078,7 +1069,7 @@ export default function PublicarScreen() {
                   onPress={() => setModalDeteccaoVisivel(true)}
                   activeOpacity={0.85}
                 >
-                  <MaterialCommunityIcons name="alert-circle" size={18} color="#FFFFFF" />
+                  <Icone name="alert-circle" size={18} color="#FFFFFF" />
                   <Text style={styles.verProblemasBotaoTexto}>
                     Ver {todasDeteccoes.length} {todasDeteccoes.length === 1 ? 'problema' : 'problemas'} detectado{todasDeteccoes.length === 1 ? '' : 's'}
                   </Text>
@@ -1221,7 +1212,7 @@ export default function PublicarScreen() {
 
               {!formularioDinamico && (
                 <View style={styles.avisoSemFormulario}>
-                  <MaterialCommunityIcons name="alert-circle-outline" size={40} color={AMARELO_AVISO} />
+                  <Icone name="alert-circle-outline" size={40} color={AMARELO_AVISO} />
                   <Text style={styles.avisoSemFormularioTitulo}>Categoria sem formulário específico</Text>
                   <Text style={styles.avisoSemFormularioTexto}>
                     Esta categoria ainda não tem campos definidos. Avança para o próximo passo.
@@ -1234,7 +1225,7 @@ export default function PublicarScreen() {
                   <View style={styles.seccaoDinamicaHeader}>
                     {seccao.icone && (
                       <View style={styles.seccaoDinamicaIcone}>
-                        <MaterialCommunityIcons name={seccao.icone as any} size={18} color={corPrimaria} />
+                        <Icone name={seccao.icone as any} size={18} color={corPrimaria} />
                       </View>
                     )}
                     <View style={{ flex: 1 }}>
@@ -1292,7 +1283,7 @@ export default function PublicarScreen() {
 
               {fotos.length < 3 && (
                 <View style={styles.erroResumoBox}>
-                  <MaterialCommunityIcons name="alert-circle" size={20} color={VERMELHO_ERRO} />
+                  <Icone name="alert-circle" size={20} color={VERMELHO_ERRO} />
                   <Text style={styles.erroResumoTexto}>
                     Precisas de pelo menos {3 - fotos.length} fotografia{3 - fotos.length === 1 ? '' : 's'} para publicar.
                   </Text>
@@ -1329,7 +1320,7 @@ export default function PublicarScreen() {
               {/* Revisão */}
               <View style={styles.revisaoContainer}>
                 <View style={styles.revisaoHeader}>
-                  <MaterialCommunityIcons name="clipboard-check" size={20} color={AZUL_ESCURO} />
+                  <Icone name="clipboard-check" size={20} color={AZUL_ESCURO} />
                   <Text style={styles.revisaoTitulo}>Revisão do anúncio</Text>
                 </View>
 
@@ -1389,7 +1380,7 @@ export default function PublicarScreen() {
                     </View>
                     {valorPagoCalculado !== null && (
                       <View style={styles.revisaoBadgePromo}>
-                        <MaterialCommunityIcons name="tag" size={12} color="#FFFFFF" />
+                        <Icone name="tag" size={12} color="#FFFFFF" />
                         <Text style={styles.revisaoBadgePromoTexto}>PROMOÇÃO 50% ACTIVA</Text>
                       </View>
                     )}
@@ -1419,7 +1410,7 @@ export default function PublicarScreen() {
 
               {modo === 'publicar' && (
                 <View style={styles.avisoPagamentoBox}>
-                  <MaterialCommunityIcons name="credit-card-outline" size={20} color={AZUL_ESCURO} />
+                  <Icone name="credit-card-outline" size={20} color={AZUL_ESCURO} />
                   <View style={{ flex: 1 }}>
                     <Text style={styles.avisoPagamentoTitulo}>Próximo passo</Text>
                     <Text style={styles.avisoPagamentoTexto}>
@@ -1461,7 +1452,7 @@ export default function PublicarScreen() {
                 end={{ x: 1, y: 0 }}
               >
                 {passo === 5 ? (
-                  <MaterialCommunityIcons
+                  <Icone
                     name={modo === 'editar' && !exigeRepagamento ? 'content-save' : 'credit-card'}
                     size={20}
                     color="#FFFFFF"
@@ -1485,7 +1476,7 @@ export default function PublicarScreen() {
             <View style={styles.modalHandle} />
             <View style={styles.modalHeader}>
               <View style={styles.modalIcone}>
-                <MaterialCommunityIcons name="shield-alert" size={28} color={VERMELHO_ERRO} />
+                <Icone name="shield-alert" size={28} color={VERMELHO_ERRO} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.modalTitulo}>Informação não permitida</Text>
@@ -1510,7 +1501,7 @@ export default function PublicarScreen() {
               {todasDeteccoes.map((item, index) => (
                 <View key={`${item.campo}-${index}`} style={styles.deteccaoItem}>
                   <View style={[styles.deteccaoIconeContainer, { backgroundColor: `${corTipoDeteccao(item.deteccao.tipo)}15` }]}>
-                    <MaterialCommunityIcons name={iconeTipoDeteccao(item.deteccao.tipo) as any} size={20} color={corTipoDeteccao(item.deteccao.tipo)} />
+                    <Icone name={iconeTipoDeteccao(item.deteccao.tipo) as any} size={20} color={corTipoDeteccao(item.deteccao.tipo)} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <View style={styles.deteccaoCabecalho}>
@@ -1533,7 +1524,7 @@ export default function PublicarScreen() {
             <View style={styles.modalFooter}>
               <TouchableOpacity style={styles.modalBotaoPrincipal} onPress={irParaPasso2CorrigirTexto} activeOpacity={0.9}>
                 <LinearGradient colors={gradientPrimario} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
-                <MaterialCommunityIcons name="pencil" size={18} color="#FFFFFF" />
+                <Icone name="pencil" size={18} color="#FFFFFF" />
                 <Text style={styles.modalBotaoPrincipalTexto}>Corrigir texto</Text>
               </TouchableOpacity>
             </View>
@@ -1546,7 +1537,7 @@ export default function PublicarScreen() {
         <View style={styles.modalCentroOverlay}>
           <View style={styles.modalCentroBox}>
             <View style={styles.modalCentroIcone}>
-              <MaterialCommunityIcons name="alert-circle" size={36} color={AMARELO_AVISO} />
+              <Icone name="alert-circle" size={36} color={AMARELO_AVISO} />
             </View>
             <Text style={styles.modalCentroTitulo}>Descartar alterações?</Text>
             <Text style={styles.modalCentroTexto}>Tens alterações não guardadas que serão perdidas.</Text>
@@ -1570,7 +1561,7 @@ export default function PublicarScreen() {
             <View style={styles.modalHandle} />
             <View style={styles.modalHeader}>
               <View style={[styles.modalIcone, { backgroundColor: LARANJA_PALE }]}>
-                <MaterialCommunityIcons name="credit-card-alert" size={28} color={AMARELO_AVISO} />
+                <Icone name="credit-card-plus" size={28} color={AMARELO_AVISO} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.modalTitulo}>Pagamento adicional</Text>
@@ -1602,7 +1593,7 @@ export default function PublicarScreen() {
               </TouchableOpacity>
               <TouchableOpacity style={styles.modalBotaoPrincipal} onPress={irParaPagamentoDiferenca} activeOpacity={0.9}>
                 <LinearGradient colors={[LARANJA_MARCA, LARANJA_ESCURO]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
-                <MaterialCommunityIcons name="credit-card" size={18} color="#FFFFFF" />
+                <Icone name="credit-card" size={18} color="#FFFFFF" />
                 <Text style={styles.modalBotaoPrincipalTexto}>Pagar {diferencaPreco} MT via M-Pesa</Text>
               </TouchableOpacity>
             </View>
@@ -1617,8 +1608,8 @@ export default function PublicarScreen() {
           <View style={styles.modalContent}>
             <View style={styles.modalHandle} />
             <View style={styles.modalHeader}>
-              <View style={[styles.modalIcone, { backgroundColor: '#F0F2F6' }]}>
-                <MaterialCommunityIcons name="flask-outline" size={28} color={TEXTO_MEDIO} />
+              <View style={[styles.modalIcone, { backgroundColor: '#F4F3EF' }]}>
+                <Icone name="flask-outline" size={28} color={TEXTO_MEDIO} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.modalTitulo}>Modo teste — OCR</Text>
@@ -1627,10 +1618,10 @@ export default function PublicarScreen() {
             </View>
 
             <View style={{ paddingHorizontal: 20, paddingTop: 16 }}>
-              <TouchableOpacity style={[styles.demoBtn, { backgroundColor: '#E8F5E9', borderColor: VERDE_SUCESSO }]} onPress={() => iniciarVerificacaoOCR('limpo')} activeOpacity={0.85}>
+              <TouchableOpacity style={[styles.demoBtn, { backgroundColor: '#EAF3EC', borderColor: VERDE_SUCESSO }]} onPress={() => iniciarVerificacaoOCR('limpo')} activeOpacity={0.85}>
                 <View style={[styles.demoBtnIcone, { backgroundColor: VERDE_SUCESSO }]}><Ionicons name="checkmark" size={18} color="#FFFFFF" /></View>
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.demoBtnTitulo, { color: '#1B5E20' }]}>Simular tudo limpo</Text>
+                  <Text style={[styles.demoBtnTitulo, { color: '#22593A' }]}>Simular tudo limpo</Text>
                   <Text style={styles.demoBtnDescricao}>Nenhuma foto com contactos</Text>
                 </View>
               </TouchableOpacity>
@@ -1641,7 +1632,7 @@ export default function PublicarScreen() {
                   <Text style={styles.demoBtnDescricao}>Confiança média</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.demoBtn, { backgroundColor: '#FFEBEE', borderColor: VERMELHO_ERRO }]} onPress={() => iniciarVerificacaoOCR('bloqueado')} activeOpacity={0.85}>
+              <TouchableOpacity style={[styles.demoBtn, { backgroundColor: '#FBECE9', borderColor: VERMELHO_ERRO }]} onPress={() => iniciarVerificacaoOCR('bloqueado')} activeOpacity={0.85}>
                 <View style={[styles.demoBtnIcone, { backgroundColor: VERMELHO_ERRO }]}><Ionicons name="close" size={18} color="#FFFFFF" /></View>
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.demoBtnTitulo, { color: '#8B1A1A' }]}>Simular foto bloqueada</Text>
@@ -1685,7 +1676,7 @@ function CampoFormulario({
   maxLength?: number;
   multiline?: boolean;
   numberOfLines?: number;
-  refInput?: React.RefObject<TextInput>;
+  refInput?: React.RefObject<TextInput | null>;
   onFocusField?: () => void;
   deteccao?: boolean;
 }) {
@@ -1759,38 +1750,21 @@ function RevisaoLinha({ label, valor }: { label: string; valor: string }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: CINZA_FUNDO },
 
-  // Header fixo sticky
-  headerSticky: {
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: CINZA_BORDA,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    zIndex: 10,
-  },
-  headerTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    gap: 8,
-  },
-  btnHeader: {
-    width: 40, height: 40, borderRadius: 20,
-    justifyContent: 'center', alignItems: 'center',
+  // Topo fixo: progresso logo abaixo da TopBar, no fundo papel
+  progressoSticky: {
     backgroundColor: CINZA_FUNDO,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: CINZA_BORDA,
+    zIndex: 5,
   },
-  headerCenter: { flex: 1 },
-  headerTituloTexto: { fontSize: 16, fontWeight: '800', color: TEXTO_FORTE, letterSpacing: -0.3 },
-  headerSubtitulo: { fontSize: 11, fontWeight: '500', color: TEXTO_MEDIO, marginTop: 2 },
   badgeModoEditar: {
-    width: 40, height: 40, borderRadius: 20,
-    justifyContent: 'center', alignItems: 'center',
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    paddingHorizontal: 10, height: 30, borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.12)',
   },
-  progressoWrap: { paddingHorizontal: 20, paddingBottom: 12 },
+  badgeModoEditarTexto: { color: '#FFFFFF', fontSize: 12, fontFamily: Fonte.corpoSemi },
+  progressoLegenda: { fontSize: 12, fontFamily: Fonte.corpoMedio, color: TEXTO_MEDIO, marginBottom: 8 },
+  progressoWrap: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 12 },
   progressoTrack: {
     height: 4, backgroundColor: CINZA_BORDA, borderRadius: 10,
     overflow: 'hidden', marginBottom: 10,
@@ -1811,17 +1785,17 @@ const styles = StyleSheet.create({
 
   avisoEdicaoBox: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(0, 130, 222, 0.08)',
+    backgroundColor: 'rgba(10, 107, 192, 0.08)',
     padding: 12, gap: 10,
     marginHorizontal: 20, marginBottom: 16,
     borderRadius: 12,
     borderLeftWidth: 3, borderLeftColor: AZUL_MARCA,
   },
-  avisoEdicaoTexto: { flex: 1, color: AZUL_ESCURO, lineHeight: 17, fontSize: 11.5, fontWeight: '500' },
+  avisoEdicaoTexto: { flex: 1, color: AZUL_ESCURO, lineHeight: 17, fontSize: 11.5, fontFamily: Fonte.corpoMedio },
 
   // Secções
-  seccaoTitulo: { fontSize: 20, fontWeight: '800', color: TEXTO_FORTE, letterSpacing: -0.4, marginBottom: 4 },
-  seccaoSubtitulo: { fontSize: 13, color: TEXTO_MEDIO, lineHeight: 19, marginBottom: 18 },
+  seccaoTitulo: { fontSize: 20, fontFamily: Fonte.tituloSemi, color: TEXTO_FORTE, letterSpacing: -0.4, marginBottom: 4 },
+  seccaoSubtitulo: { fontFamily: Fonte.corpo, fontSize: 13, color: TEXTO_MEDIO, lineHeight: 19, marginBottom: 18 },
 
   // Grid categorias
   tiposGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'space-between', paddingBottom: 6 },
@@ -1839,16 +1813,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center',
   },
   tipoInfo: { padding: 12 },
-  tipoLabel: { color: TEXTO_FORTE, fontSize: 14, fontWeight: '800', marginBottom: 2 },
-  tipoDesc: { color: TEXTO_MEDIO, fontSize: 11, fontWeight: '500' },
+  tipoLabel: { color: TEXTO_FORTE, fontSize: 14, fontFamily: Fonte.corpoSemi, marginBottom: 2 },
+  tipoDesc: { color: TEXTO_MEDIO, fontSize: 11, fontFamily: Fonte.corpoMedio },
 
   categoriaPersonalizadaBox: {
     backgroundColor: LARANJA_PALE, borderColor: '#FFD2A8', borderWidth: 1,
     borderRadius: 16, padding: 16, marginTop: 16,
   },
   categoriaPersonalizadaCabecalho: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 12 },
-  categoriaPersonalizadaTitulo: { fontSize: 15, fontWeight: '800', color: TEXTO_FORTE, marginBottom: 3 },
-  categoriaPersonalizadaDescricao: { fontSize: 12, color: TEXTO_MEDIO, lineHeight: 17 },
+  categoriaPersonalizadaTitulo: { fontSize: 15, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE, marginBottom: 3 },
+  categoriaPersonalizadaDescricao: { fontFamily: Fonte.corpo, fontSize: 12, color: TEXTO_MEDIO, lineHeight: 17 },
 
   finalidadesContainer: { gap: 10 },
   finalidadeCard: {
@@ -1857,61 +1831,61 @@ const styles = StyleSheet.create({
     borderWidth: 1.5, borderColor: CINZA_BORDA, gap: 13,
   },
   finalidadeIcone: { width: 44, height: 44, borderRadius: 14, justifyContent: 'center', alignItems: 'center' },
-  finalidadeLabel: { fontSize: 15, color: TEXTO_FORTE, flex: 1, fontWeight: '800' },
+  finalidadeLabel: { fontSize: 15, color: TEXTO_FORTE, flex: 1, fontFamily: Fonte.corpoSemi },
 
   // Campos
   campoContainer: { marginBottom: 18 },
   campoHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 },
-  campoLabel: { fontSize: 13, fontWeight: '700', color: TEXTO_FORTE, letterSpacing: 0.1 },
+  campoLabel: { fontSize: 13, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE, letterSpacing: 0.1 },
   campoInput: {
     backgroundColor: '#FFFFFF', borderRadius: 12,
     paddingHorizontal: 15, paddingVertical: 14,
-    fontSize: 15, color: TEXTO_FORTE, fontWeight: '500',
+    fontSize: 15, color: TEXTO_FORTE, fontFamily: Fonte.corpoMedio,
     borderWidth: 1.5,
   },
   campoRodape: { flexDirection: 'row', alignItems: 'center', marginTop: 6, minHeight: 18 },
   erroInline: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  erroInlineTexto: { fontSize: 12, color: VERMELHO_ERRO, fontWeight: '600', flexShrink: 1 },
-  campoContador: { fontSize: 11, color: TEXTO_FRACO, fontWeight: '500' },
-  hintCampo: { fontSize: 11, color: TEXTO_FRACO, marginTop: 6, fontStyle: 'italic' },
+  erroInlineTexto: { fontSize: 12, color: VERMELHO_ERRO, fontFamily: Fonte.corpoSemi, flexShrink: 1 },
+  campoContador: { fontSize: 11, color: TEXTO_FRACO, fontFamily: Fonte.corpoMedio },
+  hintCampo: { fontFamily: Fonte.corpo, fontSize: 11, color: TEXTO_FRACO, marginTop: 6, fontStyle: 'italic' },
   linhaCampos: { flexDirection: 'row' },
 
   avisoRegrasBox: {
-    flexDirection: 'row', backgroundColor: '#FFEBEE',
+    flexDirection: 'row', backgroundColor: '#FBECE9',
     padding: 14, borderRadius: 12, gap: 11, marginBottom: 20,
     borderLeftWidth: 3, borderLeftColor: VERMELHO_ERRO,
   },
-  avisoRegrasTitulo: { fontSize: 13, fontWeight: '800', color: VERMELHO_ERRO, marginBottom: 3 },
-  avisoRegrasTexto: { fontSize: 12, color: '#5A1414', lineHeight: 17 },
+  avisoRegrasTitulo: { fontSize: 13, fontFamily: Fonte.corpoSemi, color: VERMELHO_ERRO, marginBottom: 3 },
+  avisoRegrasTexto: { fontFamily: Fonte.corpo, fontSize: 12, color: '#5A1414', lineHeight: 17 },
 
   verProblemasBotao: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     backgroundColor: VERMELHO_ERRO, paddingVertical: 13, paddingHorizontal: 16,
     borderRadius: 12, gap: 8, marginBottom: 16,
   },
-  verProblemasBotaoTexto: { color: '#FFFFFF', fontWeight: '800', fontSize: 13, flex: 1, textAlign: 'center' },
+  verProblemasBotaoTexto: { color: '#FFFFFF', fontFamily: Fonte.corpoSemi, fontSize: 13, flex: 1, textAlign: 'center' },
 
   avisoPagamentoBox: {
-    flexDirection: 'row', backgroundColor: 'rgba(0, 130, 222, 0.08)',
+    flexDirection: 'row', backgroundColor: 'rgba(10, 107, 192, 0.08)',
     padding: 14, borderRadius: 12, gap: 11, marginTop: 16,
     borderLeftWidth: 3, borderLeftColor: AZUL_MARCA,
   },
-  avisoPagamentoTitulo: { fontSize: 13, fontWeight: '800', color: AZUL_ESCURO, marginBottom: 3 },
-  avisoPagamentoTexto: { fontSize: 12, color: '#2E4663', lineHeight: 17 },
+  avisoPagamentoTitulo: { fontSize: 13, fontFamily: Fonte.corpoSemi, color: AZUL_ESCURO, marginBottom: 3 },
+  avisoPagamentoTexto: { fontFamily: Fonte.corpo, fontSize: 12, color: '#2E4663', lineHeight: 17 },
 
   chipProvincia: {
     paddingHorizontal: 14, paddingVertical: 10, borderRadius: 100,
     backgroundColor: '#FFFFFF', borderWidth: 1.5, borderColor: CINZA_BORDA,
   },
-  chipProvinciaTexto: { fontSize: 13, fontWeight: '700', color: TEXTO_FORTE },
+  chipProvinciaTexto: { fontSize: 13, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE },
 
   gpsBotao: {
     flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14,
     marginBottom: 20, borderRadius: 12, borderWidth: 1.5,
     borderColor: CINZA_BORDA_FORTE, backgroundColor: '#FFFFFF',
   },
-  gpsBotaoTitulo: { fontSize: 13.5, fontWeight: '700', color: TEXTO_FORTE },
-  gpsBotaoDesc: { fontSize: 11.5, color: TEXTO_MEDIO, marginTop: 3 },
+  gpsBotaoTitulo: { fontSize: 13.5, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE },
+  gpsBotaoDesc: { fontFamily: Fonte.corpo, fontSize: 11.5, color: TEXTO_MEDIO, marginTop: 3 },
 
   // Preço (destacado)
   precoInputContainer: {
@@ -1924,24 +1898,24 @@ const styles = StyleSheet.create({
     backgroundColor: CINZA_FUNDO,
     borderRightWidth: 1, borderRightColor: CINZA_BORDA,
   },
-  precoInputMoedaTexto: { fontSize: 13, fontWeight: '800', color: TEXTO_MEDIO, letterSpacing: 0.5 },
+  precoInputMoedaTexto: { fontSize: 13, fontFamily: Fonte.corpoSemi, color: TEXTO_MEDIO, letterSpacing: 0.5 },
   precoInput: {
     flex: 1, paddingHorizontal: 15, paddingVertical: 14,
-    fontSize: 22, color: TEXTO_FORTE, fontWeight: '800',
+    fontSize: 22, color: TEXTO_FORTE, fontFamily: Fonte.tituloSemi,
   },
   precoInputSufixo: {
     backgroundColor: CINZA_FUNDO, paddingHorizontal: 14, paddingVertical: 16,
     borderLeftWidth: 1, borderLeftColor: CINZA_BORDA,
   },
-  precoInputSufixoTexto: { fontSize: 12, fontWeight: '700', color: TEXTO_MEDIO },
+  precoInputSufixoTexto: { fontSize: 12, fontFamily: Fonte.corpoSemi, color: TEXTO_MEDIO },
 
   dicaBox: {
     flexDirection: 'row', backgroundColor: LARANJA_PALE, padding: 13,
     borderRadius: 12, gap: 11, borderLeftWidth: 3, borderLeftColor: LARANJA_MARCA,
     alignItems: 'flex-start',
   },
-  dicaTitulo: { fontSize: 13, fontWeight: '800', color: LARANJA_ESCURO, marginBottom: 2 },
-  dicaTexto: { fontSize: 12, color: TEXTO_FORTE, lineHeight: 17 },
+  dicaTitulo: { fontSize: 13, fontFamily: Fonte.corpoSemi, color: LARANJA_ESCURO, marginBottom: 2 },
+  dicaTexto: { fontFamily: Fonte.corpo, fontSize: 12, color: TEXTO_FORTE, lineHeight: 17 },
 
   seccaoDinamica: {
     marginBottom: 18, backgroundColor: '#FFFFFF',
@@ -1958,35 +1932,35 @@ const styles = StyleSheet.create({
     backgroundColor: LARANJA_PALE,
     justifyContent: 'center', alignItems: 'center',
   },
-  seccaoDinamicaTitulo: { fontSize: 15, fontWeight: '800', color: TEXTO_FORTE },
-  seccaoDinamicaDescricao: { fontSize: 11, color: TEXTO_MEDIO, marginTop: 2 },
+  seccaoDinamicaTitulo: { fontSize: 15, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE },
+  seccaoDinamicaDescricao: { fontFamily: Fonte.corpo, fontSize: 11, color: TEXTO_MEDIO, marginTop: 2 },
 
   avisoSemFormulario: {
     backgroundColor: LARANJA_PALE, padding: 20, borderRadius: 14,
     alignItems: 'center', gap: 10,
     borderWidth: 1, borderColor: '#FFE4CC',
   },
-  avisoSemFormularioTitulo: { fontSize: 14, fontWeight: '800', color: '#E65100', textAlign: 'center', marginTop: 4 },
-  avisoSemFormularioTexto: { fontSize: 12, color: TEXTO_MEDIO, textAlign: 'center', lineHeight: 17 },
+  avisoSemFormularioTitulo: { fontSize: 14, fontFamily: Fonte.corpoSemi, color: '#E65100', textAlign: 'center', marginTop: 4 },
+  avisoSemFormularioTexto: { fontFamily: Fonte.corpo, fontSize: 12, color: TEXTO_MEDIO, textAlign: 'center', lineHeight: 17 },
 
   erroResumoBox: {
     flexDirection: 'row', gap: 10,
-    backgroundColor: '#FFEBEE', padding: 13, borderRadius: 12,
+    backgroundColor: '#FBECE9', padding: 13, borderRadius: 12,
     borderLeftWidth: 3, borderLeftColor: VERMELHO_ERRO, marginTop: 10, marginBottom: 14,
   },
-  erroResumoTexto: { flex: 1, fontSize: 12, fontWeight: '600', color: '#5A1414', lineHeight: 16 },
+  erroResumoTexto: { flex: 1, fontSize: 12, fontFamily: Fonte.corpoSemi, color: '#5A1414', lineHeight: 16 },
 
   camposOpcionaisAviso: {
     flexDirection: 'row', alignItems: 'flex-start', gap: 9,
     padding: 12, marginBottom: 16, borderRadius: 12,
-    backgroundColor: 'rgba(0, 130, 222, 0.08)',
-    borderWidth: 1, borderColor: 'rgba(0, 130, 222, 0.2)',
+    backgroundColor: 'rgba(10, 107, 192, 0.08)',
+    borderWidth: 1, borderColor: 'rgba(10, 107, 192, 0.2)',
   },
-  camposOpcionaisAvisoTexto: { flex: 1, color: AZUL_ESCURO, fontSize: 12, lineHeight: 17, fontWeight: '500' },
+  camposOpcionaisAvisoTexto: { flex: 1, color: AZUL_ESCURO, fontSize: 12, lineHeight: 17, fontFamily: Fonte.corpoMedio },
 
   // Fotos
   fotosGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16 },
-  fotoItem: { aspectRatio: 1, borderRadius: 13, overflow: 'hidden', position: 'relative', backgroundColor: '#E8EEF5' },
+  fotoItem: { aspectRatio: 1, borderRadius: 13, overflow: 'hidden', position: 'relative', backgroundColor: '#E7E5DF' },
   fotoImagem: { width: '100%', height: '100%' },
   fotoRemover: {
     position: 'absolute', top: 6, right: 6,
@@ -1998,13 +1972,13 @@ const styles = StyleSheet.create({
     position: 'absolute', bottom: 6, left: 6,
     backgroundColor: LARANJA_MARCA, paddingHorizontal: 7, paddingVertical: 3, borderRadius: 6,
   },
-  fotoBadgePrincipalTexto: { color: '#FFFFFF', fontSize: 8, fontWeight: '800', letterSpacing: 0.3 },
+  fotoBadgePrincipalTexto: { color: '#FFFFFF', fontSize: 8, fontFamily: Fonte.corpoSemi, letterSpacing: 0.3 },
   fotoAdicionar: {
     aspectRatio: 1, borderRadius: 13, borderWidth: 1.5, borderStyle: 'dashed',
     backgroundColor: '#FFFFFF', justifyContent: 'center', alignItems: 'center', gap: 4,
   },
-  fotoAdicionarTexto: { fontSize: 11, fontWeight: '800', marginTop: 4 },
-  fotoAdicionarSubtexto: { fontSize: 10, color: TEXTO_FRACO, fontWeight: '600' },
+  fotoAdicionarTexto: { fontSize: 11, fontFamily: Fonte.corpoSemi, marginTop: 4 },
+  fotoAdicionarSubtexto: { fontSize: 10, color: TEXTO_FRACO, fontFamily: Fonte.corpoSemi },
 
   videoContainer: {
     backgroundColor: '#FFFFFF', borderRadius: 14, padding: 14,
@@ -2012,20 +1986,20 @@ const styles = StyleSheet.create({
   },
   videoCabecalho: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 12 },
   videoIcone: { width: 40, height: 40, borderRadius: 12, backgroundColor: LARANJA_PALE, justifyContent: 'center', alignItems: 'center' },
-  videoTitulo: { fontSize: 13.5, fontWeight: '800', color: TEXTO_FORTE, marginBottom: 2 },
-  videoDescricao: { fontSize: 11, color: TEXTO_MEDIO },
+  videoTitulo: { fontSize: 13.5, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE, marginBottom: 2 },
+  videoDescricao: { fontFamily: Fonte.corpo, fontSize: 11, color: TEXTO_MEDIO },
   videoSelecionado: {
     flexDirection: 'row', alignItems: 'center', gap: 9,
     backgroundColor: '#F2F8F4', borderWidth: 1, borderColor: '#CDE8D5',
     padding: 12, borderRadius: 11,
   },
-  videoSelecionadoTexto: { flex: 1, fontSize: 12, color: TEXTO_FORTE, fontWeight: '700' },
+  videoSelecionadoTexto: { flex: 1, fontSize: 12, color: TEXTO_FORTE, fontFamily: Fonte.corpoSemi },
   videoBotao: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
     backgroundColor: '#FFF5EB', borderWidth: 1, borderColor: '#FFD0A8',
     paddingVertical: 12, borderRadius: 11,
   },
-  videoBotaoTexto: { fontSize: 13, color: LARANJA_ESCURO, fontWeight: '800' },
+  videoBotaoTexto: { fontSize: 13, color: LARANJA_ESCURO, fontFamily: Fonte.corpoSemi },
 
   // Revisão
   revisaoContainer: {
@@ -2037,29 +2011,29 @@ const styles = StyleSheet.create({
     marginBottom: 14, paddingBottom: 12,
     borderBottomWidth: 1, borderBottomColor: CINZA_BORDA,
   },
-  revisaoTitulo: { fontSize: 15, fontWeight: '800', color: TEXTO_FORTE },
-  revisaoSubTitulo: { fontSize: 10, fontWeight: '800', color: TEXTO_MEDIO, letterSpacing: 1, marginBottom: 8, marginTop: 4 },
+  revisaoTitulo: { fontSize: 15, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE },
+  revisaoSubTitulo: { fontSize: 10, fontFamily: Fonte.corpoSemi, color: TEXTO_MEDIO, letterSpacing: 1, marginBottom: 8, marginTop: 4 },
   revisaoItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8 },
   revisaoLinhaPreco: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8 },
   revisaoItemCompacto: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 5 },
-  revisaoLabel: { fontSize: 13, color: TEXTO_MEDIO },
-  revisaoLabelCompacto: { fontSize: 12, color: TEXTO_MEDIO, flex: 1 },
-  revisaoValor: { fontSize: 13, fontWeight: '700', color: TEXTO_FORTE, textTransform: 'capitalize' },
-  revisaoValorCompacto: { fontSize: 12, fontWeight: '700', color: TEXTO_FORTE, maxWidth: '60%', textAlign: 'right' },
-  revisaoValorAntigo: { fontSize: 11, color: TEXTO_FRACO, textDecorationLine: 'line-through' },
-  revisaoValorPromo: { fontSize: 18, color: LARANJA_ESCURO, fontWeight: '900' },
+  revisaoLabel: { fontFamily: Fonte.corpo, fontSize: 13, color: TEXTO_MEDIO },
+  revisaoLabelCompacto: { fontFamily: Fonte.corpo, fontSize: 12, color: TEXTO_MEDIO, flex: 1 },
+  revisaoValor: { fontSize: 13, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE, textTransform: 'capitalize' },
+  revisaoValorCompacto: { fontSize: 12, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE, maxWidth: '60%', textAlign: 'right' },
+  revisaoValorAntigo: { fontFamily: Fonte.corpo, fontSize: 11, color: TEXTO_FRACO, textDecorationLine: 'line-through' },
+  revisaoValorPromo: { fontSize: 18, color: LARANJA_ESCURO, fontFamily: Fonte.corpoBold },
   revisaoDivider: { height: 1, backgroundColor: CINZA_BORDA, marginVertical: 10 },
   revisaoBadgePromo: {
     flexDirection: 'row', alignItems: 'center', backgroundColor: LARANJA_MARCA,
     paddingHorizontal: 12, paddingVertical: 7, borderRadius: 10,
     alignSelf: 'center', marginTop: 10, gap: 5,
   },
-  revisaoBadgePromoTexto: { fontSize: 10, fontWeight: '800', color: '#FFFFFF', letterSpacing: 0.4 },
+  revisaoBadgePromoTexto: { fontSize: 10, fontFamily: Fonte.corpoSemi, color: '#FFFFFF', letterSpacing: 0.4 },
   revisaoSemCustoBox: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#E8F5E9', padding: 10, borderRadius: 10, gap: 7, marginTop: 8,
+    backgroundColor: '#EAF3EC', padding: 10, borderRadius: 10, gap: 7, marginTop: 8,
   },
-  revisaoSemCustoTexto: { fontSize: 12, color: '#1B5E20', flex: 1, fontWeight: '700' },
+  revisaoSemCustoTexto: { fontSize: 12, color: '#22593A', flex: 1, fontFamily: Fonte.corpoSemi },
 
   // Footer fixo
   footerFixo: {
@@ -2084,7 +2058,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     paddingVertical: 14, gap: 10,
   },
-  footerBtnTexto: { color: '#FFFFFF', fontSize: 15, fontWeight: '800' },
+  footerBtnTexto: { color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi },
 
   // Modais
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)', justifyContent: 'flex-end' },
@@ -2095,15 +2069,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20, paddingBottom: 16,
     borderBottomWidth: 1, borderBottomColor: CINZA_BORDA,
   },
-  modalIcone: { width: 52, height: 52, borderRadius: 14, backgroundColor: '#FFEBEE', justifyContent: 'center', alignItems: 'center' },
-  modalTitulo: { fontSize: 17, fontWeight: '800', color: TEXTO_FORTE, marginBottom: 3 },
-  modalSubtitulo: { fontSize: 12, color: TEXTO_MEDIO, lineHeight: 17 },
+  modalIcone: { width: 52, height: 52, borderRadius: 14, backgroundColor: '#FBECE9', justifyContent: 'center', alignItems: 'center' },
+  modalTitulo: { fontSize: 17, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE, marginBottom: 3 },
+  modalSubtitulo: { fontFamily: Fonte.corpo, fontSize: 12, color: TEXTO_MEDIO, lineHeight: 17 },
   modalScroll: { paddingHorizontal: 20, paddingTop: 16 },
   modalExplicacao: { backgroundColor: '#F0F7F0', borderRadius: 12, padding: 14, marginBottom: 18, borderLeftWidth: 3, borderLeftColor: Colors.verde },
-  modalExplicacaoTitulo: { fontSize: 13, fontWeight: '800', color: '#1B5E20', marginBottom: 6 },
+  modalExplicacaoTitulo: { fontSize: 13, fontFamily: Fonte.corpoSemi, color: '#22593A', marginBottom: 6 },
   modalBeneficio: { flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 4 },
-  modalBeneficioTexto: { fontSize: 12, color: '#2E4D30', flex: 1 },
-  modalSeccaoTitulo: { fontSize: 14, fontWeight: '800', color: TEXTO_FORTE, marginBottom: 10 },
+  modalBeneficioTexto: { fontFamily: Fonte.corpo, fontSize: 12, color: '#2E4D30', flex: 1 },
+  modalSeccaoTitulo: { fontSize: 14, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE, marginBottom: 10 },
   deteccaoItem: {
     flexDirection: 'row', gap: 11, padding: 13,
     backgroundColor: CINZA_FUNDO, borderRadius: 12, marginBottom: 10,
@@ -2111,52 +2085,52 @@ const styles = StyleSheet.create({
   },
   deteccaoIconeContainer: { width: 38, height: 38, borderRadius: 11, justifyContent: 'center', alignItems: 'center' },
   deteccaoCabecalho: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 6 },
-  deteccaoCampo: { fontSize: 12.5, fontWeight: '800', color: TEXTO_FORTE },
+  deteccaoCampo: { fontSize: 12.5, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE },
   deteccaoTipoBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 7 },
-  deteccaoTipoBadgeTexto: { fontSize: 9.5, fontWeight: '800', letterSpacing: 0.3 },
-  deteccaoValorBox: { backgroundColor: '#FFF4F4', padding: 7, borderRadius: 7, marginBottom: 5, borderWidth: 1, borderColor: '#FFCDD2' },
+  deteccaoTipoBadgeTexto: { fontSize: 9.5, fontFamily: Fonte.corpoSemi, letterSpacing: 0.3 },
+  deteccaoValorBox: { backgroundColor: '#FFF4F4', padding: 7, borderRadius: 7, marginBottom: 5, borderWidth: 1, borderColor: '#F2C9C1' },
   deteccaoValor: { fontSize: 12, color: VERMELHO_ERRO, fontWeight: '700', fontFamily: 'monospace' },
-  deteccaoMotivo: { fontSize: 11, color: TEXTO_MEDIO, lineHeight: 15 },
+  deteccaoMotivo: { fontFamily: Fonte.corpo, fontSize: 11, color: TEXTO_MEDIO, lineHeight: 15 },
 
   modalFooter: { paddingHorizontal: 20, paddingTop: 14, borderTopWidth: 1, borderTopColor: CINZA_BORDA },
   modalBotaoPrincipal: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     paddingVertical: 14, borderRadius: 13, overflow: 'hidden', gap: 9,
   },
-  modalBotaoPrincipalTexto: { color: '#FFFFFF', fontSize: 14, fontWeight: '800' },
+  modalBotaoPrincipalTexto: { color: '#FFFFFF', fontSize: 14, fontFamily: Fonte.corpoSemi },
   modalBotaoSecundario: {
     paddingVertical: 13, borderRadius: 13,
     backgroundColor: CINZA_FUNDO, alignItems: 'center',
     borderWidth: 1, borderColor: CINZA_BORDA,
   },
-  modalBotaoSecundarioTexto: { color: TEXTO_FORTE, fontSize: 13, fontWeight: '700' },
+  modalBotaoSecundarioTexto: { color: TEXTO_FORTE, fontSize: 13, fontFamily: Fonte.corpoSemi },
 
   modalCentroOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.65)', justifyContent: 'center', alignItems: 'center', padding: 20 },
   modalCentroBox: { backgroundColor: '#FFFFFF', borderRadius: 20, padding: 24, width: '100%', maxWidth: 380, alignItems: 'center' },
   modalCentroIcone: { width: 68, height: 68, borderRadius: 20, backgroundColor: LARANJA_PALE, justifyContent: 'center', alignItems: 'center', marginBottom: 14 },
-  modalCentroTitulo: { fontSize: 17, fontWeight: '800', color: TEXTO_FORTE, textAlign: 'center', marginBottom: 8 },
-  modalCentroTexto: { fontSize: 13, color: TEXTO_MEDIO, textAlign: 'center', marginBottom: 20, lineHeight: 19 },
+  modalCentroTitulo: { fontSize: 17, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE, textAlign: 'center', marginBottom: 8 },
+  modalCentroTexto: { fontFamily: Fonte.corpo, fontSize: 13, color: TEXTO_MEDIO, textAlign: 'center', marginBottom: 20, lineHeight: 19 },
   modalCentroBotoes: { flexDirection: 'row', gap: 10, width: '100%' },
   modalCentroBtnCancelar: { flex: 1, paddingVertical: 13, borderRadius: 12, backgroundColor: CINZA_FUNDO, alignItems: 'center' },
-  modalCentroBtnCancelarTexto: { color: TEXTO_FORTE, fontSize: 13, fontWeight: '700' },
+  modalCentroBtnCancelarTexto: { color: TEXTO_FORTE, fontSize: 13, fontFamily: Fonte.corpoSemi },
   modalCentroBtnConfirmar: { flex: 1, paddingVertical: 13, borderRadius: 12, alignItems: 'center' },
-  modalCentroBtnConfirmarTexto: { color: '#FFFFFF', fontSize: 13, fontWeight: '800' },
+  modalCentroBtnConfirmarTexto: { color: '#FFFFFF', fontSize: 13, fontFamily: Fonte.corpoSemi },
 
   repagamentoCalculo: { backgroundColor: CINZA_FUNDO, borderRadius: 12, padding: 15, marginBottom: 12, borderWidth: 1, borderColor: CINZA_BORDA },
   repagamentoCalculoLinha: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6 },
-  repagamentoCalculoLabel: { fontSize: 13, color: TEXTO_MEDIO },
-  repagamentoCalculoValor: { fontSize: 13, fontWeight: '800', color: TEXTO_FORTE },
+  repagamentoCalculoLabel: { fontFamily: Fonte.corpo, fontSize: 13, color: TEXTO_MEDIO },
+  repagamentoCalculoValor: { fontSize: 13, fontFamily: Fonte.corpoSemi, color: TEXTO_FORTE },
   repagamentoCalculoDivider: { height: 1, backgroundColor: CINZA_BORDA, marginVertical: 5 },
-  repagamentoCalculoLabelTotal: { fontSize: 13.5, fontWeight: '800', color: VERMELHO_ERRO },
-  repagamentoCalculoValorTotal: { fontSize: 18, fontWeight: '900', color: VERMELHO_ERRO },
+  repagamentoCalculoLabelTotal: { fontSize: 13.5, fontFamily: Fonte.corpoSemi, color: VERMELHO_ERRO },
+  repagamentoCalculoValorTotal: { fontSize: 18, fontFamily: Fonte.corpoBold, color: VERMELHO_ERRO },
 
   demoBtn: {
     flexDirection: 'row', alignItems: 'center',
     padding: 13, borderRadius: 13, borderWidth: 1.5, gap: 11, marginBottom: 10,
   },
   demoBtnIcone: { width: 38, height: 38, borderRadius: 11, justifyContent: 'center', alignItems: 'center' },
-  demoBtnTitulo: { fontSize: 13.5, fontWeight: '800', marginBottom: 2 },
-  demoBtnDescricao: { fontSize: 11, color: TEXTO_MEDIO, lineHeight: 15 },
+  demoBtnTitulo: { fontSize: 13.5, fontFamily: Fonte.corpoSemi, marginBottom: 2 },
+  demoBtnDescricao: { fontFamily: Fonte.corpo, fontSize: 11, color: TEXTO_MEDIO, lineHeight: 15 },
   demoBtnCancelar: { paddingVertical: 13, alignItems: 'center' },
-  demoBtnCancelarTexto: { color: TEXTO_MEDIO, fontSize: 13, fontWeight: '700' },
+  demoBtnCancelarTexto: { color: TEXTO_MEDIO, fontSize: 13, fontFamily: Fonte.corpoSemi },
 });

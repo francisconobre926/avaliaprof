@@ -28,21 +28,23 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Typography, Spacing, Radius } from '../../src/theme/typography';
 import { Sombras } from '../../src/theme/colors';
 import { useCores } from '../../src/store/themeStore';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 // ============================================================
 // CORES GOHOME
 // ============================================================
-const AZUL_HERO_INICIO = '#003A66';
-const AZUL_HERO_FIM = '#0082DE';
-const LARANJA_MARCA = '#FE8A00';
-const LARANJA_ESCURO = '#CB6E00';
-const VERDE_SUCESSO = '#2E7D32';
-const VERMELHO_ERRO = '#D32F2F';
+const AZUL_HERO_INICIO = '#0A6BC0';   // Azul GoHome — o mesmo da "Promoção lançamento"
+const AZUL_HERO_FIM = '#095FAA';
+const LARANJA_MARCA = '#E8760A';
+const LARANJA_ESCURO = '#B95A05';
+const VERDE_SUCESSO = '#2F7A4F';
+const VERMELHO_ERRO = '#C2412D';
 
 type MotivoReporte =
   | 'ja_arrendado'
@@ -176,15 +178,15 @@ export default function ReportarAnuncio() {
             </Text>
 
             {motivo.compensacao && (
-              <View style={[styles.confirmBonus, { backgroundColor: 'rgba(254, 138, 0, 0.08)', borderColor: LARANJA_MARCA }]}>
-                <MaterialCommunityIcons name="gift-outline" size={28} color={LARANJA_MARCA} />
+              <View style={[styles.confirmBonus, { backgroundColor: 'rgba(232, 118, 10, 0.08)', borderColor: LARANJA_MARCA }]}>
+                <Icone name="gift-outline" size={28} color={LARANJA_MARCA} />
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.confirmBonusTitulo, { color: cores.textoPrincipal }]}>
                     Compensação pendente
                   </Text>
                   <Text style={[styles.confirmBonusTexto, { color: cores.textoSecundario }]}>
                     Se o anunciante confirmar que o imóvel já estava arrendado, recebes{' '}
-                    <Text style={{ fontWeight: '800', color: LARANJA_MARCA }}>
+                    <Text style={{ fontFamily: Fonte.corpoSemi, color: LARANJA_MARCA }}>
                       {motivo.compensacao} MT em crédito interno
                     </Text>
                     .
@@ -248,7 +250,7 @@ export default function ReportarAnuncio() {
 
           <View style={styles.heroInfo}>
             <View style={styles.heroIconeBg}>
-              <MaterialCommunityIcons name="shield-alert" size={34} color="#FFFFFF" />
+              <Icone name="shield-alert" size={34} color="#FFFFFF" />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.heroTitulo}>Ajuda-nos a proteger a comunidade</Text>
@@ -310,7 +312,7 @@ export default function ReportarAnuncio() {
                   activeOpacity={0.85}
                 >
                   <View style={[styles.motivoIcone, { backgroundColor: `${m.cor}15` }]}>
-                    <MaterialCommunityIcons name={m.icone} size={22} color={m.cor} />
+                    <Icone name={m.icone} size={22} color={m.cor} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <View style={styles.motivoCabecalho}>
@@ -319,7 +321,7 @@ export default function ReportarAnuncio() {
                       </Text>
                       {m.compensacao && (
                         <View style={[styles.compensacaoBadge, { backgroundColor: `${LARANJA_MARCA}20` }]}>
-                          <MaterialCommunityIcons name="gift-outline" size={11} color={LARANJA_MARCA} />
+                          <Icone name="gift-outline" size={11} color={LARANJA_MARCA} />
                           <Text style={[styles.compensacaoTexto, { color: LARANJA_MARCA }]}>
                             +{m.compensacao} MT crédito
                           </Text>
@@ -373,7 +375,7 @@ export default function ReportarAnuncio() {
           )}
 
           {/* Aviso privacidade */}
-          <View style={[styles.privacidadeBox, { backgroundColor: 'rgba(0, 130, 222, 0.06)', borderColor: 'rgba(0, 130, 222, 0.2)' }]}>
+          <View style={[styles.privacidadeBox, { backgroundColor: 'rgba(10, 107, 192, 0.06)', borderColor: 'rgba(10, 107, 192, 0.2)' }]}>
             <Ionicons name="lock-closed" size={16} color={cores.principal} />
             <Text style={[styles.privacidadeTexto, { color: cores.textoSecundario }]}>
               O teu reporte é confidencial. O anunciante não vê quem o reportou.
@@ -395,7 +397,7 @@ export default function ReportarAnuncio() {
             />
             {enviando ? (
               <>
-                <MaterialCommunityIcons name="loading" size={20} color="#FFFFFF" />
+                <Icone name="loading" size={20} color="#FFFFFF" />
                 <Text style={styles.botaoEnviarTexto}>A enviar...</Text>
               </>
             ) : (
@@ -434,9 +436,9 @@ const styles = StyleSheet.create({
   headerCenter: { alignItems: 'center' },
   headerLabel: {
     color: 'rgba(255,255,255,0.75)', fontSize: 10, letterSpacing: 1.5,
-    fontWeight: '700', marginBottom: 2,
+    fontFamily: Fonte.corpoSemi, marginBottom: 2,
   },
-  headerTitulo: { color: '#FFFFFF', fontSize: 18, fontWeight: '800' },
+  headerTitulo: { color: '#FFFFFF', fontSize: 18, fontFamily: Fonte.corpoSemi },
 
   heroInfo: {
     flexDirection: 'row', alignItems: 'center', gap: 14,
@@ -446,11 +448,11 @@ const styles = StyleSheet.create({
   },
   heroIconeBg: {
     width: 54, height: 54, borderRadius: 16,
-    backgroundColor: 'rgba(254, 138, 0, 0.3)',
+    backgroundColor: 'rgba(232, 118, 10, 0.3)',
     alignItems: 'center', justifyContent: 'center',
   },
-  heroTitulo: { color: '#FFFFFF', fontSize: 15, fontWeight: '800', marginBottom: 3 },
-  heroSubtitulo: { color: 'rgba(255,255,255,0.85)', fontSize: 12 },
+  heroTitulo: { color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi, marginBottom: 3 },
+  heroSubtitulo: { color: 'rgba(255,255,255,0.85)', fontFamily: Fonte.corpo, fontSize: 12 },
 
   scrollContent: { padding: Spacing.lg, paddingBottom: Spacing.xxxl },
 
@@ -464,8 +466,8 @@ const styles = StyleSheet.create({
     width: 40, height: 40, borderRadius: 12,
     alignItems: 'center', justifyContent: 'center',
   },
-  anuncioInfoLabel: { fontSize: 10, fontWeight: '800', letterSpacing: 0.8, marginBottom: 3 },
-  anuncioInfoTitulo: { fontSize: 14, fontWeight: '700' },
+  anuncioInfoLabel: { fontSize: 10, fontFamily: Fonte.corpoSemi, letterSpacing: 0.8, marginBottom: 3 },
+  anuncioInfoTitulo: { fontSize: 14, fontFamily: Fonte.corpoSemi },
 
   // Secção
   seccaoTitulo: { ...Typography.h2, marginBottom: 4 },
@@ -483,28 +485,28 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   motivoCabecalho: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6, marginBottom: 4 },
-  motivoTitulo: { fontSize: 14, fontWeight: '800', flex: 1, minWidth: '60%' },
-  motivoDesc: { fontSize: 12, lineHeight: 17 },
+  motivoTitulo: { fontSize: 14, fontFamily: Fonte.corpoSemi, flex: 1, minWidth: '60%' },
+  motivoDesc: { fontFamily: Fonte.corpo, fontSize: 12, lineHeight: 17 },
 
   compensacaoBadge: {
     flexDirection: 'row', alignItems: 'center', gap: 3,
     paddingHorizontal: 7, paddingVertical: 3, borderRadius: 10,
   },
-  compensacaoTexto: { fontSize: 10, fontWeight: '800' },
+  compensacaoTexto: { fontSize: 10, fontFamily: Fonte.corpoSemi },
 
   // Descrição
   descCard: {
     borderRadius: 16, padding: 14, borderWidth: 1,
     marginBottom: Spacing.md,
   },
-  descLabel: { fontSize: 14, fontWeight: '800', marginBottom: 10 },
+  descLabel: { fontSize: 14, fontFamily: Fonte.corpoSemi, marginBottom: 10 },
   descInput: {
     borderRadius: 12, borderWidth: 1,
     padding: 12, minHeight: 100,
-    fontSize: 14, lineHeight: 20,
+    fontFamily: Fonte.corpo, fontSize: 14, lineHeight: 20,
   },
   descContador: {
-    fontSize: 11, textAlign: 'right', marginTop: 6,
+    fontFamily: Fonte.corpo, fontSize: 11, textAlign: 'right', marginTop: 6,
   },
 
   // Privacidade
@@ -513,7 +515,7 @@ const styles = StyleSheet.create({
     padding: 12, borderRadius: 12, borderWidth: 1,
     marginBottom: Spacing.md,
   },
-  privacidadeTexto: { flex: 1, fontSize: 12, lineHeight: 17 },
+  privacidadeTexto: { flex: 1, fontFamily: Fonte.corpo, fontSize: 12, lineHeight: 17 },
 
   // Botão enviar
   botaoEnviar: {
@@ -521,7 +523,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16, borderRadius: 16, overflow: 'hidden', gap: 10,
     ...Sombras.colorida(LARANJA_MARCA),
   },
-  botaoEnviarTexto: { color: '#FFFFFF', fontSize: 15, fontWeight: '800' },
+  botaoEnviarTexto: { color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi },
 
   // ============ Confirmação ============
   confirmContainer: {
@@ -537,7 +539,7 @@ const styles = StyleSheet.create({
   },
   confirmTitulo: {
     ...Typography.h1, textAlign: 'center',
-    marginBottom: 12, fontWeight: '900', fontSize: 26,
+    marginBottom: 12, fontFamily: Fonte.tituloBold, fontSize: 26,
   },
   confirmSubtitulo: {
     ...Typography.body, textAlign: 'center',
@@ -548,18 +550,18 @@ const styles = StyleSheet.create({
     padding: 16, borderRadius: 16, borderWidth: 1.5,
     width: '100%', marginBottom: 16,
   },
-  confirmBonusTitulo: { fontSize: 14, fontWeight: '800', marginBottom: 4 },
-  confirmBonusTexto: { fontSize: 12, lineHeight: 17 },
+  confirmBonusTitulo: { fontSize: 14, fontFamily: Fonte.corpoSemi, marginBottom: 4 },
+  confirmBonusTexto: { fontFamily: Fonte.corpo, fontSize: 12, lineHeight: 17 },
   confirmNota: {
     flexDirection: 'row', alignItems: 'flex-start', gap: 8,
     padding: 12, borderRadius: 12, marginBottom: 24, width: '100%',
   },
-  confirmNotaTexto: { flex: 1, fontSize: 11, lineHeight: 16 },
+  confirmNotaTexto: { flex: 1, fontFamily: Fonte.corpo, fontSize: 11, lineHeight: 16 },
   confirmBotao: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     paddingVertical: 16, paddingHorizontal: 40, borderRadius: 16,
     overflow: 'hidden',
     ...Sombras.colorida(LARANJA_MARCA),
   },
-  confirmBotaoTexto: { color: '#FFFFFF', fontSize: 15, fontWeight: '800' },
+  confirmBotaoTexto: { color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi },
 });

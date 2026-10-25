@@ -5,25 +5,23 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  StatusBar,
   TextInput,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Colors, Sombras } from '../../src/theme/colors';
-import { Spacing, Typography, Radius } from '../../src/theme/typography';
+import { Spacing } from '../../src/theme/typography';
 import { useCores } from '../../src/store/themeStore';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
+import TopBar from '../../src/components/TopBar';
 // ============================================================
 // CORES GOHOME OFICIAIS
 // ============================================================
-const AZUL_HERO_INICIO = '#003A66';
-const AZUL_HERO_MEIO = '#0061A6';
-const AZUL_HERO_FIM = '#0082DE';
-const LARANJA_MARCA = '#FE8A00';
-const LARANJA_ESCURO = '#CB6E00';
+const AZUL_HERO_INICIO = '#0A6BC0';   // Azul GoHome — o mesmo da "Promoção lançamento"
+const AZUL_HERO_FIM = '#095FAA';
+const LARANJA_MARCA = '#E8760A';
 
 const conversas = [
   {
@@ -99,7 +97,7 @@ export default function MensagensScreen() {
         style={[
           styles.filtroChip,
           { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil },
-          activo && { backgroundColor: cores.principal, borderColor: cores.principal },
+          activo && { backgroundColor: cores.textoPrincipal, borderColor: cores.textoPrincipal },
         ]}
         onPress={() => setFiltro(id)}
         activeOpacity={0.8}
@@ -107,7 +105,7 @@ export default function MensagensScreen() {
         {icone}
         <Text style={[
           styles.filtroChipTexto,
-          { color: activo ? '#FFFFFF' : cores.textoSecundario },
+          { color: activo ? cores.fundo : cores.textoSecundario },
         ]}>
           {texto}
         </Text>
@@ -117,83 +115,38 @@ export default function MensagensScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <StatusBar barStyle="light-content" backgroundColor={AZUL_HERO_INICIO} />
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
-        <LinearGradient
-          colors={[AZUL_HERO_INICIO, AZUL_HERO_MEIO, AZUL_HERO_FIM]}
-          locations={[0, 0.55, 1]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.hero}
-        >
-          <View pointerEvents="none" style={styles.heroGlow} />
+      <TopBar temNotificacoes={totalNaoLidas > 0} />
 
-          <View style={styles.marcaLinha}>
-            <Text style={styles.marcaTexto}>
-              <Text style={{ color: '#FFFFFF' }}>Go</Text>
-              <Text style={{ color: LARANJA_MARCA }}>Home</Text>
-            </Text>
-            <View style={styles.heroEtiqueta}>
-              <Ionicons name="chatbubbles" size={13} color={LARANJA_MARCA} />
-              <Text style={styles.heroEtiquetaTexto}>CHAT</Text>
-            </View>
-          </View>
-          <View style={styles.header}>
-            <View style={styles.headerTexto}>
-              <Text style={styles.headerTitulo}>Mensagens</Text>
-              <Text style={styles.headerSubtitulo}>
-                Acompanha as conversas sobre os teus anúncios
-              </Text>
-            </View>
-            <TouchableOpacity
-              style={styles.headerBotao}
-              onPress={() => setPesquisa('')}
-              activeOpacity={0.8}
-              accessibilityLabel="Limpar pesquisa"
-            >
-              <Ionicons name="search-outline" size={21} color={AZUL_HERO_MEIO} />
+      {/* Pesquisa e filtros fixos, no fundo papel */}
+      <View>
+        <View style={[styles.pesquisaWrapper, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
+          <Ionicons name="search" size={19} color={cores.textoSecundario} />
+          <TextInput
+            style={[styles.pesquisaInput, { color: cores.textoPrincipal }]}
+            placeholder="Pesquisar pessoas, anúncios..."
+            placeholderTextColor={cores.textoTerciario}
+            value={pesquisa}
+            onChangeText={setPesquisa}
+            returnKeyType="search"
+          />
+          {pesquisa.length > 0 && (
+            <TouchableOpacity onPress={() => setPesquisa('')}>
+              <Ionicons name="close-circle" size={19} color={cores.textoSecundario} />
             </TouchableOpacity>
-          </View>
-          <View style={styles.resumo}>
-            <View style={styles.resumoIcone}>
-              <Ionicons name="mail-unread-outline" size={18} color={LARANJA_MARCA} />
-            </View>
-            <View style={styles.resumoTexto}>
-              <Text style={styles.resumoNumero}>{conversas.length} conversas</Text>
-              <Text style={styles.resumoLegenda}>{totalNaoLidas} mensagens por ler</Text>
-            </View>
-            <View style={styles.resumoPonto} />
-            <Text style={styles.resumoEstado}>Actualizado</Text>
-          </View>
-          <View style={[styles.pesquisaWrapper, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
-            <Ionicons name="search" size={19} color={cores.textoSecundario} />
-            <TextInput
-              style={[styles.pesquisaInput, { color: cores.textoPrincipal }]}
-              placeholder="Pesquisar pessoas, anúncios..."
-              placeholderTextColor={cores.textoTerciario}
-              value={pesquisa}
-              onChangeText={setPesquisa}
-              returnKeyType="search"
-            />
-            {pesquisa.length > 0 && (
-              <TouchableOpacity onPress={() => setPesquisa('')}>
-                <Ionicons name="close-circle" size={19} color={cores.textoSecundario} />
-              </TouchableOpacity>
-            )}
-          </View>
-        </LinearGradient>
+          )}
+        </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtros}>
           <View style={styles.filtrosContainer}>
             {chip('todas', 'Todas')}
             {chip('naoLidas', `Não lidas (${conversas.filter(c => c.naoLidas > 0).length})`,
               <View style={[styles.filtroChipDot, { backgroundColor: LARANJA_MARCA }]} />)}
             {chip('verificados', 'Verificados',
-              <Ionicons name="checkmark-circle" size={15} color={filtro === 'verificados' ? '#FFFFFF' : '#16A34A'} />)}
+              <Ionicons name="checkmark-circle" size={15} color={filtro === 'verificados' ? cores.fundo : '#2F7A4F'} />)}
             {chip('favoritos', 'Favoritos',
-              <Ionicons name="star" size={14} color={filtro === 'favoritos' ? '#FFFFFF' : LARANJA_MARCA} />)}
+              <Ionicons name="star" size={14} color={filtro === 'favoritos' ? cores.fundo : LARANJA_MARCA} />)}
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.listaConteudo}>
         <View style={styles.listaCabecalho}>
@@ -217,7 +170,7 @@ export default function MensagensScreen() {
           >
             <View style={styles.avatarContainer}>
               <LinearGradient
-                colors={conversa.id === '2' ? [LARANJA_MARCA, LARANJA_ESCURO] : [AZUL_HERO_INICIO, AZUL_HERO_FIM]}
+                colors={conversa.id === '2' ? ['#B95A05', '#A85204'] : [AZUL_HERO_INICIO, AZUL_HERO_FIM]}
                 style={styles.avatar}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -239,20 +192,20 @@ export default function MensagensScreen() {
                 <Text style={[
                   styles.conversaHora,
                   { color: cores.textoTerciario },
-                  conversa.naoLidas > 0 && { color: LARANJA_MARCA, fontWeight: '800' },
+                  conversa.naoLidas > 0 && { color: LARANJA_MARCA, fontFamily: Fonte.corpoSemi },
                 ]}>
                   {conversa.hora}
                 </Text>
               </View>
               <Text style={[styles.conversaAnuncio, { color: cores.textoSecundario }]} numberOfLines={1}>
-                <MaterialCommunityIcons name="home-outline" size={13} color={LARANJA_MARCA} /> {conversa.anuncio}
+                <Icone name="home-outline" size={13} color={LARANJA_MARCA} /> {conversa.anuncio}
               </Text>
               <View style={styles.conversaBottom}>
                 <Text
                   style={[
                     styles.conversaMensagem,
                     { color: cores.textoSecundario },
-                    conversa.naoLidas > 0 && { color: cores.textoPrincipal, fontWeight: '700' },
+                    conversa.naoLidas > 0 && { color: cores.textoPrincipal, fontFamily: Fonte.corpoSemi },
                   ]}
                   numberOfLines={1}
                 >
@@ -294,93 +247,36 @@ export default function MensagensScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  safeArea: { backgroundColor: AZUL_HERO_INICIO },
-  hero: {
-    paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.sm,
-    paddingBottom: 22,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
-    gap: 15,
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  heroGlow: {
-    position: 'absolute',
-    width: 230,
-    height: 230,
-    borderRadius: 115,
-    backgroundColor: 'rgba(0, 130, 222, 0.18)',
-    right: -60,
-    top: 20,
-  },
-  marcaLinha: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  marcaTexto: { fontSize: 24, fontWeight: '900', letterSpacing: -0.8 },
-  heroEtiqueta: {
-    marginLeft: 'auto',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
-  },
-  heroEtiquetaTexto: { color: '#FFFFFF', fontSize: 10, fontWeight: '800', letterSpacing: 1 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12 },
-  headerTexto: { flex: 1 },
-  headerTitulo: { fontSize: 29, fontWeight: '800', color: '#FFFFFF', letterSpacing: -0.7 },
-  headerSubtitulo: { fontSize: 13, lineHeight: 19, color: 'rgba(255,255,255,0.85)', marginTop: 3 },
-  headerBotao: {
-    width: 44, height: 44, borderRadius: 15, backgroundColor: '#FFFFFF',
-    justifyContent: 'center', alignItems: 'center', ...Sombras.sm,
-  },
-  resumo: {
-    flexDirection: 'row', alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.10)',
-    borderColor: 'rgba(255,255,255,0.12)', borderWidth: 1,
-    borderRadius: 15, padding: 11, gap: 9,
-  },
-  resumoIcone: {
-    width: 34, height: 34, borderRadius: 11,
-    backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center',
-  },
-  resumoTexto: { flex: 1 },
-  resumoNumero: { color: '#FFFFFF', fontSize: 13, fontWeight: '800' },
-  resumoLegenda: { color: 'rgba(255,255,255,0.85)', fontSize: 11, marginTop: 2 },
-  resumoPonto: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#4ADE80' },
-  resumoEstado: { color: 'rgba(255,255,255,0.85)', fontSize: 10, fontWeight: '600' },
   pesquisaWrapper: {
     flexDirection: 'row', alignItems: 'center',
-    borderRadius: 15, paddingHorizontal: 14, height: 50, gap: 10, borderWidth: 1,
+    marginHorizontal: Spacing.lg, marginTop: 14,
+    borderRadius: 12, paddingHorizontal: 14, height: 48, gap: 10, borderWidth: 1,
   },
-  pesquisaInput: { flex: 1, fontSize: 14, paddingVertical: 0 },
-  filtros: { maxHeight: 61, marginTop: 13, marginBottom: 3 },
+  pesquisaInput: { flex: 1, fontFamily: Fonte.corpo, fontSize: 14, paddingVertical: 0 },
+  filtros: { maxHeight: 61, marginTop: 12, marginBottom: 3 },
   filtrosContainer: { flexDirection: 'row', paddingHorizontal: Spacing.lg, gap: 8, paddingBottom: 10, alignItems: 'center' },
   filtroChip: {
     flexDirection: 'row', alignItems: 'center',
-    paddingHorizontal: 14, paddingVertical: 10, borderRadius: 22,
+    paddingHorizontal: 14, paddingVertical: 9, borderRadius: 999,
     borderWidth: 1, gap: 6,
   },
-  filtroChipTexto: { fontSize: 12, fontWeight: '700' },
+  filtroChipTexto: { fontSize: 12, fontFamily: Fonte.corpoSemi },
   filtroChipDot: { width: 7, height: 7, borderRadius: 4 },
   listaConteudo: { paddingTop: 5 },
   listaCabecalho: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: Spacing.lg, paddingTop: 13, paddingBottom: 10,
   },
-  listaTitulo: { fontSize: 16, fontWeight: '800' },
-  listaContagem: { fontSize: 11, fontWeight: '600' },
+  listaTitulo: { fontSize: 19, fontFamily: Fonte.tituloSemi, letterSpacing: -0.3 },
+  listaContagem: { fontSize: 11, fontFamily: Fonte.corpoSemi },
   conversa: {
     flexDirection: 'row', alignItems: 'center',
     paddingVertical: 15, paddingHorizontal: Spacing.lg, gap: 12,
     borderBottomWidth: 1,
   },
   avatarContainer: { position: 'relative' },
-  avatar: { width: 53, height: 53, borderRadius: 18, justifyContent: 'center', alignItems: 'center' },
-  avatarLetra: { fontSize: 21, color: '#FFFFFF', fontWeight: '800' },
+  avatar: { width: 50, height: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center' },
+  avatarLetra: { fontSize: 21, color: '#FFFFFF', fontFamily: Fonte.tituloSemi },
   onlineDot: {
     position: 'absolute', bottom: -1, right: -1,
     width: 13, height: 13, borderRadius: 7,
@@ -394,29 +290,29 @@ const styles = StyleSheet.create({
   },
   conversaInfo: { flex: 1, minWidth: 0 },
   conversaTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginBottom: 4 },
-  conversaNome: { fontSize: 14, fontWeight: '800', flex: 1 },
-  conversaHora: { fontSize: 10 },
-  conversaAnuncio: { fontSize: 11, marginBottom: 5, fontWeight: '600' },
+  conversaNome: { fontSize: 14, fontFamily: Fonte.corpoSemi, flex: 1 },
+  conversaHora: { fontFamily: Fonte.corpo, fontSize: 10 },
+  conversaAnuncio: { fontSize: 11, marginBottom: 5, fontFamily: Fonte.corpoSemi },
   conversaBottom: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 },
-  conversaMensagem: { fontSize: 12, flex: 1 },
+  conversaMensagem: { fontFamily: Fonte.corpo, fontSize: 12, flex: 1 },
   naoLidasBadge: {
     minWidth: 21, height: 21, borderRadius: 11,
     justifyContent: 'center', alignItems: 'center', paddingHorizontal: 5,
   },
-  naoLidasTexto: { fontSize: 10, color: '#FFFFFF', fontWeight: '800' },
+  naoLidasTexto: { fontSize: 10, color: '#FFFFFF', fontFamily: Fonte.corpoSemi },
   estadoVazio: { alignItems: 'center', paddingHorizontal: 30, paddingTop: 50 },
   estadoIcone: {
     width: 76, height: 76, borderRadius: 25,
     alignItems: 'center', justifyContent: 'center', marginBottom: 18,
   },
-  estadoTitulo: { fontSize: 16, fontWeight: '800', textAlign: 'center' },
+  estadoTitulo: { fontSize: 16, fontFamily: Fonte.corpoSemi, textAlign: 'center' },
   estadoDescricao: {
-    fontSize: 13, lineHeight: 20, textAlign: 'center',
+    fontFamily: Fonte.corpo, fontSize: 13, lineHeight: 20, textAlign: 'center',
     marginTop: 7, maxWidth: 280,
   },
   limparBotao: {
     marginTop: 18, borderRadius: 13,
     paddingHorizontal: 18, paddingVertical: 12,
   },
-  limparBotaoTexto: { color: '#FFFFFF', fontSize: 12, fontWeight: '800' },
+  limparBotaoTexto: { color: '#FFFFFF', fontSize: 12, fontFamily: Fonte.corpoSemi },
 });

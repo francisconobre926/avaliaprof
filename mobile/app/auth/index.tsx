@@ -12,15 +12,17 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { Sombras } from '../../src/theme/colors';
 import { Typography } from '../../src/theme/typography';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 const BRAND = {
-  orange: '#FF7900',
+  orange: '#E8760A',
   orangeDark: '#E86E00',
   orangeSoft: '#FFF1E5',
-  navy: '#0B2E59',
+  navy: '#16202E',
   navyDeep: '#082342',
   blueSoft: '#EEF5FC',
   white: '#FFFFFF',
@@ -134,7 +136,7 @@ export default function AuthEntradaScreen() {
             <View style={styles.heroOrbTwo} />
             <View style={styles.heroTopRow}>
               <View style={styles.rolePill}>
-                <MaterialCommunityIcons
+                <Icone
                   name={isAnunciante ? 'home-city-outline' : 'magnify'}
                   size={15}
                   color={BRAND.white}
@@ -288,8 +290,8 @@ const styles = StyleSheet.create({
   brandLockup: { flexDirection: 'row', alignItems: 'center', flex: 1, marginLeft: 12 },
   logo: { width: 42, height: 42 },
   brandTextWrap: { marginLeft: 8 },
-  brandName: { color: BRAND.navy, fontSize: 19, fontWeight: '900', letterSpacing: -0.6 },
-  brandTagline: { color: BRAND.muted, fontSize: 10, fontWeight: '600', marginTop: 1 },
+  brandName: { color: BRAND.navy, fontSize: 19, fontFamily: Fonte.corpoBold, letterSpacing: -0.6 },
+  brandTagline: { color: BRAND.muted, fontSize: 10, fontFamily: Fonte.corpoSemi, marginTop: 1 },
   headerStatus: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -300,7 +302,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   statusDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#21A366' },
-  statusText: { fontSize: 9, fontWeight: '800', letterSpacing: 0.6, color: '#28764A' },
+  statusText: { fontSize: 9, fontFamily: Fonte.corpoSemi, letterSpacing: 0.6, color: '#28764A' },
   scroll: { flex: 1, backgroundColor: BRAND.background },
   scrollContent: { paddingBottom: 28 },
   hero: {
@@ -325,7 +327,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 11, paddingVertical: 8, borderRadius: 30,
     backgroundColor: 'rgba(255,255,255,0.12)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.14)',
   },
-  rolePillText: { color: BRAND.white, fontSize: 10, fontWeight: '800', letterSpacing: 0.75 },
+  rolePillText: { color: BRAND.white, fontSize: 10, fontFamily: Fonte.corpoSemi, letterSpacing: 0.75 },
   heroSparkle: {
     width: 35, height: 35, borderRadius: 12, alignItems: 'center', justifyContent: 'center',
     backgroundColor: 'rgba(255,121,0,0.16)', borderWidth: 1, borderColor: 'rgba(255,121,0,0.24)',
@@ -334,34 +336,34 @@ const styles = StyleSheet.create({
   heroDescription: { ...Typography.bodyLarge, color: '#D8E4F1', lineHeight: 24, marginTop: 11, maxWidth: 340 },
   heroFooter: { flexDirection: 'row', alignItems: 'center', gap: 9, marginTop: 22 },
   heroFooterIcon: { width: 27, height: 27, borderRadius: 9, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.13)' },
-  heroFooterText: { color: '#D8E4F1', fontSize: 12, fontWeight: '600' },
+  heroFooterText: { color: '#D8E4F1', fontSize: 12, fontFamily: Fonte.corpoSemi },
   content: { paddingHorizontal: 20, paddingTop: 25 },
   sectionHeading: { marginBottom: 20 },
-  eyebrow: { color: BRAND.orange, fontSize: 10, fontWeight: '900', letterSpacing: 1.5, marginBottom: 8 },
-  sectionTitle: { color: BRAND.navy, fontSize: 23, lineHeight: 29, fontWeight: '800', letterSpacing: -0.45 },
-  sectionDescription: { color: BRAND.muted, fontSize: 13, lineHeight: 19, marginTop: 6 },
+  eyebrow: { color: BRAND.orange, fontSize: 10, fontFamily: Fonte.corpoBold, letterSpacing: 1.5, marginBottom: 8 },
+  sectionTitle: { color: BRAND.navy, fontSize: 23, lineHeight: 29, fontFamily: Fonte.tituloSemi, letterSpacing: -0.45 },
+  sectionDescription: { color: BRAND.muted, fontFamily: Fonte.corpo, fontSize: 13, lineHeight: 19, marginTop: 6 },
   primaryButtonOuter: { borderRadius: 19, overflow: 'hidden', marginBottom: 12, ...Sombras.md },
   primaryButton: { minHeight: 78, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 13, gap: 12 },
   primaryIconBox: { width: 44, height: 44, borderRadius: 14, backgroundColor: BRAND.white, alignItems: 'center', justifyContent: 'center' },
   primaryButtonCopy: { flex: 1 },
-  primaryButtonTitle: { color: BRAND.white, fontSize: 15, fontWeight: '800' },
-  primaryButtonSubtitle: { color: 'rgba(255,255,255,0.85)', fontSize: 11, fontWeight: '500', marginTop: 4 },
+  primaryButtonTitle: { color: BRAND.white, fontSize: 15, fontFamily: Fonte.corpoSemi },
+  primaryButtonSubtitle: { color: 'rgba(255,255,255,0.85)', fontSize: 11, fontFamily: Fonte.corpoMedio, marginTop: 4 },
   loginButton: {
     minHeight: 76, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 12, gap: 12,
     borderRadius: 19, backgroundColor: BRAND.white, borderWidth: 1, borderColor: BRAND.border,
   },
   loginIconBox: { width: 44, height: 44, borderRadius: 14, backgroundColor: BRAND.blueSoft, alignItems: 'center', justifyContent: 'center' },
   loginButtonCopy: { flex: 1 },
-  loginButtonTitle: { color: BRAND.navy, fontSize: 15, fontWeight: '800' },
-  loginButtonSubtitle: { color: BRAND.muted, fontSize: 11, marginTop: 4 },
+  loginButtonTitle: { color: BRAND.navy, fontSize: 15, fontFamily: Fonte.corpoSemi },
+  loginButtonSubtitle: { color: BRAND.muted, fontFamily: Fonte.corpo, fontSize: 11, marginTop: 4 },
   benefitsRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 23, paddingHorizontal: 2 },
   benefit: { alignItems: 'center', flex: 1, gap: 7 },
   benefitIcon: { width: 34, height: 34, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
-  benefitText: { color: BRAND.muted, fontSize: 10, fontWeight: '700' },
+  benefitText: { color: BRAND.muted, fontSize: 10, fontFamily: Fonte.corpoSemi },
   benefitDivider: { width: 1, height: 30, backgroundColor: BRAND.border },
   guestButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 17, marginTop: 12 },
-  guestButtonText: { color: BRAND.muted, fontSize: 12, fontWeight: '700' },
+  guestButtonText: { color: BRAND.muted, fontSize: 12, fontFamily: Fonte.corpoSemi },
   termsWrap: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'center', gap: 6, paddingHorizontal: 8, marginTop: 3 },
-  termsText: { flex: 1, color: BRAND.muted, fontSize: 10, lineHeight: 16, textAlign: 'center' },
-  termsLink: { color: BRAND.navy, fontWeight: '800' },
+  termsText: { flex: 1, color: BRAND.muted, fontFamily: Fonte.corpo, fontSize: 10, lineHeight: 16, textAlign: 'center' },
+  termsLink: { color: BRAND.navy, fontFamily: Fonte.corpoSemi },
 });

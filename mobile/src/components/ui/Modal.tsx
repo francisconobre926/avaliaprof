@@ -22,6 +22,7 @@ import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
 
+import { Fonte } from '../../theme/fonts';
 const { height: H } = Dimensions.get('window');
 
 export type ModalVariant = 'bottom-sheet' | 'center';
@@ -184,8 +185,8 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     gap: 12,
   },
-  titulo: { fontSize: 20, fontWeight: '800' },
-  subtitulo: { fontSize: 13, marginTop: 4 },
+  titulo: { fontSize: 20, fontFamily: Fonte.tituloSemi },
+  subtitulo: { fontFamily: Fonte.corpo, fontSize: 13, marginTop: 4 },
   closeBtn: {
     width: 32,
     height: 32,

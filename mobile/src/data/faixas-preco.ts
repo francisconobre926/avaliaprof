@@ -4,10 +4,7 @@ export interface FaixaPreco {
   labelCurto: string;
   min: number;
   max: number | null; // null = sem limite (última faixa)
-  icone: string; // MaterialCommunityIcons name
-  emoji: string;
-  cor: string;
-  gradiente: readonly [string, string];
+  icone: string; // nome de ícone (traduzido para Ionicons pelo componente Icone)
   publicoAlvo: string;
   descricao: string;
 }
@@ -20,9 +17,6 @@ export const FAIXAS_PRECO: FaixaPreco[] = [
     min: 0,
     max: null,
     icone: 'view-grid',
-    emoji: '✨',
-    cor: '#2196F3',
-    gradiente: ['#2196F3', '#1976D2'] as const,
     publicoAlvo: 'Todos os públicos',
     descricao: 'Ver todos os imóveis disponíveis',
   },
@@ -33,9 +27,6 @@ export const FAIXAS_PRECO: FaixaPreco[] = [
     min: 0,
     max: 2000,
     icone: 'school',
-    emoji: '🎓',
-    cor: '#4CAF50',
-    gradiente: ['#66BB6A', '#43A047'] as const,
     publicoAlvo: 'Estudantes',
     descricao: 'Quartos partilhados e opções económicas',
   },
@@ -46,9 +37,6 @@ export const FAIXAS_PRECO: FaixaPreco[] = [
     min: 2001,
     max: 5000,
     icone: 'account-multiple',
-    emoji: '👥',
-    cor: '#00BCD4',
-    gradiente: ['#26C6DA', '#00ACC1'] as const,
     publicoAlvo: 'Jovens profissionais',
     descricao: 'Quartos individuais e apartamentos partilhados',
   },
@@ -59,9 +47,6 @@ export const FAIXAS_PRECO: FaixaPreco[] = [
     min: 5001,
     max: 10000,
     icone: 'heart',
-    emoji: '💑',
-    cor: '#2196F3',
-    gradiente: ['#42A5F5', '#1E88E5'] as const,
     publicoAlvo: 'Casais e T1',
     descricao: 'Apartamentos T1 para casais',
   },
@@ -72,9 +57,6 @@ export const FAIXAS_PRECO: FaixaPreco[] = [
     min: 10001,
     max: 20000,
     icone: 'home-heart',
-    emoji: '🏠',
-    cor: '#FF9800',
-    gradiente: ['#FFA726', '#FB8C00'] as const,
     publicoAlvo: 'Famílias',
     descricao: 'T2 e T3 espaçosos para família',
   },
@@ -85,9 +67,6 @@ export const FAIXAS_PRECO: FaixaPreco[] = [
     min: 20001,
     max: 35000,
     icone: 'city',
-    emoji: '🏡',
-    cor: '#9C27B0',
-    gradiente: ['#AB47BC', '#8E24AA'] as const,
     publicoAlvo: 'Classe média-alta',
     descricao: 'Zonas nobres e imóveis modernos',
   },
@@ -98,9 +77,6 @@ export const FAIXAS_PRECO: FaixaPreco[] = [
     min: 35001,
     max: 60000,
     icone: 'castle',
-    emoji: '🏰',
-    cor: '#E91E63',
-    gradiente: ['#EC407A', '#D81B60'] as const,
     publicoAlvo: 'Alto padrão',
     descricao: 'Imóveis de alto padrão em zonas premium',
   },
@@ -111,9 +87,6 @@ export const FAIXAS_PRECO: FaixaPreco[] = [
     min: 60001,
     max: null,
     icone: 'crown',
-    emoji: '👑',
-    cor: '#FFC107',
-    gradiente: ['#FFCA28', '#FFB300'] as const,
     publicoAlvo: 'Luxo & Premium',
     descricao: 'Villas, penthouses e imóveis exclusivos',
   },

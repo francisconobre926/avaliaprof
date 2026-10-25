@@ -18,6 +18,7 @@ import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
 
+import { Fonte } from '../../theme/fonts';
 interface ChipProps {
   label: string;
   seleccionado?: boolean;
@@ -97,7 +98,7 @@ const styles = StyleSheet.create({
     gap: 6,
     alignSelf: 'flex-start',
   },
-  label: { fontSize: 13, fontWeight: '600' },
+  label: { fontSize: 13, fontFamily: Fonte.corpoSemi },
 });
 
 export default Chip;

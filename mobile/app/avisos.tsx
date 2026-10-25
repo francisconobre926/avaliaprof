@@ -24,7 +24,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { Colors } from '../src/theme/colors';
@@ -38,6 +38,8 @@ import {
   corEstadoDenuncia,
 } from '../src/types';
 
+import { Fonte } from '../src/theme/fonts';
+import Icone from '../src/components/Icone';
 type Tab = 'avisos' | 'minhas-denuncias';
 
 export default function AvisosScreen() {
@@ -143,7 +145,7 @@ export default function AvisosScreen() {
       <SafeAreaView edges={['top']} style={styles.safeHeader}>
         <View style={styles.header}>
           <TouchableOpacity style={styles.btnVoltar} onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={22} color="#0B2E59" />
+            <Ionicons name="arrow-back" size={22} color="#16202E" />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Text style={styles.headerTitulo}>Avisos e denúncias</Text>
@@ -198,7 +200,7 @@ export default function AvisosScreen() {
         {suspensao && suspensao.estado === 'activa' && tab === 'avisos' && (
           <View style={styles.bannerSuspensao}>
             <LinearGradient
-              colors={['#D32F2F', '#9A0007']}
+              colors={['#C2412D', '#9A0007']}
               style={StyleSheet.absoluteFill}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
@@ -206,7 +208,7 @@ export default function AvisosScreen() {
             <View style={styles.bannerSuspensaoConteudo}>
               <View style={styles.bannerSuspensaoHeader}>
                 <View style={styles.bannerSuspensaoIcone}>
-                  <MaterialCommunityIcons name="cancel" size={28} color="#FFFFFF" />
+                  <Icone name="cancel" size={28} color="#FFFFFF" />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.bannerSuspensaoTitulo}>Conta suspensa</Text>
@@ -218,19 +220,19 @@ export default function AvisosScreen() {
 
               <View style={styles.bannerSuspensaoInfo}>
                 <View style={styles.bannerSuspensaoInfoItem}>
-                  <MaterialCommunityIcons name="clock-outline" size={14} color="#FFCDD2" />
+                  <Icone name="clock-outline" size={14} color="#F2C9C1" />
                   <Text style={styles.bannerSuspensaoInfoTexto}>
                     {`Expira em ${tempoRestante}`}
                   </Text>
                 </View>
                 <View style={styles.bannerSuspensaoInfoItem}>
-                  <MaterialCommunityIcons name="block-helper" size={14} color="#FFCDD2" />
+                  <Icone name="block-helper" size={14} color="#F2C9C1" />
                   <Text style={styles.bannerSuspensaoInfoTexto}>
                     Não podes publicar novos anúncios
                   </Text>
                 </View>
                 <View style={styles.bannerSuspensaoInfoItem}>
-                  <MaterialCommunityIcons name="check-circle-outline" size={14} color="#C8E6C9" />
+                  <Icone name="check-circle-outline" size={14} color="#C8E6C9" />
                   <Text style={styles.bannerSuspensaoInfoTexto}>
                     Anúncios existentes continuam activos
                   </Text>
@@ -242,7 +244,7 @@ export default function AvisosScreen() {
                 onPress={abrirContestar}
                 activeOpacity={0.85}
               >
-                <MaterialCommunityIcons name="gavel" size={16} color="#D32F2F" />
+                <Icone name="gavel" size={16} color="#C2412D" />
                 <Text style={styles.bannerSuspensaoBtnTexto}>Contestar suspensão</Text>
               </TouchableOpacity>
             </View>
@@ -253,7 +255,7 @@ export default function AvisosScreen() {
         {suspensao && suspensao.estado === 'contestada' && tab === 'avisos' && (
           <View style={styles.bannerAnalise}>
             <View style={styles.bannerAnaliseIcone}>
-              <ActivityIndicator color="#F57C00" />
+              <ActivityIndicator color="#E8760A" />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.bannerAnaliseTitulo}>Contestação em análise</Text>
@@ -267,7 +269,7 @@ export default function AvisosScreen() {
         {/* ============ BANNER DE SUSPENSÃO LEVANTADA ============ */}
         {suspensao && suspensao.estado === 'levantada' && tab === 'avisos' && (
           <View style={styles.bannerLevantada}>
-            <Ionicons name="checkmark-circle" size={24} color="#2E7D32" />
+            <Ionicons name="checkmark-circle" size={24} color="#2F7A4F" />
             <View style={{ flex: 1 }}>
               <Text style={styles.bannerLevantadaTitulo}>Suspensão levantada</Text>
               <Text style={styles.bannerLevantadaTexto}>
@@ -282,7 +284,7 @@ export default function AvisosScreen() {
           <View style={styles.listaContainer}>
             {avisos.length === 0 ? (
               <View style={styles.vazioContainer}>
-                <MaterialCommunityIcons name="shield-check" size={60} color="#C8D5E5" />
+                <Icone name="shield-check" size={60} color="#C8D5E5" />
                 <Text style={styles.vazioTitulo}>Nenhum aviso recebido</Text>
                 <Text style={styles.vazioTexto}>
                   Continua a seguir as regras da GoHome para manter a tua conta em bom estado.
@@ -305,7 +307,7 @@ export default function AvisosScreen() {
           <View style={styles.listaContainer}>
             {minhasDenuncias.length === 0 ? (
               <View style={styles.vazioContainer}>
-                <MaterialCommunityIcons name="flag-outline" size={60} color="#C8D5E5" />
+                <Icone name="flag-outline" size={60} color="#C8D5E5" />
                 <Text style={styles.vazioTitulo}>Nenhuma denúncia feita</Text>
                 <Text style={styles.vazioTexto}>
                   Quando denunciares um anúncio, ele aparece aqui com o estado.
@@ -334,7 +336,7 @@ export default function AvisosScreen() {
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={styles.contestarHeader}>
                 <View style={styles.contestarHeaderIcone}>
-                  <MaterialCommunityIcons name="gavel" size={30} color="#1976D2" />
+                  <Icone name="gavel" size={30} color="#0A6BC0" />
                 </View>
                 <Text style={styles.contestarHeaderTitulo}>Contestar suspensão</Text>
                 <Text style={styles.contestarHeaderSubtitulo}>
@@ -347,7 +349,7 @@ export default function AvisosScreen() {
                 <TextInput
                   style={styles.contestarInput}
                   placeholder="Explica em detalhe porque consideras a suspensão injusta (mínimo 20 caracteres)..."
-                  placeholderTextColor="#9BA8BC"
+                  placeholderTextColor="#9A9EA5"
                   value={descricaoContestacao}
                   onChangeText={setDescricaoContestacao}
                   multiline
@@ -373,7 +375,7 @@ export default function AvisosScreen() {
                     style={styles.contestarProvaBtn}
                     onPress={carregarProvaContestacao}
                   >
-                    <MaterialCommunityIcons name="camera-plus" size={20} color="#1976D2" />
+                    <Icone name="camera-plus" size={20} color="#0A6BC0" />
                     <Text style={styles.contestarProvaBtnTexto}>Carregar imagem</Text>
                   </TouchableOpacity>
                 )}
@@ -393,7 +395,7 @@ export default function AvisosScreen() {
                   activeOpacity={0.9}
                 >
                   <LinearGradient
-                    colors={['#1976D2', '#0D47A1']}
+                    colors={['#0A6BC0', '#0D47A1']}
                     style={StyleSheet.absoluteFill}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
@@ -419,7 +421,7 @@ export default function AvisosScreen() {
       >
         <View style={styles.modalCentroOverlay}>
           <View style={styles.modalCentroBox}>
-            <ActivityIndicator size="large" color="#1976D2" />
+            <ActivityIndicator size="large" color="#0A6BC0" />
             <Text style={styles.aguardandoTitulo}>A analisar a tua contestação</Text>
             <Text style={styles.aguardandoTexto}>
               A nossa equipa está a rever os detalhes.
@@ -450,7 +452,7 @@ export default function AvisosScreen() {
               activeOpacity={0.9}
             >
               <LinearGradient
-                colors={['#2E7D32', '#1B5E20']}
+                colors={['#2F7A4F', '#22593A']}
                 style={StyleSheet.absoluteFill}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
@@ -500,7 +502,7 @@ function AvisoCard({ aviso, onPress }: { aviso: Aviso; onPress: () => void }) {
           if (!motivo) return null;
           return (
             <View key={id} style={styles.avisoMotivoChip}>
-              <MaterialCommunityIcons name={motivo.icone as any} size={12} color="#D95E00" />
+              <Icone name={motivo.icone as any} size={12} color="#D95E00" />
               <Text style={styles.avisoMotivoTexto}>{motivo.label}</Text>
             </View>
           );
@@ -509,7 +511,7 @@ function AvisoCard({ aviso, onPress }: { aviso: Aviso; onPress: () => void }) {
 
       {aviso.numeroAviso >= 3 && (
         <View style={styles.avisoAlerta}>
-          <MaterialCommunityIcons name="alert-circle" size={16} color="#D32F2F" />
+          <Icone name="alert-circle" size={16} color="#C2412D" />
           <Text style={styles.avisoAlertaTexto}>
             Este foi o teu 3º aviso. A tua conta foi suspensa por 24h.
           </Text>
@@ -555,7 +557,7 @@ function DenunciaCard({ denuncia }: { denuncia: any }) {
 
       {denuncia.estado === 'aprovada' && denuncia.compensacaoRecebida && (
         <View style={styles.denunciaCredit}>
-          <MaterialCommunityIcons name="gift" size={14} color="#2E7D32" />
+          <Icone name="gift" size={14} color="#2F7A4F" />
           <Text style={styles.denunciaCreditTexto}>
             {`+${denuncia.compensacaoRecebida} MT creditados na tua carteira`}
           </Text>
@@ -578,14 +580,14 @@ const styles = StyleSheet.create({
   btnVoltar: {
     width: 40, height: 40, borderRadius: 20,
     justifyContent: 'center', alignItems: 'center',
-    backgroundColor: '#F0F5FA',
+    backgroundColor: '#F4F3EF',
   },
   headerTitulo: {
-    ...Typography.h3, color: '#0B2E59',
-    fontWeight: '800', fontSize: 17,
+    ...Typography.h3, color: '#16202E',
+    fontFamily: Fonte.corpoSemi, fontSize: 17,
   },
   headerSubtitulo: {
-    ...Typography.caption, color: '#637894',
+    ...Typography.caption, color: '#5B616B',
     fontSize: 11, marginTop: 2,
   },
 
@@ -598,23 +600,23 @@ const styles = StyleSheet.create({
     flex: 1, flexDirection: 'row',
     alignItems: 'center', justifyContent: 'center',
     paddingVertical: 10, borderRadius: 11,
-    backgroundColor: '#F0F5FA', gap: 6,
+    backgroundColor: '#F4F3EF', gap: 6,
   },
-  tabActiva: { backgroundColor: '#0B2E59' },
+  tabActiva: { backgroundColor: '#16202E' },
   tabTexto: {
-    ...Typography.bodyBold, color: '#637894',
-    fontSize: 13, fontWeight: '800',
+    ...Typography.bodyBold, color: '#5B616B',
+    fontSize: 13, fontFamily: Fonte.corpoSemi,
   },
   tabTextoActiva: { color: '#FFFFFF' },
   tabBadge: {
     minWidth: 20, height: 20,
     paddingHorizontal: 6, borderRadius: 10,
-    backgroundColor: '#DCE6F1',
+    backgroundColor: '#E7E5DF',
     justifyContent: 'center', alignItems: 'center',
   },
-  tabBadgeActiva: { backgroundColor: '#FF7900' },
+  tabBadgeActiva: { backgroundColor: '#E8760A' },
   tabBadgeTexto: {
-    color: '#637894', fontSize: 10, fontWeight: '800',
+    color: '#5B616B', fontSize: 10, fontFamily: Fonte.corpoSemi,
   },
   tabBadgeTextoActiva: { color: '#FFFFFF' },
 
@@ -634,11 +636,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center',
   },
   bannerSuspensaoTitulo: {
-    color: '#FFFFFF', fontSize: 17, fontWeight: '800',
+    color: '#FFFFFF', fontSize: 17, fontFamily: Fonte.corpoSemi,
     marginBottom: 3,
   },
   bannerSuspensaoSubtitulo: {
-    color: 'rgba(255,255,255,0.9)', fontSize: 12,
+    color: 'rgba(255,255,255,0.9)', fontFamily: Fonte.corpo, fontSize: 12,
   },
   bannerSuspensaoInfo: {
     backgroundColor: 'rgba(255,255,255,0.1)',
@@ -649,7 +651,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 7,
   },
   bannerSuspensaoInfoTexto: {
-    color: '#FFFFFF', fontSize: 12, fontWeight: '600',
+    color: '#FFFFFF', fontSize: 12, fontFamily: Fonte.corpoSemi,
   },
   bannerSuspensaoBtn: {
     flexDirection: 'row',
@@ -658,16 +660,16 @@ const styles = StyleSheet.create({
     borderRadius: 11, gap: 7,
   },
   bannerSuspensaoBtnTexto: {
-    color: '#D32F2F', fontSize: 14, fontWeight: '800',
+    color: '#C2412D', fontSize: 14, fontFamily: Fonte.corpoSemi,
   },
 
   // Banner análise contestação
   bannerAnalise: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#FFF4E6',
+    backgroundColor: '#FBF0E3',
     marginHorizontal: 16, marginTop: 14,
     padding: 14, borderRadius: 14, gap: 12,
-    borderLeftWidth: 4, borderLeftColor: '#F57C00',
+    borderLeftWidth: 4, borderLeftColor: '#E8760A',
   },
   bannerAnaliseIcone: {
     width: 40, height: 40, borderRadius: 12,
@@ -676,7 +678,7 @@ const styles = StyleSheet.create({
   },
   bannerAnaliseTitulo: {
     ...Typography.bodyBold, color: '#E65100',
-    fontWeight: '800', fontSize: 14, marginBottom: 3,
+    fontFamily: Fonte.corpoSemi, fontSize: 14, marginBottom: 3,
   },
   bannerAnaliseTexto: {
     ...Typography.caption, color: '#8B5A2B',
@@ -686,14 +688,14 @@ const styles = StyleSheet.create({
   // Banner levantada
   bannerLevantada: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#E8F5E9',
+    backgroundColor: '#EAF3EC',
     marginHorizontal: 16, marginTop: 14,
     padding: 14, borderRadius: 14, gap: 10,
-    borderLeftWidth: 4, borderLeftColor: '#2E7D32',
+    borderLeftWidth: 4, borderLeftColor: '#2F7A4F',
   },
   bannerLevantadaTitulo: {
-    ...Typography.bodyBold, color: '#1B5E20',
-    fontWeight: '800', fontSize: 14, marginBottom: 3,
+    ...Typography.bodyBold, color: '#22593A',
+    fontFamily: Fonte.corpoSemi, fontSize: 14, marginBottom: 3,
   },
   bannerLevantadaTexto: {
     ...Typography.caption, color: '#2E4D30',
@@ -709,12 +711,12 @@ const styles = StyleSheet.create({
     padding: 40, gap: 10,
   },
   vazioTitulo: {
-    ...Typography.h4, color: '#0B2E59',
-    fontWeight: '800', textAlign: 'center',
+    ...Typography.h4, color: '#16202E',
+    fontFamily: Fonte.corpoSemi, textAlign: 'center',
     marginTop: 8, fontSize: 15,
   },
   vazioTexto: {
-    ...Typography.body, color: '#637894',
+    ...Typography.body, color: '#5B616B',
     textAlign: 'center', fontSize: 13,
     lineHeight: 19, maxWidth: 300,
   },
@@ -723,17 +725,17 @@ const styles = StyleSheet.create({
   avisoCard: {
     backgroundColor: '#FFFFFF',
     padding: 14, borderRadius: 16,
-    borderWidth: 1, borderColor: '#E0E8F2',
+    borderWidth: 1, borderColor: '#E7E5DF',
     position: 'relative',
   },
   avisoCardNovo: {
-    borderColor: '#FF7900', borderWidth: 1.5,
+    borderColor: '#E8760A', borderWidth: 1.5,
     backgroundColor: '#FFF8F1',
   },
   avisoDotNovo: {
     position: 'absolute', top: 10, right: 10,
     width: 10, height: 10, borderRadius: 5,
-    backgroundColor: '#FF7900',
+    backgroundColor: '#E8760A',
   },
   avisoHeader: {
     flexDirection: 'row', alignItems: 'center',
@@ -741,34 +743,34 @@ const styles = StyleSheet.create({
   },
   avisoNumeroWrap: {
     width: 36, height: 36, borderRadius: 18,
-    backgroundColor: '#FFEBEE',
+    backgroundColor: '#FBECE9',
     justifyContent: 'center', alignItems: 'center',
-    borderWidth: 2, borderColor: '#D32F2F',
+    borderWidth: 2, borderColor: '#C2412D',
   },
   avisoNumero: {
-    color: '#D32F2F', fontSize: 15, fontWeight: '900',
+    color: '#C2412D', fontSize: 15, fontFamily: Fonte.corpoBold,
   },
   avisoTitulo: {
-    ...Typography.bodyBold, color: '#0B2E59',
-    fontWeight: '800', fontSize: 14, marginBottom: 2,
+    ...Typography.bodyBold, color: '#16202E',
+    fontFamily: Fonte.corpoSemi, fontSize: 14, marginBottom: 2,
   },
   avisoData: {
-    ...Typography.caption, color: '#637894',
+    ...Typography.caption, color: '#5B616B',
     fontSize: 11,
   },
   avisoDivider: {
-    height: 1, backgroundColor: '#F0F2F6',
+    height: 1, backgroundColor: '#F4F3EF',
     marginBottom: 10,
   },
   avisoLabel: {
-    ...Typography.caption, color: '#637894',
-    fontSize: 10, fontWeight: '800',
+    ...Typography.caption, color: '#5B616B',
+    fontSize: 10, fontFamily: Fonte.corpoSemi,
     letterSpacing: 0.5, textTransform: 'uppercase',
     marginBottom: 5,
   },
   avisoAnuncio: {
-    ...Typography.body, color: '#0B2E59',
-    fontWeight: '700', fontSize: 13,
+    ...Typography.body, color: '#16202E',
+    fontFamily: Fonte.corpoSemi, fontSize: 13,
     lineHeight: 17,
   },
   avisoMotivos: {
@@ -777,21 +779,21 @@ const styles = StyleSheet.create({
   },
   avisoMotivoChip: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#FFF4E6',
+    backgroundColor: '#FBF0E3',
     paddingHorizontal: 8, paddingVertical: 4,
     borderRadius: 8, gap: 4,
   },
   avisoMotivoTexto: {
-    color: '#D95E00', fontSize: 11, fontWeight: '700',
+    color: '#D95E00', fontSize: 11, fontFamily: Fonte.corpoSemi,
   },
   avisoAlerta: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#FFEBEE',
+    backgroundColor: '#FBECE9',
     padding: 10, borderRadius: 10, gap: 7,
     marginTop: 10,
   },
   avisoAlertaTexto: {
-    color: '#D32F2F', fontSize: 11, fontWeight: '700',
+    color: '#C2412D', fontSize: 11, fontFamily: Fonte.corpoSemi,
     flex: 1,
   },
 
@@ -799,19 +801,19 @@ const styles = StyleSheet.create({
   denunciaCard: {
     backgroundColor: '#FFFFFF',
     padding: 14, borderRadius: 16,
-    borderWidth: 1, borderColor: '#E0E8F2',
+    borderWidth: 1, borderColor: '#E7E5DF',
   },
   denunciaHeader: {
     flexDirection: 'row', alignItems: 'flex-start',
     gap: 10, marginBottom: 10,
   },
   denunciaAnuncio: {
-    ...Typography.bodyBold, color: '#0B2E59',
-    fontWeight: '800', fontSize: 13,
+    ...Typography.bodyBold, color: '#16202E',
+    fontFamily: Fonte.corpoSemi, fontSize: 13,
     lineHeight: 17, marginBottom: 3,
   },
   denunciaData: {
-    ...Typography.caption, color: '#637894',
+    ...Typography.caption, color: '#5B616B',
     fontSize: 11,
   },
   denunciaEstadoBadge: {
@@ -823,16 +825,16 @@ const styles = StyleSheet.create({
     width: 6, height: 6, borderRadius: 3,
   },
   denunciaEstadoTexto: {
-    fontSize: 10, fontWeight: '800',
+    fontSize: 10, fontFamily: Fonte.corpoSemi,
     letterSpacing: 0.3,
   },
   denunciaDivider: {
-    height: 1, backgroundColor: '#F0F2F6',
+    height: 1, backgroundColor: '#F4F3EF',
     marginBottom: 10,
   },
   denunciaLabelPequena: {
-    ...Typography.caption, color: '#637894',
-    fontSize: 10, fontWeight: '800',
+    ...Typography.caption, color: '#5B616B',
+    fontSize: 10, fontFamily: Fonte.corpoSemi,
     textTransform: 'uppercase', letterSpacing: 0.5,
     marginBottom: 5,
   },
@@ -840,21 +842,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row', flexWrap: 'wrap', gap: 5,
   },
   denunciaMotivoChip: {
-    backgroundColor: '#F0F5FA',
+    backgroundColor: '#F4F3EF',
     paddingHorizontal: 8, paddingVertical: 4,
     borderRadius: 8,
   },
   denunciaMotivoTexto: {
-    color: '#0B2E59', fontSize: 11, fontWeight: '700',
+    color: '#16202E', fontSize: 11, fontFamily: Fonte.corpoSemi,
   },
   denunciaCredit: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#E8F5E9',
+    backgroundColor: '#EAF3EC',
     padding: 9, borderRadius: 9, gap: 6,
     marginTop: 10,
   },
   denunciaCreditTexto: {
-    color: '#1B5E20', fontSize: 11, fontWeight: '800',
+    color: '#22593A', fontSize: 11, fontFamily: Fonte.corpoSemi,
     flex: 1,
   },
 
@@ -871,47 +873,47 @@ const styles = StyleSheet.create({
   },
   modalHandle: {
     width: 40, height: 4, borderRadius: 2,
-    backgroundColor: '#DCE6F1',
+    backgroundColor: '#E7E5DF',
     alignSelf: 'center', marginBottom: 12,
   },
 
   contestarHeader: {
     paddingHorizontal: 20, paddingBottom: 16,
     alignItems: 'center',
-    borderBottomWidth: 1, borderBottomColor: '#F0F2F6',
+    borderBottomWidth: 1, borderBottomColor: '#F4F3EF',
     marginBottom: 16,
   },
   contestarHeaderIcone: {
     width: 64, height: 64, borderRadius: 20,
-    backgroundColor: '#E3F2FD',
+    backgroundColor: '#EAF2FA',
     justifyContent: 'center', alignItems: 'center',
     marginBottom: 12,
   },
   contestarHeaderTitulo: {
-    ...Typography.h3, color: '#0B2E59',
-    fontWeight: '800', fontSize: 17,
+    ...Typography.h3, color: '#16202E',
+    fontFamily: Fonte.corpoSemi, fontSize: 17,
     textAlign: 'center', marginBottom: 6,
   },
   contestarHeaderSubtitulo: {
-    ...Typography.body, color: '#637894',
+    ...Typography.body, color: '#5B616B',
     textAlign: 'center', fontSize: 13, lineHeight: 19,
   },
 
   contestarLabel: {
-    ...Typography.bodyBold, color: '#173455',
-    fontWeight: '800', fontSize: 13, marginBottom: 7,
+    ...Typography.bodyBold, color: '#1E2836',
+    fontFamily: Fonte.corpoSemi, fontSize: 13, marginBottom: 7,
     marginTop: 10,
   },
   contestarInput: {
-    backgroundColor: '#F8F9FB',
+    backgroundColor: '#F7F6F2',
     borderRadius: 12, padding: 12,
     minHeight: 110, textAlignVertical: 'top',
-    ...Typography.body, color: '#0B2E59',
-    borderWidth: 1, borderColor: '#DCE6F1',
+    ...Typography.body, color: '#16202E',
+    borderWidth: 1, borderColor: '#E7E5DF',
     fontSize: 13,
   },
   contestarContador: {
-    ...Typography.caption, color: '#9BA8BC',
+    ...Typography.caption, color: '#9A9EA5',
     fontSize: 11, textAlign: 'right', marginTop: 5,
   },
 
@@ -919,21 +921,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 14, borderRadius: 12,
-    backgroundColor: '#E3F2FD',
+    backgroundColor: '#EAF2FA',
     borderWidth: 1, borderColor: '#BBDEFB',
     gap: 8,
   },
   contestarProvaBtnTexto: {
-    color: '#1976D2', fontSize: 13, fontWeight: '800',
+    color: '#0A6BC0', fontSize: 13, fontFamily: Fonte.corpoSemi,
   },
   contestarProvaWrap: {
     position: 'relative',
     borderRadius: 12, overflow: 'hidden',
-    borderWidth: 1, borderColor: '#DCE6F1',
+    borderWidth: 1, borderColor: '#E7E5DF',
   },
   contestarProvaImg: {
     width: '100%', height: 150,
-    backgroundColor: '#E8EEF5',
+    backgroundColor: '#E7E5DF',
   },
   contestarProvaRemover: {
     position: 'absolute', top: 8, right: 8,
@@ -949,12 +951,12 @@ const styles = StyleSheet.create({
   },
   contestarBtnCancelar: {
     flex: 1, paddingVertical: 14,
-    borderRadius: 13, backgroundColor: '#F0F5FA',
+    borderRadius: 13, backgroundColor: '#F4F3EF',
     alignItems: 'center',
-    borderWidth: 1, borderColor: '#DCE6F1',
+    borderWidth: 1, borderColor: '#E7E5DF',
   },
   contestarBtnCancelarTexto: {
-    color: '#0B2E59', fontSize: 14, fontWeight: '700',
+    color: '#16202E', fontSize: 14, fontFamily: Fonte.corpoSemi,
   },
   contestarBtnEnviar: {
     flex: 2, paddingVertical: 14, borderRadius: 13,
@@ -962,7 +964,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   contestarBtnEnviarTexto: {
-    color: '#FFFFFF', fontSize: 14, fontWeight: '800',
+    color: '#FFFFFF', fontSize: 14, fontFamily: Fonte.corpoSemi,
   },
 
   // Modal centro
@@ -979,30 +981,30 @@ const styles = StyleSheet.create({
   },
 
   aguardandoTitulo: {
-    ...Typography.h3, color: '#0B2E59',
-    fontWeight: '800', textAlign: 'center',
+    ...Typography.h3, color: '#16202E',
+    fontFamily: Fonte.corpoSemi, textAlign: 'center',
     fontSize: 17, marginTop: 16, marginBottom: 6,
   },
   aguardandoTexto: {
-    ...Typography.body, color: '#637894',
+    ...Typography.body, color: '#5B616B',
     textAlign: 'center', fontSize: 13, lineHeight: 19,
   },
 
   sucessoIcone: {
     width: 88, height: 88, borderRadius: 44,
-    backgroundColor: '#2E7D32',
+    backgroundColor: '#2F7A4F',
     justifyContent: 'center', alignItems: 'center',
     marginBottom: 18,
-    shadowColor: '#2E7D32',
+    shadowColor: '#2F7A4F',
     shadowOpacity: 0.3, shadowRadius: 15, elevation: 8,
   },
   sucessoTitulo: {
-    ...Typography.displayMD, color: '#0B2E59',
-    fontWeight: '900', textAlign: 'center',
+    ...Typography.displayMD, color: '#16202E',
+    fontFamily: Fonte.tituloBold, textAlign: 'center',
     marginBottom: 8, fontSize: 22,
   },
   sucessoSubtitulo: {
-    ...Typography.body, color: '#637894',
+    ...Typography.body, color: '#5B616B',
     textAlign: 'center', fontSize: 13,
     marginBottom: 18, lineHeight: 19,
   },
@@ -1012,6 +1014,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sucessoBtnTexto: {
-    color: '#FFFFFF', fontSize: 15, fontWeight: '800',
+    color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi,
   },
 });

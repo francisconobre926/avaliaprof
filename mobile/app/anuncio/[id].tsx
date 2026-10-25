@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors, Sombras } from '../../src/theme/colors';
 import { Spacing, Typography, Radius } from '../../src/theme/typography';
 import { useCores } from '../../src/store/themeStore';
@@ -23,14 +23,16 @@ import { ANUNCIOS_MOCK, formatarPrecoCompleto, tempoDesde } from '../../src/data
 import { Anuncio } from '../../src/types';
 import { obterAnuncioLocal } from '../../src/store/anunciosLocal';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 const { width } = Dimensions.get('window');
 
 // ============================================================
 // CORES GOHOME OFICIAIS (do logo)
 // ============================================================
-const LARANJA_MARCA = '#FE8A00';
-const AZUL_MARCA = '#0082DE';
-const AZUL_ESCURO = '#0061A6';
+const LARANJA_MARCA = '#E8760A';
+const AZUL_MARCA = '#0A6BC0';
+const AZUL_ESCURO = '#08508F';
 
 // ============================================================
 // HELPERS
@@ -250,9 +252,9 @@ export default function DetalheAnuncio() {
             {anuncio.fotos.length > 0 ? anuncio.fotos.map((foto, index) => (
               <Image key={index} source={{ uri: foto }} style={styles.fotoCarousel} />
             )) : (
-              <View style={[styles.fotoCarousel, { alignItems: 'center', justifyContent: 'center', backgroundColor: '#E8EEF5' }]}>
+              <View style={[styles.fotoCarousel, { alignItems: 'center', justifyContent: 'center', backgroundColor: '#E7E5DF' }]}>
                 <Ionicons name="home-outline" size={64} color="#8A9AAF" />
-                <Text style={{ marginTop: 10, color: '#64748B', fontWeight: '600' }}>Sem fotografias disponíveis</Text>
+                <Text style={{ marginTop: 10, color: '#64748B', fontFamily: Fonte.corpoSemi }}>Sem fotografias disponíveis</Text>
               </View>
             )}
           </ScrollView>
@@ -453,7 +455,7 @@ export default function DetalheAnuncio() {
               </TouchableOpacity>
 
               <TouchableOpacity style={[styles.contactoItem, { backgroundColor: cores.fundoSuave }]} onPress={abrirWhatsApp} activeOpacity={0.8}>
-                <MaterialCommunityIcons name="whatsapp" size={22} color={Colors.verde} />
+                <Icone name="whatsapp" size={22} color={Colors.verde} />
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.contactoLabel, { color: cores.textoSecundario }]}>WhatsApp</Text>
                   <Text style={[styles.contactoValor, { color: cores.textoPrincipal }]}>
@@ -611,7 +613,7 @@ function CaracteristicasDetalhadas({ anuncio, cores }: { anuncio: Anuncio; cores
     <View style={styles.caracteristicasGrid}>
       {itens.map((item, i) => (
         <View key={i} style={[styles.caracteristicaItem, { backgroundColor: cores.fundoSuave }]}>
-          <MaterialCommunityIcons name={item.icone} size={18} color={cores.principal} />
+          <Icone name={item.icone} size={18} color={cores.principal} />
           <View style={{ flex: 1 }}>
             <Text style={[styles.caracteristicaLabel, { color: cores.textoSecundario }]}>{item.label}</Text>
             <Text style={[styles.caracteristicaValor, { color: cores.textoPrincipal }]} numberOfLines={1}>{item.valor}</Text>
@@ -638,7 +640,7 @@ const styles = StyleSheet.create({
   indicadores: { position: 'absolute', bottom: 16, left: 0, right: 0, flexDirection: 'row', justifyContent: 'center', gap: 6 },
   indicador: { width: 8, height: 8, borderRadius: 4 },
   contagemFotos: { position: 'absolute', bottom: 16, right: 16, flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 10, paddingVertical: 5, borderRadius: Radius.sm, gap: 4 },
-  contagemFotosTexto: { color: '#FFFFFF', fontSize: 11, fontWeight: '700' },
+  contagemFotosTexto: { color: '#FFFFFF', fontSize: 11, fontFamily: Fonte.corpoSemi },
 
   secçao: { padding: Spacing.lg },
   secçaoTitulo: { ...Typography.h3, marginBottom: Spacing.md },
@@ -668,11 +670,11 @@ const styles = StyleSheet.create({
 
   anuncianteBox: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md },
   anuncianteAvatar: { width: 50, height: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center' },
-  anuncianteAvatarLetra: { ...Typography.h2, color: '#FFFFFF', fontWeight: '800' },
+  anuncianteAvatarLetra: { ...Typography.h2, color: '#FFFFFF', fontFamily: Fonte.tituloSemi },
   anuncianteNomeRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 },
   anuncianteNome: { ...Typography.bodyBold, fontSize: 15 },
   verificadoBadge: { flexDirection: 'row', alignItems: 'center', gap: 2 },
-  verificadoText: { ...Typography.caption, fontSize: 10, fontWeight: '700' },
+  verificadoText: { ...Typography.caption, fontSize: 10, fontFamily: Fonte.corpoSemi },
   ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   ratingTexto: { ...Typography.bodyBold, fontSize: 13 },
   avaliacoesTexto: { ...Typography.caption },
@@ -712,17 +714,17 @@ const styles = StyleSheet.create({
   footerPrecoLabel: { ...Typography.caption, marginBottom: 2 },
   footerPrecoValores: { flexDirection: 'row', alignItems: 'baseline', gap: 8 },
   footerPrecoRiscado: { ...Typography.body, fontSize: 12, textDecorationLine: 'line-through' },
-  footerPreco25: { ...Typography.h2, fontWeight: '800' },
-  footerPromo: { ...Typography.caption, fontSize: 10, fontWeight: '700' },
+  footerPreco25: { ...Typography.h2, fontFamily: Fonte.tituloSemi },
+  footerPromo: { ...Typography.caption, fontSize: 10, fontFamily: Fonte.corpoSemi },
   footerBotao: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 20, paddingVertical: 14, borderRadius: Radius.full, overflow: 'hidden' },
   footerBotaoTexto: { ...Typography.button, color: '#FFFFFF', fontSize: 15 },
 
   acaoPrincipal: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 15, borderRadius: Radius.lg, overflow: 'hidden', marginBottom: Spacing.sm },
-  acaoPrincipalTitulo: { color: '#FFFFFF', fontWeight: '800', fontSize: 14, marginBottom: 3 },
-  acaoPrincipalSubtitulo: { color: 'rgba(255,255,255,0.82)', fontSize: 11, lineHeight: 15 },
+  acaoPrincipalTitulo: { color: '#FFFFFF', fontFamily: Fonte.corpoSemi, fontSize: 14, marginBottom: 3 },
+  acaoPrincipalSubtitulo: { color: 'rgba(255,255,255,0.82)', fontFamily: Fonte.corpo, fontSize: 11, lineHeight: 15 },
   acaoSecundaria: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 13, borderRadius: Radius.lg, borderWidth: 1 },
-  acaoChatIcone: { width: 42, height: 42, borderRadius: 13, backgroundColor: 'rgba(254, 138, 0, 0.1)', alignItems: 'center', justifyContent: 'center' },
-  acaoChatTitulo: { fontSize: 14, fontWeight: '800', marginBottom: 3 },
-  acaoChatSubtitulo: { fontSize: 11 },
-  avisoDemo: { fontSize: 10, lineHeight: 15, marginTop: Spacing.sm },
+  acaoChatIcone: { width: 42, height: 42, borderRadius: 13, backgroundColor: 'rgba(232, 118, 10, 0.1)', alignItems: 'center', justifyContent: 'center' },
+  acaoChatTitulo: { fontSize: 14, fontFamily: Fonte.corpoSemi, marginBottom: 3 },
+  acaoChatSubtitulo: { fontFamily: Fonte.corpo, fontSize: 11 },
+  avisoDemo: { fontFamily: Fonte.corpo, fontSize: 10, lineHeight: 15, marginTop: Spacing.sm },
 });

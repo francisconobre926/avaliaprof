@@ -17,14 +17,16 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useUserStore } from '../../src/store/userStore';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 const BRAND = {
-  orange: '#FF7900',
+  orange: '#E8760A',
   orangeDark: '#E86E00',
   orangeSoft: '#FFF1E5',
-  navy: '#0B2E59',
+  navy: '#16202E',
   navyDeep: '#082342',
   blueSoft: '#EEF5FC',
   white: '#FFFFFF',
@@ -174,7 +176,7 @@ export default function LoginScreen() {
           <Animated.View style={{ opacity: fade, transform: [{ translateY: rise }] }}>
             <View style={styles.welcomeRow}>
               <View style={[styles.roleIcon, { backgroundColor: isAnunciante ? BRAND.orangeSoft : BRAND.blueSoft }]}>
-                <MaterialCommunityIcons
+                <Icone
                   name={isAnunciante ? 'home-city-outline' : 'account-search-outline'}
                   size={25}
                   color={corPrincipal}
@@ -372,58 +374,58 @@ const styles = StyleSheet.create({
   },
   brandLockup: { flexDirection: 'row', alignItems: 'center', gap: 9 },
   logo: { width: 43, height: 43 },
-  brandName: { fontSize: 19, fontWeight: '900', letterSpacing: -0.6, color: BRAND.navy },
-  brandTagline: { marginTop: 1, fontSize: 10, fontWeight: '600', color: BRAND.muted, letterSpacing: 0.1 },
+  brandName: { fontSize: 19, fontFamily: Fonte.corpoBold, letterSpacing: -0.6, color: BRAND.navy },
+  brandTagline: { marginTop: 1, fontSize: 10, fontFamily: Fonte.corpoSemi, color: BRAND.muted, letterSpacing: 0.1 },
   headerBadge: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 8, paddingVertical: 7, borderRadius: 99, backgroundColor: BRAND.orangeSoft },
   headerBadgeDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: BRAND.orange },
-  headerBadgeText: { fontSize: 9, fontWeight: '900', letterSpacing: 0.6, color: BRAND.orangeDark },
+  headerBadgeText: { fontSize: 9, fontFamily: Fonte.corpoBold, letterSpacing: 0.6, color: BRAND.orangeDark },
   scroll: { flex: 1, backgroundColor: BRAND.background },
   scrollContent: { paddingHorizontal: 20, paddingTop: 25, paddingBottom: 34 },
   welcomeRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 18 },
   roleIcon: { width: 54, height: 54, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
   roleTextWrap: { gap: 6 },
-  eyebrow: { color: BRAND.muted, fontSize: 10, fontWeight: '800', letterSpacing: 1.5 },
+  eyebrow: { color: BRAND.muted, fontSize: 10, fontFamily: Fonte.corpoSemi, letterSpacing: 1.5 },
   rolePill: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 6 },
   roleDot: { width: 7, height: 7, borderRadius: 4 },
-  rolePillText: { fontSize: 11, fontWeight: '900', letterSpacing: 0.8 },
-  title: { fontSize: 31, lineHeight: 38, letterSpacing: -1.1, fontWeight: '900', color: BRAND.navy },
+  rolePillText: { fontSize: 11, fontFamily: Fonte.corpoBold, letterSpacing: 0.8 },
+  title: { fontSize: 31, lineHeight: 38, letterSpacing: -1.1, fontFamily: Fonte.tituloBold, color: BRAND.navy },
   titleAccent: { color: BRAND.orange },
-  subtitle: { marginTop: 8, marginBottom: 23, fontSize: 14, lineHeight: 22, color: BRAND.muted, maxWidth: 330 },
-  formCard: { padding: 20, borderRadius: 24, backgroundColor: BRAND.white, borderWidth: 1, borderColor: '#E8EEF4', shadowColor: '#0B2E59', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.055, shadowRadius: 18, elevation: 3 },
+  subtitle: { marginTop: 8, marginBottom: 23, fontFamily: Fonte.corpo, fontSize: 14, lineHeight: 22, color: BRAND.muted, maxWidth: 330 },
+  formCard: { padding: 20, borderRadius: 24, backgroundColor: BRAND.white, borderWidth: 1, borderColor: '#E8EEF4', shadowColor: '#16202E', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.055, shadowRadius: 18, elevation: 3 },
   formHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 23 },
-  formTitle: { fontSize: 19, fontWeight: '900', letterSpacing: -0.4, color: BRAND.ink },
-  formCaption: { marginTop: 4, fontSize: 12, color: BRAND.muted },
+  formTitle: { fontSize: 19, fontFamily: Fonte.corpoBold, letterSpacing: -0.4, color: BRAND.ink },
+  formCaption: { marginTop: 4, fontFamily: Fonte.corpo, fontSize: 12, color: BRAND.muted },
   lockIcon: { width: 42, height: 42, borderRadius: 14, backgroundColor: BRAND.blueSoft, alignItems: 'center', justifyContent: 'center' },
   fieldGroup: { marginBottom: 17 },
   labelRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  label: { fontSize: 12, fontWeight: '800', color: BRAND.ink, marginBottom: 8 },
+  label: { fontSize: 12, fontFamily: Fonte.corpoSemi, color: BRAND.ink, marginBottom: 8 },
   inputShell: { minHeight: 56, borderRadius: 15, paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', gap: 11, borderWidth: 1.3, borderColor: BRAND.border, backgroundColor: '#FBFCFE' },
   inputShellFocused: { borderColor: BRAND.orange, backgroundColor: BRAND.white, shadowColor: BRAND.orange, shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.09, shadowRadius: 5, elevation: 1 },
-  input: { flex: 1, minHeight: 52, paddingVertical: 0, fontSize: 14, color: BRAND.ink },
+  input: { flex: 1, minHeight: 52, paddingVertical: 0, fontFamily: Fonte.corpo, fontSize: 14, color: BRAND.ink },
   visibilityButton: { padding: 5 },
-  forgotText: { fontSize: 11, fontWeight: '800' },
+  forgotText: { fontSize: 11, fontFamily: Fonte.corpoSemi },
   rememberRow: { flexDirection: 'row', alignItems: 'center', gap: 9, marginTop: 1, marginBottom: 21 },
   checkbox: { width: 19, height: 19, borderRadius: 6, borderWidth: 1.5, borderColor: '#C8D3DF', alignItems: 'center', justifyContent: 'center', backgroundColor: BRAND.white },
   checkboxChecked: { backgroundColor: BRAND.navy, borderColor: BRAND.navy },
-  rememberText: { fontSize: 12, color: BRAND.muted, fontWeight: '600', flex: 1 },
+  rememberText: { fontSize: 12, color: BRAND.muted, fontFamily: Fonte.corpoSemi, flex: 1 },
   rememberHint: { padding: 2 },
   submitButton: { borderRadius: 15, overflow: 'hidden', shadowColor: BRAND.navy, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.18, shadowRadius: 10, elevation: 4 },
   submitButtonDisabled: { opacity: 0.72 },
   submitGradient: { minHeight: 56, paddingHorizontal: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12 },
-  submitText: { flex: 1, textAlign: 'center', color: BRAND.white, fontSize: 14, fontWeight: '900', letterSpacing: 0.1 },
+  submitText: { flex: 1, textAlign: 'center', color: BRAND.white, fontSize: 14, fontFamily: Fonte.corpoBold, letterSpacing: 0.1 },
   secureNote: { marginTop: 14, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 6 },
-  secureNoteText: { fontSize: 10, color: BRAND.muted },
+  secureNoteText: { fontFamily: Fonte.corpo, fontSize: 10, color: BRAND.muted },
   dividerRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginVertical: 21 },
   dividerLine: { flex: 1, height: 1, backgroundColor: '#DDE5ED' },
-  dividerText: { fontSize: 10, fontWeight: '900', letterSpacing: 1.5, color: '#8A99AA' },
+  dividerText: { fontSize: 10, fontFamily: Fonte.corpoBold, letterSpacing: 1.5, color: '#8A99AA' },
   googleButton: { minHeight: 54, paddingHorizontal: 15, flexDirection: 'row', alignItems: 'center', gap: 12, borderWidth: 1.2, borderColor: BRAND.border, borderRadius: 15, backgroundColor: BRAND.white },
   googleMark: { width: 27, height: 27, borderRadius: 9, alignItems: 'center', justifyContent: 'center', backgroundColor: BRAND.white, borderWidth: 1, borderColor: '#DDE5ED' },
-  googleMarkText: { fontSize: 17, fontWeight: '900', color: '#4285F4' },
-  googleButtonText: { flex: 1, fontSize: 13, fontWeight: '800', color: BRAND.ink },
+  googleMarkText: { fontSize: 17, fontFamily: Fonte.corpoBold, color: '#4285F4' },
+  googleButtonText: { flex: 1, fontSize: 13, fontFamily: Fonte.corpoSemi, color: BRAND.ink },
   signupRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: 5, marginTop: 23 },
-  signupPrompt: { fontSize: 12, color: BRAND.muted },
-  signupLink: { fontSize: 12, fontWeight: '900', color: BRAND.orangeDark },
+  signupPrompt: { fontFamily: Fonte.corpo, fontSize: 12, color: BRAND.muted },
+  signupLink: { fontSize: 12, fontFamily: Fonte.corpoBold, color: BRAND.orangeDark },
   guestButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7, marginTop: 19, paddingVertical: 8 },
-  guestButtonText: { fontSize: 11, color: BRAND.muted, fontWeight: '700', textDecorationLine: 'underline' },
-  legalText: { marginTop: 19, paddingHorizontal: 10, fontSize: 10, lineHeight: 16, textAlign: 'center', color: '#8B98A8' },
+  guestButtonText: { fontSize: 11, color: BRAND.muted, fontFamily: Fonte.corpoSemi, textDecorationLine: 'underline' },
+  legalText: { marginTop: 19, paddingHorizontal: 10, fontFamily: Fonte.corpo, fontSize: 10, lineHeight: 16, textAlign: 'center', color: '#8B98A8' },
 });

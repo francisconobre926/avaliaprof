@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors, Sombras } from '../src/theme/colors';
 import { Spacing, Typography, Radius } from '../src/theme/typography';
@@ -30,6 +30,8 @@ import {
 import { useWalletStore, formatarValor } from '../src/store/walletStore';
 import { useUserStore } from '../src/store/userStore';
 
+import { Fonte } from '../src/theme/fonts';
+import Icone from '../src/components/Icone';
 export default function ReferenciaScreen() {
   const router = useRouter();
   const cores = useCores();
@@ -115,7 +117,7 @@ export default function ReferenciaScreen() {
       // Encontra a transacção pendente e confirma na carteira
       const transaccoes = useWalletStore.getState().carteira.transaccoes;
       const transaccaoPendente = transaccoes.find(
-        t => t.tipo === 'comissao_referencia' && t.estado === 'pending'
+        t => t.tipo === 'referencia' && t.estado === 'pending'
           && t.descricao.includes(convidado.nome.split(' ')[0])
       );
 
@@ -164,7 +166,7 @@ export default function ReferenciaScreen() {
           {/* Chamada principal */}
           <View style={styles.heroCenter}>
             <View style={styles.heroIconeContainer}>
-              <MaterialCommunityIcons name="gift-outline" size={36} color="#FFFFFF" />
+              <Icone name="gift-outline" size={36} color="#FFFFFF" />
             </View>
             <Text style={styles.heroTexto}>
               Ganha <Text style={styles.heroTextoDestaque}>10%</Text> de tudo que os teus convidados paguem no GoHome
@@ -211,7 +213,7 @@ export default function ReferenciaScreen() {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
               />
-              <MaterialCommunityIcons name="share-variant" size={18} color="#FFFFFF" />
+              <Icone name="share-variant" size={18} color="#FFFFFF" />
               <Text style={styles.partilharBotaoTexto}>Partilhar convite</Text>
             </TouchableOpacity>
 
@@ -220,7 +222,7 @@ export default function ReferenciaScreen() {
               onPress={copiarLink}
               activeOpacity={0.85}
             >
-              <MaterialCommunityIcons name="link-variant" size={18} color={cores.textoPrincipal} />
+              <Icone name="link-variant" size={18} color={cores.textoPrincipal} />
             </TouchableOpacity>
           </View>
         </View>
@@ -283,7 +285,7 @@ export default function ReferenciaScreen() {
 
           {convidados.length === 0 ? (
             <View style={styles.vazioContainer}>
-              <MaterialCommunityIcons name="account-plus-outline" size={48} color={cores.textoTerciario} />
+              <Icone name="account-plus-outline" size={48} color={cores.textoTerciario} />
               <Text style={[styles.vazioTitulo, { color: cores.textoPrincipal }]}>
                 Ainda sem convidados
               </Text>
@@ -321,7 +323,7 @@ export default function ReferenciaScreen() {
             end={{ x: 1, y: 1 }}
           />
           <View style={styles.ctaConteudo}>
-            <MaterialCommunityIcons name="rocket-launch" size={32} color="#FFFFFF" />
+            <Icone name="rocket-launch" size={32} color="#FFFFFF" />
             <View style={{ flex: 1 }}>
               <Text style={styles.ctaTitulo}>Pronto para ganhar mais?</Text>
               <Text style={styles.ctaTexto}>Partilha agora com amigos</Text>
@@ -428,7 +430,7 @@ export default function ReferenciaScreen() {
 
             <View style={styles.modalHeader}>
               <View style={[styles.modalIcone, { backgroundColor: 'rgba(255, 193, 7, 0.15)' }]}>
-                <MaterialCommunityIcons name="flask-outline" size={24} color={Colors.premium} />
+                <Icone name="flask-outline" size={24} color={Colors.premium} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={[styles.modalTitulo, { color: cores.textoPrincipal }]}>
@@ -461,7 +463,7 @@ export default function ReferenciaScreen() {
                     }}
                     activeOpacity={0.85}
                   >
-                    <MaterialCommunityIcons name="cash-plus" size={20} color="#FFFFFF" />
+                    <Icone name="cash-plus" size={20} color="#FFFFFF" />
                     <View style={{ flex: 1 }}>
                       <Text style={styles.demoBotaoTitulo}>Simular pagamento</Text>
                       <Text style={styles.demoBotaoSubtitulo}>
@@ -482,7 +484,7 @@ export default function ReferenciaScreen() {
                     }}
                     activeOpacity={0.85}
                   >
-                    <MaterialCommunityIcons name="check-circle" size={20} color="#FFFFFF" />
+                    <Icone name="check-circle" size={20} color="#FFFFFF" />
                     <View style={{ flex: 1 }}>
                       <Text style={styles.demoBotaoTitulo}>Confirmar pagamento</Text>
                       <Text style={styles.demoBotaoSubtitulo}>
@@ -494,7 +496,7 @@ export default function ReferenciaScreen() {
 
                 {convidadoSeleccionado.estado === 'pagou_confirmado' && (
                   <View style={[styles.demoFeito, { backgroundColor: 'rgba(76, 175, 80, 0.1)' }]}>
-                    <MaterialCommunityIcons name="check-decagram" size={32} color={Colors.verde} />
+                    <Icone name="check-decagram" size={32} color={Colors.verde} />
                     <Text style={[styles.demoFeitoTexto, { color: Colors.verde }]}>
                       Comissão já recebida
                     </Text>
@@ -517,7 +519,7 @@ function StatCard({ icone, cor, corFundo, label, valor, cores }: any) {
   return (
     <View style={[styles.statCard, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
       <View style={[styles.statIcone, { backgroundColor: corFundo }]}>
-        <MaterialCommunityIcons name={icone} size={18} color={cor} />
+        <Icone name={icone} size={18} color={cor} />
       </View>
       <Text style={[styles.statLabel, { color: cores.textoSecundario }]}>{label}</Text>
       <Text style={[styles.statValor, { color: cores.textoPrincipal }]}>{valor}</Text>
@@ -552,7 +554,7 @@ function ConvidadoItem({ convidado, cores, onPress }: any) {
         </Text>
         <View style={styles.convidadoMeta}>
           <View style={[styles.convidadoPapel, { backgroundColor: cores.fundoSuave }]}>
-            <MaterialCommunityIcons
+            <Icone
               name={convidado.papel === 'anunciante' ? 'bullhorn-outline' : 'account-search-outline'}
               size={10}
               color={cores.textoSecundario}
@@ -646,7 +648,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   heroTextoDestaque: {
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
     fontSize: 22,
   },
   heroSubtexto: {
@@ -682,7 +684,7 @@ const styles = StyleSheet.create({
   },
   codigoTexto: {
     ...Typography.h2,
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
     letterSpacing: 2,
     flex: 1,
   },
@@ -697,7 +699,7 @@ const styles = StyleSheet.create({
   copiarBotaoTexto: {
     color: '#FFFFFF',
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
   },
   linkLabel: {
     ...Typography.caption,
@@ -717,7 +719,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.full,
     overflow: 'hidden',
     gap: 8,
-    ...Sombras.colorida('#2196F3'),
+    ...Sombras.colorida('#0A6BC0'),
   },
   partilharBotaoTexto: {
     ...Typography.button,
@@ -768,7 +770,7 @@ const styles = StyleSheet.create({
   },
   statValor: {
     ...Typography.h2,
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
   },
 
   // Convidados
@@ -808,7 +810,7 @@ const styles = StyleSheet.create({
   },
   convidadoInicial: {
     ...Typography.h3,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
   },
   convidadoInfo: { flex: 1 },
   convidadoNome: {
@@ -830,7 +832,7 @@ const styles = StyleSheet.create({
   },
   convidadoPapelTexto: {
     fontSize: 10,
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
   },
   convidadoTempo: {
     ...Typography.caption,
@@ -855,11 +857,11 @@ const styles = StyleSheet.create({
   },
   estadoBadgeTexto: {
     fontSize: 10,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
   },
   convidadoComissao: {
     fontSize: 12,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
   },
 
   // Vazio
@@ -881,7 +883,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.lg,
     borderRadius: Radius.xl,
     overflow: 'hidden',
-    ...Sombras.colorida('#2196F3'),
+    ...Sombras.colorida('#0A6BC0'),
   },
   ctaConteudo: {
     flexDirection: 'row',
@@ -959,7 +961,7 @@ const styles = StyleSheet.create({
   passoNumeroTexto: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
   },
   passoTitulo: {
     ...Typography.bodyBold,

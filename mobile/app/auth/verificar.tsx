@@ -33,14 +33,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 import { Colors, Sombras } from '../../src/theme/colors';
 
 import { Spacing, Typography, Radius } from '../../src/theme/typography';
 
-
-
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 export default function VerificarScreen() {
 
   const router = useRouter();
@@ -55,8 +55,6 @@ export default function VerificarScreen() {
 
   }>();
 
-
-
   const [codigo, setCodigo] = useState(['', '', '', '', '', '']);
 
   const [loading, setLoading] = useState(false);
@@ -67,8 +65,6 @@ export default function VerificarScreen() {
 
   const [erro, setErro] = useState(false);
 
-
-
   const inputRefs = useRef<Array<TextInput | null>>([]);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -77,15 +73,11 @@ export default function VerificarScreen() {
 
   const successAnim = useRef(new Animated.Value(0)).current;
 
-
-
   const isAnunciante = papel === 'anunciante';
 
-  const corPrincipal = isAnunciante ? '#FF7900' : '#0B2E59';
+  const corPrincipal = isAnunciante ? '#E8760A' : '#16202E';
 
-  const gradiente = isAnunciante ? ['#FF7900', '#E96500'] as const : ['#0B2E59', '#174A7E'] as const;
-
-
+  const gradiente = isAnunciante ? ['#E8760A', '#E96500'] as const : ['#16202E', '#174A7E'] as const;
 
   useEffect(() => {
 
@@ -99,8 +91,6 @@ export default function VerificarScreen() {
 
     }).start();
 
-
-
     // Focus primeiro input automaticamente
 
     setTimeout(() => {
@@ -110,8 +100,6 @@ export default function VerificarScreen() {
     }, 500);
 
   }, []);
-
-
 
   // Timer para reenviar
 
@@ -127,15 +115,11 @@ export default function VerificarScreen() {
 
   }, [tempoRestante]);
 
-
-
   const handleMudarCodigo = (valor: string, index: number) => {
 
     // Só aceita números
 
     if (valor && !/^\d$/.test(valor)) return;
-
-
 
     const novoCodigo = [...codigo];
 
@@ -145,8 +129,6 @@ export default function VerificarScreen() {
 
     setErro(false);
 
-
-
     // Avançar para próximo input
 
     if (valor && index < 5) {
@@ -154,8 +136,6 @@ export default function VerificarScreen() {
       inputRefs.current[index + 1]?.focus();
 
     }
-
-
 
     // Se completou os 6 dígitos, verificar automaticamente
 
@@ -173,8 +153,6 @@ export default function VerificarScreen() {
 
   };
 
-
-
   const handleKeyPress = (e: any, index: number) => {
 
     // Backspace vai para input anterior se actual vazio
@@ -187,13 +165,9 @@ export default function VerificarScreen() {
 
   };
 
-
-
   const verificarCodigo = (codigoCompleto?: string) => {
 
     const cod = codigoCompleto || codigo.join('');
-
-
 
     if (cod.length !== 6) {
 
@@ -203,19 +177,13 @@ export default function VerificarScreen() {
 
     }
 
-
-
     setLoading(true);
-
-
 
     // Simular verificação (aceita qualquer código de 6 dígitos)
 
     setTimeout(() => {
 
       setLoading(false);
-
-
 
       // Se código = "000000" simula erro (para demo)
 
@@ -228,8 +196,6 @@ export default function VerificarScreen() {
         return;
 
       }
-
-
 
       // Animação de sucesso
 
@@ -244,8 +210,6 @@ export default function VerificarScreen() {
         useNativeDriver: true,
 
       }).start();
-
-
 
       // Se não tem foto, vai para ecrã de sugestão de foto
 
@@ -275,8 +239,6 @@ export default function VerificarScreen() {
 
   };
 
-
-
   const shake = () => {
 
     Animated.sequence([
@@ -291,8 +253,6 @@ export default function VerificarScreen() {
 
     ]).start();
 
-
-
     // Limpar código após erro
 
     setTimeout(() => {
@@ -304,8 +264,6 @@ export default function VerificarScreen() {
     }, 800);
 
   };
-
-
 
   const reenviarCodigo = () => {
 
@@ -323,19 +281,13 @@ export default function VerificarScreen() {
 
   };
 
-
-
   const emailMascarado = email
 
     ? email.replace(/(.{2})(.*)(@.*)/, (_, a, b, c) => `${a}${'*'.repeat(b.length)}${c}`)
 
     : '';
 
-
-
   const codigoCompleto = codigo.every(d => d !== '');
-
-
 
   return (
 
@@ -385,8 +337,6 @@ export default function VerificarScreen() {
 
         </View>
 
-
-
         <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
 
           {/* Ícone hero */}
@@ -399,15 +349,13 @@ export default function VerificarScreen() {
 
                 <View style={[styles.heroIcone, { backgroundColor: `${corPrincipal}20` }]}>
 
-                  <MaterialCommunityIcons name="email-fast" size={50} color={corPrincipal} />
+                  <Icone name="email-fast" size={50} color={corPrincipal} />
 
                 </View>
 
               </View>
 
             </View>
-
-
 
             {/* Ícone de check quando sucesso */}
 
@@ -435,8 +383,6 @@ export default function VerificarScreen() {
 
           </View>
 
-
-
           {/* Título */}
 
           <Text style={styles.titulo}>Verifica o teu email</Text>
@@ -448,8 +394,6 @@ export default function VerificarScreen() {
             <Text style={styles.emailDestaque}>{emailMascarado}</Text>
 
           </Text>
-
-
 
           {/* Inputs do código */}
 
@@ -519,8 +463,6 @@ export default function VerificarScreen() {
 
           </Animated.View>
 
-
-
           {/* Mensagem de erro */}
 
           {erro && (
@@ -534,8 +476,6 @@ export default function VerificarScreen() {
             </View>
 
           )}
-
-
 
           {/* Botão verificar */}
 
@@ -589,8 +529,6 @@ export default function VerificarScreen() {
 
           </TouchableOpacity>
 
-
-
           {/* Reenviar */}
 
           <View style={styles.reenviarContainer}>
@@ -637,8 +575,6 @@ export default function VerificarScreen() {
 
           </View>
 
-
-
           {/* Info card */}
 
           <View style={styles.infoCard}>
@@ -662,8 +598,6 @@ export default function VerificarScreen() {
             </View>
 
           </View>
-
-
 
           {/* Trocar email */}
 
@@ -692,8 +626,6 @@ export default function VerificarScreen() {
   );
 
 }
-
-
 
 const styles = StyleSheet.create({
 
@@ -774,8 +706,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
   },
-
-
 
   // Hero
 
@@ -861,8 +791,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Título
 
   titulo: {
@@ -895,11 +823,9 @@ const styles = StyleSheet.create({
 
     color: Colors.textoPrincipal,
 
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
 
   },
-
-
 
   // Código
 
@@ -943,13 +869,11 @@ const styles = StyleSheet.create({
 
     fontSize: 24,
 
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
 
     color: Colors.textoPrincipal,
 
   },
-
-
 
   // Erro
 
@@ -971,11 +895,9 @@ const styles = StyleSheet.create({
 
     color: Colors.erro,
 
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
 
   },
-
-
 
   // Botão
 
@@ -1017,8 +939,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Reenviar
 
   reenviarContainer: {
@@ -1054,8 +974,6 @@ const styles = StyleSheet.create({
     ...Typography.bodyBold,
 
   },
-
-
 
   // Info
 
@@ -1112,8 +1030,6 @@ const styles = StyleSheet.create({
     lineHeight: 18,
 
   },
-
-
 
   // Trocar email
 

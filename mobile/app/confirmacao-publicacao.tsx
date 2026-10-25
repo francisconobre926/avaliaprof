@@ -24,7 +24,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors, Sombras } from '../src/theme/colors';
 import { Spacing, Typography, Radius } from '../src/theme/typography';
@@ -32,12 +32,14 @@ import { useCores } from '../src/store/themeStore';
 import { useUserStore } from '../src/store/userStore';
 import { obterAnuncioLocal, guardarAnuncioLocal } from '../src/store/anunciosLocal';
 
+import { Fonte } from '../src/theme/fonts';
+import Icone from '../src/components/Icone';
 // ============================================================
 // CORES GOHOME OFICIAIS (do logo)
 // ============================================================
-const AZUL_MARCA = '#0082DE';
-const LARANJA_MARCA = '#FE8A00';
-const VERDE_SUCESSO = '#2E7D32';
+const AZUL_MARCA = '#0A6BC0';
+const LARANJA_MARCA = '#E8760A';
+const VERDE_SUCESSO = '#2F7A4F';
 
 export default function ConfirmacaoPublicacao() {
   const router = useRouter();
@@ -241,7 +243,7 @@ export default function ConfirmacaoPublicacao() {
 
           <View style={styles.previewMeta}>
             <View style={styles.previewMetaItem}>
-              <MaterialCommunityIcons name="shape-outline" size={14} color={cores.textoSecundario} />
+              <Icone name="shape-outline" size={14} color={cores.textoSecundario} />
               <Text style={[styles.previewMetaTexto, { color: cores.textoSecundario }]}>
                 {categoria}
               </Text>
@@ -264,7 +266,7 @@ export default function ConfirmacaoPublicacao() {
 
           <View style={styles.detalheItem}>
             <View style={[styles.detalheIcone, { backgroundColor: 'rgba(76, 175, 80, 0.15)' }]}>
-              <MaterialCommunityIcons name="cash" size={18} color={VERDE_SUCESSO} />
+              <Icone name="cash" size={18} color={VERDE_SUCESSO} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={[styles.detalheLabel, { color: cores.textoSecundario }]}>
@@ -287,8 +289,8 @@ export default function ConfirmacaoPublicacao() {
           <View style={[styles.detalheDivisor, { backgroundColor: cores.bordaSubtil }]} />
 
           <View style={styles.detalheItem}>
-            <View style={[styles.detalheIcone, { backgroundColor: 'rgba(0, 130, 222, 0.12)' }]}>
-              <MaterialCommunityIcons name="calendar-check" size={18} color={AZUL_MARCA} />
+            <View style={[styles.detalheIcone, { backgroundColor: 'rgba(10, 107, 192, 0.12)' }]}>
+              <Icone name="calendar-check" size={18} color={AZUL_MARCA} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={[styles.detalheLabel, { color: cores.textoSecundario }]}>
@@ -307,7 +309,7 @@ export default function ConfirmacaoPublicacao() {
 
           <View style={styles.detalheItem}>
             <View style={[styles.detalheIcone, { backgroundColor: 'rgba(255, 193, 7, 0.15)' }]}>
-              <MaterialCommunityIcons name="receipt" size={18} color={Colors.premium} />
+              <Icone name="receipt" size={18} color={Colors.premium} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={[styles.detalheLabel, { color: cores.textoSecundario }]}>
@@ -332,8 +334,8 @@ export default function ConfirmacaoPublicacao() {
           <View style={[styles.detalheDivisor, { backgroundColor: cores.bordaSubtil }]} />
 
           <View style={styles.detalheItem}>
-            <View style={[styles.detalheIcone, { backgroundColor: 'rgba(0, 130, 222, 0.12)' }]}>
-              <MaterialCommunityIcons name="account-outline" size={18} color={AZUL_MARCA} />
+            <View style={[styles.detalheIcone, { backgroundColor: 'rgba(10, 107, 192, 0.12)' }]}>
+              <Icone name="account-outline" size={18} color={AZUL_MARCA} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={[styles.detalheLabel, { color: cores.textoSecundario }]}>
@@ -352,7 +354,7 @@ export default function ConfirmacaoPublicacao() {
         {/* PARTILHA */}
         <View style={[styles.partilhaCard, { backgroundColor: cores.fundoElevado }]}>
           <View style={styles.partilhaHeader}>
-            <MaterialCommunityIcons name="share-variant" size={20} color={LARANJA_MARCA} />
+            <Icone name="share-variant" size={20} color={LARANJA_MARCA} />
             <View style={{ flex: 1 }}>
               <Text style={[styles.partilhaTitulo, { color: cores.textoPrincipal }]}>
                 Partilha para ser visto por mais pessoas
@@ -366,7 +368,7 @@ export default function ConfirmacaoPublicacao() {
           <View style={styles.partilhaGrid}>
             <TouchableOpacity style={styles.partilhaBotao} onPress={partilharWhatsApp} activeOpacity={0.8}>
               <View style={[styles.partilhaIcone, { backgroundColor: '#25D366' }]}>
-                <MaterialCommunityIcons name="whatsapp" size={22} color="#FFFFFF" />
+                <Icone name="whatsapp" size={22} color="#FFFFFF" />
               </View>
               <Text style={[styles.partilhaLabel, { color: cores.textoPrincipal }]}>
                 WhatsApp
@@ -375,7 +377,7 @@ export default function ConfirmacaoPublicacao() {
 
             <TouchableOpacity style={styles.partilhaBotao} onPress={partilharFacebook} activeOpacity={0.8}>
               <View style={[styles.partilhaIcone, { backgroundColor: '#1877F2' }]}>
-                <MaterialCommunityIcons name="facebook" size={22} color="#FFFFFF" />
+                <Icone name="facebook" size={22} color="#FFFFFF" />
               </View>
               <Text style={[styles.partilhaLabel, { color: cores.textoPrincipal }]}>
                 Facebook
@@ -384,7 +386,7 @@ export default function ConfirmacaoPublicacao() {
 
             <TouchableOpacity style={styles.partilhaBotao} onPress={partilharSMS} activeOpacity={0.8}>
               <View style={[styles.partilhaIcone, { backgroundColor: AZUL_MARCA }]}>
-                <MaterialCommunityIcons name="message-text" size={22} color="#FFFFFF" />
+                <Icone name="message-text" size={22} color="#FFFFFF" />
               </View>
               <Text style={[styles.partilhaLabel, { color: cores.textoPrincipal }]}>
                 SMS
@@ -393,7 +395,7 @@ export default function ConfirmacaoPublicacao() {
 
             <TouchableOpacity style={styles.partilhaBotao} onPress={copiarLink} activeOpacity={0.8}>
               <View style={[styles.partilhaIcone, { backgroundColor: cores.textoSecundario }]}>
-                <MaterialCommunityIcons name="link-variant" size={22} color="#FFFFFF" />
+                <Icone name="link-variant" size={22} color="#FFFFFF" />
               </View>
               <Text style={[styles.partilhaLabel, { color: cores.textoPrincipal }]}>
                 Copiar
@@ -422,7 +424,7 @@ export default function ConfirmacaoPublicacao() {
             end={{ x: 1, y: 1 }}
           />
           <View style={styles.dicaConteudo}>
-            <MaterialCommunityIcons name="lightbulb-on" size={24} color="#FFFFFF" />
+            <Icone name="lightbulb-on" size={24} color="#FFFFFF" />
             <View style={{ flex: 1 }}>
               <Text style={styles.dicaTitulo}>Dica para mais contactos</Text>
               <Text style={styles.dicaTexto}>
@@ -502,7 +504,7 @@ const styles = StyleSheet.create({
 
   heroTitulo: {
     ...Typography.displayMD, color: '#FFFFFF',
-    textAlign: 'center', marginBottom: 6, fontWeight: '800',
+    textAlign: 'center', marginBottom: 6, fontFamily: Fonte.tituloSemi,
   },
   heroSubtitulo: {
     ...Typography.body, color: 'rgba(255, 255, 255, 0.9)',
@@ -526,7 +528,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.sm, gap: 5,
   },
   previewBadgeDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: VERDE_SUCESSO },
-  previewBadgeTexto: { fontSize: 10, fontWeight: '700', letterSpacing: 0.5 },
+  previewBadgeTexto: { fontSize: 10, fontFamily: Fonte.corpoSemi, letterSpacing: 0.5 },
   previewTempo: { ...Typography.caption, fontSize: 11 },
   previewTitulo: { ...Typography.bodyBold, fontSize: 16, marginBottom: Spacing.sm, lineHeight: 22 },
   previewMeta: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
@@ -550,7 +552,7 @@ const styles = StyleSheet.create({
   detalheValoresLinha: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   detalheValorRiscado: { ...Typography.caption, fontSize: 12, textDecorationLine: 'line-through' },
   descontoBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
-  descontoBadgeTexto: { color: '#FFFFFF', fontSize: 10, fontWeight: '800' },
+  descontoBadgeTexto: { color: '#FFFFFF', fontSize: 10, fontFamily: Fonte.corpoSemi },
   detalheSubtexto: { ...Typography.caption, fontSize: 11, marginTop: 2 },
   detalheDivisor: { height: 1, marginVertical: Spacing.xs },
   copiarRefBotao: {
@@ -576,13 +578,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center',
     ...Sombras.sm,
   },
-  partilhaLabel: { ...Typography.caption, fontSize: 11, fontWeight: '600' },
+  partilhaLabel: { ...Typography.caption, fontSize: 11, fontFamily: Fonte.corpoSemi },
   partilhaOutros: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     paddingVertical: Spacing.sm, borderRadius: Radius.md,
     gap: 6, borderWidth: 1,
   },
-  partilhaOutrosTexto: { ...Typography.caption, fontSize: 12, fontWeight: '600' },
+  partilhaOutrosTexto: { ...Typography.caption, fontSize: 12, fontFamily: Fonte.corpoSemi },
 
   dicaCard: {
     marginHorizontal: Spacing.lg, borderRadius: Radius.xl, overflow: 'hidden',

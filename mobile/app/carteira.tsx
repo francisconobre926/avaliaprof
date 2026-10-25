@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors, Sombras } from '../src/theme/colors';
 import { Spacing, Typography, Radius } from '../src/theme/typography';
@@ -27,6 +27,8 @@ import {
   type Transacao,
 } from '../src/store/walletStore';
 
+import { Fonte } from '../src/theme/fonts';
+import Icone from '../src/components/Icone';
 function formatarValor(valor: number): string {
   return `${Number(valor || 0).toLocaleString('pt-MZ', {
     minimumFractionDigits: 2,
@@ -170,7 +172,7 @@ export default function CarteiraScreen() {
             disabled={!podeSacar}
             activeOpacity={0.85}
           >
-            <MaterialCommunityIcons
+            <Icone
               name="bank-transfer-out"
               size={20}
               color={podeSacar ? cores.principal : 'rgba(255,255,255,0.5)'}
@@ -191,7 +193,7 @@ export default function CarteiraScreen() {
           {/* Pendente */}
           <View style={[styles.saldoCard, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
             <View style={[styles.saldoCardIcone, { backgroundColor: 'rgba(255, 152, 0, 0.15)' }]}>
-              <MaterialCommunityIcons name="clock-outline" size={18} color={Colors.aviso} />
+              <Icone name="clock-outline" size={18} color={Colors.aviso} />
             </View>
             <Text style={[styles.saldoCardLabel, { color: cores.textoSecundario }]}>Pendente</Text>
             <Text style={[styles.saldoCardValor, { color: cores.textoPrincipal }]}>
@@ -205,7 +207,7 @@ export default function CarteiraScreen() {
           {/* Créditos */}
           <View style={[styles.saldoCard, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
             <View style={[styles.saldoCardIcone, { backgroundColor: `${cores.principal}20` }]}>
-              <MaterialCommunityIcons name="gift-outline" size={18} color={cores.principal} />
+              <Icone name="gift-outline" size={18} color={cores.principal} />
             </View>
             <Text style={[styles.saldoCardLabel, { color: cores.textoSecundario }]}>Créditos</Text>
             <Text style={[styles.saldoCardValor, { color: cores.textoPrincipal }]}>
@@ -261,7 +263,7 @@ export default function CarteiraScreen() {
             </View>
           ) : (
             <View style={styles.vazioContainer}>
-              <MaterialCommunityIcons name="file-document-outline" size={48} color={cores.textoTerciario} />
+              <Icone name="file-document-outline" size={48} color={cores.textoTerciario} />
               <Text style={[styles.vazioTexto, { color: cores.textoSecundario }]}>
                 Sem {abaActiva === 'entradas' ? 'entradas' : abaActiva === 'saidas' ? 'saídas' : 'transacções'} ainda
               </Text>
@@ -292,7 +294,7 @@ export default function CarteiraScreen() {
 
             <View style={styles.modalHeader}>
               <View style={[styles.modalIcone, { backgroundColor: cores.principalClara }]}>
-                <MaterialCommunityIcons name="bank-transfer-out" size={24} color={cores.principal} />
+                <Icone name="bank-transfer-out" size={24} color={cores.principal} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={[styles.modalTitulo, { color: cores.textoPrincipal }]}>
@@ -349,7 +351,7 @@ export default function CarteiraScreen() {
                     style={[styles.valorRapidoBotao, { backgroundColor: cores.principalClara, borderColor: cores.principal }]}
                     onPress={() => setValorSaque(String(Math.floor(saldo)))}
                   >
-                    <Text style={[styles.valorRapidoTexto, { color: cores.principal, fontWeight: '700' }]}>
+                    <Text style={[styles.valorRapidoTexto, { color: cores.principal, fontFamily: Fonte.corpoSemi }]}>
                       Tudo
                     </Text>
                   </TouchableOpacity>
@@ -401,7 +403,7 @@ export default function CarteiraScreen() {
                 <Text style={styles.confirmarBotaoTexto}>A processar...</Text>
               ) : (
                 <>
-                  <MaterialCommunityIcons name="send" size={18} color="#FFFFFF" />
+                  <Icone name="send" size={18} color="#FFFFFF" />
                   <Text style={styles.confirmarBotaoTexto}>Confirmar pedido</Text>
                 </>
               )}
@@ -522,7 +524,7 @@ function ItemTransaccao({ transaccao, cores }: { transaccao: Transacao; cores: a
   return (
     <View style={[styles.transaccaoItem, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
       <View style={[styles.transaccaoIcone, { backgroundColor: corFundo }]}>
-        <MaterialCommunityIcons
+        <Icone
           name={iconeTipoTransacao(transaccao.tipo) as any}
           size={20}
           color={cor}
@@ -562,7 +564,7 @@ function InfoSaldoItem({ cor, corFundo, icone, titulo, descricao, cores }: any) 
   return (
     <View style={[styles.infoSaldoItem, { borderBottomColor: cores.bordaSubtil }]}>
       <View style={[styles.infoSaldoIcone, { backgroundColor: corFundo }]}>
-        <MaterialCommunityIcons name={icone as any} size={22} color={cor} />
+        <Icone name={icone as any} size={22} color={cor} />
       </View>
       <View style={{ flex: 1 }}>
         <Text style={[styles.infoSaldoTitulo, { color: cores.textoPrincipal }]}>{titulo}</Text>
@@ -610,7 +612,7 @@ const styles = StyleSheet.create({
   saldoPrincipalValor: {
     ...Typography.displayLG,
     color: '#FFFFFF',
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
     marginBottom: 4,
   },
   saldoPrincipalSub: {
@@ -665,7 +667,7 @@ const styles = StyleSheet.create({
   },
   saldoCardValor: {
     ...Typography.h2,
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
     marginBottom: 2,
   },
   saldoCardSub: {
@@ -753,12 +755,12 @@ const styles = StyleSheet.create({
   pendenteBadgeTexto: {
     color: Colors.aviso,
     fontSize: 10,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
   },
   transaccaoValor: { alignItems: 'flex-end' },
   transaccaoValorTexto: {
     ...Typography.bodyBold,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
     fontSize: 14,
   },
 
@@ -839,11 +841,11 @@ const styles = StyleSheet.create({
   },
   inputPrefixo: {
     ...Typography.body,
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
   },
   inputSufixo: {
     ...Typography.body,
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
   },
 
   // Valores rápidos
@@ -863,7 +865,7 @@ const styles = StyleSheet.create({
   valorRapidoTexto: {
     ...Typography.caption,
     fontSize: 12,
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
   },
 
   // Info box
@@ -890,7 +892,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.full,
     overflow: 'hidden',
     gap: Spacing.sm,
-    ...Sombras.colorida('#2196F3'),
+    ...Sombras.colorida('#0A6BC0'),
   },
   confirmarBotaoTexto: {
     ...Typography.button,

@@ -34,7 +34,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -42,15 +42,11 @@ import { Typography, Spacing, Radius } from '../../src/theme/typography';
 import { useUserStore } from '../../src/store/userStore';
 import { obterAnuncioLocal, guardarAnuncioLocal, eliminarAnuncioLocal, type AnuncioLocal } from '../../src/store/anunciosLocal';
 
-
-
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 const { width: screenWidth } = Dimensions.get('window');
 
-
-
 type EstadoAnuncio = 'activo' | 'pausado' | 'expirado' | 'pendente';
-
-
 
 // ============================================================
 
@@ -80,21 +76,15 @@ function gerarMockAnuncio(id: string) {
 
     min + ((seed + offset) % (max - min));
 
-
-
   // Estados possíveis — rotaciona com base no hash
 
   const estados: EstadoAnuncio[] = ['activo', 'activo', 'activo', 'pausado', 'expirado'];
 
   const estado = estados[seed % estados.length];
 
-
-
   const diasPublicado = r(1, 29, 7);
 
   const diasRestantes = estado === 'expirado' ? 0 : 30 - diasPublicado;
-
-
 
   const visualizacoesTotal = r(120, 580, 3);
 
@@ -104,8 +94,6 @@ function gerarMockAnuncio(id: string) {
 
   const partilhas = r(2, 15, 23);
 
-
-
   // Visitas dos últimos 7 dias
 
   const visitasUltimos7Dias = Array.from({ length: 7 }, (_, i) =>
@@ -113,8 +101,6 @@ function gerarMockAnuncio(id: string) {
     r(10, 85, i * 7 + 5)
 
   );
-
-
 
   return {
 
@@ -176,8 +162,6 @@ function gerarMockAnuncio(id: string) {
 
 }
 
-
-
 // ============================================================
 
 // HELPERS DE ESTADO
@@ -202,9 +186,9 @@ function configEstado(estado: EstadoAnuncio) {
 
       label: 'Activo',
 
-      cor: '#2E7D32',
+      cor: '#2F7A4F',
 
-      corFundo: '#E8F5E9',
+      corFundo: '#EAF3EC',
 
       icone: 'check-circle',
 
@@ -214,9 +198,9 @@ function configEstado(estado: EstadoAnuncio) {
 
       label: 'Pausado',
 
-      cor: '#F57C00',
+      cor: '#E8760A',
 
-      corFundo: '#FFF3E0',
+      corFundo: '#FBF0E3',
 
       icone: 'pause-circle',
 
@@ -226,9 +210,9 @@ function configEstado(estado: EstadoAnuncio) {
 
       label: 'Expirado',
 
-      cor: '#D32F2F',
+      cor: '#C2412D',
 
-      corFundo: '#FFEBEE',
+      corFundo: '#FBECE9',
 
       icone: 'close-circle',
 
@@ -238,9 +222,9 @@ function configEstado(estado: EstadoAnuncio) {
 
       label: 'Pendente',
 
-      cor: '#1976D2',
+      cor: '#0A6BC0',
 
-      corFundo: '#E3F2FD',
+      corFundo: '#EAF2FA',
 
       icone: 'clock-outline',
 
@@ -251,8 +235,6 @@ function configEstado(estado: EstadoAnuncio) {
   return configs[estado];
 
 }
-
-
 
 export default function AnuncioDetalhesScreen() {
 
@@ -279,8 +261,6 @@ export default function AnuncioDetalhesScreen() {
       });
     }
   }, [carregado, isLogado, usuario, carregarUsuario, router, id]);
-
-
 
   const [anuncioLocal, setAnuncioLocal] = useState<AnuncioLocal | null>(null);
   const [carregandoAnuncio, setCarregandoAnuncio] = useState(true);
@@ -326,8 +306,6 @@ export default function AnuncioDetalhesScreen() {
 
   const estadoConfig = configEstado(anuncio.estado);
 
-
-
   const [fotoActiva, setFotoActiva] = useState(0);
 
   const [modalMaisVisivel, setModalMaisVisivel] = useState(false);
@@ -343,15 +321,9 @@ export default function AnuncioDetalhesScreen() {
     setFotoActiva(0);
   }, [anuncio.id, anuncio.estado]);
 
-
-
   const scrollFotosRef = useRef<ScrollView>(null);
 
-
-
   // ============ HANDLERS ============
-
-
 
   const handleFotoScroll = (event: any) => {
 
@@ -362,8 +334,6 @@ export default function AnuncioDetalhesScreen() {
     setFotoActiva(index);
 
   };
-
-
 
   const handleEditar = () => {
 
@@ -380,8 +350,6 @@ export default function AnuncioDetalhesScreen() {
     );
 
   };
-
-
 
   const handleProlongar = () => {
 
@@ -415,8 +383,6 @@ export default function AnuncioDetalhesScreen() {
 
   };
 
-
-
   const handlePartilhar = async () => {
 
     try {
@@ -439,8 +405,6 @@ export default function AnuncioDetalhesScreen() {
 
   };
 
-
-
   const handlePausar = () => {
 
     setModalMaisVisivel(false);
@@ -448,8 +412,6 @@ export default function AnuncioDetalhesScreen() {
     setModalPausarVisivel(true);
 
   };
-
-
 
   const confirmarPausar = async () => {
     const novoEstado: EstadoAnuncio = estadoActual === 'pausado' ? 'activo' : 'pausado';
@@ -467,8 +429,6 @@ export default function AnuncioDetalhesScreen() {
     }
   };
 
-
-
   const handleEliminar = () => {
 
     setModalMaisVisivel(false);
@@ -476,8 +436,6 @@ export default function AnuncioDetalhesScreen() {
     setModalEliminarVisivel(true);
 
   };
-
-
 
   const confirmarEliminar = async () => {
     setModalEliminarVisivel(false);
@@ -495,8 +453,6 @@ export default function AnuncioDetalhesScreen() {
     }
   };
 
-
-
   const handleEstatisticasDetalhadas = () => {
 
     setModalMaisVisivel(false);
@@ -513,19 +469,13 @@ export default function AnuncioDetalhesScreen() {
 
   };
 
-
-
   // ============ RENDER ============
-
-
 
   const estadoFinalConfig = configEstado(estadoActual);
 
   const maxVisitas = Math.max(...anuncio.stats.visitasUltimos7Dias);
 
   const diasSemana = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'];
-
-
 
   // Progresso de validade (0-100)
 
@@ -534,8 +484,6 @@ export default function AnuncioDetalhesScreen() {
     ? 100
 
     : Math.round((anuncio.diasPublicado / 30) * 100);
-
-
 
   // Bloqueia o conteúdo até confirmar a sessão.
   if (!carregado || !isLogado || !usuario || carregandoAnuncio) {
@@ -547,8 +495,6 @@ export default function AnuncioDetalhesScreen() {
     <View style={styles.container}>
 
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
-
-
 
       <ScrollView
 
@@ -596,8 +542,6 @@ export default function AnuncioDetalhesScreen() {
 
           </ScrollView>
 
-
-
           {/* Overlay com gradiente escuro no topo */}
 
           <LinearGradient
@@ -607,8 +551,6 @@ export default function AnuncioDetalhesScreen() {
             style={styles.fotoGradientTopo}
 
           />
-
-
 
           {/* Botões flutuantes */}
 
@@ -625,8 +567,6 @@ export default function AnuncioDetalhesScreen() {
               <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
 
             </TouchableOpacity>
-
-
 
             <View style={styles.fotoBotoesDireita}>
 
@@ -658,8 +598,6 @@ export default function AnuncioDetalhesScreen() {
 
           </SafeAreaView>
 
-
-
           {/* Indicador de fotos */}
 
           <View style={styles.fotoIndicadorContainer}>
@@ -684,8 +622,6 @@ export default function AnuncioDetalhesScreen() {
 
           </View>
 
-
-
           {/* Contador de fotos no canto */}
 
           <View style={styles.fotoContador}>
@@ -702,15 +638,13 @@ export default function AnuncioDetalhesScreen() {
 
         </View>
 
-
-
         {/* ============ CABEÇALHO INFO ============ */}
 
         <View style={styles.cabecalho}>
 
           <View style={[styles.estadoBadge, { backgroundColor: estadoFinalConfig.corFundo }]}>
 
-            <MaterialCommunityIcons
+            <Icone
 
               name={estadoFinalConfig.icone as any}
 
@@ -738,17 +672,13 @@ export default function AnuncioDetalhesScreen() {
 
           </View>
 
-
-
           <Text style={styles.titulo}>{anuncio.titulo}</Text>
-
-
 
           <View style={styles.metaLinha}>
 
             <View style={styles.metaItem}>
 
-              <Ionicons name="location" size={14} color="#637894" />
+              <Ionicons name="location" size={14} color="#5B616B" />
 
               <Text style={styles.metaTexto}>{anuncio.zona}</Text>
 
@@ -758,15 +688,13 @@ export default function AnuncioDetalhesScreen() {
 
             <View style={styles.metaItem}>
 
-              <MaterialCommunityIcons name="shape" size={14} color="#637894" />
+              <Icone name="shape" size={14} color="#5B616B" />
 
               <Text style={styles.metaTexto}>{anuncio.categoria}</Text>
 
             </View>
 
           </View>
-
-
 
           <View style={styles.precoLinha}>
 
@@ -782,28 +710,26 @@ export default function AnuncioDetalhesScreen() {
 
         </View>
 
-
-
         {anuncioLocal && (
           <View style={styles.seccao}>
             <View style={styles.seccaoHeader}>
-              <MaterialCommunityIcons name="information-outline" size={20} color="#0B2E59" />
+              <Icone name="information-outline" size={20} color="#16202E" />
               <Text style={styles.seccaoTitulo}>Informações do anúncio</Text>
             </View>
             {!!anuncioLocal.descricao && (
-              <Text style={{ color: '#34445A', fontSize: 14, lineHeight: 21, marginBottom: 14 }}>
+              <Text style={{ color: '#34445A', fontFamily: Fonte.corpo, fontSize: 14, lineHeight: 21, marginBottom: 14 }}>
                 {anuncioLocal.descricao}
               </Text>
             )}
             {Object.entries(anuncioLocal.caracteristicas || {})
               .filter(([_, valor]) => valor !== null && valor !== undefined && String(valor).trim() !== '')
               .map(([chave, valor]) => (
-                <View key={chave} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#E5ECF4' }}>
-                  <Text style={{ color: '#637894', flex: 1 }}>{chave.replace(/([A-Z])/g, ' $1')}</Text>
-                  <Text style={{ color: '#0B2E59', fontWeight: '700', flex: 1, textAlign: 'right' }}>{String(valor)}</Text>
+                <View key={chave} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#E7E5DF' }}>
+                  <Text style={{ color: '#5B616B', flex: 1 }}>{chave.replace(/([A-Z])/g, ' $1')}</Text>
+                  <Text style={{ color: '#16202E', fontFamily: Fonte.corpoSemi, flex: 1, textAlign: 'right' }}>{String(valor)}</Text>
                 </View>
               ))}
-            <Text style={{ color: '#637894', fontSize: 11, marginTop: 12 }}>
+            <Text style={{ color: '#5B616B', fontFamily: Fonte.corpo, fontSize: 11, marginTop: 12 }}>
               As estatísticas reais serão apresentadas quando existir integração com o backend.
             </Text>
           </View>
@@ -812,22 +738,21 @@ export default function AnuncioDetalhesScreen() {
         {anuncioLocal && estadoActual === 'pendente' && (
           <View style={styles.seccao}>
             <View style={[styles.estadoVazioCard, { borderColor: '#BBDEFB' }]}>
-              <View style={[styles.estadoVazioIcone, { backgroundColor: '#E3F2FD' }]}>
-                <MaterialCommunityIcons name="clock-outline" size={36} color="#1976D2" />
+              <View style={[styles.estadoVazioIcone, { backgroundColor: '#EAF2FA' }]}>
+                <Icone name="clock-outline" size={36} color="#0A6BC0" />
               </View>
-              <Text style={[styles.estadoVazioTitulo, { color: '#1976D2' }]}>Pagamento pendente</Text>
+              <Text style={[styles.estadoVazioTitulo, { color: '#0A6BC0' }]}>Pagamento pendente</Text>
               <Text style={styles.estadoVazioTexto}>Este anúncio ainda não foi confirmado como pago e não deve aparecer no catálogo público.</Text>
             </View>
           </View>
         )}
 
-        {!anuncioLocal && (<>
         {/* ============ DESCRIÇÃO E CARACTERÍSTICAS REAIS ============ */}
         {anuncioLocal && (
           <>
             <View style={styles.seccao}>
               <View style={styles.seccaoHeader}>
-                <MaterialCommunityIcons name="text-box-outline" size={20} color="#0B2E59" />
+                <Icone name="text-box-outline" size={20} color="#16202E" />
                 <Text style={styles.seccaoTitulo}>Descrição do imóvel</Text>
               </View>
               <Text style={styles.detalheDescricao}>
@@ -841,7 +766,7 @@ export default function AnuncioDetalhesScreen() {
             ).length > 0 && (
               <View style={styles.seccao}>
                 <View style={styles.seccaoHeader}>
-                  <MaterialCommunityIcons name="format-list-bulleted" size={20} color="#0B2E59" />
+                  <Icone name="format-list-bulleted" size={20} color="#16202E" />
                   <Text style={styles.seccaoTitulo}>Características</Text>
                 </View>
                 <View style={styles.detalheCaracteristicas}>
@@ -864,21 +789,21 @@ export default function AnuncioDetalhesScreen() {
           </>
         )}
 
+        {!anuncioLocal && (<>
+
                 {/* ============ DESEMPENHO ============ */}
 
         <View style={styles.seccao}>
 
           <View style={styles.seccaoHeader}>
 
-            <MaterialCommunityIcons name="chart-line" size={20} color="#0B2E59" />
+            <Icone name="chart-line" size={20} color="#16202E" />
 
             <Text style={styles.seccaoTitulo}>Desempenho</Text>
 
             <Text style={styles.seccaoSubtitulo}>Últimos 7 dias</Text>
 
           </View>
-
-
 
           {/* 4 Stats em grid */}
 
@@ -892,7 +817,7 @@ export default function AnuncioDetalhesScreen() {
 
               label="Visitas"
 
-              corIcone="#0B2E59"
+              corIcone="#16202E"
 
               corFundo="#EAF1FA"
 
@@ -908,7 +833,7 @@ export default function AnuncioDetalhesScreen() {
 
               corIcone="#F06C00"
 
-              corFundo="#FFF4E6"
+              corFundo="#FBF0E3"
 
             />
 
@@ -920,9 +845,9 @@ export default function AnuncioDetalhesScreen() {
 
               label="Favoritos"
 
-              corIcone="#D32F2F"
+              corIcone="#C2412D"
 
-              corFundo="#FFEBEE"
+              corFundo="#FBECE9"
 
             />
 
@@ -934,15 +859,13 @@ export default function AnuncioDetalhesScreen() {
 
               label="Partilhas"
 
-              corIcone="#2E7D32"
+              corIcone="#2F7A4F"
 
-              corFundo="#E8F5E9"
+              corFundo="#EAF3EC"
 
             />
 
           </View>
-
-
 
           {/* Gráfico de visitas */}
 
@@ -959,8 +882,6 @@ export default function AnuncioDetalhesScreen() {
               </Text>
 
             </View>
-
-
 
             <View style={styles.graficoBarras}>
 
@@ -992,7 +913,7 @@ export default function AnuncioDetalhesScreen() {
 
                             height: `${Math.max(altura, 8)}%`,
 
-                            backgroundColor: ehMaximo ? '#FF7900' : '#C8D5E5',
+                            backgroundColor: ehMaximo ? '#E8760A' : '#C8D5E5',
 
                           },
 
@@ -1020,27 +941,23 @@ export default function AnuncioDetalhesScreen() {
 
         </View>
 
-
-
         {/* ============ RECEITA GERADA ============ */}
 
         <View style={styles.seccao}>
 
           <View style={styles.seccaoHeader}>
 
-            <MaterialCommunityIcons name="cash-multiple" size={20} color="#2E7D32" />
+            <Icone name="cash-multiple" size={20} color="#2F7A4F" />
 
             <Text style={styles.seccaoTitulo}>Receita gerada</Text>
 
           </View>
 
-
-
           <View style={styles.receitaCard}>
 
             <LinearGradient
 
-              colors={['#2E7D32', '#1B5E20']}
+              colors={['#2F7A4F', '#22593A']}
 
               style={StyleSheet.absoluteFill}
 
@@ -1088,8 +1005,6 @@ export default function AnuncioDetalhesScreen() {
 
           </View>
 
-
-
           <Text style={styles.receitaNota}>
 
             * Valores estimados. A receita real depende dos pagamentos processados.
@@ -1097,8 +1012,6 @@ export default function AnuncioDetalhesScreen() {
           </Text>
 
         </View>
-
-
 
         </>)}
 
@@ -1109,13 +1022,11 @@ export default function AnuncioDetalhesScreen() {
 
           <View style={styles.seccaoHeader}>
 
-            <MaterialCommunityIcons name="calendar-clock" size={20} color="#0B2E59" />
+            <Icone name="calendar-clock" size={20} color="#16202E" />
 
             <Text style={styles.seccaoTitulo}>Validade do anúncio</Text>
 
           </View>
-
-
 
           <View style={styles.validadeCard}>
 
@@ -1129,7 +1040,7 @@ export default function AnuncioDetalhesScreen() {
 
               </View>
 
-              <Ionicons name="arrow-forward" size={16} color="#637894" />
+              <Ionicons name="arrow-forward" size={16} color="#5B616B" />
 
               <View style={styles.validadeDataBox}>
 
@@ -1143,7 +1054,7 @@ export default function AnuncioDetalhesScreen() {
 
                   styles.validadeDataValor,
 
-                  estadoActual === 'expirado' && { color: '#D32F2F' },
+                  estadoActual === 'expirado' && { color: '#C2412D' },
 
                 ]}>
 
@@ -1154,8 +1065,6 @@ export default function AnuncioDetalhesScreen() {
               </View>
 
             </View>
-
-
 
             {/* Barra de progresso */}
 
@@ -1169,13 +1078,13 @@ export default function AnuncioDetalhesScreen() {
 
                     progressoValidade >= 80
 
-                      ? ['#D32F2F', '#B71C1C']
+                      ? ['#C2412D', '#B71C1C']
 
                       : progressoValidade >= 60
 
-                      ? ['#F57C00', '#E65100']
+                      ? ['#E8760A', '#E65100']
 
-                      : ['#2E7D32', '#1B5E20']
+                      : ['#2F7A4F', '#22593A']
 
                   }
 
@@ -1207,7 +1116,7 @@ export default function AnuncioDetalhesScreen() {
 
                   <View style={styles.validadeAviso}>
 
-                    <Ionicons name="warning" size={12} color="#D32F2F" />
+                    <Ionicons name="warning" size={12} color="#C2412D" />
 
                     <Text style={styles.validadeAvisoTexto}>Perto de expirar</Text>
 
@@ -1218,8 +1127,6 @@ export default function AnuncioDetalhesScreen() {
               </View>
 
             </View>
-
-
 
             {/* CTA Prolongar se perto de expirar ou expirado */}
 
@@ -1235,7 +1142,7 @@ export default function AnuncioDetalhesScreen() {
 
               >
 
-                <MaterialCommunityIcons name="refresh" size={16} color="#FFFFFF" />
+                <Icone name="refresh" size={16} color="#FFFFFF" />
 
                 <Text style={styles.validadeProlongarTexto}>
 
@@ -1251,8 +1158,6 @@ export default function AnuncioDetalhesScreen() {
 
         </View>
 
-
-
         {/* ============ SUGESTÕES DE UPSELL ============ */}
 
         {estadoActual === 'activo' && (
@@ -1261,19 +1166,17 @@ export default function AnuncioDetalhesScreen() {
 
             <View style={styles.seccaoHeader}>
 
-              <MaterialCommunityIcons name="rocket-launch" size={20} color="#FF7900" />
+              <Icone name="rocket-launch" size={20} color="#E8760A" />
 
               <Text style={styles.seccaoTitulo}>Aumenta os teus contactos</Text>
 
             </View>
 
-
-
             <TouchableOpacity style={styles.upsellCard} activeOpacity={0.85}>
 
-              <View style={[styles.upsellIcone, { backgroundColor: '#FFF4E6' }]}>
+              <View style={[styles.upsellIcone, { backgroundColor: '#FBF0E3' }]}>
 
-                <MaterialCommunityIcons name="video" size={24} color="#FF7900" />
+                <Icone name="video" size={24} color="#E8760A" />
 
               </View>
 
@@ -1297,13 +1200,11 @@ export default function AnuncioDetalhesScreen() {
 
             </TouchableOpacity>
 
-
-
             <TouchableOpacity style={styles.upsellCard} activeOpacity={0.85}>
 
-              <View style={[styles.upsellIcone, { backgroundColor: '#FFEBEE' }]}>
+              <View style={[styles.upsellIcone, { backgroundColor: '#FBECE9' }]}>
 
-                <MaterialCommunityIcons name="star" size={24} color="#D32F2F" />
+                <Icone name="star" size={24} color="#C2412D" />
 
               </View>
 
@@ -1327,13 +1228,11 @@ export default function AnuncioDetalhesScreen() {
 
             </TouchableOpacity>
 
-
-
             <TouchableOpacity style={styles.upsellCard} activeOpacity={0.85}>
 
-              <View style={[styles.upsellIcone, { backgroundColor: '#E3F2FD' }]}>
+              <View style={[styles.upsellIcone, { backgroundColor: '#EAF2FA' }]}>
 
-                <MaterialCommunityIcons name="bullhorn" size={24} color="#1976D2" />
+                <Icone name="bullhorn" size={24} color="#0A6BC0" />
 
               </View>
 
@@ -1361,8 +1260,6 @@ export default function AnuncioDetalhesScreen() {
 
         )}
 
-
-
         {/* ============ ESTADO VAZIO (se expirado) ============ */}
 
         {estadoActual === 'expirado' && (
@@ -1373,7 +1270,7 @@ export default function AnuncioDetalhesScreen() {
 
               <View style={styles.estadoVazioIcone}>
 
-                <MaterialCommunityIcons name="archive" size={40} color="#D32F2F" />
+                <Icone name="archive" size={40} color="#C2412D" />
 
               </View>
 
@@ -1407,7 +1304,7 @@ export default function AnuncioDetalhesScreen() {
 
                 />
 
-                <MaterialCommunityIcons name="refresh" size={18} color="#FFFFFF" />
+                <Icone name="refresh" size={18} color="#FFFFFF" />
 
                 <Text style={styles.estadoVazioBtnTexto}>
 
@@ -1423,8 +1320,6 @@ export default function AnuncioDetalhesScreen() {
 
         )}
 
-
-
         {/* ============ ESTADO PAUSADO ============ */}
 
         {estadoActual === 'pausado' && (
@@ -1433,13 +1328,13 @@ export default function AnuncioDetalhesScreen() {
 
             <View style={[styles.estadoVazioCard, { borderColor: '#FFE0B2' }]}>
 
-              <View style={[styles.estadoVazioIcone, { backgroundColor: '#FFF4E6' }]}>
+              <View style={[styles.estadoVazioIcone, { backgroundColor: '#FBF0E3' }]}>
 
-                <MaterialCommunityIcons name="pause-circle" size={40} color="#F57C00" />
+                <Icone name="pause-circle" size={40} color="#E8760A" />
 
               </View>
 
-              <Text style={[styles.estadoVazioTitulo, { color: '#F57C00' }]}>
+              <Text style={[styles.estadoVazioTitulo, { color: '#E8760A' }]}>
 
                 Anúncio pausado
 
@@ -1463,7 +1358,7 @@ export default function AnuncioDetalhesScreen() {
 
                 <LinearGradient
 
-                  colors={['#2E7D32', '#1B5E20']}
+                  colors={['#2F7A4F', '#22593A']}
 
                   style={StyleSheet.absoluteFill}
 
@@ -1473,7 +1368,7 @@ export default function AnuncioDetalhesScreen() {
 
                 />
 
-                <MaterialCommunityIcons name="play-circle" size={18} color="#FFFFFF" />
+                <Icone name="play-circle" size={18} color="#FFFFFF" />
 
                 <Text style={styles.estadoVazioBtnTexto}>Retomar anúncio</Text>
 
@@ -1487,8 +1382,6 @@ export default function AnuncioDetalhesScreen() {
 
         </>)}
       </ScrollView>
-
-
 
       {/* ============ FOOTER FIXO COM ACÇÕES ============ */}
 
@@ -1508,13 +1401,11 @@ export default function AnuncioDetalhesScreen() {
 
             >
 
-              <MaterialCommunityIcons name="pencil" size={18} color="#0B2E59" />
+              <Icone name="pencil" size={18} color="#16202E" />
 
               <Text style={styles.footerBotaoSecundarioTexto}>Editar</Text>
 
             </TouchableOpacity>
-
-
 
             <TouchableOpacity
 
@@ -1538,13 +1429,11 @@ export default function AnuncioDetalhesScreen() {
 
               />
 
-              <MaterialCommunityIcons name="refresh" size={18} color="#FFFFFF" />
+              <Icone name="refresh" size={18} color="#FFFFFF" />
 
               <Text style={styles.footerBotaoPrincipalTexto}>Prolongar</Text>
 
             </TouchableOpacity>
-
-
 
             <TouchableOpacity
 
@@ -1556,7 +1445,7 @@ export default function AnuncioDetalhesScreen() {
 
             >
 
-              <Ionicons name="ellipsis-vertical" size={20} color="#0B2E59" />
+              <Ionicons name="ellipsis-vertical" size={20} color="#16202E" />
 
             </TouchableOpacity>
 
@@ -1565,8 +1454,6 @@ export default function AnuncioDetalhesScreen() {
         </SafeAreaView>
 
       </View>
-
-
 
       {/* ============ MODAL MAIS OPÇÕES ============ */}
 
@@ -1590,17 +1477,13 @@ export default function AnuncioDetalhesScreen() {
 
             <View style={styles.modalHandle} />
 
-
-
             <Text style={styles.modalTitulo}>Opções do anúncio</Text>
-
-
 
             <TouchableOpacity style={styles.modalOpcao} onPress={handlePartilhar}>
 
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#E3F2FD' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#EAF2FA' }]}>
 
-                <MaterialCommunityIcons name="share-variant" size={22} color="#1976D2" />
+                <Icone name="share-variant" size={22} color="#0A6BC0" />
 
               </View>
 
@@ -1612,17 +1495,15 @@ export default function AnuncioDetalhesScreen() {
 
               </View>
 
-              <Ionicons name="chevron-forward" size={18} color="#9BA8BC" />
+              <Ionicons name="chevron-forward" size={18} color="#9A9EA5" />
 
             </TouchableOpacity>
-
-
 
             <TouchableOpacity style={styles.modalOpcao} onPress={handleEstatisticasDetalhadas}>
 
               <View style={[styles.modalOpcaoIcone, { backgroundColor: '#F3E5F5' }]}>
 
-                <MaterialCommunityIcons name="chart-box" size={22} color="#7B1FA2" />
+                <Icone name="chart-box" size={22} color="#7B1FA2" />
 
               </View>
 
@@ -1634,23 +1515,21 @@ export default function AnuncioDetalhesScreen() {
 
               </View>
 
-              <Ionicons name="chevron-forward" size={18} color="#9BA8BC" />
+              <Ionicons name="chevron-forward" size={18} color="#9A9EA5" />
 
             </TouchableOpacity>
 
-
-
             <TouchableOpacity style={styles.modalOpcao} onPress={handlePausar}>
 
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FFF4E6' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FBF0E3' }]}>
 
-                <MaterialCommunityIcons
+                <Icone
 
                   name={estadoActual === 'pausado' ? 'play-circle' : 'pause-circle'}
 
                   size={22}
 
-                  color="#F57C00"
+                  color="#E8760A"
 
                 />
 
@@ -1676,23 +1555,21 @@ export default function AnuncioDetalhesScreen() {
 
               </View>
 
-              <Ionicons name="chevron-forward" size={18} color="#9BA8BC" />
+              <Ionicons name="chevron-forward" size={18} color="#9A9EA5" />
 
             </TouchableOpacity>
 
-
-
             <TouchableOpacity style={[styles.modalOpcao, styles.modalOpcaoPerigo]} onPress={handleEliminar}>
 
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FFEBEE' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FBECE9' }]}>
 
-                <MaterialCommunityIcons name="trash-can" size={22} color="#D32F2F" />
+                <Icone name="trash-can" size={22} color="#C2412D" />
 
               </View>
 
               <View style={{ flex: 1 }}>
 
-                <Text style={[styles.modalOpcaoTitulo, { color: '#D32F2F' }]}>
+                <Text style={[styles.modalOpcaoTitulo, { color: '#C2412D' }]}>
 
                   Eliminar anúncio
 
@@ -1702,11 +1579,9 @@ export default function AnuncioDetalhesScreen() {
 
               </View>
 
-              <Ionicons name="chevron-forward" size={18} color="#FFCDD2" />
+              <Ionicons name="chevron-forward" size={18} color="#F2C9C1" />
 
             </TouchableOpacity>
-
-
 
             <TouchableOpacity
 
@@ -1726,8 +1601,6 @@ export default function AnuncioDetalhesScreen() {
 
       </Modal>
 
-
-
       {/* ============ MODAL CONFIRMAR PAUSAR ============ */}
 
       <Modal
@@ -1746,15 +1619,15 @@ export default function AnuncioDetalhesScreen() {
 
           <View style={styles.modalCentroBox}>
 
-            <View style={[styles.modalCentroIcone, { backgroundColor: '#FFF4E6' }]}>
+            <View style={[styles.modalCentroIcone, { backgroundColor: '#FBF0E3' }]}>
 
-              <MaterialCommunityIcons
+              <Icone
 
                 name={estadoActual === 'pausado' ? 'play-circle' : 'pause-circle'}
 
                 size={36}
 
-                color="#F57C00"
+                color="#E8760A"
 
               />
 
@@ -1814,8 +1687,6 @@ export default function AnuncioDetalhesScreen() {
 
       </Modal>
 
-
-
       {/* ============ MODAL CONFIRMAR ELIMINAR ============ */}
 
       <Modal
@@ -1834,9 +1705,9 @@ export default function AnuncioDetalhesScreen() {
 
           <View style={styles.modalCentroBox}>
 
-            <View style={[styles.modalCentroIcone, { backgroundColor: '#FFEBEE' }]}>
+            <View style={[styles.modalCentroIcone, { backgroundColor: '#FBECE9' }]}>
 
-              <MaterialCommunityIcons name="alert" size={36} color="#D32F2F" />
+              <Icone name="alert" size={36} color="#C2412D" />
 
             </View>
 
@@ -1864,7 +1735,7 @@ export default function AnuncioDetalhesScreen() {
 
               <TouchableOpacity
 
-                style={[styles.modalCentroBtnConfirmar, { backgroundColor: '#D32F2F' }]}
+                style={[styles.modalCentroBtnConfirmar, { backgroundColor: '#C2412D' }]}
 
                 onPress={confirmarEliminar}
 
@@ -1887,8 +1758,6 @@ export default function AnuncioDetalhesScreen() {
   );
 
 }
-
-
 
 // ============================================================
 
@@ -1916,7 +1785,7 @@ function StatCard({ icone, valor, label, corIcone, corFundo }: {
 
       <View style={[styles.statIcone, { backgroundColor: corFundo }]}>
 
-        <MaterialCommunityIcons name={icone as any} size={20} color={corIcone} />
+        <Icone name={icone as any} size={20} color={corIcone} />
 
       </View>
 
@@ -1930,8 +1799,6 @@ function StatCard({ icone, valor, label, corIcone, corFundo }: {
 
 }
 
-
-
 // ============================================================
 
 // STYLES
@@ -1942,13 +1809,11 @@ const styles = StyleSheet.create({
 
   container: { flex: 1, backgroundColor: '#F2F6FB' },
 
-  detalheDescricao: { color: '#425873', fontSize: 14, lineHeight: 22 },
+  detalheDescricao: { color: '#425873', fontFamily: Fonte.corpo, fontSize: 14, lineHeight: 22 },
   detalheCaracteristicas: { gap: 0 },
-  detalheCaracteristicaLinha: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#E5ECF4' },
-  detalheCaracteristicaChave: { flex: 1, color: '#637894', fontSize: 13, textTransform: 'capitalize' },
-  detalheCaracteristicaValor: { flex: 1, color: '#0B2E59', fontSize: 13, fontWeight: '700', textAlign: 'right' },
-
-
+  detalheCaracteristicaLinha: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#E7E5DF' },
+  detalheCaracteristicaChave: { flex: 1, color: '#5B616B', fontFamily: Fonte.corpo, fontSize: 13, textTransform: 'capitalize' },
+  detalheCaracteristicaValor: { flex: 1, color: '#16202E', fontSize: 13, fontFamily: Fonte.corpoSemi, textAlign: 'right' },
 
   // ============ Fotos ============
 
@@ -1958,7 +1823,7 @@ const styles = StyleSheet.create({
 
     height: 280,
 
-    backgroundColor: '#0B2E59',
+    backgroundColor: '#16202E',
 
     position: 'relative',
 
@@ -2104,11 +1969,9 @@ const styles = StyleSheet.create({
 
     fontSize: 11,
 
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
 
   },
-
-
 
   // ============ Cabeçalho info ============
 
@@ -2124,7 +1987,7 @@ const styles = StyleSheet.create({
 
     borderBottomWidth: 1,
 
-    borderBottomColor: '#E5ECF4',
+    borderBottomColor: '#E7E5DF',
 
   },
 
@@ -2152,7 +2015,7 @@ const styles = StyleSheet.create({
 
     fontSize: 12,
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
   },
 
@@ -2160,9 +2023,9 @@ const styles = StyleSheet.create({
 
     fontSize: 11,
 
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
 
-    color: '#637894',
+    color: '#5B616B',
 
   },
 
@@ -2170,9 +2033,9 @@ const styles = StyleSheet.create({
 
     ...Typography.h2,
 
-    color: '#0B2E59',
+    color: '#16202E',
 
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
 
     marginBottom: 8,
 
@@ -2206,7 +2069,7 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#637894',
+    color: '#5B616B',
 
     fontSize: 13,
 
@@ -2218,7 +2081,7 @@ const styles = StyleSheet.create({
 
     height: 12,
 
-    backgroundColor: '#E5ECF4',
+    backgroundColor: '#E7E5DF',
 
   },
 
@@ -2238,7 +2101,7 @@ const styles = StyleSheet.create({
 
     color: '#F06C00',
 
-    fontWeight: '900',
+    fontFamily: Fonte.tituloBold,
 
   },
 
@@ -2246,11 +2109,9 @@ const styles = StyleSheet.create({
 
     ...Typography.body,
 
-    color: '#637894',
+    color: '#5B616B',
 
   },
-
-
 
   // ============ Secções ============
 
@@ -2282,9 +2143,9 @@ const styles = StyleSheet.create({
 
     ...Typography.h4,
 
-    color: '#0B2E59',
+    color: '#16202E',
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
     flex: 1,
 
@@ -2294,13 +2155,11 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#637894',
+    color: '#5B616B',
 
     fontSize: 11,
 
   },
-
-
 
   // ============ Stats grid ============
 
@@ -2318,7 +2177,7 @@ const styles = StyleSheet.create({
 
     flex: 1,
 
-    backgroundColor: '#F8F9FB',
+    backgroundColor: '#F7F6F2',
 
     borderRadius: 14,
 
@@ -2328,7 +2187,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: '#E5ECF4',
+    borderColor: '#E7E5DF',
 
   },
 
@@ -2352,9 +2211,9 @@ const styles = StyleSheet.create({
 
     ...Typography.h3,
 
-    color: '#0B2E59',
+    color: '#16202E',
 
-    fontWeight: '900',
+    fontFamily: Fonte.corpoBold,
 
     marginBottom: 2,
 
@@ -2364,21 +2223,19 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#637894',
+    color: '#5B616B',
 
     fontSize: 10,
 
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
 
   },
-
-
 
   // ============ Gráfico ============
 
   graficoCard: {
 
-    backgroundColor: '#F8F9FB',
+    backgroundColor: '#F7F6F2',
 
     borderRadius: 16,
 
@@ -2386,7 +2243,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: '#E5ECF4',
+    borderColor: '#E7E5DF',
 
   },
 
@@ -2406,9 +2263,9 @@ const styles = StyleSheet.create({
 
     ...Typography.bodyBold,
 
-    color: '#0B2E59',
+    color: '#16202E',
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
   },
 
@@ -2418,7 +2275,7 @@ const styles = StyleSheet.create({
 
     color: '#F06C00',
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
     fontSize: 13,
 
@@ -2464,9 +2321,9 @@ const styles = StyleSheet.create({
 
     fontSize: 10,
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
-    color: '#FF7900',
+    color: '#E8760A',
 
     marginBottom: 2,
 
@@ -2488,13 +2345,11 @@ const styles = StyleSheet.create({
 
     fontSize: 11,
 
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
 
-    color: '#637894',
+    color: '#5B616B',
 
   },
-
-
 
   // ============ Receita ============
 
@@ -2506,7 +2361,7 @@ const styles = StyleSheet.create({
 
     marginBottom: 10,
 
-    shadowColor: '#2E7D32',
+    shadowColor: '#2F7A4F',
 
     shadowOpacity: 0.25,
 
@@ -2530,7 +2385,7 @@ const styles = StyleSheet.create({
 
     fontSize: 12,
 
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
 
     marginBottom: 8,
 
@@ -2554,7 +2409,7 @@ const styles = StyleSheet.create({
 
     fontSize: 44,
 
-    fontWeight: '900',
+    fontFamily: Fonte.tituloBold,
 
     lineHeight: 48,
 
@@ -2566,7 +2421,7 @@ const styles = StyleSheet.create({
 
     fontSize: 20,
 
-    fontWeight: '700',
+    fontFamily: Fonte.tituloSemi,
 
   },
 
@@ -2600,7 +2455,7 @@ const styles = StyleSheet.create({
 
     fontSize: 18,
 
-    fontWeight: '900',
+    fontFamily: Fonte.corpoBold,
 
   },
 
@@ -2610,7 +2465,7 @@ const styles = StyleSheet.create({
 
     fontSize: 10,
 
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
 
   },
 
@@ -2620,7 +2475,7 @@ const styles = StyleSheet.create({
 
     fontSize: 20,
 
-    fontWeight: '700',
+    fontFamily: Fonte.tituloSemi,
 
   },
 
@@ -2628,7 +2483,7 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#637894',
+    color: '#5B616B',
 
     fontSize: 10,
 
@@ -2638,13 +2493,11 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // ============ Validade ============
 
   validadeCard: {
 
-    backgroundColor: '#F8F9FB',
+    backgroundColor: '#F7F6F2',
 
     borderRadius: 16,
 
@@ -2652,7 +2505,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: '#E5ECF4',
+    borderColor: '#E7E5DF',
 
   },
 
@@ -2680,7 +2533,7 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#637894',
+    color: '#5B616B',
 
     fontSize: 11,
 
@@ -2692,9 +2545,9 @@ const styles = StyleSheet.create({
 
     ...Typography.bodyBold,
 
-    color: '#0B2E59',
+    color: '#16202E',
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
   },
 
@@ -2708,7 +2561,7 @@ const styles = StyleSheet.create({
 
     height: 8,
 
-    backgroundColor: '#E5ECF4',
+    backgroundColor: '#E7E5DF',
 
     borderRadius: 4,
 
@@ -2740,11 +2593,11 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#637894',
+    color: '#5B616B',
 
     fontSize: 11,
 
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
 
   },
 
@@ -2756,7 +2609,7 @@ const styles = StyleSheet.create({
 
     gap: 4,
 
-    backgroundColor: '#FFEBEE',
+    backgroundColor: '#FBECE9',
 
     paddingHorizontal: 8,
 
@@ -2768,11 +2621,11 @@ const styles = StyleSheet.create({
 
   validadeAvisoTexto: {
 
-    color: '#D32F2F',
+    color: '#C2412D',
 
     fontSize: 10,
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
   },
 
@@ -2786,7 +2639,7 @@ const styles = StyleSheet.create({
 
     gap: 7,
 
-    backgroundColor: '#FF7900',
+    backgroundColor: '#E8760A',
 
     paddingVertical: 11,
 
@@ -2802,11 +2655,9 @@ const styles = StyleSheet.create({
 
     fontSize: 13,
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
   },
-
-
 
   // ============ Upsell ============
 
@@ -2818,7 +2669,7 @@ const styles = StyleSheet.create({
 
     gap: 12,
 
-    backgroundColor: '#F8F9FB',
+    backgroundColor: '#F7F6F2',
 
     padding: 14,
 
@@ -2828,7 +2679,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: '#E5ECF4',
+    borderColor: '#E7E5DF',
 
   },
 
@@ -2850,9 +2701,9 @@ const styles = StyleSheet.create({
 
     ...Typography.bodyBold,
 
-    color: '#0B2E59',
+    color: '#16202E',
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
     marginBottom: 2,
 
@@ -2862,7 +2713,7 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#637894',
+    color: '#5B616B',
 
     fontSize: 11,
 
@@ -2872,7 +2723,7 @@ const styles = StyleSheet.create({
 
   upsellBadge: {
 
-    backgroundColor: '#FFF4E6',
+    backgroundColor: '#FBF0E3',
 
     paddingHorizontal: 10,
 
@@ -2888,11 +2739,9 @@ const styles = StyleSheet.create({
 
     fontSize: 11,
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
   },
-
-
 
   // ============ Estado vazio ============
 
@@ -2908,7 +2757,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: '#FFCDD2',
+    borderColor: '#F2C9C1',
 
   },
 
@@ -2920,7 +2769,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 20,
 
-    backgroundColor: '#FFEBEE',
+    backgroundColor: '#FBECE9',
 
     justifyContent: 'center',
 
@@ -2934,9 +2783,9 @@ const styles = StyleSheet.create({
 
     ...Typography.h3,
 
-    color: '#D32F2F',
+    color: '#C2412D',
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
     marginBottom: 6,
 
@@ -2948,7 +2797,7 @@ const styles = StyleSheet.create({
 
     ...Typography.body,
 
-    color: '#637894',
+    color: '#5B616B',
 
     textAlign: 'center',
 
@@ -2986,11 +2835,9 @@ const styles = StyleSheet.create({
 
     fontSize: 14,
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
   },
-
-
 
   // ============ Footer fixo ============
 
@@ -3008,9 +2855,9 @@ const styles = StyleSheet.create({
 
     borderTopWidth: 1,
 
-    borderTopColor: '#E5ECF4',
+    borderTopColor: '#E7E5DF',
 
-    shadowColor: '#0B2E59',
+    shadowColor: '#16202E',
 
     shadowOpacity: 0.08,
 
@@ -3048,11 +2895,11 @@ const styles = StyleSheet.create({
 
     borderRadius: 14,
 
-    backgroundColor: '#F0F5FA',
+    backgroundColor: '#F4F3EF',
 
     borderWidth: 1,
 
-    borderColor: '#DCE6F1',
+    borderColor: '#E7E5DF',
 
     gap: 6,
 
@@ -3060,11 +2907,11 @@ const styles = StyleSheet.create({
 
   footerBotaoSecundarioTexto: {
 
-    color: '#0B2E59',
+    color: '#16202E',
 
     fontSize: 14,
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
   },
 
@@ -3094,7 +2941,7 @@ const styles = StyleSheet.create({
 
     fontSize: 14,
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
   },
 
@@ -3106,19 +2953,17 @@ const styles = StyleSheet.create({
 
     borderRadius: 14,
 
-    backgroundColor: '#F0F5FA',
+    backgroundColor: '#F4F3EF',
 
     borderWidth: 1,
 
-    borderColor: '#DCE6F1',
+    borderColor: '#E7E5DF',
 
     justifyContent: 'center',
 
     alignItems: 'center',
 
   },
-
-
 
   // ============ Modal (bottom sheet) ============
 
@@ -3154,7 +2999,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 2,
 
-    backgroundColor: '#DCE6F1',
+    backgroundColor: '#E7E5DF',
 
     alignSelf: 'center',
 
@@ -3168,9 +3013,9 @@ const styles = StyleSheet.create({
 
     ...Typography.h3,
 
-    color: '#0B2E59',
+    color: '#16202E',
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
     textAlign: 'center',
 
@@ -3192,7 +3037,7 @@ const styles = StyleSheet.create({
 
     borderBottomWidth: 1,
 
-    borderBottomColor: '#F0F2F6',
+    borderBottomColor: '#F4F3EF',
 
   },
 
@@ -3220,9 +3065,9 @@ const styles = StyleSheet.create({
 
     ...Typography.bodyBold,
 
-    color: '#0B2E59',
+    color: '#16202E',
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
     marginBottom: 2,
 
@@ -3232,7 +3077,7 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#637894',
+    color: '#5B616B',
 
     fontSize: 11,
 
@@ -3246,7 +3091,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 14,
 
-    backgroundColor: '#F0F2F6',
+    backgroundColor: '#F4F3EF',
 
     alignItems: 'center',
 
@@ -3254,15 +3099,13 @@ const styles = StyleSheet.create({
 
   modalFecharTexto: {
 
-    color: '#0B2E59',
+    color: '#16202E',
 
     fontSize: 15,
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
   },
-
-
 
   // ============ Modal central ============
 
@@ -3316,9 +3159,9 @@ const styles = StyleSheet.create({
 
     ...Typography.h3,
 
-    color: '#0B2E59',
+    color: '#16202E',
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
     textAlign: 'center',
 
@@ -3330,7 +3173,7 @@ const styles = StyleSheet.create({
 
     ...Typography.body,
 
-    color: '#637894',
+    color: '#5B616B',
 
     textAlign: 'center',
 
@@ -3360,7 +3203,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 14,
 
-    backgroundColor: '#F0F2F6',
+    backgroundColor: '#F4F3EF',
 
     alignItems: 'center',
 
@@ -3368,11 +3211,11 @@ const styles = StyleSheet.create({
 
   modalCentroBtnCancelarTexto: {
 
-    color: '#0B2E59',
+    color: '#16202E',
 
     fontSize: 14,
 
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
 
   },
 
@@ -3384,7 +3227,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 14,
 
-    backgroundColor: '#F57C00',
+    backgroundColor: '#E8760A',
 
     alignItems: 'center',
 
@@ -3396,7 +3239,7 @@ const styles = StyleSheet.create({
 
     fontSize: 14,
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
   },
 

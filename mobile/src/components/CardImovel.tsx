@@ -1,11 +1,13 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors, Sombras } from '../theme/colors';
 import { Spacing, Typography, Radius } from '../theme/typography';
 import { Imovel } from '../types';
 import { formatarPreco, tempoDesdeMock } from '../data/imoveis-mock';
 
+import { Fonte } from '../theme/fonts';
+import Icone from './Icone';
 const { width } = Dimensions.get('window');
 
 interface CardImovelProps {
@@ -72,19 +74,19 @@ export default function CardImovel({
           <View style={styles.caracteristicasRow}>
             {imovel.quartos && (
               <View style={styles.caracteristica}>
-                <MaterialCommunityIcons name="bed-outline" size={14} color={Colors.textoSecundario} />
+                <Icone name="bed-outline" size={14} color={Colors.textoSecundario} />
                 <Text style={styles.caracteristicaTexto}>{imovel.quartos}</Text>
               </View>
             )}
             {imovel.casasBanho && (
               <View style={styles.caracteristica}>
-                <MaterialCommunityIcons name="shower" size={14} color={Colors.textoSecundario} />
+                <Icone name="shower" size={14} color={Colors.textoSecundario} />
                 <Text style={styles.caracteristicaTexto}>{imovel.casasBanho}</Text>
               </View>
             )}
             {imovel.area && (
               <View style={styles.caracteristica}>
-                <MaterialCommunityIcons name="ruler-square" size={14} color={Colors.textoSecundario} />
+                <Icone name="ruler-square" size={14} color={Colors.textoSecundario} />
                 <Text style={styles.caracteristicaTexto}>{imovel.area}m²</Text>
               </View>
             )}
@@ -167,19 +169,19 @@ export default function CardImovel({
         <View style={styles.caracteristicasContainer}>
           {imovel.quartos && (
             <View style={styles.caracteristicaCard}>
-              <MaterialCommunityIcons name="bed" size={14} color={Colors.azul} />
+              <Icone name="bed" size={14} color={Colors.azul} />
               <Text style={styles.caracteristicaCardTexto}>{imovel.quartos} Quartos</Text>
             </View>
           )}
           {imovel.casasBanho && (
             <View style={styles.caracteristicaCard}>
-              <MaterialCommunityIcons name="shower" size={14} color={Colors.azul} />
+              <Icone name="shower" size={14} color={Colors.azul} />
               <Text style={styles.caracteristicaCardTexto}>{imovel.casasBanho} WC</Text>
             </View>
           )}
           {imovel.area && (
             <View style={styles.caracteristicaCard}>
-              <MaterialCommunityIcons name="ruler-square" size={14} color={Colors.azul} />
+              <Icone name="ruler-square" size={14} color={Colors.azul} />
               <Text style={styles.caracteristicaCardTexto}>{imovel.area}m²</Text>
             </View>
           )}
@@ -299,7 +301,7 @@ const styles = StyleSheet.create({
   contadorFotosText: {
     ...Typography.caption,
     color: Colors.branco,
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
   },
   info: {
     padding: Spacing.base,
@@ -351,7 +353,7 @@ const styles = StyleSheet.create({
   caracteristicaCardTexto: {
     ...Typography.caption,
     color: Colors.textoPrincipal,
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
   },
   footer: {
     flexDirection: 'row',

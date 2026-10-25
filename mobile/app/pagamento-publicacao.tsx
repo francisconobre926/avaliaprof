@@ -7,8 +7,8 @@
  *   publicar.tsx → formulário completo → pagamento-publicacao → sucesso → confirmacao-publicacao
  *
  * Paleta GoHome aplicada:
- *   Hero gradient: azul GoHome profundo (#003A66 → #0082DE)
- *   Botão pagar: laranja GoHome (#FE8A00 → #CB6E00)
+ *   Hero gradient: azul GoHome profundo (#0A6BC0 → #095FAA)
+ *   Botão pagar: laranja GoHome (#E8760A → #B95A05)
  *   Promoção -50%: laranja GoHome
  */
 
@@ -29,26 +29,28 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Typography, Spacing } from '../src/theme/typography';
 import { useUserStore } from '../src/store/userStore';
 
+import { Fonte } from '../src/theme/fonts';
+import Icone from '../src/components/Icone';
 // ============================================================
 // CORES GOHOME OFICIAIS
 // ============================================================
-const AZUL_HERO_INICIO = '#003A66';
-const AZUL_HERO_FIM = '#0082DE';
-const AZUL_MARCA = '#0082DE';
-const AZUL_PALE = 'rgba(0, 130, 222, 0.08)';
-const AZUL_PALE_BORDA = 'rgba(0, 130, 222, 0.2)';
-const LARANJA_MARCA = '#FE8A00';
-const LARANJA_ESCURO = '#CB6E00';
-const LARANJA_PALE = 'rgba(254, 138, 0, 0.1)';
-const LARANJA_PALE_BORDA = 'rgba(254, 138, 0, 0.25)';
-const VERDE_SUCESSO = '#2E7D32';
-const VERMELHO_ERRO = '#D32F2F';
-const AMARELO_AVISO = '#F57C00';
+const AZUL_HERO_INICIO = '#0A6BC0';   // Azul GoHome — o mesmo da "Promoção lançamento"
+const AZUL_HERO_FIM = '#095FAA';
+const AZUL_MARCA = '#0A6BC0';
+const AZUL_PALE = 'rgba(10, 107, 192, 0.08)';
+const AZUL_PALE_BORDA = 'rgba(10, 107, 192, 0.2)';
+const LARANJA_MARCA = '#E8760A';
+const LARANJA_ESCURO = '#B95A05';
+const LARANJA_PALE = 'rgba(232, 118, 10, 0.1)';
+const LARANJA_PALE_BORDA = 'rgba(232, 118, 10, 0.25)';
+const VERDE_SUCESSO = '#2F7A4F';
+const VERMELHO_ERRO = '#C2412D';
+const AMARELO_AVISO = '#E8760A';
 
 type EstadoPagamento =
   | 'formulario'
@@ -250,7 +252,7 @@ export default function PagamentoPublicacao() {
               <Text style={styles.montanteMoeda}>MT</Text>
             </View>
             <View style={styles.descontoBadge}>
-              <MaterialCommunityIcons name="tag" size={12} color="#FFFFFF" />
+              <Icone name="tag" size={12} color="#FFFFFF" />
               <Text style={styles.descontoBadgeTexto}>
                 {`50% OFF — Antes ${valorNormal} MT`}
               </Text>
@@ -274,19 +276,19 @@ export default function PagamentoPublicacao() {
               {/* Resumo */}
               <View style={styles.resumoCard}>
                 <View style={styles.resumoHeader}>
-                  <MaterialCommunityIcons name="file-document" size={20} color={AZUL_HERO_INICIO} />
+                  <Icone name="file-document" size={20} color={AZUL_HERO_INICIO} />
                   <Text style={styles.resumoTitulo}>O teu anúncio</Text>
                 </View>
 
                 <Text style={styles.resumoAnuncioTitulo} numberOfLines={2}>{titulo}</Text>
                 <View style={styles.resumoMetaLinha}>
                   <View style={styles.resumoMetaItem}>
-                    <MaterialCommunityIcons name="shape" size={14} color="#637894" />
+                    <Icone name="shape" size={14} color="#5B616B" />
                     <Text style={styles.resumoMetaTexto}>{categoria}</Text>
                   </View>
                   <View style={styles.resumoMetaDivisor} />
                   <View style={styles.resumoMetaItem}>
-                    <Ionicons name="location" size={14} color="#637894" />
+                    <Ionicons name="location" size={14} color="#5B616B" />
                     <Text style={styles.resumoMetaTexto}>{zona}</Text>
                   </View>
                 </View>
@@ -305,7 +307,7 @@ export default function PagamentoPublicacao() {
                 </View>
                 <View style={styles.resumoLinhaInfo}>
                   <Text style={styles.resumoLabel}>Taxa total</Text>
-                  <Text style={[styles.resumoValor, { color: LARANJA_MARCA, fontWeight: '900' }]}>
+                  <Text style={[styles.resumoValor, { color: LARANJA_MARCA, fontFamily: Fonte.corpoBold }]}>
                     {`${valorPago} MT`}
                   </Text>
                 </View>
@@ -321,7 +323,7 @@ export default function PagamentoPublicacao() {
                   <TextInput
                     style={styles.inputCampo}
                     placeholder="841234567"
-                    placeholderTextColor="#9BA8BC"
+                    placeholderTextColor="#9A9EA5"
                     keyboardType="numeric"
                     maxLength={9}
                     value={numeroMPesa}
@@ -350,7 +352,7 @@ export default function PagamentoPublicacao() {
               {/* Como funciona */}
               <View style={styles.comoFuncionaBox}>
                 <View style={styles.comoFuncionaHeader}>
-                  <MaterialCommunityIcons name="information" size={18} color={AZUL_HERO_INICIO} />
+                  <Icone name="information" size={18} color={AZUL_HERO_INICIO} />
                   <Text style={styles.comoFuncionaTitulo}>Como funciona</Text>
                 </View>
                 <PassoInfo numero="1" texto="Clica em pagar abaixo" />
@@ -371,7 +373,7 @@ export default function PagamentoPublicacao() {
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                 />
-                <MaterialCommunityIcons name="credit-card-check" size={22} color="#FFFFFF" />
+                <Icone name="credit-card-check" size={22} color="#FFFFFF" />
                 <Text style={styles.botaoPagarTexto}>
                   {`Pagar ${valorPago} MT via M-Pesa`}
                 </Text>
@@ -391,7 +393,7 @@ export default function PagamentoPublicacao() {
             <View style={styles.conteudoProcessando}>
               <Animated.View style={[styles.loadingCirculo, { transform: [{ scale: pulseValue }] }]}>
                 <Animated.View style={[styles.loadingSpinner, { transform: [{ rotate: spin }] }]}>
-                  <MaterialCommunityIcons name="loading" size={48} color={LARANJA_MARCA} />
+                  <Icone name="loading" size={48} color={LARANJA_MARCA} />
                 </Animated.View>
               </Animated.View>
 
@@ -408,7 +410,7 @@ export default function PagamentoPublicacao() {
               </View>
               <View style={styles.processandoStep}>
                 <Animated.View style={[styles.processandoStepIconeLoading, { transform: [{ rotate: spin }] }]}>
-                  <MaterialCommunityIcons name="loading" size={14} color="#FFFFFF" />
+                  <Icone name="loading" size={14} color="#FFFFFF" />
                 </Animated.View>
                 <Text style={styles.processandoStepTexto}>A enviar pedido ao M-Pesa...</Text>
               </View>
@@ -425,13 +427,13 @@ export default function PagamentoPublicacao() {
           {estado === 'aguardando_pin' && (
             <View style={styles.conteudoProcessando}>
               <Animated.View style={[styles.loadingCirculo, { transform: [{ scale: pulseValue }] }]}>
-                <MaterialCommunityIcons name="cellphone-key" size={48} color={LARANJA_MARCA} />
+                <Icone name="cellphone-key" size={48} color={LARANJA_MARCA} />
               </Animated.View>
 
               <Text style={styles.processandoTitulo}>Verifica o teu telefone</Text>
               <Text style={styles.processandoSubtitulo}>
                 Recebeste um pedido M-Pesa no número{'\n'}
-                <Text style={{ fontWeight: '800' }}>{`+258 ${numeroMPesa}`}</Text>
+                <Text style={{ fontFamily: Fonte.corpoSemi }}>{`+258 ${numeroMPesa}`}</Text>
               </Text>
 
               <View style={[styles.timerBox, tempoCritico && styles.timerBoxCritico]}>
@@ -460,7 +462,7 @@ export default function PagamentoPublicacao() {
               {/* Botões DEMO */}
               <View style={styles.demoContainer}>
                 <View style={styles.demoHeader}>
-                  <MaterialCommunityIcons name="flask-outline" size={16} color="#637894" />
+                  <Icone name="flask-outline" size={16} color="#5B616B" />
                   <Text style={styles.demoLabel}>MODO TESTE (simular resposta)</Text>
                 </View>
                 <View style={styles.demoBotoes}>
@@ -514,7 +516,7 @@ export default function PagamentoPublicacao() {
                 <Text style={styles.motivosTitulo}>Possíveis causas:</Text>
                 {['Saldo M-Pesa insuficiente', 'PIN introduzido incorrecto', 'Limite diário atingido'].map((motivo, i) => (
                   <View key={i} style={styles.motivoItem}>
-                    <Ionicons name="ellipse" size={6} color="#637894" />
+                    <Ionicons name="ellipse" size={6} color="#5B616B" />
                     <Text style={styles.motivoTexto}>{motivo}</Text>
                   </View>
                 ))}
@@ -522,7 +524,7 @@ export default function PagamentoPublicacao() {
 
               <TouchableOpacity style={styles.botaoPagar} onPress={tentarNovamente} activeOpacity={0.85}>
                 <LinearGradient colors={[LARANJA_MARCA, LARANJA_ESCURO]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
-                <MaterialCommunityIcons name="refresh" size={20} color="#FFFFFF" />
+                <Icone name="refresh" size={20} color="#FFFFFF" />
                 <Text style={styles.botaoPagarTexto}>Tentar novamente</Text>
               </TouchableOpacity>
 
@@ -546,7 +548,7 @@ export default function PagamentoPublicacao() {
 
               <TouchableOpacity style={styles.botaoPagar} onPress={tentarNovamente} activeOpacity={0.85}>
                 <LinearGradient colors={[LARANJA_MARCA, LARANJA_ESCURO]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
-                <MaterialCommunityIcons name="refresh" size={20} color="#FFFFFF" />
+                <Icone name="refresh" size={20} color="#FFFFFF" />
                 <Text style={styles.botaoPagarTexto}>Tentar novamente</Text>
               </TouchableOpacity>
 
@@ -563,7 +565,7 @@ export default function PagamentoPublicacao() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalCancelarBox}>
             <View style={styles.modalCancelarIcone}>
-              <MaterialCommunityIcons name="alert-circle" size={32} color={AMARELO_AVISO} />
+              <Icone name="alert-circle" size={32} color={AMARELO_AVISO} />
             </View>
             <Text style={styles.modalCancelarTitulo}>Cancelar pagamento?</Text>
             <Text style={styles.modalCancelarTexto}>
@@ -613,20 +615,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center',
   },
   headerCenter: { alignItems: 'center' },
-  headerLabel: { color: 'rgba(255,255,255,0.75)', fontSize: 10, letterSpacing: 1.5, fontWeight: '700', marginBottom: 2 },
-  headerTitulo: { color: '#FFFFFF', fontSize: 18, fontWeight: '800' },
+  headerLabel: { color: 'rgba(255,255,255,0.75)', fontSize: 10, letterSpacing: 1.5, fontFamily: Fonte.corpoSemi, marginBottom: 2 },
+  headerTitulo: { color: '#FFFFFF', fontSize: 18, fontFamily: Fonte.corpoSemi },
 
   montanteContainer: { alignItems: 'center', paddingVertical: Spacing.lg },
-  montanteLabel: { color: 'rgba(255,255,255,0.85)', fontSize: 13, marginBottom: 8 },
+  montanteLabel: { color: 'rgba(255,255,255,0.85)', fontFamily: Fonte.corpo, fontSize: 13, marginBottom: 8 },
   montanteLinha: { flexDirection: 'row', alignItems: 'baseline', gap: 8, marginBottom: 12 },
-  montanteValor: { color: '#FFFFFF', fontSize: 56, fontWeight: '900', lineHeight: 60 },
-  montanteMoeda: { color: '#FFFFFF', fontSize: 24, fontWeight: '700' },
+  montanteValor: { color: '#FFFFFF', fontSize: 56, fontFamily: Fonte.tituloBold, lineHeight: 60 },
+  montanteMoeda: { color: '#FFFFFF', fontSize: 24, fontFamily: Fonte.tituloSemi },
   descontoBadge: {
     flexDirection: 'row', alignItems: 'center',
     backgroundColor: LARANJA_MARCA,
     paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, gap: 5,
   },
-  descontoBadgeTexto: { color: '#FFFFFF', fontSize: 11, fontWeight: '800', letterSpacing: 0.3 },
+  descontoBadgeTexto: { color: '#FFFFFF', fontSize: 11, fontFamily: Fonte.corpoSemi, letterSpacing: 0.3 },
 
   scrollContent: { paddingBottom: Spacing.xxxl },
 
@@ -634,24 +636,24 @@ const styles = StyleSheet.create({
 
   resumoCard: {
     backgroundColor: '#FFFFFF', borderRadius: 18, padding: 16,
-    borderWidth: 1, borderColor: '#E0E8F2',
+    borderWidth: 1, borderColor: '#E7E5DF',
   },
   resumoHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
   resumoTitulo: {
     ...Typography.bodyBold, color: AZUL_HERO_INICIO,
-    fontWeight: '800', fontSize: 14, letterSpacing: 0.5,
+    fontFamily: Fonte.corpoSemi, fontSize: 14, letterSpacing: 0.5,
   },
-  resumoAnuncioTitulo: { ...Typography.h4, color: AZUL_HERO_INICIO, marginBottom: 6, fontWeight: '800' },
+  resumoAnuncioTitulo: { ...Typography.h4, color: AZUL_HERO_INICIO, marginBottom: 6, fontFamily: Fonte.corpoSemi },
   resumoMetaLinha: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 },
   resumoMetaItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  resumoMetaTexto: { ...Typography.caption, color: '#637894' },
-  resumoMetaDivisor: { width: 1, height: 12, backgroundColor: '#E0E8F2' },
-  resumoDivisor: { height: 1, backgroundColor: '#E5ECF4', marginVertical: 8 },
+  resumoMetaTexto: { ...Typography.caption, color: '#5B616B' },
+  resumoMetaDivisor: { width: 1, height: 12, backgroundColor: '#E7E5DF' },
+  resumoDivisor: { height: 1, backgroundColor: '#E7E5DF', marginVertical: 8 },
   resumoLinhaInfo: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     paddingVertical: 7,
   },
-  resumoLabel: { ...Typography.caption, color: '#637894', fontSize: 13 },
+  resumoLabel: { ...Typography.caption, color: '#5B616B', fontSize: 13 },
   resumoValor: {
     ...Typography.bodyBold, color: AZUL_HERO_INICIO,
     fontSize: 14, textTransform: 'capitalize',
@@ -659,54 +661,54 @@ const styles = StyleSheet.create({
 
   inputCard: {
     backgroundColor: '#FFFFFF', borderRadius: 18, padding: 16,
-    borderWidth: 1, borderColor: '#E0E8F2',
+    borderWidth: 1, borderColor: '#E7E5DF',
   },
   inputLabel: {
     ...Typography.bodyBold, color: AZUL_HERO_INICIO,
-    marginBottom: 10, fontWeight: '800', fontSize: 15,
+    marginBottom: 10, fontFamily: Fonte.corpoSemi, fontSize: 15,
   },
   inputWrapper: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#F8F9FB', borderRadius: 14,
-    borderWidth: 1.5, borderColor: '#DCE6F1', overflow: 'hidden',
+    backgroundColor: '#F7F6F2', borderRadius: 14,
+    borderWidth: 1.5, borderColor: '#E7E5DF', overflow: 'hidden',
   },
   inputWrapperErro: { borderColor: VERMELHO_ERRO, backgroundColor: '#FFF5F5' },
   inputPrefixo: {
     paddingHorizontal: 14, paddingVertical: 14,
     backgroundColor: AZUL_PALE,
-    borderRightWidth: 1, borderRightColor: '#DCE6F1',
+    borderRightWidth: 1, borderRightColor: '#E7E5DF',
   },
   inputPrefixoTexto: {
     ...Typography.bodyBold, color: AZUL_HERO_INICIO,
-    fontSize: 15, fontWeight: '800',
+    fontSize: 15, fontFamily: Fonte.corpoSemi,
   },
   inputCampo: {
     flex: 1, paddingHorizontal: 14, paddingVertical: 14,
-    ...Typography.h3, color: AZUL_HERO_INICIO, fontWeight: '800',
+    ...Typography.h3, color: AZUL_HERO_INICIO, fontFamily: Fonte.corpoSemi,
   },
   inputCheck: {
     width: 28, height: 28, borderRadius: 14,
-    backgroundColor: '#E8F5E9',
+    backgroundColor: '#EAF3EC',
     justifyContent: 'center', alignItems: 'center', marginRight: 12,
   },
   inputErro: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 8 },
-  inputErroTexto: { ...Typography.caption, color: VERMELHO_ERRO, fontWeight: '700' },
-  inputDica: { ...Typography.caption, color: '#637894', marginTop: 8, fontSize: 11 },
+  inputErroTexto: { ...Typography.caption, color: VERMELHO_ERRO, fontFamily: Fonte.corpoSemi },
+  inputDica: { ...Typography.caption, color: '#5B616B', marginTop: 8, fontSize: 11 },
 
   comoFuncionaBox: {
     backgroundColor: AZUL_PALE,
     borderRadius: 16, padding: 16, gap: 10,
   },
   comoFuncionaHeader: { flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 6 },
-  comoFuncionaTitulo: { ...Typography.bodyBold, color: AZUL_HERO_INICIO, fontWeight: '800' },
+  comoFuncionaTitulo: { ...Typography.bodyBold, color: AZUL_HERO_INICIO, fontFamily: Fonte.corpoSemi },
   passoInfo: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   passoInfoNumero: {
     width: 22, height: 22, borderRadius: 11,
     backgroundColor: AZUL_HERO_INICIO,
     justifyContent: 'center', alignItems: 'center',
   },
-  passoInfoNumeroTexto: { color: '#FFFFFF', fontSize: 11, fontWeight: '800' },
-  passoInfoTexto: { ...Typography.caption, color: '#173455', flex: 1 },
+  passoInfoNumeroTexto: { color: '#FFFFFF', fontSize: 11, fontFamily: Fonte.corpoSemi },
+  passoInfoTexto: { ...Typography.caption, color: '#1E2836', flex: 1 },
 
   botaoPagar: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
@@ -714,13 +716,13 @@ const styles = StyleSheet.create({
     shadowColor: LARANJA_MARCA, shadowOpacity: 0.3, shadowRadius: 10, elevation: 5,
     marginTop: 4,
   },
-  botaoPagarTexto: { color: '#FFFFFF', fontSize: 16, fontWeight: '800' },
+  botaoPagarTexto: { color: '#FFFFFF', fontSize: 16, fontFamily: Fonte.corpoSemi },
 
   seguroInfo: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     gap: 6, marginTop: 8, paddingVertical: 8,
   },
-  seguroInfoTexto: { ...Typography.caption, color: VERDE_SUCESSO, fontSize: 11, fontWeight: '600' },
+  seguroInfoTexto: { ...Typography.caption, color: VERDE_SUCESSO, fontSize: 11, fontFamily: Fonte.corpoSemi },
 
   conteudoProcessando: { padding: Spacing.lg, alignItems: 'center', paddingTop: 40 },
   loadingCirculo: {
@@ -732,10 +734,10 @@ const styles = StyleSheet.create({
   loadingSpinner: { width: 48, height: 48, justifyContent: 'center', alignItems: 'center' },
   processandoTitulo: {
     ...Typography.h2, color: AZUL_HERO_INICIO,
-    textAlign: 'center', marginBottom: 8, fontWeight: '800',
+    textAlign: 'center', marginBottom: 8, fontFamily: Fonte.tituloSemi,
   },
   processandoSubtitulo: {
-    ...Typography.body, color: '#637894',
+    ...Typography.body, color: '#5B616B',
     textAlign: 'center', marginBottom: 24, lineHeight: 20,
   },
   processandoStep: {
@@ -743,7 +745,7 @@ const styles = StyleSheet.create({
     gap: 12, paddingVertical: 10, paddingHorizontal: 16,
     backgroundColor: '#FFFFFF', borderRadius: 12,
     marginBottom: 8, width: '100%',
-    borderWidth: 1, borderColor: '#E5ECF4',
+    borderWidth: 1, borderColor: '#E7E5DF',
   },
   processandoStepIcone: {
     width: 22, height: 22, borderRadius: 11,
@@ -757,11 +759,11 @@ const styles = StyleSheet.create({
   },
   processandoStepIconePendente: {
     width: 22, height: 22, borderRadius: 11,
-    backgroundColor: '#E5ECF4',
+    backgroundColor: '#E7E5DF',
     justifyContent: 'center', alignItems: 'center',
   },
-  processandoStepIconeTexto: { color: '#637894', fontSize: 11, fontWeight: '800' },
-  processandoStepTexto: { ...Typography.body, color: '#173455', fontSize: 14 },
+  processandoStepIconeTexto: { color: '#5B616B', fontSize: 11, fontFamily: Fonte.corpoSemi },
+  processandoStepTexto: { ...Typography.body, color: '#1E2836', fontSize: 14 },
 
   timerBox: {
     flexDirection: 'row', alignItems: 'center',
@@ -770,19 +772,19 @@ const styles = StyleSheet.create({
     marginBottom: 20, borderWidth: 1.5, borderColor: LARANJA_PALE_BORDA,
   },
   timerBoxCritico: {
-    backgroundColor: '#FFEBEE',
-    borderColor: '#FFCDD2',
+    backgroundColor: '#FBECE9',
+    borderColor: '#F2C9C1',
   },
-  timerTexto: { fontSize: 15, fontWeight: '800', fontFamily: 'monospace' },
+  timerTexto: { fontSize: 15, fontFamily: Fonte.tituloSemi, fontVariant: ['tabular-nums'] },
 
   instrucoesBox: {
     backgroundColor: '#FFFFFF', borderRadius: 16, padding: 16,
-    borderWidth: 1, borderColor: '#E0E8F2',
+    borderWidth: 1, borderColor: '#E7E5DF',
     marginBottom: 16, width: '100%',
   },
   instrucoesTitulo: {
     ...Typography.bodyBold, color: AZUL_HERO_INICIO,
-    marginBottom: 12, fontWeight: '800',
+    marginBottom: 12, fontFamily: Fonte.corpoSemi,
   },
   instrucaoItem: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 6 },
   instrucaoNumero: {
@@ -790,26 +792,26 @@ const styles = StyleSheet.create({
     backgroundColor: LARANJA_MARCA,
     justifyContent: 'center', alignItems: 'center',
   },
-  instrucaoNumeroTexto: { color: '#FFFFFF', fontSize: 12, fontWeight: '800' },
-  instrucaoTexto: { ...Typography.body, color: '#173455', flex: 1, fontSize: 13 },
+  instrucaoNumeroTexto: { color: '#FFFFFF', fontSize: 12, fontFamily: Fonte.corpoSemi },
+  instrucaoTexto: { ...Typography.body, color: '#1E2836', flex: 1, fontSize: 13 },
 
   demoContainer: {
     width: '100%', marginTop: 10, marginBottom: 10, padding: 14,
-    backgroundColor: '#F0F2F6', borderRadius: 14,
-    borderWidth: 1, borderColor: '#E0E8F2', borderStyle: 'dashed',
+    backgroundColor: '#F4F3EF', borderRadius: 14,
+    borderWidth: 1, borderColor: '#E7E5DF', borderStyle: 'dashed',
   },
   demoHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 },
-  demoLabel: { ...Typography.caption, color: '#637894', fontSize: 10, fontWeight: '800', letterSpacing: 0.8 },
+  demoLabel: { ...Typography.caption, color: '#5B616B', fontSize: 10, fontFamily: Fonte.corpoSemi, letterSpacing: 0.8 },
   demoBotoes: { flexDirection: 'row', gap: 8 },
   demoBotao: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     paddingVertical: 9, borderRadius: 10, gap: 5,
   },
-  demoBotaoTexto: { color: '#FFFFFF', fontSize: 12, fontWeight: '800' },
+  demoBotaoTexto: { color: '#FFFFFF', fontSize: 12, fontFamily: Fonte.corpoSemi },
 
   cancelarBotao: { paddingVertical: 12, marginTop: 6 },
   cancelarBotaoTexto: {
-    color: '#637894', fontSize: 14, fontWeight: '600',
+    color: '#5B616B', fontSize: 14, fontFamily: Fonte.corpoSemi,
     textAlign: 'center', textDecorationLine: 'underline',
   },
 
@@ -822,7 +824,7 @@ const styles = StyleSheet.create({
   },
   sucessoTitulo: {
     ...Typography.displayMD, color: VERDE_SUCESSO,
-    textAlign: 'center', marginBottom: 8, fontWeight: '900',
+    textAlign: 'center', marginBottom: 8, fontFamily: Fonte.tituloBold,
   },
 
   erroCirculo: {
@@ -834,17 +836,17 @@ const styles = StyleSheet.create({
   },
   erroTitulo: {
     ...Typography.displayMD, color: VERMELHO_ERRO,
-    textAlign: 'center', marginBottom: 8, fontWeight: '900',
+    textAlign: 'center', marginBottom: 8, fontFamily: Fonte.tituloBold,
   },
 
   motivosBox: {
     backgroundColor: '#FFFFFF', borderRadius: 14, padding: 14,
-    borderWidth: 1, borderColor: '#FFCDD2',
+    borderWidth: 1, borderColor: '#F2C9C1',
     marginBottom: 20, width: '100%',
   },
   motivosTitulo: {
     ...Typography.bodyBold, color: '#8B1A1A',
-    marginBottom: 10, fontWeight: '800',
+    marginBottom: 10, fontFamily: Fonte.corpoSemi,
   },
   motivoItem: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 },
   motivoTexto: { ...Typography.body, color: '#5A1414', fontSize: 13 },
@@ -858,7 +860,7 @@ const styles = StyleSheet.create({
   },
   timeoutTitulo: {
     ...Typography.displayMD, color: AMARELO_AVISO,
-    textAlign: 'center', marginBottom: 8, fontWeight: '900',
+    textAlign: 'center', marginBottom: 8, fontFamily: Fonte.tituloBold,
   },
 
   modalOverlay: {
@@ -879,10 +881,10 @@ const styles = StyleSheet.create({
   },
   modalCancelarTitulo: {
     ...Typography.h3, color: AZUL_HERO_INICIO,
-    textAlign: 'center', marginBottom: 10, fontWeight: '800',
+    textAlign: 'center', marginBottom: 10, fontFamily: Fonte.corpoSemi,
   },
   modalCancelarTexto: {
-    ...Typography.body, color: '#637894',
+    ...Typography.body, color: '#5B616B',
     textAlign: 'center', marginBottom: 20, lineHeight: 20, fontSize: 14,
   },
   modalCancelarBotoes: { width: '100%', gap: 10 },
@@ -890,10 +892,10 @@ const styles = StyleSheet.create({
     paddingVertical: 14, borderRadius: 14,
     backgroundColor: LARANJA_MARCA, alignItems: 'center',
   },
-  modalCancelarBotaoVoltarTexto: { color: '#FFFFFF', fontSize: 15, fontWeight: '800' },
+  modalCancelarBotaoVoltarTexto: { color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi },
   modalCancelarBotaoCancelar: {
     paddingVertical: 14, borderRadius: 14,
-    backgroundColor: '#F0F2F6', alignItems: 'center',
+    backgroundColor: '#F4F3EF', alignItems: 'center',
   },
-  modalCancelarBotaoCancelarTexto: { color: VERMELHO_ERRO, fontSize: 14, fontWeight: '700' },
+  modalCancelarBotaoCancelarTexto: { color: VERMELHO_ERRO, fontSize: 14, fontFamily: Fonte.corpoSemi },
 });

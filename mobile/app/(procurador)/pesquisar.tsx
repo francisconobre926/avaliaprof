@@ -6,12 +6,10 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  StatusBar,
   Dimensions,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors, Sombras } from '../../src/theme/colors';
 import { Spacing, Typography, Radius } from '../../src/theme/typography';
@@ -19,17 +17,17 @@ import { useCores } from '../../src/store/themeStore';
 import { ANUNCIOS_MOCK, apenasDisponiveis } from '../../src/data/anuncios-mock';
 import { Anuncio } from '../../src/types';
 import CardAnuncio from '../../src/components/CardAnuncio';
+import TopBar from '../../src/components/TopBar';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 const { width } = Dimensions.get('window');
 
 // ============================================================
 // CORES OFICIAIS GOHOME (do logo)
 // ============================================================
-const AZUL_HERO_INICIO = '#003A66';
-const AZUL_HERO_MEIO = '#0061A6';
-const AZUL_HERO_FIM = '#0082DE';
-const LARANJA_MARCA = '#FE8A00';
-const LARANJA_ESCURO = '#CB6E00';
+const LARANJA_MARCA = '#E8760A';
+const LARANJA_ESCURO = '#B95A05';
 
 const pesquisasRecentes = [
   'T2 mobilado Beira',
@@ -87,72 +85,48 @@ export default function PesquisarScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <StatusBar barStyle="light-content" backgroundColor={AZUL_HERO_INICIO} />
+      <TopBar />
 
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
-        <LinearGradient
-          colors={[AZUL_HERO_INICIO, AZUL_HERO_MEIO, AZUL_HERO_FIM]}
-          locations={[0, 0.55, 1]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.headerHero}
-        >
-          <View pointerEvents="none" style={styles.heroGlow} />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Título simples no fundo papel */}
+        <Text style={[styles.titulo, { color: cores.textoPrincipal }]} accessibilityRole="header">
+          Encontra o que procuras
+        </Text>
 
-          <View style={styles.headerTopLine}>
-            <Text style={styles.brandName}>
-              <Text style={styles.brandGo}>Go</Text>
-              <Text style={styles.brandHome}>Home</Text>
-            </Text>
-            <View style={styles.headerBadge}>
-              <Ionicons name="search" size={14} color={LARANJA_MARCA} />
-              <Text style={styles.headerBadgeText}>EXPLORAR</Text>
-            </View>
-          </View>
-
-          <Text style={styles.headerTitulo}>Encontra o que procuras</Text>
-          <Text style={styles.headerSubtitulo}>
-            Imóveis, veículos, espaços e muito mais num só lugar.
-          </Text>
-
-          {/* Barra de pesquisa */}
-          <View style={styles.pesquisaContainer}>
-            <View style={[styles.pesquisaInputWrapper, { backgroundColor: cores.fundoElevado }]}>
-              <Ionicons name="search" size={21} color={AZUL_HERO_MEIO} />
-              <TextInput
-                style={[styles.pesquisaInput, { color: cores.textoPrincipal }]}
-                placeholder="Pesquisar imóveis, veículos, espaços..."
-                placeholderTextColor={cores.textoTerciario}
-                value={pesquisa}
-                onChangeText={(text) => {
-                  setPesquisa(text);
-                  setMostrarResultados(text.length > 0);
-                }}
-                autoFocus={false}
-                returnKeyType="search"
-                clearButtonMode="never"
-              />
-              {pesquisa.length > 0 && (
-                <TouchableOpacity onPress={limparPesquisa} hitSlop={8}>
-                  <Ionicons name="close-circle" size={20} color={cores.textoTerciario} />
-                </TouchableOpacity>
-              )}
-            </View>
-            <TouchableOpacity style={styles.filtrosBotao} activeOpacity={0.8}>
-              <LinearGradient
-                colors={[LARANJA_MARCA, LARANJA_ESCURO]}
-                style={StyleSheet.absoluteFill}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              />
-              <Ionicons name="options" size={21} color="#FFFFFF" />
+        {/* Barra de pesquisa */}
+        <View style={[styles.pesquisaCard, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
+          <View style={styles.pesquisaLinha}>
+            <Ionicons name="search" size={18} color={cores.textoSecundario} />
+            <TextInput
+              style={[styles.pesquisaInput, { color: cores.textoPrincipal }]}
+              placeholder="Imóveis, veículos, espaços…"
+              placeholderTextColor={cores.textoTerciario}
+              value={pesquisa}
+              onChangeText={(text) => {
+                setPesquisa(text);
+                setMostrarResultados(text.length > 0);
+              }}
+              autoFocus={false}
+              returnKeyType="search"
+              clearButtonMode="never"
+              accessibilityLabel="Pesquisar anúncios"
+            />
+            {pesquisa.length > 0 && (
+              <TouchableOpacity onPress={limparPesquisa} hitSlop={8} accessibilityLabel="Limpar pesquisa">
+                <Ionicons name="close-circle" size={17} color={cores.textoTerciario} />
+              </TouchableOpacity>
+            )}
+            <View style={[styles.pesquisaDivisor, { backgroundColor: cores.bordaSubtil }]} />
+            <TouchableOpacity style={styles.filtrosBotao} activeOpacity={0.7} accessibilityLabel="Filtros">
+              <Ionicons name="options-outline" size={19} color={cores.textoPrincipal} />
             </TouchableOpacity>
           </View>
-          <View style={styles.headerAccent} />
-        </LinearGradient>
-      </SafeAreaView>
+        </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {!mostrarResultados ? (
           <>
             {/* Filtros rápidos */}
@@ -257,13 +231,13 @@ export default function PesquisarScreen() {
                     }}
                   >
                     <LinearGradient
-                      colors={['rgba(254, 138, 0, 0.08)', 'rgba(0, 130, 222, 0.04)']}
+                      colors={['rgba(232, 118, 10, 0.08)', 'rgba(10, 107, 192, 0.04)']}
                       style={StyleSheet.absoluteFill}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                     />
                     <View style={[styles.zonaIcone, { backgroundColor: cores.fundoElevado }]}>
-                      <MaterialCommunityIcons
+                      <Icone
                         name={zona.icone}
                         size={26}
                         color={cores.principal}
@@ -290,7 +264,7 @@ export default function PesquisarScreen() {
               />
               <View style={styles.procuraCardConteudo}>
                 <View style={styles.procuraCardIcone}>
-                  <MaterialCommunityIcons name="bell-ring-outline" size={30} color="#FFFFFF" />
+                  <Icone name="bell-ring-outline" size={30} color="#FFFFFF" />
                 </View>
                 <View style={styles.procuraCardInfo}>
                   <Text style={styles.procuraCardTitulo}>Cria um alerta</Text>
@@ -338,7 +312,7 @@ export default function PesquisarScreen() {
             ) : (
               <View style={styles.vazioContainer}>
                 <View style={[styles.vazioIconeCirculo, { backgroundColor: cores.fundoSuave, borderColor: cores.bordaSubtil }]}>
-                  <MaterialCommunityIcons name="magnify-close" size={44} color={cores.textoTerciario} />
+                  <Icone name="magnify-close" size={44} color={cores.textoTerciario} />
                 </View>
                 <Text style={[styles.vazioTitulo, { color: cores.textoPrincipal }]}>
                   Sem resultados
@@ -395,95 +369,32 @@ function FiltroRapido({ icone, cor, label, valor, cores }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  safeArea: { backgroundColor: AZUL_HERO_INICIO },
-  headerHero: {
-    paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.md,
-    paddingBottom: 22,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-    overflow: 'hidden',
-    position: 'relative',
+  titulo: { ...Typography.h1, paddingHorizontal: Spacing.lg, marginTop: 16 },
+  pesquisaCard: {
+    marginHorizontal: Spacing.lg,
+    marginTop: 12,
+    marginBottom: Spacing.lg,
+    borderRadius: 14,
+    borderWidth: 1,
   },
-  heroGlow: {
-    position: 'absolute',
-    width: 240,
-    height: 240,
-    borderRadius: 120,
-    backgroundColor: 'rgba(0, 130, 222, 0.18)',
-    right: -70,
-    top: 20,
-  },
-  headerTopLine: { flexDirection: 'row', alignItems: 'center', marginBottom: 22 },
-  brandName: { fontSize: 26, fontWeight: '900', letterSpacing: -0.8 },
-  brandGo: { color: '#FFFFFF' },
-  brandHome: { color: LARANJA_MARCA },
-  headerBadge: {
-    marginLeft: 'auto',
+  pesquisaLinha: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
-    backgroundColor: 'rgba(255,255,255,0.14)',
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    gap: 10,
+    paddingLeft: 14,
+    paddingRight: 6,
+    height: 48,
   },
-  headerBadgeText: { color: '#FFFFFF', fontSize: 10, fontWeight: '800', letterSpacing: 1 },
-  headerTitulo: {
-    fontSize: 27,
-    lineHeight: 33,
-    fontWeight: '900',
-    color: '#FFFFFF',
-    letterSpacing: -0.5,
-  },
-  headerSubtitulo: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: 'rgba(255,255,255,0.85)',
-    marginTop: 5,
-    marginBottom: 20,
-  },
-  headerAccent: {
-    position: 'absolute',
-    width: 88,
-    height: 4,
-    borderRadius: 3,
-    backgroundColor: LARANJA_MARCA,
-    bottom: 0,
-    left: Spacing.lg,
-  },
-  pesquisaContainer: {
-    flexDirection: 'row',
-    gap: Spacing.sm,
-    alignItems: 'center',
-  },
-  pesquisaInputWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 18,
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    gap: Spacing.sm,
-    minHeight: 56,
-    ...Sombras.sm,
-  },
-  pesquisaInput: {
-    flex: 1,
-    ...Typography.body,
-    padding: 0,
-    fontSize: 14,
-  },
+  pesquisaInput: { flex: 1, fontFamily: Fonte.corpo, fontSize: 15, padding: 0 },
+  pesquisaDivisor: { width: StyleSheet.hairlineWidth, height: 22 },
   filtrosBotao: {
-    width: 56,
-    height: 56,
-    borderRadius: 18,
-    overflow: 'hidden',
+    width: 40,
+    height: 40,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    ...Sombras.colorida(LARANJA_MARCA),
   },
-  scrollContent: { paddingTop: Spacing.lg, paddingBottom: 28 },
+  scrollContent: { paddingBottom: 28 },
   seccao: { marginBottom: Spacing.xl, paddingHorizontal: Spacing.lg },
   seccaoHeader: {
     flexDirection: 'row',
@@ -555,7 +466,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.lg,
     borderRadius: Radius.xl,
     overflow: 'hidden',
-    ...Sombras.colorida('#0082DE'),
+    ...Sombras.colorida('#0A6BC0'),
   },
   procuraCardConteudo: {
     flexDirection: 'row',
@@ -597,7 +508,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   resultadosTitulo: { ...Typography.body, flex: 1 },
-  resultadosDestaque: { fontWeight: '700' },
+  resultadosDestaque: { fontFamily: Fonte.corpoSemi },
   ordenarBotao: {
     flexDirection: 'row',
     alignItems: 'center',

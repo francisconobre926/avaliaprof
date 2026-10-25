@@ -35,21 +35,19 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 import { Colors, Sombras } from '../../src/theme/colors';
 
 import { Spacing, Typography, Radius } from '../../src/theme/typography';
 
-
-
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 export default function NovaPasswordScreen() {
 
   const router = useRouter();
 
   const { email } = useLocalSearchParams<{ email: string }>();
-
-
 
   const [password, setPassword] = useState('');
 
@@ -65,8 +63,6 @@ export default function NovaPasswordScreen() {
 
   const [campoFocado, setCampoFocado] = useState<string | null>(null);
 
-
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -74,8 +70,6 @@ export default function NovaPasswordScreen() {
   const sucessoScale = useRef(new Animated.Value(0)).current;
 
   const sucessoRotate = useRef(new Animated.Value(0)).current;
-
-
 
   useEffect(() => {
 
@@ -107,8 +101,6 @@ export default function NovaPasswordScreen() {
 
   }, []);
 
-
-
   useEffect(() => {
 
     if (sucesso) {
@@ -139,8 +131,6 @@ export default function NovaPasswordScreen() {
 
       ]).start();
 
-
-
       // Redirect automático depois de 2.5s
 
       const timer = setTimeout(() => {
@@ -155,8 +145,6 @@ export default function NovaPasswordScreen() {
 
   }, [sucesso]);
 
-
-
   // Validações de segurança da password
 
   const validacoes = {
@@ -170,8 +158,6 @@ export default function NovaPasswordScreen() {
     especial: /[!@#$%^&*(),.?":{}|<>_-]/.test(password),
 
   };
-
-
 
   const forcaPassword = () => {
 
@@ -188,8 +174,6 @@ export default function NovaPasswordScreen() {
     return { forca: 4, cor: Colors.verde, texto: 'Excelente', label: 'Muito segura' };
 
   };
-
-
 
   const handleGuardar = () => {
 
@@ -217,8 +201,6 @@ export default function NovaPasswordScreen() {
 
     }
 
-
-
     setLoading(true);
 
     setTimeout(() => {
@@ -231,15 +213,11 @@ export default function NovaPasswordScreen() {
 
   };
 
-
-
   const forca = forcaPassword();
 
   const passwordsIguais = confirmarPassword.length > 0 && password === confirmarPassword;
 
   const passwordsDiferentes = confirmarPassword.length > 0 && password !== confirmarPassword;
-
-
 
   const rotate = sucessoRotate.interpolate({
 
@@ -248,8 +226,6 @@ export default function NovaPasswordScreen() {
     outputRange: ['0deg', '360deg'],
 
   });
-
-
 
   // ============ ESTADO: SUCESSO ============
 
@@ -315,8 +291,6 @@ export default function NovaPasswordScreen() {
 
             </View>
 
-
-
             <Text style={styles.sucessoTitulo}>Password alterada!</Text>
 
             <Text style={styles.sucessoSubtitulo}>
@@ -326,8 +300,6 @@ export default function NovaPasswordScreen() {
               Podes agora entrar com a nova password.
 
             </Text>
-
-
 
             {/* Info security */}
 
@@ -363,8 +335,6 @@ export default function NovaPasswordScreen() {
 
             </View>
 
-
-
             <View style={styles.sucessoLoading}>
 
               <ActivityIndicator color={Colors.branco} size="small" />
@@ -386,8 +356,6 @@ export default function NovaPasswordScreen() {
     );
 
   }
-
-
 
   // ============ ESTADO: FORMULÁRIO ============
 
@@ -437,8 +405,6 @@ export default function NovaPasswordScreen() {
 
         </View>
 
-
-
         <ScrollView
 
           showsVerticalScrollIndicator={false}
@@ -481,7 +447,7 @@ export default function NovaPasswordScreen() {
 
                   >
 
-                    <MaterialCommunityIcons name="lock-plus" size={50} color={Colors.branco} />
+                    <Icone name="lock-plus" size={50} color={Colors.branco} />
 
                   </LinearGradient>
 
@@ -490,8 +456,6 @@ export default function NovaPasswordScreen() {
               </View>
 
             </View>
-
-
 
             {/* Título */}
 
@@ -502,8 +466,6 @@ export default function NovaPasswordScreen() {
               Cria uma password segura para{'\n'}proteger a tua conta
 
             </Text>
-
-
 
             {/* Password */}
 
@@ -559,8 +521,6 @@ export default function NovaPasswordScreen() {
 
               </View>
 
-
-
               {/* Barra de força */}
 
               {password.length > 0 && (
@@ -607,8 +567,6 @@ export default function NovaPasswordScreen() {
 
             </View>
 
-
-
             {/* Requisitos */}
 
             <View style={styles.requisitosContainer}>
@@ -624,8 +582,6 @@ export default function NovaPasswordScreen() {
               <RequisitoItem valido={validacoes.especial} texto="Um carácter especial (!@#$...)" />
 
             </View>
-
-
 
             {/* Confirmar password */}
 
@@ -721,15 +677,13 @@ export default function NovaPasswordScreen() {
 
             </View>
 
-
-
             {/* Dica de segurança */}
 
             <View style={styles.dicaCard}>
 
               <View style={styles.dicaIcone}>
 
-                <MaterialCommunityIcons name="shield-lock" size={20} color={Colors.aviso} />
+                <Icone name="shield-lock" size={20} color={Colors.aviso} />
 
               </View>
 
@@ -750,8 +704,6 @@ export default function NovaPasswordScreen() {
           </Animated.View>
 
         </ScrollView>
-
-
 
         {/* Footer */}
 
@@ -817,8 +769,6 @@ export default function NovaPasswordScreen() {
 
 }
 
-
-
 function RequisitoItem({ valido, texto }: any) {
 
   return (
@@ -849,7 +799,7 @@ function RequisitoItem({ valido, texto }: any) {
 
         styles.requisitoTexto,
 
-        valido && { color: Colors.textoPrincipal, fontWeight: '600' },
+        valido && { color: Colors.textoPrincipal, fontFamily: Fonte.corpoSemi },
 
       ]}>
 
@@ -862,8 +812,6 @@ function RequisitoItem({ valido, texto }: any) {
   );
 
 }
-
-
 
 const styles = StyleSheet.create({
 
@@ -953,8 +901,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Hero
 
   heroContainer: {
@@ -1009,11 +955,9 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
 
-    ...Sombras.colorida('#2196F3'),
+    ...Sombras.colorida('#0A6BC0'),
 
   },
-
-
 
   // Título
 
@@ -1042,8 +986,6 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
 
   },
-
-
 
   // Campos
 
@@ -1107,8 +1049,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Força
 
   forcaContainer: {
@@ -1166,8 +1106,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
 
   },
-
-
 
   // Requisitos
 
@@ -1245,8 +1183,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Mensagens
 
   erroMensagem: {
@@ -1269,7 +1205,7 @@ const styles = StyleSheet.create({
 
     color: Colors.erro,
 
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
 
   },
 
@@ -1293,11 +1229,9 @@ const styles = StyleSheet.create({
 
     color: Colors.verde,
 
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
 
   },
-
-
 
   // Dica
 
@@ -1365,8 +1299,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Footer
 
   footer: {
@@ -1414,8 +1346,6 @@ const styles = StyleSheet.create({
     color: Colors.branco,
 
   },
-
-
 
   // ============ ESTADO SUCESSO ============
 
@@ -1529,7 +1459,7 @@ const styles = StyleSheet.create({
 
     marginBottom: Spacing.sm,
 
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
 
     textAlign: 'center',
 
@@ -1587,7 +1517,7 @@ const styles = StyleSheet.create({
 
     color: Colors.branco,
 
-    fontWeight: '500',
+    fontFamily: Fonte.corpoMedio,
 
     flex: 1,
 

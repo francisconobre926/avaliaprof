@@ -16,11 +16,13 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { Colors, Sombras } from '../../src/theme/colors';
 import { Spacing, Typography, Radius } from '../../src/theme/typography';
 import { IMOVEIS_MOCK, formatarPreco, tempoDesdeMock } from '../../src/data/imoveis-mock';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 const { width, height } = Dimensions.get('window');
 
 export default function DetalheImovel() {
@@ -201,7 +203,7 @@ export default function DetalheImovel() {
             {imovel.quartos && (
               <View style={styles.caracteristicaBox}>
                 <View style={styles.caracteristicaIcone}>
-                  <MaterialCommunityIcons name="bed" size={22} color={Colors.azul} />
+                  <Icone name="bed" size={22} color={Colors.azul} />
                 </View>
                 <Text style={styles.caracteristicaValor}>{imovel.quartos}</Text>
                 <Text style={styles.caracteristicaLabel}>Quartos</Text>
@@ -210,7 +212,7 @@ export default function DetalheImovel() {
             {imovel.casasBanho && (
               <View style={styles.caracteristicaBox}>
                 <View style={styles.caracteristicaIcone}>
-                  <MaterialCommunityIcons name="shower" size={22} color={Colors.azul} />
+                  <Icone name="shower" size={22} color={Colors.azul} />
                 </View>
                 <Text style={styles.caracteristicaValor}>{imovel.casasBanho}</Text>
                 <Text style={styles.caracteristicaLabel}>WC</Text>
@@ -219,7 +221,7 @@ export default function DetalheImovel() {
             {imovel.area && (
               <View style={styles.caracteristicaBox}>
                 <View style={styles.caracteristicaIcone}>
-                  <MaterialCommunityIcons name="ruler-square" size={22} color={Colors.azul} />
+                  <Icone name="ruler-square" size={22} color={Colors.azul} />
                 </View>
                 <Text style={styles.caracteristicaValor}>{imovel.area}</Text>
                 <Text style={styles.caracteristicaLabel}>m²</Text>
@@ -227,7 +229,7 @@ export default function DetalheImovel() {
             )}
             <View style={styles.caracteristicaBox}>
               <View style={styles.caracteristicaIcone}>
-                <MaterialCommunityIcons
+                <Icone
                   name={imovel.mobilado ? 'sofa' : 'sofa-outline'}
                   size={22}
                   color={Colors.azul}
@@ -315,14 +317,14 @@ export default function DetalheImovel() {
               )}
               <View style={styles.mapaConteudo}>
                 <View style={styles.mapaPin}>
-                  <MaterialCommunityIcons name="map-marker" size={40} color={Colors.azul} />
+                  <Icone name="map-marker" size={40} color={Colors.azul} />
                 </View>
                 <Text style={styles.mapaTexto}>
                   {foiDesbloqueado ? '📍 Localização exacta desbloqueada' : '📍 Zona aproximada'}
                 </Text>
                 {foiDesbloqueado && (
                   <TouchableOpacity style={styles.botaoDirecoes} activeOpacity={0.8}>
-                    <MaterialCommunityIcons name="directions" size={16} color={Colors.branco} />
+                    <Icone name="directions" size={16} color={Colors.branco} />
                     <Text style={styles.botaoDirecoesText}>Como chegar</Text>
                   </TouchableOpacity>
                 )}
@@ -382,7 +384,7 @@ export default function DetalheImovel() {
             <View style={styles.footerBloqueado}>
               <View style={styles.footerInfo}>
                 <View style={styles.footerBadgePromo}>
-                  <MaterialCommunityIcons name="tag" size={10} color={Colors.branco} />
+                  <Icone name="tag" size={10} color={Colors.branco} />
                   <Text style={styles.footerBadgePromoText}>50% OFF</Text>
                 </View>
                 <View>
@@ -538,7 +540,7 @@ const styles = StyleSheet.create({
   contadorFotosText: {
     ...Typography.caption,
     color: Colors.branco,
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
   },
   fotoDots: {
     position: 'absolute',
@@ -633,7 +635,7 @@ const styles = StyleSheet.create({
   tempoBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.verdeFundo || 'rgba(76, 175, 80, 0.1)',
+    backgroundColor: 'rgba(76, 175, 80, 0.1)',
     paddingHorizontal: Spacing.sm,
     paddingVertical: 4,
     borderRadius: Radius.sm,
@@ -648,7 +650,7 @@ const styles = StyleSheet.create({
   tempoBadgeText: {
     ...Typography.caption,
     color: Colors.verde,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
   },
   visualizacoes: {
     flexDirection: 'row',
@@ -744,7 +746,7 @@ const styles = StyleSheet.create({
   comodidadeLabel: {
     ...Typography.bodySmall,
     color: Colors.textoPrincipal,
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
   },
   comodidadeCheck: {
     width: 16,
@@ -776,7 +778,7 @@ const styles = StyleSheet.create({
   anuncianteAvatarLetra: {
     ...Typography.h2,
     color: Colors.branco,
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
   },
   anuncianteInfo: {
     flex: 1,
@@ -803,7 +805,7 @@ const styles = StyleSheet.create({
   tempoResposta: {
     ...Typography.caption,
     color: Colors.verde,
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
     marginTop: 2,
   },
 
@@ -862,7 +864,7 @@ const styles = StyleSheet.create({
     color: Colors.textoPrincipal,
   },
   contactosCard: {
-    backgroundColor: Colors.verdeFundo || 'rgba(76, 175, 80, 0.08)',
+    backgroundColor: 'rgba(76, 175, 80, 0.08)',
     borderRadius: Radius.lg,
     padding: Spacing.md,
     borderWidth: 1,
@@ -887,7 +889,7 @@ const styles = StyleSheet.create({
   contactoLabel: {
     ...Typography.caption,
     color: Colors.textoSecundario,
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
   },
   contactoNumero: {
     ...Typography.bodyBold,
@@ -957,7 +959,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: Radius.full,
     overflow: 'hidden',
-    ...Sombras.colorida('#2196F3'),
+    ...Sombras.colorida('#0A6BC0'),
   },
   footerBotaoGradient: {
     flexDirection: 'row',
@@ -993,7 +995,7 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: Colors.azulMuitoClaro || 'rgba(33, 150, 243, 0.1)',
+    backgroundColor: 'rgba(33, 150, 243, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -33,23 +33,25 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Typography, Spacing, Radius } from '../../src/theme/typography';
 import { useUserStore } from '../../src/store/userStore';
 import { useCores } from '../../src/store/themeStore';
 import { useWalletStore, formatarValor } from '../../src/store/walletStore';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 // ============================================================
 // CORES GOHOME
 // ============================================================
-const AZUL_HERO_INICIO = '#003A66';
-const AZUL_HERO_FIM = '#0082DE';
-const LARANJA_MARCA = '#FE8A00';
-const LARANJA_ESCURO = '#CB6E00';
-const VERDE_SUCESSO = '#2E7D32';
-const VERMELHO_ERRO = '#D32F2F';
-const AMARELO_AVISO = '#F57C00';
+const AZUL_HERO_INICIO = '#0A6BC0';   // Azul GoHome — o mesmo da "Promoção lançamento"
+const AZUL_HERO_FIM = '#095FAA';
+const LARANJA_MARCA = '#E8760A';
+const LARANJA_ESCURO = '#B95A05';
+const VERDE_SUCESSO = '#2F7A4F';
+const VERMELHO_ERRO = '#C2412D';
+const AMARELO_AVISO = '#E8760A';
 
 type MetodoPagamento = 'mpesa' | 'emola' | 'credito';
 
@@ -300,7 +302,7 @@ export default function PagamentoDesbloqueio() {
               <Text style={styles.montanteMoeda}>MT</Text>
             </View>
             <View style={styles.descontoBadge}>
-              <MaterialCommunityIcons name="tag" size={12} color="#FFFFFF" />
+              <Icone name="tag" size={12} color="#FFFFFF" />
               <Text style={styles.descontoBadgeTexto}>
                 50% OFF — Antes {valorNormal} MT
               </Text>
@@ -324,7 +326,7 @@ export default function PagamentoDesbloqueio() {
               {/* Resumo do anúncio */}
               <View style={[styles.resumoCard, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
                 <View style={styles.resumoHeader}>
-                  <MaterialCommunityIcons name="lock-open-outline" size={20} color={cores.principal} />
+                  <Icone name="lock-open-outline" size={20} color={cores.principal} />
                   <Text style={[styles.resumoTitulo, { color: cores.principal }]}>Vais desbloquear</Text>
                 </View>
                 <Text style={[styles.resumoAnuncioTitulo, { color: cores.textoPrincipal }]} numberOfLines={2}>
@@ -332,7 +334,7 @@ export default function PagamentoDesbloqueio() {
                 </Text>
                 <View style={styles.resumoMetaLinha}>
                   <View style={styles.resumoMetaItem}>
-                    <MaterialCommunityIcons name="shape" size={14} color={cores.textoSecundario} />
+                    <Icone name="shape" size={14} color={cores.textoSecundario} />
                     <Text style={[styles.resumoMetaTexto, { color: cores.textoSecundario }]}>{categoria}</Text>
                   </View>
                   <View style={[styles.resumoMetaDivisor, { backgroundColor: cores.bordaSubtil }]} />
@@ -354,7 +356,7 @@ export default function PagamentoDesbloqueio() {
                 </View>
                 <View style={styles.resumoLinhaInfo}>
                   <Text style={[styles.resumoLabel, { color: cores.textoSecundario }]}>Valor</Text>
-                  <Text style={[styles.resumoValor, { color: LARANJA_MARCA, fontWeight: '900' }]}>
+                  <Text style={[styles.resumoValor, { color: LARANJA_MARCA, fontFamily: Fonte.corpoBold }]}>
                     {valorPago} MT
                   </Text>
                 </View>
@@ -407,7 +409,7 @@ export default function PagamentoDesbloqueio() {
                   activeOpacity={0.85}
                 >
                   <View style={[styles.metodoIcone, { backgroundColor: 'rgba(237, 28, 36, 0.1)' }]}>
-                    <MaterialCommunityIcons name="cellphone" size={22} color="#ED1C24" />
+                    <Icone name="cellphone" size={22} color="#ED1C24" />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={[styles.metodoNome, { color: cores.textoPrincipal }]}>M-Pesa</Text>
@@ -431,7 +433,7 @@ export default function PagamentoDesbloqueio() {
                   activeOpacity={0.85}
                 >
                   <View style={[styles.metodoIcone, { backgroundColor: 'rgba(0, 102, 179, 0.1)' }]}>
-                    <MaterialCommunityIcons name="cellphone-wireless" size={22} color="#0066B3" />
+                    <Icone name="cellphone-wireless" size={22} color="#0066B3" />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={[styles.metodoNome, { color: cores.textoPrincipal }]}>eMola</Text>
@@ -493,11 +495,11 @@ export default function PagamentoDesbloqueio() {
               )}
 
               {/* Aviso de segurança */}
-              <View style={[styles.avisoBox, { backgroundColor: 'rgba(0, 130, 222, 0.06)', borderColor: 'rgba(0, 130, 222, 0.2)' }]}>
+              <View style={[styles.avisoBox, { backgroundColor: 'rgba(10, 107, 192, 0.06)', borderColor: 'rgba(10, 107, 192, 0.2)' }]}>
                 <Ionicons name="shield-checkmark" size={18} color={cores.principal} />
                 <Text style={[styles.avisoTexto, { color: cores.textoSecundario }]}>
-                  Este valor só paga o <Text style={{ fontWeight: '800', color: cores.textoPrincipal }}>desbloqueio do contacto</Text>.{'\n'}
-                  Depois vais negociar directamente com o anunciante. O GoHome <Text style={{ fontWeight: '800' }}>nunca</Text> processa pagamentos de arrendamento.
+                  Este valor só paga o <Text style={{ fontFamily: Fonte.corpoSemi, color: cores.textoPrincipal }}>desbloqueio do contacto</Text>.{'\n'}
+                  Depois vais negociar directamente com o anunciante. O GoHome <Text style={{ fontFamily: Fonte.corpoSemi }}>nunca</Text> processa pagamentos de arrendamento.
                 </Text>
               </View>
 
@@ -513,7 +515,7 @@ export default function PagamentoDesbloqueio() {
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                 />
-                <MaterialCommunityIcons
+                <Icone
                   name={metodo === 'credito' ? 'wallet' : 'credit-card-check'}
                   size={22}
                   color="#FFFFFF"
@@ -532,7 +534,7 @@ export default function PagamentoDesbloqueio() {
             <View style={styles.conteudoProcessando}>
               <Animated.View style={[styles.loadingCirculo, { transform: [{ scale: pulseValue }] }]}>
                 <Animated.View style={{ transform: [{ rotate: spin }] }}>
-                  <MaterialCommunityIcons name="loading" size={48} color={LARANJA_MARCA} />
+                  <Icone name="loading" size={48} color={LARANJA_MARCA} />
                 </Animated.View>
               </Animated.View>
               <Text style={[styles.processandoTitulo, { color: cores.textoPrincipal }]}>
@@ -548,19 +550,19 @@ export default function PagamentoDesbloqueio() {
           {estado === 'aguardando_pin' && (
             <View style={styles.conteudoProcessando}>
               <Animated.View style={[styles.loadingCirculo, { transform: [{ scale: pulseValue }] }]}>
-                <MaterialCommunityIcons name="cellphone-key" size={48} color={LARANJA_MARCA} />
+                <Icone name="cellphone-key" size={48} color={LARANJA_MARCA} />
               </Animated.View>
               <Text style={[styles.processandoTitulo, { color: cores.textoPrincipal }]}>
                 Verifica o teu telefone
               </Text>
               <Text style={[styles.processandoSubtitulo, { color: cores.textoSecundario }]}>
                 Recebeste um pedido no número{'\n'}
-                <Text style={{ fontWeight: '800', color: cores.textoPrincipal }}>+258 {numeroTelefone}</Text>
+                <Text style={{ fontFamily: Fonte.corpoSemi, color: cores.textoPrincipal }}>+258 {numeroTelefone}</Text>
               </Text>
 
               <View style={[
                 styles.timerBox,
-                { backgroundColor: tempoCritico ? 'rgba(211,47,47,0.1)' : 'rgba(254,138,0,0.1)', borderColor: tempoCritico ? VERMELHO_ERRO : LARANJA_MARCA },
+                { backgroundColor: tempoCritico ? 'rgba(211,47,47,0.1)' : 'rgba(232, 118, 10,0.1)', borderColor: tempoCritico ? VERMELHO_ERRO : LARANJA_MARCA },
               ]}>
                 <Ionicons name="time" size={18} color={tempoCritico ? VERMELHO_ERRO : LARANJA_MARCA} />
                 <Text style={[styles.timerTexto, { color: tempoCritico ? VERMELHO_ERRO : LARANJA_MARCA }]}>
@@ -587,7 +589,7 @@ export default function PagamentoDesbloqueio() {
               {/* Botões DEMO (para teste) */}
               <View style={[styles.demoContainer, { backgroundColor: cores.fundoSuave, borderColor: cores.bordaSubtil }]}>
                 <View style={styles.demoHeader}>
-                  <MaterialCommunityIcons name="flask-outline" size={16} color={cores.textoSecundario} />
+                  <Icone name="flask-outline" size={16} color={cores.textoSecundario} />
                   <Text style={[styles.demoLabel, { color: cores.textoSecundario }]}>
                     MODO TESTE (simular resposta)
                   </Text>
@@ -642,7 +644,7 @@ export default function PagamentoDesbloqueio() {
 
               <TouchableOpacity style={styles.botaoPagar} onPress={tentarNovamente} activeOpacity={0.85}>
                 <LinearGradient colors={[LARANJA_MARCA, LARANJA_ESCURO]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
-                <MaterialCommunityIcons name="refresh" size={20} color="#FFFFFF" />
+                <Icone name="refresh" size={20} color="#FFFFFF" />
                 <Text style={styles.botaoPagarTexto}>Tentar novamente</Text>
               </TouchableOpacity>
 
@@ -666,7 +668,7 @@ export default function PagamentoDesbloqueio() {
 
               <TouchableOpacity style={styles.botaoPagar} onPress={tentarNovamente} activeOpacity={0.85}>
                 <LinearGradient colors={[LARANJA_MARCA, LARANJA_ESCURO]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
-                <MaterialCommunityIcons name="refresh" size={20} color="#FFFFFF" />
+                <Icone name="refresh" size={20} color="#FFFFFF" />
                 <Text style={styles.botaoPagarTexto}>Tentar novamente</Text>
               </TouchableOpacity>
 
@@ -683,7 +685,7 @@ export default function PagamentoDesbloqueio() {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalCancelarBox, { backgroundColor: cores.fundoElevado }]}>
             <View style={styles.modalCancelarIcone}>
-              <MaterialCommunityIcons name="alert-circle" size={32} color={AMARELO_AVISO} />
+              <Icone name="alert-circle" size={32} color={AMARELO_AVISO} />
             </View>
             <Text style={[styles.modalCancelarTitulo, { color: cores.textoPrincipal }]}>Cancelar pagamento?</Text>
             <Text style={[styles.modalCancelarTexto, { color: cores.textoSecundario }]}>
@@ -722,20 +724,20 @@ const styles = StyleSheet.create({
   headerTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: Spacing.md },
   headerBotao: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.15)', justifyContent: 'center', alignItems: 'center' },
   headerCenter: { alignItems: 'center' },
-  headerLabel: { color: 'rgba(255,255,255,0.75)', fontSize: 9, letterSpacing: 1.5, fontWeight: '700', marginBottom: 2 },
-  headerTitulo: { color: '#FFFFFF', fontSize: 18, fontWeight: '800' },
+  headerLabel: { color: 'rgba(255,255,255,0.75)', fontSize: 9, letterSpacing: 1.5, fontFamily: Fonte.corpoSemi, marginBottom: 2 },
+  headerTitulo: { color: '#FFFFFF', fontSize: 18, fontFamily: Fonte.corpoSemi },
 
   // Montante
   montanteContainer: { alignItems: 'center', paddingVertical: Spacing.lg },
-  montanteLabel: { color: 'rgba(255,255,255,0.85)', fontSize: 13, marginBottom: 8 },
+  montanteLabel: { color: 'rgba(255,255,255,0.85)', fontFamily: Fonte.corpo, fontSize: 13, marginBottom: 8 },
   montanteLinha: { flexDirection: 'row', alignItems: 'baseline', gap: 8, marginBottom: 12 },
-  montanteValor: { color: '#FFFFFF', fontSize: 56, fontWeight: '900', lineHeight: 60 },
-  montanteMoeda: { color: '#FFFFFF', fontSize: 24, fontWeight: '700' },
+  montanteValor: { color: '#FFFFFF', fontSize: 56, fontFamily: Fonte.tituloBold, lineHeight: 60 },
+  montanteMoeda: { color: '#FFFFFF', fontSize: 24, fontFamily: Fonte.tituloSemi },
   descontoBadge: {
     flexDirection: 'row', alignItems: 'center', backgroundColor: LARANJA_MARCA,
     paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, gap: 5,
   },
-  descontoBadgeTexto: { color: '#FFFFFF', fontSize: 11, fontWeight: '800', letterSpacing: 0.3 },
+  descontoBadgeTexto: { color: '#FFFFFF', fontSize: 11, fontFamily: Fonte.corpoSemi, letterSpacing: 0.3 },
 
   scrollContent: { paddingBottom: Spacing.xxxl },
 
@@ -745,43 +747,43 @@ const styles = StyleSheet.create({
   // Resumo
   resumoCard: { borderRadius: 18, padding: 16, borderWidth: 1 },
   resumoHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
-  resumoTitulo: { fontWeight: '800', fontSize: 13, letterSpacing: 0.5 },
-  resumoAnuncioTitulo: { ...Typography.h4, marginBottom: 6, fontWeight: '800' },
+  resumoTitulo: { fontFamily: Fonte.corpoSemi, fontSize: 13, letterSpacing: 0.5 },
+  resumoAnuncioTitulo: { ...Typography.h4, marginBottom: 6, fontFamily: Fonte.corpoSemi },
   resumoMetaLinha: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 },
   resumoMetaItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   resumoMetaTexto: { ...Typography.caption },
   resumoMetaDivisor: { width: 1, height: 12 },
   resumoDivisor: { height: 1, marginVertical: 8 },
   resumoLinhaInfo: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 7 },
-  resumoLabel: { fontSize: 13 },
-  resumoValor: { fontSize: 14, fontWeight: '700' },
+  resumoLabel: { fontFamily: Fonte.corpo, fontSize: 13 },
+  resumoValor: { fontSize: 14, fontFamily: Fonte.corpoSemi },
 
   // Métodos
   metodoSelector: { gap: Spacing.sm },
-  metodoLabel: { fontSize: 11, fontWeight: '800', letterSpacing: 1, marginBottom: 4, paddingHorizontal: 4 },
+  metodoLabel: { fontSize: 11, fontFamily: Fonte.corpoSemi, letterSpacing: 1, marginBottom: 4, paddingHorizontal: 4 },
   metodoCard: {
     flexDirection: 'row', alignItems: 'center', padding: 14, borderRadius: 14,
     borderWidth: 1, gap: 12,
   },
   metodoIcone: { width: 44, height: 44, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
-  metodoNome: { fontSize: 15, fontWeight: '800' },
-  metodoDesc: { fontSize: 12, marginTop: 2 },
+  metodoNome: { fontSize: 15, fontFamily: Fonte.corpoSemi },
+  metodoDesc: { fontFamily: Fonte.corpo, fontSize: 12, marginTop: 2 },
 
   // Input
   inputCard: { borderRadius: 18, padding: 16, borderWidth: 1 },
-  inputLabel: { marginBottom: 10, fontWeight: '800', fontSize: 15 },
+  inputLabel: { marginBottom: 10, fontFamily: Fonte.corpoSemi, fontSize: 15 },
   inputWrapper: { flexDirection: 'row', alignItems: 'center', borderRadius: 14, borderWidth: 1.5, overflow: 'hidden' },
   inputPrefixo: { paddingHorizontal: 14, paddingVertical: 14, borderRightWidth: 1 },
-  inputPrefixoTexto: { fontSize: 15, fontWeight: '800' },
-  inputCampo: { flex: 1, paddingHorizontal: 14, paddingVertical: 14, fontSize: 17, fontWeight: '800' },
+  inputPrefixoTexto: { fontSize: 15, fontFamily: Fonte.corpoSemi },
+  inputCampo: { flex: 1, paddingHorizontal: 14, paddingVertical: 14, fontSize: 17, fontFamily: Fonte.corpoSemi },
   inputCheck: { width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(46, 125, 50, 0.15)', justifyContent: 'center', alignItems: 'center', marginRight: 12 },
   inputErro: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 8 },
-  inputErroTexto: { ...Typography.caption, color: VERMELHO_ERRO, fontWeight: '700' },
+  inputErroTexto: { ...Typography.caption, color: VERMELHO_ERRO, fontFamily: Fonte.corpoSemi },
   inputDica: { ...Typography.caption, marginTop: 8, fontSize: 11 },
 
   // Aviso
   avisoBox: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, padding: 14, borderRadius: 14, borderWidth: 1 },
-  avisoTexto: { flex: 1, fontSize: 12, lineHeight: 18 },
+  avisoTexto: { flex: 1, fontFamily: Fonte.corpo, fontSize: 12, lineHeight: 18 },
 
   // Botão pagar
   botaoPagar: {
@@ -789,16 +791,16 @@ const styles = StyleSheet.create({
     paddingVertical: 16, borderRadius: 16, overflow: 'hidden', gap: 10, marginTop: 4,
     shadowColor: LARANJA_MARCA, shadowOpacity: 0.3, shadowRadius: 10, elevation: 5,
   },
-  botaoPagarTexto: { color: '#FFFFFF', fontSize: 15, fontWeight: '800' },
+  botaoPagarTexto: { color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi },
 
   // Processando
   conteudoProcessando: { padding: Spacing.lg, alignItems: 'center', paddingTop: 40 },
   loadingCirculo: {
-    width: 120, height: 120, borderRadius: 60, backgroundColor: 'rgba(254, 138, 0, 0.1)',
+    width: 120, height: 120, borderRadius: 60, backgroundColor: 'rgba(232, 118, 10, 0.1)',
     justifyContent: 'center', alignItems: 'center', marginBottom: 24,
-    borderWidth: 4, borderColor: 'rgba(254, 138, 0, 0.25)',
+    borderWidth: 4, borderColor: 'rgba(232, 118, 10, 0.25)',
   },
-  processandoTitulo: { ...Typography.h2, textAlign: 'center', marginBottom: 8, fontWeight: '800' },
+  processandoTitulo: { ...Typography.h2, textAlign: 'center', marginBottom: 8, fontFamily: Fonte.tituloSemi },
   processandoSubtitulo: { ...Typography.body, textAlign: 'center', marginBottom: 24, lineHeight: 20 },
 
   // Timer
@@ -806,26 +808,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 8,
     paddingVertical: 10, paddingHorizontal: 16, borderRadius: 14, marginBottom: 20, borderWidth: 1.5,
   },
-  timerTexto: { fontSize: 15, fontWeight: '800', fontFamily: 'monospace' },
+  timerTexto: { fontSize: 15, fontFamily: Fonte.tituloSemi, fontVariant: ['tabular-nums'] },
 
   // Instruções
   instrucoesBox: { borderRadius: 16, padding: 16, borderWidth: 1, marginBottom: 16, width: '100%' },
-  instrucoesTitulo: { marginBottom: 12, fontWeight: '800', fontSize: 14 },
+  instrucoesTitulo: { marginBottom: 12, fontFamily: Fonte.corpoSemi, fontSize: 14 },
   instrucaoItem: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 6 },
   instrucaoNumero: { width: 24, height: 24, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
-  instrucaoNumeroTexto: { color: '#FFFFFF', fontSize: 12, fontWeight: '800' },
-  instrucaoTexto: { flex: 1, fontSize: 13 },
+  instrucaoNumeroTexto: { color: '#FFFFFF', fontSize: 12, fontFamily: Fonte.corpoSemi },
+  instrucaoTexto: { flex: 1, fontFamily: Fonte.corpo, fontSize: 13 },
 
   // Demo
   demoContainer: { width: '100%', marginTop: 10, marginBottom: 10, padding: 14, borderRadius: 14, borderWidth: 1, borderStyle: 'dashed' },
   demoHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 },
-  demoLabel: { fontSize: 10, fontWeight: '800', letterSpacing: 0.8 },
+  demoLabel: { fontSize: 10, fontFamily: Fonte.corpoSemi, letterSpacing: 0.8 },
   demoBotoes: { flexDirection: 'row', gap: 8 },
   demoBotao: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 9, borderRadius: 10, gap: 5 },
-  demoBotaoTexto: { color: '#FFFFFF', fontSize: 12, fontWeight: '800' },
+  demoBotaoTexto: { color: '#FFFFFF', fontSize: 12, fontFamily: Fonte.corpoSemi },
 
   cancelarBotao: { paddingVertical: 12, marginTop: 6 },
-  cancelarBotaoTexto: { fontSize: 14, fontWeight: '600', textAlign: 'center', textDecorationLine: 'underline' },
+  cancelarBotaoTexto: { fontSize: 14, fontFamily: Fonte.corpoSemi, textAlign: 'center', textDecorationLine: 'underline' },
 
   // Sucesso/Falha círculo
   sucessoCirculo: {
@@ -833,7 +835,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center', marginBottom: 24,
     shadowOpacity: 0.3, shadowRadius: 20, elevation: 10,
   },
-  sucessoTitulo: { ...Typography.displayMD, textAlign: 'center', marginBottom: 8, fontWeight: '900' },
+  sucessoTitulo: { ...Typography.displayMD, textAlign: 'center', marginBottom: 8, fontFamily: Fonte.tituloBold },
 
   // Modal cancelar
   modalOverlay: {
@@ -846,11 +848,11 @@ const styles = StyleSheet.create({
     width: 64, height: 64, borderRadius: 32, backgroundColor: 'rgba(245, 124, 0, 0.15)',
     justifyContent: 'center', alignItems: 'center', marginBottom: 16,
   },
-  modalCancelarTitulo: { ...Typography.h3, textAlign: 'center', marginBottom: 10, fontWeight: '800' },
+  modalCancelarTitulo: { ...Typography.h3, textAlign: 'center', marginBottom: 10, fontFamily: Fonte.corpoSemi },
   modalCancelarTexto: { ...Typography.body, textAlign: 'center', marginBottom: 20, lineHeight: 20, fontSize: 14 },
   modalCancelarBotoes: { width: '100%', gap: 10 },
   modalCancelarBotaoVoltar: { paddingVertical: 14, borderRadius: 14, alignItems: 'center' },
-  modalCancelarBotaoVoltarTexto: { color: '#FFFFFF', fontSize: 15, fontWeight: '800' },
+  modalCancelarBotaoVoltarTexto: { color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi },
   modalCancelarBotaoCancelar: { paddingVertical: 14, borderRadius: 14, alignItems: 'center' },
-  modalCancelarBotaoCancelarTexto: { color: VERMELHO_ERRO, fontSize: 14, fontWeight: '700' },
+  modalCancelarBotaoCancelarTexto: { color: VERMELHO_ERRO, fontSize: 14, fontFamily: Fonte.corpoSemi },
 });

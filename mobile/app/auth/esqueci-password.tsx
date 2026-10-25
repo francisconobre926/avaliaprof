@@ -35,19 +35,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 import { Colors, Sombras } from '../../src/theme/colors';
 
 import { Spacing, Typography, Radius } from '../../src/theme/typography';
 
-
-
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 export default function EsqueciPasswordScreen() {
 
   const router = useRouter();
-
-
 
   const [email, setEmail] = useState('');
 
@@ -57,15 +55,11 @@ export default function EsqueciPasswordScreen() {
 
   const [campoFocado, setCampoFocado] = useState(false);
 
-
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const slideAnim = useRef(new Animated.Value(30)).current;
 
   const sucessoScale = useRef(new Animated.Value(0)).current;
-
-
 
   useEffect(() => {
 
@@ -97,8 +91,6 @@ export default function EsqueciPasswordScreen() {
 
   }, []);
 
-
-
   useEffect(() => {
 
     if (enviado) {
@@ -119,15 +111,11 @@ export default function EsqueciPasswordScreen() {
 
   }, [enviado]);
 
-
-
   const validarEmail = (email: string) => {
 
     return /^[^\s@]+@[^\s@]+\\.[^\s@]+$/.test(email);
 
   };
-
-
 
   const handleEnviar = () => {
 
@@ -147,8 +135,6 @@ export default function EsqueciPasswordScreen() {
 
     }
 
-
-
     setLoading(true);
 
     setTimeout(() => {
@@ -160,8 +146,6 @@ export default function EsqueciPasswordScreen() {
     }, 1500);
 
   };
-
-
 
   const irParaNovaPassword = () => {
 
@@ -175,15 +159,11 @@ export default function EsqueciPasswordScreen() {
 
   };
 
-
-
   const emailMascarado = email
 
     ? email.replace(/(.{2})(.*)(@.*)/, (_, a, b, c) => `${a}${'*'.repeat(b.length)}${c}`)
 
     : '';
-
-
 
   // ============ ESTADO: SUCESSO ============
 
@@ -219,8 +199,6 @@ export default function EsqueciPasswordScreen() {
 
           </View>
 
-
-
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
 
             <Animated.View
@@ -255,13 +233,11 @@ export default function EsqueciPasswordScreen() {
 
                 >
 
-                  <MaterialCommunityIcons name="email-check" size={50} color={Colors.branco} />
+                  <Icone name="email-check" size={50} color={Colors.branco} />
 
                 </LinearGradient>
 
               </View>
-
-
 
               <Text style={styles.sucessoTitulo}>Email enviado!</Text>
 
@@ -279,15 +255,11 @@ export default function EsqueciPasswordScreen() {
 
               </View>
 
-
-
               {/* Passos */}
 
               <View style={styles.passosContainer}>
 
                 <Text style={styles.passosTitulo}>Próximos passos</Text>
-
-
 
                 <View style={styles.passoItem}>
 
@@ -311,11 +283,7 @@ export default function EsqueciPasswordScreen() {
 
                 </View>
 
-
-
                 <View style={styles.passoLinha} />
-
-
 
                 <View style={styles.passoItem}>
 
@@ -339,11 +307,7 @@ export default function EsqueciPasswordScreen() {
 
                 </View>
 
-
-
                 <View style={styles.passoLinha} />
-
-
 
                 <View style={styles.passoItem}>
 
@@ -369,8 +333,6 @@ export default function EsqueciPasswordScreen() {
 
               </View>
 
-
-
               {/* Simulação para demo */}
 
               <TouchableOpacity
@@ -383,7 +345,7 @@ export default function EsqueciPasswordScreen() {
 
               >
 
-                <MaterialCommunityIcons name="cursor-default-click" size={18} color={Colors.azul} />
+                <Icone name="cursor-default-click" size={18} color={Colors.azul} />
 
                 <Text style={styles.simuladorTexto}>
 
@@ -392,8 +354,6 @@ export default function EsqueciPasswordScreen() {
                 </Text>
 
               </TouchableOpacity>
-
-
 
               <Text style={styles.simuladorDica}>
 
@@ -404,8 +364,6 @@ export default function EsqueciPasswordScreen() {
             </Animated.View>
 
           </ScrollView>
-
-
 
           {/* Footer */}
 
@@ -426,8 +384,6 @@ export default function EsqueciPasswordScreen() {
               <Text style={styles.reenviarBotaoTexto}>Reenviar email</Text>
 
             </TouchableOpacity>
-
-
 
             <TouchableOpacity
 
@@ -452,8 +408,6 @@ export default function EsqueciPasswordScreen() {
     );
 
   }
-
-
 
   // ============ ESTADO: FORMULÁRIO ============
 
@@ -495,8 +449,6 @@ export default function EsqueciPasswordScreen() {
 
         </View>
 
-
-
         <ScrollView
 
           showsVerticalScrollIndicator={false}
@@ -529,7 +481,7 @@ export default function EsqueciPasswordScreen() {
 
                   <View style={styles.heroIcone}>
 
-                    <MaterialCommunityIcons name="lock-reset" size={50} color={Colors.azul} />
+                    <Icone name="lock-reset" size={50} color={Colors.azul} />
 
                   </View>
 
@@ -538,8 +490,6 @@ export default function EsqueciPasswordScreen() {
               </View>
 
             </View>
-
-
 
             {/* Título */}
 
@@ -552,8 +502,6 @@ export default function EsqueciPasswordScreen() {
               Vamos ajudar-te a recuperar o acesso.
 
             </Text>
-
-
 
             {/* Info card */}
 
@@ -572,8 +520,6 @@ export default function EsqueciPasswordScreen() {
               </Text>
 
             </View>
-
-
 
             {/* Campo email */}
 
@@ -625,8 +571,6 @@ export default function EsqueciPasswordScreen() {
 
             </View>
 
-
-
             {/* Botão enviar */}
 
             <TouchableOpacity
@@ -673,8 +617,6 @@ export default function EsqueciPasswordScreen() {
 
             </TouchableOpacity>
 
-
-
             {/* Voltar ao login */}
 
             <View style={styles.voltarContainer}>
@@ -694,8 +636,6 @@ export default function EsqueciPasswordScreen() {
               </TouchableOpacity>
 
             </View>
-
-
 
             {/* Ajuda extra */}
 
@@ -718,8 +658,6 @@ export default function EsqueciPasswordScreen() {
   );
 
 }
-
-
 
 const styles = StyleSheet.create({
 
@@ -776,8 +714,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
   },
-
-
 
   // Hero
 
@@ -839,8 +775,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Título
 
   titulo: {
@@ -868,8 +802,6 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
 
   },
-
-
 
   // Info card
 
@@ -912,8 +844,6 @@ const styles = StyleSheet.create({
     lineHeight: 20,
 
   },
-
-
 
   // Campo
 
@@ -977,8 +907,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Botão
 
   botaoPrincipal: {
@@ -1019,8 +947,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Voltar
 
   voltarContainer: {
@@ -1051,8 +977,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Ajuda
 
   ajudaBotao: {
@@ -1078,8 +1002,6 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
 
   },
-
-
 
   // ============ ESTADO SUCESSO ============
 
@@ -1149,7 +1071,7 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
 
-    ...Sombras.colorida('#4CAF50'),
+    ...Sombras.colorida('#2F7A4F'),
 
   },
 
@@ -1211,8 +1133,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Passos
 
   passosContainer: {
@@ -1263,7 +1183,7 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
 
-    ...Sombras.colorida('#2196F3'),
+    ...Sombras.colorida('#0A6BC0'),
 
   },
 
@@ -1273,7 +1193,7 @@ const styles = StyleSheet.create({
 
     color: Colors.branco,
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
   },
 
@@ -1318,8 +1238,6 @@ const styles = StyleSheet.create({
     marginVertical: 4,
 
   },
-
-
 
   // Simulador
 
@@ -1368,8 +1286,6 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
 
   },
-
-
 
   // Footer
 

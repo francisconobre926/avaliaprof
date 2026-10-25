@@ -4,14 +4,12 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  StatusBar,
   Image,
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors, Sombras } from '../../src/theme/colors';
 import { Spacing, Typography, Radius } from '../../src/theme/typography';
@@ -20,7 +18,9 @@ import { useCores } from '../../src/store/themeStore';
 import { useWalletStore } from '../../src/store/walletStore';
 import { useReferralStore } from '../../src/store/referralStore';
 
-
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
+import TopBar, { TopBarBotao } from '../../src/components/TopBar';
 const formatarValor = (valor: number | null | undefined) =>
   `${(Number(valor) || 0).toLocaleString('pt-MZ', {
     minimumFractionDigits: 2,
@@ -102,64 +102,59 @@ export default function PerfilProcurador() {
 
   return (
     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      <TopBar
+        acoes={
+          <>
+            <TopBarBotao icone="settings-outline" rotulo="Definições" />
+            <TopBarBotao icone="notifications-outline" rotulo="Notificações" />
+          </>
+        }
+      />
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* ============ HERO ============ */}
-        <LinearGradient
-          colors={['#FF7900', '#F15A24']}
-          style={styles.hero}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <SafeAreaView edges={['top']}>
-            <View style={styles.heroTop}>
-              <Text style={styles.heroTitulo}>O meu perfil</Text>
-              <TouchableOpacity style={styles.heroBotao}>
-                <Ionicons name="settings-outline" size={20} color={Colors.branco} />
-              </TouchableOpacity>
-            </View>
+        <Text style={[styles.titulo, { color: cores.textoPrincipal }]} accessibilityRole="header">
+          O meu perfil
+        </Text>
 
-            <View style={styles.perfilInfo}>
-              {/* Avatar */}
-              <View style={styles.avatarWrapper}>
-                {usuario?.foto ? (
-                  <Image
-                    source={{ uri: usuario.foto }}
-                    style={styles.avatarFoto}
-                  />
-                ) : (
-                  <View style={styles.avatarGrande}>
-                    <Text style={styles.avatarGrandeLetra}>{inicialAvatar}</Text>
-                  </View>
-                )}
-                <TouchableOpacity
-                  style={styles.editarFotoBadge}
-                  onPress={() => router.push('/editar-perfil')}
-                  activeOpacity={0.85}
-                >
-                  <Ionicons name="camera" size={14} color={Colors.branco} />
-                </TouchableOpacity>
+        {/* ============ CARTÃO DO PERFIL ============ */}
+        <View style={[styles.perfilCard, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
+          <View style={styles.avatarWrapper}>
+            {usuario?.foto ? (
+              <Image source={{ uri: usuario.foto }} style={styles.avatarFoto} />
+            ) : (
+              <View style={[styles.avatarFoto, styles.avatarVazio, { backgroundColor: cores.fundoSuave }]}>
+                <Text style={[styles.avatarLetra, { color: cores.textoPrincipal }]}>{inicialAvatar}</Text>
               </View>
+            )}
+            <TouchableOpacity
+              style={[styles.editarFotoBadge, { backgroundColor: cores.textoPrincipal, borderColor: cores.fundoElevado }]}
+              onPress={() => router.push('/editar-perfil')}
+              activeOpacity={0.85}
+              accessibilityLabel="Editar foto"
+            >
+              <Ionicons name="camera" size={12} color={cores.fundo} />
+            </TouchableOpacity>
+          </View>
 
-              <Text style={styles.nome}>{usuario?.nome || 'Sem nome'}</Text>
-
-              <View style={styles.tipoContainer}>
-                <MaterialCommunityIcons name="account-search" size={14} color={Colors.branco} />
-                <Text style={styles.tipo}>Procurador</Text>
+          <View style={styles.perfilInfo}>
+            <Text style={[styles.nome, { color: cores.textoPrincipal }]} numberOfLines={1}>
+              {usuario?.nome || 'Sem nome'}
+            </Text>
+            <Text style={[styles.email, { color: cores.textoSecundario }]} numberOfLines={1}>
+              {usuario?.email || 'sem email'}
+            </Text>
+            <View style={styles.perfilMeta}>
+              <View style={[styles.tipoChip, { backgroundColor: cores.fundoSuave }]}>
+                <Icone name="account-search" size={12} color={cores.textoSecundario} />
+                <Text style={[styles.tipoTexto, { color: cores.textoSecundario }]}>Procurador</Text>
               </View>
-
-              <Text style={styles.email}>{usuario?.email || 'sem email'}</Text>
-
               <View style={styles.localizacaoRow}>
-                <Ionicons name="location" size={12} color="rgba(255,255,255,0.85)" />
-                <Text style={styles.localizacaoTexto}>
-                  {'Beira, Sofala'}
-                </Text>
+                <Ionicons name="location-outline" size={12} color={cores.textoTerciario} />
+                <Text style={[styles.localizacaoTexto, { color: cores.textoTerciario }]}>Beira, Sofala</Text>
               </View>
             </View>
-          </SafeAreaView>
-        </LinearGradient>
+          </View>
+        </View>
 
         {/* ============ CARTEIRA DESTAQUE ============ */}
         <TouchableOpacity
@@ -221,14 +216,14 @@ export default function PerfilProcurador() {
           activeOpacity={0.9}
         >
           <LinearGradient
-            colors={['#FF7900', '#F15A24']}
+            colors={['#E8760A', '#F15A24']}
             style={StyleSheet.absoluteFill}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
           />
           <View style={styles.referenciaConteudo}>
             <View style={styles.referenciaIcone}>
-              <MaterialCommunityIcons name="gift-outline" size={28} color="#FFFFFF" />
+              <Icone name="gift-outline" size={28} color="#FFFFFF" />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.referenciaTitulo}>Convida e ganha 10%</Text>
@@ -267,7 +262,7 @@ export default function PerfilProcurador() {
           <View style={[styles.perfilCompletoBar, { backgroundColor: cores.fundoSuave }]}>
             <View style={[styles.perfilCompletoFill, { width: `${perfilCompleto}%` }]}>
               <LinearGradient
-                colors={['#FF7900', '#F15A24']}
+                colors={['#E8760A', '#F15A24']}
                 style={StyleSheet.absoluteFill}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
@@ -452,105 +447,54 @@ function MenuItem({ icone, cor, titulo, descricao, badge, onPress, cores }: any)
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F7F8FA' },
-  hero: { paddingBottom: Spacing.xxl, borderBottomLeftRadius: 28, borderBottomRightRadius: 28, overflow: 'hidden' },
-  heroTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-  },
-  heroTitulo: { ...Typography.h2, color: Colors.branco },
-  heroBotao: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  perfilInfo: { alignItems: 'center', paddingVertical: Spacing.md },
+  titulo: { ...Typography.h1, paddingHorizontal: Spacing.lg, marginTop: 16 },
 
-  avatarWrapper: {
-    marginBottom: Spacing.md,
-    position: 'relative',
-  },
-  avatarGrande: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    justifyContent: 'center',
+  // ============ CARTÃO DO PERFIL ============
+  perfilCard: {
+    flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 3,
-    borderColor: 'rgba(255, 255, 255, 0.4)',
+    gap: 14,
+    marginHorizontal: Spacing.lg,
+    marginTop: 12,
+    marginBottom: Spacing.md,
+    padding: Spacing.md,
+    borderRadius: 16,
+    borderWidth: 1,
   },
-  avatarFoto: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 3,
-    borderColor: 'rgba(255, 255, 255, 0.6)',
-  },
-  avatarGrandeLetra: {
-    ...Typography.displayLG,
-    color: Colors.branco,
-    fontWeight: '800',
-  },
+  avatarWrapper: { position: 'relative' },
+  avatarFoto: { width: 64, height: 64, borderRadius: 32 },
+  avatarVazio: { justifyContent: 'center', alignItems: 'center' },
+  avatarLetra: { fontSize: 26, fontFamily: Fonte.tituloSemi },
   editarFotoBadge: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#0B2E59',
+    bottom: -2,
+    right: -2,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: Colors.branco,
-    ...Sombras.md,
   },
-  nome: { ...Typography.h1, color: Colors.branco, marginBottom: 4, textAlign: 'center' },
-  tipoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 6,
-  },
-  tipo: { ...Typography.body, color: Colors.branco, opacity: 0.95 },
-  verificadoBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(76, 175, 80, 0.35)',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: Radius.full,
-    gap: 3,
-    marginLeft: 4,
-  },
-  verificadoBadgeTexto: {
-    ...Typography.captionBold,
-    color: Colors.branco,
-    fontSize: 10,
-  },
-  email: { ...Typography.caption, color: Colors.branco, opacity: 0.85, marginBottom: 6 },
-  localizacaoRow: {
+  perfilInfo: { flex: 1, minWidth: 0 },
+  nome: { ...Typography.h2 },
+  email: { fontFamily: Fonte.corpo, fontSize: 13, marginTop: 2 },
+  perfilMeta: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginTop: 8 },
+  tipoChip: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    marginTop: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
   },
-  localizacaoTexto: {
-    ...Typography.caption,
-    color: 'rgba(255,255,255,0.9)',
-    fontWeight: '500',
-  },
+  tipoTexto: { fontFamily: Fonte.corpoMedio, fontSize: 11 },
+  localizacaoRow: { flexDirection: 'row', alignItems: 'center', gap: 3 },
+  localizacaoTexto: { fontFamily: Fonte.corpoMedio, fontSize: 11 },
 
   // ============ CARTEIRA CARD ============
   carteiraCard: {
     marginHorizontal: Spacing.lg,
-    marginTop: -Spacing.lg,
     padding: Spacing.md,
     borderRadius: 22,
     borderWidth: 1,
@@ -584,7 +528,7 @@ const styles = StyleSheet.create({
   },
   carteiraSaldo: {
     ...Typography.h1,
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
   },
   carteiraDetalhes: {
     flexDirection: 'row',
@@ -604,7 +548,7 @@ const styles = StyleSheet.create({
   carteiraDetalheValor: {
     ...Typography.bodyBold,
     fontSize: 13,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
   },
   carteiraDivisor: {
     width: 1,
@@ -617,7 +561,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
     borderRadius: 22,
     overflow: 'hidden',
-    ...Sombras.colorida('#FF7900'),
+    ...Sombras.colorida('#E8760A'),
   },
   referenciaConteudo: {
     flexDirection: 'row',
@@ -689,7 +633,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   stat: { flex: 1, alignItems: 'center' },
-  statValor: { ...Typography.h1, fontWeight: '800' },
+  statValor: { ...Typography.h1, fontFamily: Fonte.tituloSemi },
   statLabel: { ...Typography.caption, marginTop: 2 },
   statDivisor: { width: 1 },
 
@@ -728,7 +672,7 @@ const styles = StyleSheet.create({
   menuItemBadgeTexto: {
     color: Colors.verde,
     fontSize: 10,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
   },
   logoutBotao: {
     flexDirection: 'row',
@@ -749,7 +693,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F44336',
+    backgroundColor: '#C2412D',
     padding: Spacing.md,
     borderRadius: Radius.lg,
     marginTop: Spacing.md,
@@ -759,7 +703,7 @@ const styles = StyleSheet.create({
   devResetTexto: {
     color: '#FFFFFF',
     fontSize: 13,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
     letterSpacing: 0.3,
   },
 

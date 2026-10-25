@@ -17,6 +17,7 @@ export { Colors, Sombras } from './colors';
 
 // Tipografia + espaçamento + raio
 export { Typography, Spacing, Radius } from './typography';
+export { Fonte, FONTES_A_CARREGAR } from './fonts';
 
 // Theme dinâmico (dark mode, cores de destaque)
 export {

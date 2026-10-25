@@ -1,115 +1,125 @@
+import { Fonte } from './fonts';
+
+// Escala tipográfica GoHome.
+// Regra: só os títulos e preços usam a fonte de display; tudo o que é
+// lido em bloco ou interagido usa a fonte de texto. Pesos contidos —
+// a hierarquia vem do tamanho e da fonte, não de pôr tudo a negrito.
 export const Typography = {
   // Display (headers grandes)
   displayXL: {
-    fontSize: 40,
-    fontWeight: '800' as const,
-    lineHeight: 48,
-    letterSpacing: -1,
+    fontSize: 38,
+    fontFamily: Fonte.tituloSemi,
+    lineHeight: 42,
+    letterSpacing: -1.2,
   },
   displayLG: {
-    fontSize: 32,
-    fontWeight: '800' as const,
-    lineHeight: 40,
-    letterSpacing: -0.5,
+    fontSize: 30,
+    fontFamily: Fonte.tituloSemi,
+    lineHeight: 34,
+    letterSpacing: -0.9,
   },
   displayMD: {
-    fontSize: 28,
-    fontWeight: '700' as const,
-    lineHeight: 36,
-    letterSpacing: -0.3,
+    fontSize: 26,
+    fontFamily: Fonte.tituloSemi,
+    lineHeight: 30,
+    letterSpacing: -0.6,
   },
 
   // Títulos
   h1: {
-    fontSize: 24,
-    fontWeight: '700' as const,
-    lineHeight: 32,
-    letterSpacing: -0.2,
+    fontSize: 23,
+    fontFamily: Fonte.tituloSemi,
+    lineHeight: 28,
+    letterSpacing: -0.5,
   },
   h2: {
-    fontSize: 20,
-    fontWeight: '700' as const,
-    lineHeight: 28,
+    fontSize: 19,
+    fontFamily: Fonte.tituloSemi,
+    lineHeight: 24,
+    letterSpacing: -0.3,
   },
   h3: {
-    fontSize: 18,
-    fontWeight: '600' as const,
-    lineHeight: 24,
+    fontSize: 17,
+    fontFamily: Fonte.corpoSemi,
+    lineHeight: 22,
+    letterSpacing: -0.1,
   },
   h4: {
-    fontSize: 16,
-    fontWeight: '600' as const,
-    lineHeight: 22,
+    fontSize: 15,
+    fontFamily: Fonte.corpoSemi,
+    lineHeight: 20,
   },
 
   // Corpo
   bodyLarge: {
     fontSize: 16,
-    fontWeight: '400' as const,
+    fontFamily: Fonte.corpo,
     lineHeight: 24,
   },
   body: {
     fontSize: 14,
-    fontWeight: '400' as const,
+    fontFamily: Fonte.corpo,
     lineHeight: 20,
   },
   bodyBold: {
     fontSize: 14,
-    fontWeight: '600' as const,
+    fontFamily: Fonte.corpoSemi,
     lineHeight: 20,
   },
   bodySmall: {
     fontSize: 13,
-    fontWeight: '400' as const,
+    fontFamily: Fonte.corpo,
     lineHeight: 18,
   },
 
   // Micro (labels, captions)
   caption: {
     fontSize: 12,
-    fontWeight: '500' as const,
+    fontFamily: Fonte.corpoMedio,
     lineHeight: 16,
-    letterSpacing: 0.2,
   },
   captionBold: {
-    fontSize: 12,
-    fontWeight: '700' as const,
-    lineHeight: 16,
-    letterSpacing: 0.3,
+    fontSize: 11,
+    fontFamily: Fonte.corpoSemi,
+    lineHeight: 14,
+    letterSpacing: 0.8,
     textTransform: 'uppercase' as const,
   },
 
   // Botões
   buttonLarge: {
     fontSize: 16,
-    fontWeight: '700' as const,
-    letterSpacing: 0.3,
+    fontFamily: Fonte.corpoSemi,
+    letterSpacing: -0.1,
   },
   button: {
     fontSize: 15,
-    fontWeight: '600' as const,
-    letterSpacing: 0.2,
+    fontFamily: Fonte.corpoSemi,
+    letterSpacing: -0.1,
   },
   buttonSmall: {
     fontSize: 13,
-    fontWeight: '600' as const,
-    letterSpacing: 0.2,
+    fontFamily: Fonte.corpoSemi,
   },
 
-  // Preços
+  // Preços — display, com algarismos tabulares para alinhar listas
   precoDisplay: {
     fontSize: 28,
-    fontWeight: '800' as const,
-    letterSpacing: -0.5,
+    fontFamily: Fonte.tituloSemi,
+    letterSpacing: -0.8,
+    fontVariant: ['tabular-nums' as const],
   },
   precoGrande: {
     fontSize: 22,
-    fontWeight: '700' as const,
-    letterSpacing: -0.3,
+    fontFamily: Fonte.tituloSemi,
+    letterSpacing: -0.5,
+    fontVariant: ['tabular-nums' as const],
   },
   preco: {
-    fontSize: 18,
-    fontWeight: '700' as const,
+    fontSize: 17,
+    fontFamily: Fonte.tituloSemi,
+    letterSpacing: -0.3,
+    fontVariant: ['tabular-nums' as const],
   },
 };
 
@@ -127,13 +137,13 @@ export const Spacing = {
   huge: 64,
 };
 
-// Cantos arredondados
+// Cantos arredondados — mais contidos; pílulas só onde fazem sentido
 export const Radius = {
   xs: 4,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
-  xxl: 28,
+  sm: 6,
+  md: 10,
+  lg: 14,
+  xl: 18,
+  xxl: 24,
   full: 999,
 };

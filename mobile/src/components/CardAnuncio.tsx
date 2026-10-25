@@ -1,12 +1,14 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors, Sombras } from '../theme/colors';
 import { Spacing, Typography, Radius } from '../theme/typography';
 import { useCores } from '../store/themeStore';
-import { Anuncio } from '../types';
+import { Anuncio, dataPublicacaoAnuncio } from '../types';
 import { formatarPrecoCompleto, tempoDesde } from '../data/anuncios-mock';
 
+import { Fonte } from '../theme/fonts';
+import Icone from './Icone';
 const { width } = Dimensions.get('window');
 
 interface CardAnuncioProps {
@@ -96,6 +98,7 @@ function iconeCategoria(categoria: string): string {
  */
 function CaracteristicasCard({ anuncio, cores }: { anuncio: Anuncio; cores: any }) {
   const c = anuncio.caracteristicas;
+  if (!c) return null;
 
   // IMÓVEL
   if (c.tipo === 'imovel') {
@@ -103,19 +106,19 @@ function CaracteristicasCard({ anuncio, cores }: { anuncio: Anuncio; cores: any 
       <View style={styles.caracteristicasRow}>
         {c.quartos !== undefined && c.quartos > 0 && (
           <View style={styles.caracteristica}>
-            <MaterialCommunityIcons name="bed-outline" size={14} color={cores.textoSecundario} />
+            <Icone name="bed-outline" size={14} color={cores.textoSecundario} />
             <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>{c.quartos}</Text>
           </View>
         )}
         {c.casasBanho !== undefined && c.casasBanho > 0 && (
           <View style={styles.caracteristica}>
-            <MaterialCommunityIcons name="shower" size={14} color={cores.textoSecundario} />
+            <Icone name="shower" size={14} color={cores.textoSecundario} />
             <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>{c.casasBanho}</Text>
           </View>
         )}
         {c.area !== undefined && c.area > 0 && (
           <View style={styles.caracteristica}>
-            <MaterialCommunityIcons name="ruler-square" size={14} color={cores.textoSecundario} />
+            <Icone name="ruler-square" size={14} color={cores.textoSecundario} />
             <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>{c.area}m²</Text>
           </View>
         )}
@@ -128,12 +131,12 @@ function CaracteristicasCard({ anuncio, cores }: { anuncio: Anuncio; cores: any 
     return (
       <View style={styles.caracteristicasRow}>
         <View style={styles.caracteristica}>
-          <MaterialCommunityIcons name="calendar" size={14} color={cores.textoSecundario} />
+          <Icone name="calendar" size={14} color={cores.textoSecundario} />
           <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>{c.ano}</Text>
         </View>
         {c.kilometragem !== undefined && (
           <View style={styles.caracteristica}>
-            <MaterialCommunityIcons name="speedometer" size={14} color={cores.textoSecundario} />
+            <Icone name="speedometer" size={14} color={cores.textoSecundario} />
             <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>
               {(c.kilometragem / 1000).toFixed(0)}k km
             </Text>
@@ -141,7 +144,7 @@ function CaracteristicasCard({ anuncio, cores }: { anuncio: Anuncio; cores: any 
         )}
         {c.transmissao && (
           <View style={styles.caracteristica}>
-            <MaterialCommunityIcons name="car-cog" size={14} color={cores.textoSecundario} />
+            <Icone name="car-cog" size={14} color={cores.textoSecundario} />
             <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>
               {c.transmissao === 'automatica' ? 'Auto' : 'Manual'}
             </Text>
@@ -156,18 +159,18 @@ function CaracteristicasCard({ anuncio, cores }: { anuncio: Anuncio; cores: any 
     return (
       <View style={styles.caracteristicasRow}>
         <View style={styles.caracteristica}>
-          <MaterialCommunityIcons name="account-group" size={14} color={cores.textoSecundario} />
+          <Icone name="account-group" size={14} color={cores.textoSecundario} />
           <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>{c.capacidade} pessoas</Text>
         </View>
         {c.area !== undefined && (
           <View style={styles.caracteristica}>
-            <MaterialCommunityIcons name="ruler-square" size={14} color={cores.textoSecundario} />
+            <Icone name="ruler-square" size={14} color={cores.textoSecundario} />
             <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>{c.area}m²</Text>
           </View>
         )}
         {c.estacionamento && (
           <View style={styles.caracteristica}>
-            <MaterialCommunityIcons name="parking" size={14} color={cores.textoSecundario} />
+            <Icone name="parking" size={14} color={cores.textoSecundario} />
             <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>Estac.</Text>
           </View>
         )}
@@ -181,19 +184,19 @@ function CaracteristicasCard({ anuncio, cores }: { anuncio: Anuncio; cores: any 
       <View style={styles.caracteristicasRow}>
         {c.piscina && (
           <View style={styles.caracteristica}>
-            <MaterialCommunityIcons name="pool" size={14} color={cores.textoSecundario} />
+            <Icone name="pool" size={14} color={cores.textoSecundario} />
             <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>Piscina</Text>
           </View>
         )}
         {c.pequenoAlmoco && (
           <View style={styles.caracteristica}>
-            <MaterialCommunityIcons name="coffee" size={14} color={cores.textoSecundario} />
+            <Icone name="coffee" size={14} color={cores.textoSecundario} />
             <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>Pequeno-almoço</Text>
           </View>
         )}
         {c.wifi && (
           <View style={styles.caracteristica}>
-            <MaterialCommunityIcons name="wifi" size={14} color={cores.textoSecundario} />
+            <Icone name="wifi" size={14} color={cores.textoSecundario} />
             <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>Wi-Fi</Text>
           </View>
         )}
@@ -207,19 +210,19 @@ function CaracteristicasCard({ anuncio, cores }: { anuncio: Anuncio; cores: any 
       <View style={styles.caracteristicasRow}>
         {c.marca && (
           <View style={styles.caracteristica}>
-            <MaterialCommunityIcons name="tag" size={14} color={cores.textoSecundario} />
+            <Icone name="tag" size={14} color={cores.textoSecundario} />
             <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>{c.marca}</Text>
           </View>
         )}
         {c.condicao && (
           <View style={styles.caracteristica}>
-            <MaterialCommunityIcons name="check-circle" size={14} color={cores.textoSecundario} />
+            <Icone name="check-circle" size={14} color={cores.textoSecundario} />
             <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>{c.condicao}</Text>
           </View>
         )}
         {c.garantia && (
           <View style={styles.caracteristica}>
-            <MaterialCommunityIcons name="shield-check" size={14} color={cores.textoSecundario} />
+            <Icone name="shield-check" size={14} color={cores.textoSecundario} />
             <Text style={[styles.caracteristicaTexto, { color: cores.textoSecundario }]}>Garantia</Text>
           </View>
         )}
@@ -255,18 +258,18 @@ export default function CardAnuncio({
         <View style={styles.imagemHorizontalContainer}>
           <Image source={{ uri: anuncio.fotos[0] }} style={styles.imagemHorizontal} />
           <LinearGradient
-            colors={['transparent', 'rgba(0,0,0,0.6)']}
+            colors={['transparent', 'rgba(15,16,18,0.45)']}
             style={styles.gradienteImagem}
           />
-          <View style={[styles.badgeTipo, { backgroundColor: cores.principal }]}>
-            <MaterialCommunityIcons name={iconeCategoria(anuncio.categoria) as any} size={10} color="#FFFFFF" />
+          <View style={styles.badgeTipo}>
+            <Icone name={iconeCategoria(anuncio.categoria) as any} size={11} color={Colors.textoPrincipal} />
             <Text style={styles.badgeTipoText}>{labelCategoria(anuncio.categoria)}</Text>
           </View>
           <TouchableOpacity style={styles.botaoFavoritar} onPress={onFavoritar} activeOpacity={0.7}>
             <Ionicons
               name={favoritado ? 'heart' : 'heart-outline'}
-              size={20}
-              color={favoritado ? Colors.erro : '#FFFFFF'}
+              size={18}
+              color={favoritado ? Colors.erro : Colors.textoPrincipal}
             />
           </TouchableOpacity>
           <View style={styles.precoHorizontal}>
@@ -281,7 +284,7 @@ export default function CardAnuncio({
             {anuncio.titulo}
           </Text>
           <View style={styles.localizacaoRow}>
-            <Ionicons name="location" size={12} color={cores.textoSecundario} />
+            <Ionicons name="location-outline" size={12} color={cores.textoSecundario} />
             <Text style={[styles.localizacaoTexto, { color: cores.textoSecundario }]} numberOfLines={1}>
               {anuncio.bairro}, {anuncio.cidade}
             </Text>
@@ -302,20 +305,21 @@ export default function CardAnuncio({
       <View style={styles.imagemVerticalContainer}>
         <Image source={{ uri: anuncio.fotos[0] }} style={styles.imagemVertical} />
         <LinearGradient
-          colors={['transparent', 'rgba(0,0,0,0.5)']}
+          colors={['transparent', 'rgba(15,16,18,0.35)']}
           style={styles.gradienteImagemVertical}
         />
 
         {/* Badge categoria */}
-        <View style={[styles.badgeTipoVertical, { backgroundColor: cores.principal }]}>
-          <MaterialCommunityIcons name={iconeCategoria(anuncio.categoria) as any} size={11} color="#FFFFFF" />
+        <View style={styles.badgeTipoVertical}>
+          <Icone name={iconeCategoria(anuncio.categoria) as any} size={12} color={Colors.textoPrincipal} />
           <Text style={styles.badgeTipoText}>{labelCategoria(anuncio.categoria)}</Text>
         </View>
 
         {/* Badge verificado */}
         {anuncio.anuncianteVerificado && (
           <View style={styles.badgeVerificado}>
-            <Ionicons name="checkmark-circle" size={14} color="#FFFFFF" />
+            <Ionicons name="checkmark-circle" size={12} color="#FFFFFF" />
+            <Text style={styles.badgeVerificadoTexto}>Verificado</Text>
           </View>
         )}
 
@@ -323,8 +327,8 @@ export default function CardAnuncio({
         <TouchableOpacity style={styles.botaoFavoritarVertical} onPress={onFavoritar} activeOpacity={0.7}>
           <Ionicons
             name={favoritado ? 'heart' : 'heart-outline'}
-            size={20}
-            color={favoritado ? Colors.erro : '#FFFFFF'}
+            size={18}
+            color={favoritado ? Colors.erro : Colors.textoPrincipal}
           />
         </TouchableOpacity>
 
@@ -345,7 +349,7 @@ export default function CardAnuncio({
 
         {/* Localização */}
         <View style={styles.localizacaoRow}>
-          <Ionicons name="location" size={12} color={cores.textoSecundario} />
+          <Ionicons name="location-outline" size={12} color={cores.textoSecundario} />
           <Text style={[styles.localizacaoTexto, { color: cores.textoSecundario }]} numberOfLines={1}>
             {anuncio.bairro}, {anuncio.cidade}
           </Text>
@@ -355,14 +359,14 @@ export default function CardAnuncio({
         <CaracteristicasCard anuncio={anuncio} cores={cores} />
 
         {/* Linha de preço + tempo */}
-        <View style={[styles.rodape, { borderTopColor: cores.bordaSubtil }]}>
-          <Text style={[styles.preco, { color: cores.principal }]}>
+        <View style={styles.rodape}>
+          <Text style={[styles.preco, { color: cores.textoPrincipal }]}>
             {formatarPrecoCompleto(anuncio)}
           </Text>
           <View style={styles.tempoContainer}>
             <Ionicons name="time-outline" size={11} color={cores.textoTerciario} />
             <Text style={[styles.tempoTexto, { color: cores.textoTerciario }]}>
-              {tempoDesde(anuncio.publicadoEm)}
+              {tempoDesde(dataPublicacaoAnuncio(anuncio))}
             </Text>
           </View>
         </View>
@@ -381,17 +385,18 @@ const styles = StyleSheet.create({
     width: 240,
     borderRadius: Radius.lg,
     overflow: 'hidden',
-    ...Sombras.sm,
   },
   imagemHorizontalContainer: {
     width: '100%',
-    height: 140,
+    height: 150,
     position: 'relative',
+    borderRadius: Radius.lg,
+    overflow: 'hidden',
   },
   imagemHorizontal: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#E7E5DF',
   },
   gradienteImagem: {
     position: 'absolute',
@@ -408,22 +413,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: Radius.sm,
-    gap: 3,
+    borderRadius: Radius.full,
+    backgroundColor: 'rgba(255,255,255,0.94)',
+    gap: 4,
   },
   badgeTipoText: {
-    ...Typography.captionBold,
-    color: '#FFFFFF',
-    fontSize: 10,
+    fontFamily: Fonte.corpoSemi,
+    color: Colors.textoPrincipal,
+    fontSize: 11,
   },
   botaoFavoritar: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 8,
+    right: 8,
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(255,255,255,0.94)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -431,23 +437,27 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     left: 10,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 9,
+    paddingVertical: 4,
     borderRadius: Radius.sm,
   },
   precoHorizontalTexto: {
-    ...Typography.bodyBold,
-    color: '#FFFFFF',
-    fontSize: 13,
+    fontFamily: Fonte.tituloSemi,
+    color: Colors.textoPrincipal,
+    fontSize: 14,
+    letterSpacing: -0.2,
+    fontVariant: ['tabular-nums'],
   },
   infoHorizontal: {
-    padding: Spacing.sm,
-    gap: 4,
+    paddingTop: 10,
+    paddingHorizontal: 2,
+    gap: 3,
   },
   tituloHorizontal: {
-    ...Typography.bodyBold,
-    fontSize: 13,
+    fontFamily: Fonte.corpoSemi,
+    fontSize: 14,
+    lineHeight: 19,
   },
   localizacaoRow: {
     flexDirection: 'row',
@@ -456,42 +466,42 @@ const styles = StyleSheet.create({
   },
   localizacaoTexto: {
     ...Typography.caption,
-    fontSize: 11,
+    fontFamily: Fonte.corpo,
+    fontSize: 12,
     flex: 1,
   },
   caracteristicasRow: {
     flexDirection: 'row',
-    gap: Spacing.sm,
+    gap: Spacing.md,
     marginTop: 4,
   },
   caracteristica: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
+    gap: 4,
   },
   caracteristicaTexto: {
-    ...Typography.caption,
-    fontSize: 11,
-    fontWeight: '600',
+    fontFamily: Fonte.corpoMedio,
+    fontSize: 12,
+    fontVariant: ['tabular-nums'],
   },
 
   // ============ VARIANTE VERTICAL ============
   cardVertical: {
     borderRadius: Radius.lg,
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.sm,
     overflow: 'hidden',
     borderWidth: 1,
-    ...Sombras.sm,
   },
   imagemVerticalContainer: {
     width: '100%',
-    height: 180,
+    height: 196,
     position: 'relative',
   },
   imagemVertical: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#E7E5DF',
   },
   gradienteImagemVertical: {
     position: 'absolute',
@@ -506,30 +516,37 @@ const styles = StyleSheet.create({
     left: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 9,
     paddingVertical: 5,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.full,
+    backgroundColor: 'rgba(255,255,255,0.94)',
     gap: 4,
   },
   badgeVerificado: {
     position: 'absolute',
-    top: 12,
-    left: 90,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: Colors.verde,
-    justifyContent: 'center',
+    bottom: 12,
+    left: 12,
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: Radius.full,
+    backgroundColor: 'rgba(15,16,18,0.55)',
+  },
+  badgeVerificadoTexto: {
+    fontFamily: Fonte.corpoSemi,
+    color: '#FFFFFF',
+    fontSize: 11,
   },
   botaoFavoritarVertical: {
     position: 'absolute',
-    top: 12,
-    right: 12,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    top: 10,
+    right: 10,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: 'rgba(255,255,255,0.94)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -539,39 +556,39 @@ const styles = StyleSheet.create({
     right: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(15,16,18,0.55)',
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: Radius.sm,
+    borderRadius: Radius.full,
     gap: 4,
   },
   contagemFotosTexto: {
-    ...Typography.caption,
     color: '#FFFFFF',
     fontSize: 11,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
+    fontVariant: ['tabular-nums'],
   },
   infoVertical: {
-    padding: Spacing.md,
-    gap: 6,
+    paddingHorizontal: 14,
+    paddingTop: 12,
+    paddingBottom: 14,
+    gap: 5,
   },
   tituloVertical: {
-    ...Typography.bodyBold,
+    fontFamily: Fonte.corpoSemi,
     fontSize: 15,
     lineHeight: 20,
+    letterSpacing: -0.1,
   },
   rodape: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'baseline',
     marginTop: 8,
-    paddingTop: 8,
-    borderTopWidth: 1,
   },
   preco: {
     ...Typography.preco,
-    fontWeight: '800',
-    fontSize: 16,
+    fontSize: 19,
   },
   tempoContainer: {
     flexDirection: 'row',
@@ -580,6 +597,7 @@ const styles = StyleSheet.create({
   },
   tempoTexto: {
     ...Typography.caption,
+    fontFamily: Fonte.corpo,
     fontSize: 11,
   },
 });

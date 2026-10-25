@@ -19,6 +19,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
 
+import { Fonte } from '../../theme/fonts';
 export type InputType = 'text' | 'password' | 'phone' | 'number' | 'email' | 'textarea';
 
 interface InputProps extends Omit<TextInputProps, 'style'> {
@@ -172,7 +173,7 @@ export const Input: React.FC<InputProps> = ({
 
 const styles = StyleSheet.create({
   container: { marginBottom: 4 },
-  label: { fontSize: 13, fontWeight: '600', marginBottom: 8 },
+  label: { fontSize: 13, fontFamily: Fonte.corpoSemi, marginBottom: 8 },
   inputWrap: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -181,12 +182,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     gap: 10,
   },
-  input: { flex: 1, fontSize: 15, fontWeight: '500', paddingVertical: 0 },
-  prefix: { fontSize: 15, fontWeight: '600' },
+  input: { flex: 1, fontSize: 15, fontFamily: Fonte.corpoMedio, paddingVertical: 0 },
+  prefix: { fontSize: 15, fontFamily: Fonte.corpoSemi },
   rodape: { flexDirection: 'row', marginTop: 6, paddingHorizontal: 4 },
-  erro: { fontSize: 12, fontWeight: '600' },
-  hint: { fontSize: 12 },
-  contador: { fontSize: 11 },
+  erro: { fontSize: 12, fontFamily: Fonte.corpoSemi },
+  hint: { fontFamily: Fonte.corpo, fontSize: 12 },
+  contador: { fontFamily: Fonte.corpo, fontSize: 11 },
 });
 
 export default Input;

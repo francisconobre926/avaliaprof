@@ -11,6 +11,7 @@ import { View, Text, Image, StyleSheet, StyleProp, ViewStyle } from 'react-nativ
 import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
 
+import { Fonte } from '../../theme/fonts';
 export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl';
 
 interface AvatarProps {
@@ -37,7 +38,7 @@ function corPorNome(nome: string, cores: string[]): string {
   return cores[Math.abs(hash) % cores.length];
 }
 
-const PALETA_AVATARES = ['#0082DE', '#FE8A00', '#4CAF50', '#E91E63', '#9C27B0', '#00BCD4', '#FF5722'];
+const PALETA_AVATARES = ['#0A6BC0', '#E8760A', '#2F7A4F', '#E91E63', '#9C27B0', '#00BCD4', '#FF5722'];
 
 export const Avatar: React.FC<AvatarProps> = ({
   nome,
@@ -81,7 +82,7 @@ export const Avatar: React.FC<AvatarProps> = ({
             justifyContent: 'center',
           }}
         >
-          <Text style={{ color: '#FFFFFF', fontSize: sz.font, fontWeight: '800' }}>
+          <Text style={{ color: '#FFFFFF', fontSize: sz.font, fontFamily: Fonte.corpoSemi }}>
             {iniciais}
           </Text>
         </View>
@@ -97,7 +98,7 @@ export const Avatar: React.FC<AvatarProps> = ({
               borderRadius: sz.badge / 2,
               borderWidth: 2,
               borderColor: cores.fundoElevado,
-              backgroundColor: '#0082DE',
+              backgroundColor: '#0A6BC0',
             },
           ]}
         >

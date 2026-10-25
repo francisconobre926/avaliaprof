@@ -5,26 +5,26 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  StatusBar,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Colors, Sombras } from '../../src/theme/colors';
-import { Spacing, Typography, Radius } from '../../src/theme/typography';
+import { Sombras } from '../../src/theme/colors';
+import { Spacing, Typography } from '../../src/theme/typography';
 import { useCores } from '../../src/store/themeStore';
 import { ANUNCIOS_MOCK, apenasDisponiveis } from '../../src/data/anuncios-mock';
 import CardAnuncio from '../../src/components/CardAnuncio';
+import TopBar from '../../src/components/TopBar';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 // ============================================================
 // CORES OFICIAIS GOHOME (do logo)
 // ============================================================
-const AZUL_HERO_INICIO = '#003A66';
-const AZUL_HERO_MEIO = '#0061A6';
-const AZUL_HERO_FIM = '#0082DE';
-const LARANJA_MARCA = '#FE8A00';
-const LARANJA_ESCURO = '#CB6E00';
+const AZUL_HERO_INICIO = '#0A6BC0';   // Azul GoHome (ícone das colecções)
+const AZUL_HERO_FIM = '#095FAA';
+const LARANJA_MARCA = '#E8760A';
+const LARANJA_ESCURO = '#B95A05';
 
 export default function FavoritosScreen() {
   const router = useRouter();
@@ -50,127 +50,56 @@ export default function FavoritosScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <StatusBar barStyle="light-content" backgroundColor={AZUL_HERO_INICIO} />
-
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
-        <LinearGradient
-          colors={[AZUL_HERO_INICIO, AZUL_HERO_MEIO, AZUL_HERO_FIM]}
-          locations={[0, 0.55, 1]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.hero}
-        >
-          <View pointerEvents="none" style={styles.heroGlow} />
-
-          <View style={styles.brandRow}>
-            <Text style={styles.brandText}>
-              <Text style={styles.brandGo}>Go</Text>
-              <Text style={styles.brandHome}>Home</Text>
-            </Text>
-            <View style={styles.brandPill}>
-              <Ionicons name="heart" size={12} color={LARANJA_MARCA} />
-              <Text style={styles.brandPillText}>GUARDADOS</Text>
-            </View>
-          </View>
-
-          <View style={styles.heroTextBlock}>
-            <Text style={styles.heroEyebrow}>OS TEUS GUARDADOS</Text>
-            <Text style={styles.headerTitulo}>Favoritos</Text>
-            <Text style={styles.heroDescricao}>
-              Guarda os anúncios que combinam contigo.
-            </Text>
-          </View>
-
-          <View style={styles.heroStats}>
-            <View style={styles.statIconWrap}>
-              <Ionicons name="heart" size={18} color={LARANJA_MARCA} />
-            </View>
-            <View style={styles.statTextWrap}>
-              <Text style={styles.statNumber}>{favoritos.length}</Text>
-              <Text style={styles.statLabel}>
-                {favoritos.length === 1 ? 'anúncio guardado' : 'anúncios guardados'}
-              </Text>
-            </View>
-            <View style={styles.statDivider} />
-            <Text style={styles.statHint}>Acede quando quiseres</Text>
-          </View>
-        </LinearGradient>
-
-        <View style={[styles.tabsShell, { backgroundColor: cores.fundo }]}>
-          <View style={[styles.abas, { backgroundColor: cores.fundoSuave }]}>
-            <TouchableOpacity
-              accessibilityRole="tab"
-              accessibilityState={{ selected: aba === 'anuncios' }}
-              style={[
-                styles.aba,
-                aba === 'anuncios' && [styles.abaActiva, { backgroundColor: cores.fundoElevado }],
-              ]}
-              onPress={() => setAba('anuncios')}
-              activeOpacity={0.85}
-            >
-              <Ionicons
-                name="heart"
-                size={17}
-                color={aba === 'anuncios' ? LARANJA_MARCA : cores.textoTerciario}
-              />
-              <Text
-                style={[
-                  styles.abaTexto,
-                  { color: aba === 'anuncios' ? cores.textoPrincipal : cores.textoTerciario },
-                ]}
-              >
-                Anúncios
-              </Text>
-              <View
-                style={[
-                  styles.abaBadge,
-                  { backgroundColor: aba === 'anuncios' ? LARANJA_MARCA : cores.bordaMedia },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.abaBadgeTexto,
-                    { color: aba === 'anuncios' ? '#FFFFFF' : cores.textoSecundario },
-                  ]}
-                >
-                  {favoritos.length}
-                </Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              accessibilityRole="tab"
-              accessibilityState={{ selected: aba === 'colecoes' }}
-              style={[
-                styles.aba,
-                aba === 'colecoes' && [styles.abaActiva, { backgroundColor: cores.fundoElevado }],
-              ]}
-              onPress={() => setAba('colecoes')}
-              activeOpacity={0.85}
-            >
-              <MaterialCommunityIcons
-                name="folder-heart"
-                size={19}
-                color={aba === 'colecoes' ? LARANJA_MARCA : cores.textoTerciario}
-              />
-              <Text
-                style={[
-                  styles.abaTexto,
-                  { color: aba === 'colecoes' ? cores.textoPrincipal : cores.textoTerciario },
-                ]}
-              >
-                Colecções
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </SafeAreaView>
+      <TopBar />
 
       <ScrollView
         style={styles.scroll}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
+        {/* Título simples no fundo papel — sem hero */}
+        <View style={styles.cabecalho}>
+          <Text style={[styles.titulo, { color: cores.textoPrincipal }]} accessibilityRole="header">
+            Favoritos
+          </Text>
+          <Text style={[styles.tituloContagem, { color: cores.textoSecundario }]}>
+            {favoritos.length} {favoritos.length === 1 ? 'anúncio guardado' : 'anúncios guardados'}
+          </Text>
+        </View>
+
+        <View style={styles.abas}>
+          {([
+            { chave: 'anuncios', rotulo: 'Anúncios', contagem: favoritos.length },
+            { chave: 'colecoes', rotulo: 'Colecções' },
+          ] as const).map(item => {
+            const activa = aba === item.chave;
+            return (
+              <TouchableOpacity
+                key={item.chave}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: activa }}
+                style={[
+                  styles.aba,
+                  activa
+                    ? { backgroundColor: cores.textoPrincipal, borderColor: cores.textoPrincipal }
+                    : { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil },
+                ]}
+                onPress={() => setAba(item.chave)}
+                activeOpacity={0.85}
+              >
+                <Text style={[styles.abaTexto, { color: activa ? cores.fundo : cores.textoPrincipal }]}>
+                  {item.rotulo}
+                </Text>
+                {'contagem' in item && (
+                  <Text style={[styles.abaContagem, { color: activa ? cores.fundo : cores.textoSecundario }]}>
+                    {item.contagem}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
         {aba === 'anuncios' ? (
           favoritos.length > 0 ? (
             <>
@@ -222,7 +151,7 @@ export default function FavoritosScreen() {
                 </Text>
               </View>
               <View style={[styles.sectionIcon, { backgroundColor: cores.principalClara }]}>
-                <MaterialCommunityIcons name="folder-heart-outline" size={20} color={cores.principal} />
+                <Icone name="folder-heart-outline" size={20} color={cores.principal} />
               </View>
             </View>
 
@@ -236,7 +165,7 @@ export default function FavoritosScreen() {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
               >
-                <MaterialCommunityIcons name="school-outline" size={27} color="#FFFFFF" />
+                <Icone name="school-outline" size={27} color="#FFFFFF" />
               </LinearGradient>
               <View style={styles.colecaoInfo}>
                 <Text style={[styles.colecaoNome, { color: cores.textoPrincipal }]}>Perto da UZ</Text>
@@ -257,7 +186,7 @@ export default function FavoritosScreen() {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
               >
-                <MaterialCommunityIcons name="waves" size={27} color="#FFFFFF" />
+                <Icone name="waves" size={27} color="#FFFFFF" />
               </LinearGradient>
               <View style={styles.colecaoInfo}>
                 <Text style={[styles.colecaoNome, { color: cores.textoPrincipal }]}>Vista para o mar</Text>
@@ -271,7 +200,7 @@ export default function FavoritosScreen() {
             <TouchableOpacity
               style={[
                 styles.novaColecaoBotao,
-                { backgroundColor: 'rgba(254, 138, 0, 0.04)', borderColor: LARANJA_MARCA },
+                { backgroundColor: 'rgba(232, 118, 10, 0.04)', borderColor: LARANJA_MARCA },
               ]}
               activeOpacity={0.85}
             >
@@ -317,7 +246,7 @@ function EstadoVazio({ icone, titulo, descricao, cta, onPress, cores }: EstadoVa
     <View style={styles.estadoVazio}>
       <View style={styles.estadoVazioIconeCirculo}>
         <LinearGradient
-          colors={['rgba(0, 130, 222, 0.08)', 'rgba(254, 138, 0, 0.08)']}
+          colors={['rgba(10, 107, 192, 0.08)', 'rgba(232, 118, 10, 0.08)']}
           style={styles.emptyIconGradient}
         >
           <Ionicons name={icone} size={43} color={cores.principal} />
@@ -347,129 +276,25 @@ function EstadoVazio({ icone, titulo, descricao, cta, onPress, cores }: EstadoVa
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  safeArea: { backgroundColor: AZUL_HERO_INICIO },
-  hero: {
-    paddingHorizontal: 22,
-    paddingTop: 10,
-    paddingBottom: 23,
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  heroGlow: {
-    position: 'absolute',
-    width: 230,
-    height: 230,
-    borderRadius: 115,
-    backgroundColor: 'rgba(0, 130, 222, 0.18)',
-    right: -60,
-    top: 20,
-  },
-  brandRow: { flexDirection: 'row', alignItems: 'center', gap: 9 },
-  brandText: { color: '#FFFFFF', fontSize: 24, fontWeight: '900', letterSpacing: -0.8 },
-  brandGo: { color: '#FFFFFF' },
-  brandHome: { color: LARANJA_MARCA },
-  brandPill: {
-    marginLeft: 'auto',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 30,
-    backgroundColor: 'rgba(255,255,255,0.14)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
-  },
-  brandPillText: { color: '#FFFFFF', fontSize: 10, fontWeight: '800', letterSpacing: 1 },
-  heroTextBlock: { marginTop: 25 },
-  heroEyebrow: {
-    color: LARANJA_MARCA,
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 1.7,
-    marginBottom: 6,
-  },
-  headerTitulo: {
-    color: '#FFFFFF',
-    fontSize: 31,
-    lineHeight: 37,
-    fontWeight: '800',
-    letterSpacing: -0.8,
-  },
-  heroDescricao: {
-    color: 'rgba(255,255,255,0.85)',
-    fontSize: 13,
-    lineHeight: 19,
-    marginTop: 5,
-  },
-  heroStats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 21,
-    padding: 12,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.10)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
-  },
-  statIconWrap: {
-    width: 37,
-    height: 37,
-    borderRadius: 12,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  statTextWrap: { marginLeft: 10 },
-  statNumber: { color: '#FFFFFF', fontSize: 18, fontWeight: '800', lineHeight: 21 },
-  statLabel: { color: 'rgba(255,255,255,0.85)', fontSize: 10, marginTop: 2 },
-  statDivider: {
-    width: 1,
-    height: 29,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    marginHorizontal: 13,
-  },
-  statHint: { flex: 1, color: 'rgba(255,255,255,0.85)', fontSize: 11, lineHeight: 16 },
+  cabecalho: { paddingHorizontal: Spacing.lg, marginTop: 16 },
+  titulo: { ...Typography.h1 },
+  tituloContagem: { fontFamily: Fonte.corpo, fontSize: 13, marginTop: 2 },
 
-  tabsShell: {
-    paddingHorizontal: 18,
-    paddingTop: 16,
-    paddingBottom: 2,
-  },
-  abas: {
-    flexDirection: 'row',
-    padding: 4,
-    borderRadius: 15,
-    gap: 5,
-  },
+  abas: { flexDirection: 'row', gap: 8, paddingHorizontal: Spacing.lg, paddingTop: 14, paddingBottom: 20 },
   aba: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 9,
-    paddingVertical: 12,
-    borderRadius: 12,
-    gap: 7,
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 999,
+    borderWidth: 1,
   },
-  abaActiva: {
-    ...Sombras.sm,
-  },
-  abaTexto: { fontSize: 13, fontWeight: '700' },
-  abaBadge: {
-    minWidth: 21,
-    height: 21,
-    paddingHorizontal: 5,
-    borderRadius: 11,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  abaBadgeTexto: { fontSize: 10, fontWeight: '800' },
+  abaTexto: { fontSize: 13, fontFamily: Fonte.corpoSemi },
+  abaContagem: { fontSize: 12, fontFamily: Fonte.corpoMedio, fontVariant: ['tabular-nums'] },
 
   scroll: { flex: 1 },
-  scrollContent: { paddingTop: 21, paddingBottom: 10 },
+  scrollContent: { paddingBottom: 10 },
   sectionHeading: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -477,8 +302,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 14,
   },
-  sectionTitle: { fontSize: 18, fontWeight: '800', letterSpacing: -0.3 },
-  sectionSubtitle: { fontSize: 11, lineHeight: 16, marginTop: 3 },
+  sectionTitle: { fontSize: 18, fontFamily: Fonte.corpoSemi, letterSpacing: -0.3 },
+  sectionSubtitle: { fontFamily: Fonte.corpo, fontSize: 11, lineHeight: 16, marginTop: 3 },
   sectionIcon: {
     width: 39,
     height: 39,
@@ -522,13 +347,13 @@ const styles = StyleSheet.create({
   },
   estadoVazioTitulo: {
     fontSize: 21,
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
     textAlign: 'center',
     marginBottom: 9,
     letterSpacing: -0.4,
   },
   estadoVazioDescricao: {
-    fontSize: 13,
+    fontFamily: Fonte.corpo, fontSize: 13,
     lineHeight: 21,
     textAlign: 'center',
     marginBottom: 24,
@@ -547,7 +372,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     gap: 10,
   },
-  estadoVazioBotaoTexto: { color: '#FFFFFF', fontSize: 13, fontWeight: '800' },
+  estadoVazioBotaoTexto: { color: '#FFFFFF', fontSize: 13, fontFamily: Fonte.corpoSemi },
 
   // ===== Colecções =====
   colecoesContainer: { paddingHorizontal: 17, gap: 12 },
@@ -568,8 +393,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   colecaoInfo: { flex: 1 },
-  colecaoNome: { fontSize: 14, fontWeight: '800' },
-  colecaoContagem: { fontSize: 11, marginTop: 5 },
+  colecaoNome: { fontSize: 14, fontFamily: Fonte.corpoSemi },
+  colecaoContagem: { fontFamily: Fonte.corpo, fontSize: 11, marginTop: 5 },
   novaColecaoBotao: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -584,12 +409,12 @@ const styles = StyleSheet.create({
     width: 39,
     height: 39,
     borderRadius: 13,
-    backgroundColor: 'rgba(254, 138, 0, 0.15)',
+    backgroundColor: 'rgba(232, 118, 10, 0.15)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   novaColecaoTextWrap: { flex: 1 },
-  novaColecaoTexto: { fontSize: 13, fontWeight: '800' },
-  novaColecaoDescricao: { fontSize: 10, marginTop: 3 },
-  notaColecoes: { fontSize: 10, lineHeight: 15, marginTop: 5, paddingHorizontal: 3 },
+  novaColecaoTexto: { fontSize: 13, fontFamily: Fonte.corpoSemi },
+  novaColecaoDescricao: { fontFamily: Fonte.corpo, fontSize: 10, marginTop: 3 },
+  notaColecoes: { fontFamily: Fonte.corpo, fontSize: 10, lineHeight: 15, marginTop: 5, paddingHorizontal: 3 },
 });

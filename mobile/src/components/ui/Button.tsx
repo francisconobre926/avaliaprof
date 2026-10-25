@@ -23,6 +23,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
 import { Sombras } from '../../theme/colors';
 
+import { Fonte } from '../../theme/fonts';
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
@@ -96,8 +97,8 @@ export const Button: React.FC<ButtonProps> = ({
     paddingVertical: sz.padV,
     paddingHorizontal: sz.padH,
     minHeight: sz.height,
-    borderRadius: sz.height / 2,
-    borderWidth: variant === 'outline' ? 1.5 : 0,
+    borderRadius: Math.min(12, sz.height / 2),
+    borderWidth: variant === 'outline' ? 1 : 0,
     borderColor: corBorda,
     backgroundColor: corFundo,
     opacity: disabled ? 0.6 : 1,
@@ -118,7 +119,7 @@ export const Button: React.FC<ButtonProps> = ({
           )}
           <Text
             style={[
-              { color: corTexto, fontSize: sz.font, fontWeight: '700' },
+              { color: corTexto, fontSize: sz.font, fontFamily: Fonte.corpoSemi },
               labelStyle,
             ]}
             numberOfLines={1}

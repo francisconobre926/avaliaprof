@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import {
   useThemeStore,
@@ -19,6 +19,8 @@ import {
 } from '../src/store/themeStore';
 import { Spacing, Typography, Radius } from '../src/theme/typography';
 
+import { Fonte } from '../src/theme/fonts';
+import Icone from '../src/components/Icone';
 const { width } = Dimensions.get('window');
 
 export default function AparenciaScreen() {
@@ -143,7 +145,7 @@ export default function AparenciaScreen() {
               activeOpacity={0.85}
             >
               <View style={[styles.modoPreview, { backgroundColor: '#F8F9FA' }]}>
-                <View style={[styles.modoPreviewCirculo, { backgroundColor: '#FFC107' }]} />
+                <View style={[styles.modoPreviewCirculo, { backgroundColor: '#C9952F' }]} />
                 <View style={styles.modoPreviewLinhas}>
                   <View style={[styles.modoPreviewLinha, { backgroundColor: '#1A1A2E' }]} />
                   <View
@@ -293,7 +295,7 @@ export default function AparenciaScreen() {
           onPress={resetTema}
           activeOpacity={0.7}
         >
-          <MaterialCommunityIcons name="restart" size={18} color={cores.textoSecundario} />
+          <Icone name="restart" size={18} color={cores.textoSecundario} />
           <Text style={[styles.botaoResetTexto, { color: cores.textoSecundario }]}>
             Restaurar predefinições
           </Text>
@@ -370,7 +372,7 @@ const styles = StyleSheet.create({
   previewCardTitulo: {
     ...Typography.displayMD,
     color: '#FFFFFF',
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
   },
   previewCardSubtitulo: {
     ...Typography.body,

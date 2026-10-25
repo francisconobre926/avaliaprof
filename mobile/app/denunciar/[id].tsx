@@ -18,13 +18,15 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import EmojiPicker from 'rn-emoji-keyboard';
 import { Colors, Sombras } from '../../src/theme/colors';
 import { Spacing, Typography, Radius } from '../../src/theme/typography';
 import { IMOVEIS_MOCK, formatarPreco } from '../../src/data/imoveis-mock';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 // Tipos
 interface Mensagem {
   id: string;
@@ -373,7 +375,7 @@ export default function ChatScreen() {
             ]}>
               {isMinha ? (
                 <LinearGradient
-                  colors={['#FF7900', '#FF5A1F']}
+                  colors={['#E8760A', '#FF5A1F']}
                   style={StyleSheet.absoluteFill}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -424,7 +426,7 @@ export default function ChatScreen() {
           <TouchableOpacity style={styles.headerInfo} activeOpacity={0.7}>
             <View style={styles.headerAvatarContainer}>
               <LinearGradient
-                colors={['#FF7900', '#FF5A1F']}
+                colors={['#E8760A', '#FF5A1F']}
                 style={styles.headerAvatar}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -458,7 +460,7 @@ export default function ChatScreen() {
               activeOpacity={0.7}
               onPress={() => Alert.alert('Chamada', 'Funcionalidade em breve')}
             >
-              <Ionicons name="call" size={18} color={'#0B2E59'} />
+              <Ionicons name="call" size={18} color={'#16202E'} />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.headerAcaoBotao}
@@ -480,7 +482,7 @@ export default function ChatScreen() {
             <Image source={{ uri: imovel.fotos[0] }} style={styles.imovelFoto} />
             <View style={styles.imovelInfo}>
               <View style={styles.imovelBadge}>
-                <MaterialCommunityIcons name="home" size={10} color={'#0B2E59'} />
+                <Icone name="home" size={10} color={'#16202E'} />
                 <Text style={styles.imovelBadgeText}>IMÓVEL EM CONVERSA</Text>
               </View>
               <Text style={styles.imovelTitulo} numberOfLines={1}>
@@ -541,7 +543,7 @@ export default function ChatScreen() {
               onPress={() => setModalAnexoVisivel(true)}
               activeOpacity={0.7}
             >
-              <Ionicons name="add" size={24} color={'#0B2E59'} />
+              <Ionicons name="add" size={24} color={'#16202E'} />
             </TouchableOpacity>
 
             <View style={styles.inputCampo}>
@@ -559,7 +561,7 @@ export default function ChatScreen() {
                 onPress={() => setEmojiVisivel(true)}
                 activeOpacity={0.7}
               >
-                <MaterialCommunityIcons name="emoticon-outline" size={22} color={Colors.textoSecundario} />
+                <Icone name="emoticon-outline" size={22} color={Colors.textoSecundario} />
               </TouchableOpacity>
             </View>
 
@@ -570,7 +572,7 @@ export default function ChatScreen() {
                 activeOpacity={0.85}
               >
                 <LinearGradient
-                  colors={['#FF7900', '#FF5A1F']}
+                  colors={['#E8760A', '#FF5A1F']}
                   style={StyleSheet.absoluteFill}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -598,20 +600,17 @@ export default function ChatScreen() {
         enableRecentlyUsed
         categoryPosition="bottom"
         translation={{
+          recently_used: 'Recentes',
+          smileys_emotion: 'Emoções',
+          people_body: 'Pessoas',
+          animals_nature: 'Animais',
+          food_drink: 'Comida',
+          travel_places: 'Viagem',
+          activities: 'Actividades',
+          objects: 'Objectos',
+          symbols: 'Símbolos',
+          flags: 'Bandeiras',
           search: 'Pesquisar',
-          categories: {
-            recently_used: 'Recentes',
-            smileys_emotion: 'Emoções',
-            people_body: 'Pessoas',
-            animals_nature: 'Animais',
-            food_drink: 'Comida',
-            travel_places: 'Viagem',
-            activities: 'Actividades',
-            objects: 'Objectos',
-            symbols: 'Símbolos',
-            flags: 'Bandeiras',
-            search: 'Resultado da pesquisa',
-          },
         }}
       />
 
@@ -635,8 +634,8 @@ export default function ChatScreen() {
               onPress={tirarFoto}
               activeOpacity={0.7}
             >
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FFF0E4' }]}>
-                <Ionicons name="camera" size={22} color={'#0B2E59'} />
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FBF0E3' }]}>
+                <Ionicons name="camera" size={22} color={'#16202E'} />
               </View>
               <View style={styles.modalOpcaoInfo}>
                 <Text style={styles.modalOpcaoTitulo}>Câmara</Text>
@@ -668,7 +667,7 @@ export default function ChatScreen() {
               }}
               activeOpacity={0.7}
             >
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FFF0E4' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FBF0E3' }]}>
                 <Ionicons name="location" size={22} color={Colors.aviso} />
               </View>
               <View style={styles.modalOpcaoInfo}>
@@ -705,14 +704,14 @@ export default function ChatScreen() {
             <Text style={styles.modalTitulo}>Opções</Text>
 
             <TouchableOpacity style={styles.modalOpcao} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FFF0E4' }]}>
-                <Ionicons name="person" size={22} color={'#0B2E59'} />
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FBF0E3' }]}>
+                <Ionicons name="person" size={22} color={'#16202E'} />
               </View>
               <Text style={styles.modalOpcaoTitulo}>Ver perfil</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.modalOpcao} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FFF0E4' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FBF0E3' }]}>
                 <Ionicons name="notifications-off" size={22} color={Colors.aviso} />
               </View>
               <Text style={styles.modalOpcaoTitulo}>Silenciar notificações</Text>
@@ -796,7 +795,7 @@ const styles = StyleSheet.create({
   headerAvatarLetra: {
     ...Typography.h3,
     color: Colors.branco,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
   },
   headerOnlineDot: {
     position: 'absolute',
@@ -827,7 +826,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 8,
-    backgroundColor: '#0B2E59',
+    backgroundColor: '#16202E',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -862,7 +861,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#F1D9C7',
     borderLeftWidth: 3,
-    borderLeftColor: '#FF7900',
+    borderLeftColor: '#E8760A',
   },
   imovelFoto: {
     width: 48,
@@ -880,7 +879,7 @@ const styles = StyleSheet.create({
   },
   imovelBadgeText: {
     ...Typography.captionBold,
-    color: '#0B2E59',
+    color: '#16202E',
     fontSize: 9,
     letterSpacing: 0.5,
   },
@@ -891,7 +890,7 @@ const styles = StyleSheet.create({
   },
   imovelPreco: {
     ...Typography.captionBold,
-    color: '#0B2E59',
+    color: '#16202E',
     fontSize: 12,
     marginTop: 2,
   },
@@ -978,7 +977,7 @@ const styles = StyleSheet.create({
   },
   mensagemHora: {
     fontSize: 10,
-    fontWeight: '500',
+    fontFamily: Fonte.corpoMedio,
   },
 
   // Foto na mensagem
@@ -1053,7 +1052,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFF0E4',
+    backgroundColor: '#FBF0E3',
   },
   inputCampo: {
     flex: 1,
@@ -1086,16 +1085,16 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
-    ...Sombras.colorida('#FF7900'),
+    ...Sombras.colorida('#E8760A'),
   },
   inputBotaoMic: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#FF7900',
+    backgroundColor: '#E8760A',
     justifyContent: 'center',
     alignItems: 'center',
-    ...Sombras.colorida('#FF7900'),
+    ...Sombras.colorida('#E8760A'),
   },
 
   // Modal

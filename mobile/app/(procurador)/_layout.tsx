@@ -3,18 +3,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
 import { useCores } from '../../src/store/themeStore';
 
+import { Fonte } from '../../src/theme/fonts';
 export default function ProcuradorLayout() {
   const cores = useCores();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: cores.principal,       // Azul GoHome #0082DE
+        tabBarActiveTintColor: cores.principal,       // Azul GoHome #0A6BC0
         tabBarInactiveTintColor: cores.textoTerciario,
         tabBarShowLabel: true,
         tabBarLabelStyle: {
           fontSize: 11,
-          fontWeight: '600',
+          fontFamily: Fonte.corpoSemi,
           marginTop: -2,
         },
         tabBarStyle: {

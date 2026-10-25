@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
 import { Button } from './Button';
 
+import { Fonte } from '../../theme/fonts';
 interface EmptyStateProps {
   icon?: keyof typeof Ionicons.glyphMap;
   titulo: string;
@@ -77,12 +78,12 @@ const styles = StyleSheet.create({
   },
   titulo: {
     fontSize: 18,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
     textAlign: 'center',
     marginBottom: 8,
   },
   descricao: {
-    fontSize: 14,
+    fontFamily: Fonte.corpo, fontSize: 14,
     textAlign: 'center',
     lineHeight: 20,
     maxWidth: 300,

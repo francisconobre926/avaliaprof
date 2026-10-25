@@ -10,7 +10,7 @@
  *  ✓ Última mensagem nunca fica tapada pelo teclado
  *
  * Features:
- *  • Paleta GoHome (azul #0082DE + laranja #FE8A00)
+ *  • Paleta GoHome (azul #0A6BC0 + laranja #E8760A)
  *  • ANUNCIOS_MOCK (não IMOVEIS_MOCK)
  *  • Rota /anuncio/[id] (não /imovel/[id])
  *  • Detector regex anti-partilha de contactos (V10 de ANTI_FRAUDE.md)
@@ -37,7 +37,7 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import EmojiPicker from 'rn-emoji-keyboard';
 import { Colors, Sombras } from '../../src/theme/colors';
@@ -45,13 +45,15 @@ import { Spacing, Typography, Radius } from '../../src/theme/typography';
 import { useCores } from '../../src/store/themeStore';
 import { ANUNCIOS_MOCK, formatarPrecoCompleto } from '../../src/data/anuncios-mock';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 // ============================================================
 // CORES GOHOME OFICIAIS
 // ============================================================
-const AZUL_HERO_INICIO = '#003A66';
-const AZUL_HERO_FIM = '#0082DE';
-const LARANJA_MARCA = '#FE8A00';
-const LARANJA_ESCURO = '#CB6E00';
+const AZUL_HERO_INICIO = '#0A6BC0';   // Azul GoHome — o mesmo da "Promoção lançamento"
+const AZUL_HERO_FIM = '#095FAA';
+const LARANJA_MARCA = '#E8760A';
+const LARANJA_ESCURO = '#B95A05';
 
 // ============================================================
 // DETECTOR REGEX ANTI-FRAUDE
@@ -486,7 +488,7 @@ export default function ChatScreen() {
               )}
               <View style={styles.anuncioInfo}>
                 <View style={styles.anuncioBadge}>
-                  <MaterialCommunityIcons name="home" size={10} color={cores.principal} />
+                  <Icone name="home" size={10} color={cores.principal} />
                   <Text style={[styles.anuncioBadgeText, { color: cores.principal }]}>
                     ANÚNCIO EM CONVERSA
                   </Text>
@@ -503,10 +505,10 @@ export default function ChatScreen() {
           )}
 
           {/* Aviso de segurança */}
-          <View style={[styles.avisoSeguranca, { backgroundColor: 'rgba(0, 130, 222, 0.08)', borderColor: 'rgba(0, 130, 222, 0.2)' }]}>
+          <View style={[styles.avisoSeguranca, { backgroundColor: 'rgba(10, 107, 192, 0.08)', borderColor: 'rgba(10, 107, 192, 0.2)' }]}>
             <Ionicons name="shield-checkmark" size={14} color={cores.principal} />
             <Text style={[styles.avisoSegurancaTexto, { color: cores.textoSecundario }]}>
-              Mantém a conversa aqui. <Text style={{ fontWeight: '800', color: cores.textoPrincipal }}>Nunca pagues antes de visitar.</Text>
+              Mantém a conversa aqui. <Text style={{ fontFamily: Fonte.corpoSemi, color: cores.textoPrincipal }}>Nunca pagues antes de visitar.</Text>
             </Text>
           </View>
         </SafeAreaView>
@@ -553,7 +555,7 @@ export default function ChatScreen() {
         >
           <View style={styles.inputContainer}>
             <TouchableOpacity
-              style={[styles.inputBotaoAnexo, { backgroundColor: 'rgba(254, 138, 0, 0.12)' }]}
+              style={[styles.inputBotaoAnexo, { backgroundColor: 'rgba(232, 118, 10, 0.12)' }]}
               onPress={() => setModalAnexoVisivel(true)}
               activeOpacity={0.7}
             >
@@ -582,7 +584,7 @@ export default function ChatScreen() {
                 }}
                 activeOpacity={0.7}
               >
-                <MaterialCommunityIcons name="emoticon-outline" size={22} color={cores.textoSecundario} />
+                <Icone name="emoticon-outline" size={22} color={cores.textoSecundario} />
               </TouchableOpacity>
             </View>
 
@@ -620,13 +622,10 @@ export default function ChatScreen() {
         enableRecentlyUsed
         categoryPosition="bottom"
         translation={{
-          search: 'Pesquisar',
-          categories: {
-            recently_used: 'Recentes', smileys_emotion: 'Emoções', people_body: 'Pessoas',
-            animals_nature: 'Animais', food_drink: 'Comida', travel_places: 'Viagem',
-            activities: 'Actividades', objects: 'Objectos', symbols: 'Símbolos',
-            flags: 'Bandeiras', search: 'Resultado da pesquisa',
-          },
+          recently_used: 'Recentes', smileys_emotion: 'Emoções', people_body: 'Pessoas',
+          animals_nature: 'Animais', food_drink: 'Comida', travel_places: 'Viagem',
+          activities: 'Actividades', objects: 'Objectos', symbols: 'Símbolos',
+          flags: 'Bandeiras', search: 'Pesquisar',
         }}
       />
 
@@ -638,7 +637,7 @@ export default function ChatScreen() {
             <Text style={[styles.modalTitulo, { color: cores.textoPrincipal }]}>Enviar anexo</Text>
 
             <TouchableOpacity style={[styles.modalOpcao, { backgroundColor: cores.fundoSuave }]} onPress={tirarFoto} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(0, 130, 222, 0.15)' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(10, 107, 192, 0.15)' }]}>
                 <Ionicons name="camera" size={22} color={cores.principal} />
               </View>
               <View style={styles.modalOpcaoInfo}>
@@ -664,7 +663,7 @@ export default function ChatScreen() {
               onPress={() => { setModalAnexoVisivel(false); Alert.alert('Localização', 'Funcionalidade em breve'); }}
               activeOpacity={0.7}
             >
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(254, 138, 0, 0.15)' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(232, 118, 10, 0.15)' }]}>
                 <Ionicons name="location" size={22} color={LARANJA_MARCA} />
               </View>
               <View style={styles.modalOpcaoInfo}>
@@ -689,14 +688,14 @@ export default function ChatScreen() {
             <Text style={[styles.modalTitulo, { color: cores.textoPrincipal }]}>Opções</Text>
 
             <TouchableOpacity style={[styles.modalOpcao, { backgroundColor: cores.fundoSuave }]} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(0, 130, 222, 0.15)' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(10, 107, 192, 0.15)' }]}>
                 <Ionicons name="person" size={22} color={cores.principal} />
               </View>
               <Text style={[styles.modalOpcaoTitulo, { color: cores.textoPrincipal }]}>Ver perfil</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={[styles.modalOpcao, { backgroundColor: cores.fundoSuave }]} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(254, 138, 0, 0.15)' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(232, 118, 10, 0.15)' }]}>
                 <Ionicons name="notifications-off" size={22} color={LARANJA_MARCA} />
               </View>
               <Text style={[styles.modalOpcaoTitulo, { color: cores.textoPrincipal }]}>Silenciar notificações</Text>
@@ -758,7 +757,7 @@ const styles = StyleSheet.create({
   headerInfo: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   headerAvatarContainer: { position: 'relative' },
   headerAvatar: { width: 42, height: 42, borderRadius: 21, justifyContent: 'center', alignItems: 'center' },
-  headerAvatarLetra: { ...Typography.h3, color: '#FFFFFF', fontWeight: '800' },
+  headerAvatarLetra: { ...Typography.h3, color: '#FFFFFF', fontFamily: Fonte.corpoSemi },
   headerOnlineDot: {
     position: 'absolute', bottom: 0, right: 0,
     width: 12, height: 12, borderRadius: 6,
@@ -793,7 +792,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8, paddingHorizontal: 12,
     borderRadius: 10, borderWidth: 1,
   },
-  avisoSegurancaTexto: { flex: 1, fontSize: 11, lineHeight: 15 },
+  avisoSegurancaTexto: { flex: 1, fontFamily: Fonte.corpo, fontSize: 11, lineHeight: 15 },
 
   mensagensLista: { padding: Spacing.md, paddingBottom: Spacing.lg },
 
@@ -813,7 +812,7 @@ const styles = StyleSheet.create({
   bolhaOutro: { borderBottomLeftRadius: 4, ...Sombras.sm },
   mensagemTexto: { ...Typography.body, lineHeight: 20 },
   mensagemMeta: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 4, marginTop: 2 },
-  mensagemHora: { fontSize: 10, fontWeight: '500' },
+  mensagemHora: { fontSize: 10, fontFamily: Fonte.corpoMedio },
 
   alertaSuspeita: {
     backgroundColor: 'rgba(244, 67, 54, 0.08)',
@@ -821,14 +820,14 @@ const styles = StyleSheet.create({
     borderRadius: 12, padding: 10, marginBottom: 6, maxWidth: 300,
   },
   alertaSuspeitaHeader: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 3 },
-  alertaSuspeitaTitulo: { color: Colors.erro, fontSize: 11, fontWeight: '800' },
-  alertaSuspeitaDesc: { color: '#8B1A1A', fontSize: 11, lineHeight: 15, marginBottom: 6 },
+  alertaSuspeitaTitulo: { color: Colors.erro, fontSize: 11, fontFamily: Fonte.corpoSemi },
+  alertaSuspeitaDesc: { color: '#8B1A1A', fontFamily: Fonte.corpo, fontSize: 11, lineHeight: 15, marginBottom: 6 },
   alertaSuspeitaBotao: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
     paddingHorizontal: 10, paddingVertical: 5, borderRadius: 100,
     backgroundColor: 'rgba(244, 67, 54, 0.15)', alignSelf: 'flex-start',
   },
-  alertaSuspeitaBotaoTexto: { color: Colors.erro, fontSize: 10, fontWeight: '800' },
+  alertaSuspeitaBotaoTexto: { color: Colors.erro, fontSize: 10, fontFamily: Fonte.corpoSemi },
 
   mensagemFoto: { width: 220, height: 220, borderRadius: 16, borderBottomRightRadius: 4 },
   mensagemFotoInfo: {
@@ -882,7 +881,7 @@ const styles = StyleSheet.create({
   inputBotaoMic: {
     width: 44, height: 44, borderRadius: 22,
     justifyContent: 'center', alignItems: 'center',
-    ...Sombras.colorida('#0082DE'),
+    ...Sombras.colorida('#0A6BC0'),
   },
 
   // Modal

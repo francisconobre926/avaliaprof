@@ -29,6 +29,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
 import { Sombras } from '../../theme/colors';
 
+import { Fonte } from '../../theme/fonts';
 const { width: W } = Dimensions.get('window');
 
 export type ToastTipo = 'success' | 'error' | 'warning' | 'info';
@@ -139,10 +140,10 @@ const ToastItem: React.FC<{
   }, []);
 
   const mapaTipo: Record<ToastTipo, { icon: keyof typeof Ionicons.glyphMap; cor: string }> = {
-    success: { icon: 'checkmark-circle', cor: '#00C853' },
-    error: { icon: 'close-circle', cor: '#F44336' },
-    warning: { icon: 'warning', cor: '#FF9800' },
-    info: { icon: 'information-circle', cor: '#0082DE' },
+    success: { icon: 'checkmark-circle', cor: '#2F7A4F' },
+    error: { icon: 'close-circle', cor: '#C2412D' },
+    warning: { icon: 'warning', cor: '#E8760A' },
+    info: { icon: 'information-circle', cor: '#0A6BC0' },
   };
   const info = mapaTipo[toast.tipo || 'info'];
 
@@ -211,8 +212,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  titulo: { fontSize: 14, fontWeight: '700' },
-  descricao: { fontSize: 12, marginTop: 2 },
+  titulo: { fontSize: 14, fontFamily: Fonte.corpoSemi },
+  descricao: { fontFamily: Fonte.corpo, fontSize: 12, marginTop: 2 },
 });
 
 export default ToastProvider;

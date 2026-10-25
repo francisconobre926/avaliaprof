@@ -25,50 +25,50 @@ export const CORES_DESTAQUE: Record<CorDestaque, DefinicaoCorDestaque> = {
   azul: {
     id: 'azul',
     nome: 'Azul GoHome',
-    principal: '#0082DE',
-    claro: '#E6F4FD',
-    escuro: '#0061A6',
-    gradiente: ['#0082DE', '#FE8A00'], // Gradiente oficial: azul → laranja
+    principal: '#0A6BC0',
+    claro: '#EAF2FA',
+    escuro: '#08508F',
+    gradiente: ['#0A6BC0', '#095FAA'], // Tonal — sem saltos de matiz
   },
   laranja: {
     id: 'laranja',
     nome: 'Laranja GoHome',
-    principal: '#FE8A00',
-    claro: '#FFF3E0',
-    escuro: '#CB6E00',
-    gradiente: ['#FE8A00', '#0082DE'], // Gradiente oficial inverso: laranja → azul
+    principal: '#D96D08',
+    claro: '#FBF0E3',
+    escuro: '#A85204',
+    gradiente: ['#D96D08', '#C86306'],
   },
   verde: {
     id: 'verde',
     nome: 'Verde',
-    principal: '#4CAF50',
-    claro: '#E8F5E9',
-    escuro: '#388E3C',
-    gradiente: ['#4CAF50', '#8BC34A'],
+    principal: '#2F7A4F',
+    claro: '#EAF3EC',
+    escuro: '#22593A',
+    gradiente: ['#2F7A4F', '#296D46'],
   },
   rosa: {
     id: 'rosa',
     nome: 'Rosa',
-    principal: '#E91E63',
-    claro: '#FCE4EC',
-    escuro: '#C2185B',
-    gradiente: ['#E91E63', '#F06292'],
+    principal: '#B83A64',
+    claro: '#F8EAEF',
+    escuro: '#8E2A4B',
+    gradiente: ['#B83A64', '#A8335A'],
   },
   roxo: {
     id: 'roxo',
     nome: 'Roxo',
-    principal: '#9C27B0',
-    claro: '#F3E5F5',
-    escuro: '#7B1FA2',
-    gradiente: ['#9C27B0', '#673AB7'],
+    principal: '#6B4BA8',
+    claro: '#F0ECF7',
+    escuro: '#513782',
+    gradiente: ['#6B4BA8', '#60439A'],
   },
   preto: {
     id: 'preto',
-    nome: 'Preto',
-    principal: '#212121',
-    claro: '#F5F5F5',
-    escuro: '#000000',
-    gradiente: ['#424242', '#212121'],
+    nome: 'Grafite',
+    principal: '#1F2226',
+    claro: '#EFEEE9',
+    escuro: '#0F1012',
+    gradiente: ['#2A2D32', '#1F2226'],
   },
 };
 
@@ -102,43 +102,43 @@ export interface PaletaModo {
 }
 
 export const PALETA_CLARO: PaletaModo = {
-  fundo: '#FFFFFF',
-  fundoSuave: '#F7F8FA',
+  fundo: '#FAFAF7',           // Papel quente, não branco clínico
+  fundoSuave: '#F2F1EC',
   fundoElevado: '#FFFFFF',
   branco: '#FFFFFF',
 
-  textoPrincipal: '#0A0E1A',
-  textoSecundario: '#5A6B82',
-  textoTerciario: '#8A9AAF',
+  textoPrincipal: '#15181D',
+  textoSecundario: '#5B616B',
+  textoTerciario: '#8E939B',
 
-  bordaSubtil: '#E8ECF1',
-  bordaMedia: '#D5DAE3',
+  bordaSubtil: '#E7E5DF',
+  bordaMedia: '#D6D3CB',
 
-  sucesso: '#00C853',
-  aviso: '#FF9800',
-  erro: '#F44336',
-  premium: '#FFB300',
-  destaque: '#FE8A00', // Laranja GoHome
+  sucesso: '#2F7A4F',
+  aviso: '#B7791F',
+  erro: '#C2412D',
+  premium: '#B8862B',
+  destaque: '#E8760A',
 };
 
 export const PALETA_ESCURO: PaletaModo = {
-  fundo: '#000000',           // Preto puro (como no logo)
-  fundoSuave: '#0F0F0F',
-  fundoElevado: '#141414',    // Cards
-  branco: '#1A1A1A',          // "branco" no escuro = cinza muito escuro
+  fundo: '#0F1012',           // Quase-preto, evita o halo do #000 em OLED
+  fundoSuave: '#17181B',
+  fundoElevado: '#1B1D20',
+  branco: '#1B1D20',
 
-  textoPrincipal: '#FFFFFF',
-  textoSecundario: '#B0B0B0',
-  textoTerciario: '#707070',
+  textoPrincipal: '#F2F1EE',
+  textoSecundario: '#A6A9AE',
+  textoTerciario: '#6F7378',
 
-  bordaSubtil: '#2A2A2A',
-  bordaMedia: '#3A3A3A',
+  bordaSubtil: '#2A2C30',
+  bordaMedia: '#383B40',
 
-  sucesso: '#4CAF50',
-  aviso: '#FFB74D',
-  erro: '#EF5350',
-  premium: '#FFCA28',
-  destaque: '#FE8A00', // Laranja GoHome (igual nos 2 modos — identidade)
+  sucesso: '#5FA77B',
+  aviso: '#D9A24A',
+  erro: '#E0705C',
+  premium: '#D4A84E',
+  destaque: '#F08A2C',
 };
 
 // ============================================================

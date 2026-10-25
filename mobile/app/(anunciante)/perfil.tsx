@@ -4,29 +4,28 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  StatusBar,
   Alert,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useUserStore } from '../../src/store/userStore';
 import { useCores } from '../../src/store/themeStore';
 
+import { Fonte } from '../../src/theme/fonts';
+import { Typography, Spacing } from '../../src/theme/typography';
+import TopBar, { TopBarBotao } from '../../src/components/TopBar';
 // ============================================================
 // CORES GOHOME OFICIAIS
 // ============================================================
-const AZUL_MARCA = '#0082DE';
-const AZUL_ESCURO = '#0061A6';
-const LARANJA_MARCA = '#FE8A00';
-const LARANJA_ESCURO = '#CB6E00';
-const LARANJA_PALE = 'rgba(254, 138, 0, 0.12)';
+const AZUL_MARCA = '#0A6BC0';
+const AZUL_ESCURO = '#08508F';
+const LARANJA_MARCA = '#E8760A';
+const LARANJA_PALE = 'rgba(232, 118, 10, 0.12)';
 const VERDE = '#159957';
 const VERDE_PALE = '#E8F7EF';
 const VERMELHO = '#D64545';
 const VERMELHO_PALE = '#FFF0F0';
-const AZUL_PALE = 'rgba(0, 130, 222, 0.1)';
+const AZUL_PALE = 'rgba(10, 107, 192, 0.1)';
 
 export default function PerfilAnunciante() {
   const router = useRouter();
@@ -65,57 +64,38 @@ export default function PerfilAnunciante() {
 
   return (
     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <StatusBar barStyle="dark-content" backgroundColor={cores.fundo} />
+      <TopBar
+        acoes={<TopBarBotao icone="settings-outline" rotulo="Definições" />}
+      />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        {/* HERO com laranja GoHome (identidade do papel anunciante) */}
-        <LinearGradient
-          colors={[LARANJA_MARCA, LARANJA_ESCURO]}
-          style={styles.hero}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <SafeAreaView edges={['top']}>
-            <View style={styles.heroTop}>
-              <View>
-                <Text style={styles.eyebrow}>GOHOME · CONTA</Text>
-                <Text style={styles.heroTitulo}>O meu perfil</Text>
-              </View>
-              <TouchableOpacity
-                style={styles.heroBotao}
-                activeOpacity={0.8}
-                accessibilityLabel="Definições"
-              >
-                <Ionicons name="settings-outline" size={21} color={AZUL_ESCURO} />
-              </TouchableOpacity>
-            </View>
+        <Text style={[styles.titulo, { color: cores.textoPrincipal }]}>O meu perfil</Text>
 
-            <View style={[styles.profileCard, { backgroundColor: cores.fundoElevado }]}>
-              <View style={styles.avatarWrap}>
-                <Text style={styles.avatarLetra}>{inicialAvatar}</Text>
-                <View style={styles.verificado}>
-                  <Ionicons name="checkmark" size={12} color="#FFFFFF" />
-                </View>
-              </View>
-              <View style={styles.profileText}>
-                <Text style={[styles.nome, { color: cores.textoPrincipal }]}>{nomeExibir}</Text>
-                <View style={styles.tipoContainer}>
-                  <Ionicons name="shield-checkmark-outline" size={15} color={AZUL_ESCURO} />
-                  <Text style={[styles.tipo, { color: cores.textoSecundario }]}>
-                    Perfil de anunciante
-                  </Text>
-                </View>
-                <View style={styles.ratingContainer}>
-                  <Ionicons name="star" size={14} color="#F6B51B" />
-                  <Text style={[styles.ratingValor, { color: cores.textoPrincipal }]}>4.8</Text>
-                  <Text style={[styles.ratingCount, { color: cores.textoSecundario }]}>
-                    · 47 avaliações
-                  </Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={cores.textoSecundario} />
+        {/* Cartão de identidade */}
+        <View style={[styles.profileCard, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
+          <View style={styles.avatarWrap}>
+            <Text style={styles.avatarLetra}>{inicialAvatar}</Text>
+            <View style={[styles.verificado, { borderColor: cores.fundoElevado }]}>
+              <Ionicons name="checkmark" size={12} color="#FFFFFF" />
             </View>
-          </SafeAreaView>
-        </LinearGradient>
+          </View>
+          <View style={styles.profileText}>
+            <Text style={[styles.nome, { color: cores.textoPrincipal }]}>{nomeExibir}</Text>
+            <View style={styles.tipoContainer}>
+              <Ionicons name="shield-checkmark-outline" size={15} color={cores.textoSecundario} />
+              <Text style={[styles.tipo, { color: cores.textoSecundario }]}>
+                Perfil de anunciante
+              </Text>
+            </View>
+            <View style={styles.ratingContainer}>
+              <Ionicons name="star" size={14} color="#F6B51B" />
+              <Text style={[styles.ratingValor, { color: cores.textoPrincipal }]}>4.8</Text>
+              <Text style={[styles.ratingCount, { color: cores.textoSecundario }]}>
+                · 47 avaliações
+              </Text>
+            </View>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color={cores.textoSecundario} />
+        </View>
 
         <View style={[styles.trustRow, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
           <TrustItem icon="shield-checkmark-outline" title="Conta" subtitle="Protegida" cores={cores} />
@@ -232,52 +212,39 @@ function MenuItem({ icon, tint, iconColor, title, description, onPress, badge, c
 const styles = StyleSheet.create({
   container: { flex: 1 },
   scroll: { paddingBottom: 18 },
-  hero: {
-    paddingBottom: 30,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-  },
-  heroTop: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    paddingHorizontal: 22, paddingTop: 12, paddingBottom: 20,
-  },
-  eyebrow: { color: 'rgba(255,255,255,0.82)', fontSize: 11, fontWeight: '800', letterSpacing: 1.5 },
-  heroTitulo: { color: '#FFFFFF', fontSize: 29, fontWeight: '800', marginTop: 4 },
-  heroBotao: {
-    width: 44, height: 44, borderRadius: 15, backgroundColor: '#FFFFFF',
-    alignItems: 'center', justifyContent: 'center',
-  },
+  titulo: { ...Typography.h1, paddingHorizontal: Spacing.lg, marginTop: 16, marginBottom: 12 },
   profileCard: {
-    marginHorizontal: 18, padding: 16, borderRadius: 22,
+    marginHorizontal: 18, padding: 16,
+    borderTopLeftRadius: 16, borderTopRightRadius: 16,
+    borderWidth: 1, borderBottomWidth: 0,
     flexDirection: 'row', alignItems: 'center', gap: 13,
-    shadowColor: '#153452', shadowOpacity: 0.10, shadowRadius: 16, shadowOffset: { width: 0, height: 7 }, elevation: 4,
   },
   avatarWrap: {
-    width: 64, height: 64, borderRadius: 21,
+    width: 64, height: 64, borderRadius: 32,
     backgroundColor: LARANJA_PALE,
     alignItems: 'center', justifyContent: 'center', position: 'relative',
   },
-  avatarLetra: { fontSize: 29, fontWeight: '800', color: LARANJA_MARCA },
+  avatarLetra: { fontSize: 29, fontFamily: Fonte.tituloSemi, color: LARANJA_MARCA },
   verificado: {
     position: 'absolute', right: -3, bottom: -3,
     width: 22, height: 22, borderRadius: 11,
-    backgroundColor: VERDE, borderWidth: 2, borderColor: '#FFFFFF',
+    backgroundColor: VERDE, borderWidth: 2,
     alignItems: 'center', justifyContent: 'center',
   },
   profileText: { flex: 1 },
-  nome: { fontSize: 17, lineHeight: 22, fontWeight: '800' },
+  nome: { fontSize: 17, lineHeight: 22, fontFamily: Fonte.corpoSemi },
   tipoContainer: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 4 },
-  tipo: { fontSize: 12, fontWeight: '600' },
+  tipo: { fontSize: 12, fontFamily: Fonte.corpoSemi },
   ratingContainer: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 7 },
-  ratingValor: { fontSize: 12, fontWeight: '800' },
-  ratingCount: { fontSize: 12 },
+  ratingValor: { fontSize: 12, fontFamily: Fonte.corpoSemi },
+  ratingCount: { fontFamily: Fonte.corpo, fontSize: 12 },
 
   trustRow: {
-    marginTop: -1, marginHorizontal: 18,
-    paddingVertical: 17, paddingHorizontal: 8,
+    marginHorizontal: 18,
+    paddingVertical: 14, paddingHorizontal: 8,
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around',
-    borderBottomLeftRadius: 20, borderBottomRightRadius: 20,
-    borderWidth: 1, borderTopWidth: 0,
+    borderBottomLeftRadius: 16, borderBottomRightRadius: 16,
+    borderWidth: 1, borderTopWidth: StyleSheet.hairlineWidth,
   },
   trustItem: { flexDirection: 'row', alignItems: 'center', gap: 7 },
   trustIcon: {
@@ -285,14 +252,14 @@ const styles = StyleSheet.create({
     backgroundColor: LARANJA_PALE,
     alignItems: 'center', justifyContent: 'center',
   },
-  trustTitle: { fontSize: 11, fontWeight: '800' },
-  trustSubtitle: { fontSize: 10, marginTop: 2 },
+  trustTitle: { fontSize: 11, fontFamily: Fonte.corpoSemi },
+  trustSubtitle: { fontFamily: Fonte.corpo, fontSize: 10, marginTop: 2 },
   trustDivider: { width: 1, height: 28 },
 
   menu: { paddingHorizontal: 18, paddingTop: 12 },
   sectionHeading: { marginTop: 22, marginBottom: 11 },
-  sectionTitle: { fontSize: 18, fontWeight: '800' },
-  sectionSubtitle: { fontSize: 12, marginTop: 4 },
+  sectionTitle: { fontSize: 18, fontFamily: Fonte.corpoSemi },
+  sectionSubtitle: { fontFamily: Fonte.corpo, fontSize: 12, marginTop: 4 },
   menuItem: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
     padding: 13, minHeight: 76,
@@ -301,11 +268,11 @@ const styles = StyleSheet.create({
   },
   menuIcon: { width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
   menuInfo: { flex: 1 },
-  menuTitle: { fontSize: 14, fontWeight: '700' },
-  menuDescription: { fontSize: 11, marginTop: 4, lineHeight: 15 },
+  menuTitle: { fontSize: 14, fontFamily: Fonte.corpoSemi },
+  menuDescription: { fontFamily: Fonte.corpo, fontSize: 11, marginTop: 4, lineHeight: 15 },
   badge: {
     backgroundColor: LARANJA_PALE, color: LARANJA_MARCA,
-    fontSize: 10, fontWeight: '800',
+    fontSize: 10, fontFamily: Fonte.corpoSemi,
     paddingHorizontal: 8, paddingVertical: 5, borderRadius: 8,
   },
   logoutBotao: {
@@ -314,15 +281,15 @@ const styles = StyleSheet.create({
     backgroundColor: VERMELHO_PALE,
     borderRadius: 16, borderWidth: 1, borderColor: '#F9DADA',
   },
-  logoutTexto: { flex: 1, color: VERMELHO, fontSize: 14, fontWeight: '800' },
+  logoutTexto: { flex: 1, color: VERMELHO, fontSize: 14, fontFamily: Fonte.corpoSemi },
   resetDevBotao: {
     flexDirection: 'row', alignItems: 'center',
     gap: 11, padding: 14, marginTop: 12,
     backgroundColor: AZUL_PALE,
-    borderRadius: 16, borderWidth: 1, borderColor: 'rgba(0, 130, 222, 0.25)',
+    borderRadius: 16, borderWidth: 1, borderColor: 'rgba(10, 107, 192, 0.25)',
   },
   resetDevInfo: { flex: 1 },
-  resetDevTitulo: { color: AZUL_ESCURO, fontSize: 13, fontWeight: '800' },
-  resetDevDescricao: { fontSize: 11, lineHeight: 15, marginTop: 4 },
-  versao: { textAlign: 'center', fontSize: 11, marginTop: 22 },
+  resetDevTitulo: { color: AZUL_ESCURO, fontSize: 13, fontFamily: Fonte.corpoSemi },
+  resetDevDescricao: { fontFamily: Fonte.corpo, fontSize: 11, lineHeight: 15, marginTop: 4 },
+  versao: { textAlign: 'center', fontFamily: Fonte.corpo, fontSize: 11, marginTop: 22 },
 });

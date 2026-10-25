@@ -41,7 +41,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 import { Colors, Sombras } from '../../src/theme/colors';
 
@@ -49,29 +49,23 @@ import { Spacing, Typography, Radius } from '../../src/theme/typography';
 
 import { PROVINCIAS_MOCAMBIQUE, getDistritos } from '../../src/data/mocambique';
 
-
-
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 export default function RegistoScreen() {
 
   const router = useRouter();
 
   const { papel } = useLocalSearchParams<{ papel: 'procurador' | 'anunciante' }>();
 
-
-
   // Campos identificação
 
   const [nome, setNome] = useState('');
-
-
 
   // Contacto
 
   const [email, setEmail] = useState('');
 
   const [telefone, setTelefone] = useState('');
-
-
 
   // Localização
 
@@ -85,8 +79,6 @@ export default function RegistoScreen() {
 
   const [modalDistritoVisivel, setModalDistritoVisivel] = useState(false);
 
-
-
   // Segurança
 
   const [password, setPassword] = useState('');
@@ -97,8 +89,6 @@ export default function RegistoScreen() {
 
   const [mostrarConfirmar, setMostrarConfirmar] = useState(false);
 
-
-
   // Termos e loading
 
   const [aceitaTermos, setAceitaTermos] = useState(false);
@@ -107,23 +97,17 @@ export default function RegistoScreen() {
 
   const [campoFocado, setCampoFocado] = useState<string | null>(null);
 
-
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const slideAnim = useRef(new Animated.Value(30)).current;
 
   const progressoAnim = useRef(new Animated.Value(0)).current;
 
-
-
   const isAnunciante = papel === 'anunciante';
 
-  const corPrincipal = isAnunciante ? '#FF7900' : '#0B2E59';
+  const corPrincipal = isAnunciante ? '#E8760A' : '#16202E';
 
-  const gradiente = isAnunciante ? ['#FF7900', '#E96500'] as const : ['#0B2E59', '#174A7E'] as const;
-
-
+  const gradiente = isAnunciante ? ['#E8760A', '#E96500'] as const : ['#16202E', '#174A7E'] as const;
 
   // Calcular progresso baseado nos campos preenchidos
 
@@ -153,11 +137,7 @@ export default function RegistoScreen() {
 
   };
 
-
-
   const progresso = calcularProgresso();
-
-
 
   useEffect(() => {
 
@@ -189,8 +169,6 @@ export default function RegistoScreen() {
 
   }, []);
 
-
-
   useEffect(() => {
 
     Animated.timing(progressoAnim, {
@@ -205,8 +183,6 @@ export default function RegistoScreen() {
 
   }, [progresso]);
 
-
-
   // Quando muda província, limpar distrito
 
   useEffect(() => {
@@ -214,8 +190,6 @@ export default function RegistoScreen() {
     setDistrito('');
 
   }, [provincia]);
-
-
 
   const forcaPassword = () => {
 
@@ -229,14 +203,10 @@ export default function RegistoScreen() {
 
   };
 
-
-
   const validarEmail = (email: string) => {
     const emailNormalizado = email.trim().toLowerCase();
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailNormalizado);
   };
-
-
 
   const handleRegisto = () => {
 
@@ -290,8 +260,6 @@ export default function RegistoScreen() {
 
     }
 
-
-
     setLoading(true);
 
     setTimeout(() => {
@@ -310,13 +278,9 @@ export default function RegistoScreen() {
 
   };
 
-
-
   const forca = forcaPassword();
 
   const distritosDisponiveis = provincia ? getDistritos(provincia) : [];
-
-
 
   return (
 
@@ -352,7 +316,7 @@ export default function RegistoScreen() {
 
           <View style={[styles.papelBadge, { backgroundColor: `${corPrincipal}15` }]}>
 
-            <MaterialCommunityIcons
+            <Icone
 
               name={isAnunciante ? 'home-account' : 'account-search'}
 
@@ -375,8 +339,6 @@ export default function RegistoScreen() {
             </View>
 
         </View>
-
-
 
         {/* Barra de progresso */}
 
@@ -426,8 +388,6 @@ export default function RegistoScreen() {
 
         </View>
 
-
-
         <ScrollView
 
           showsVerticalScrollIndicator={false}
@@ -464,8 +424,6 @@ export default function RegistoScreen() {
 
             </View>
 
-
-
             {/* ============ SECÇÃO: IDENTIFICAÇÃO ============ */}
 
             <SeccaoHeader
@@ -479,8 +437,6 @@ export default function RegistoScreen() {
               numero="1"
 
             />
-
-
 
             <View style={styles.seccaoCampos}>
 
@@ -508,8 +464,6 @@ export default function RegistoScreen() {
 
             </View>
 
-
-
             {/* ============ SECÇÃO: CONTACTO ============ */}
 
             <SeccaoHeader
@@ -523,8 +477,6 @@ export default function RegistoScreen() {
               numero="2"
 
             />
-
-
 
             <View style={styles.seccaoCampos}>
 
@@ -553,8 +505,6 @@ export default function RegistoScreen() {
                 autoCapitalize="none"
 
               />
-
-
 
               {/* Telefone */}
 
@@ -606,8 +556,6 @@ export default function RegistoScreen() {
 
             </View>
 
-
-
             {/* ============ SECÇÃO: LOCALIZAÇÃO ============ */}
 
             <SeccaoHeader
@@ -621,8 +569,6 @@ export default function RegistoScreen() {
               numero="3"
 
             />
-
-
 
             <View style={styles.seccaoCampos}>
 
@@ -668,8 +614,6 @@ export default function RegistoScreen() {
 
               </View>
 
-
-
               {/* Distrito */}
 
               <View style={styles.campoContainer}>
@@ -696,7 +640,7 @@ export default function RegistoScreen() {
 
                 >
 
-                  <MaterialCommunityIcons name="map-marker" size={20} color={Colors.textoSecundario} />
+                  <Icone name="map-marker" size={20} color={Colors.textoSecundario} />
 
                   <Text style={[
 
@@ -715,8 +659,6 @@ export default function RegistoScreen() {
                 </TouchableOpacity>
 
               </View>
-
-
 
               {/* Bairro */}
 
@@ -742,8 +684,6 @@ export default function RegistoScreen() {
 
               />
 
-
-
               {/* Dica */}
 
               <View style={styles.dicaContainer}>
@@ -760,8 +700,6 @@ export default function RegistoScreen() {
 
             </View>
 
-
-
             {/* ============ SECÇÃO: SEGURANÇA ============ */}
 
             <SeccaoHeader
@@ -775,8 +713,6 @@ export default function RegistoScreen() {
               numero="4"
 
             />
-
-
 
             <View style={styles.seccaoCampos}>
 
@@ -832,8 +768,6 @@ export default function RegistoScreen() {
 
                 </View>
 
-
-
                 {password.length > 0 && (
 
                   <View style={styles.forcaContainer}>
@@ -867,8 +801,6 @@ export default function RegistoScreen() {
                 )}
 
               </View>
-
-
 
               {/* Confirmar Password */}
 
@@ -938,8 +870,6 @@ export default function RegistoScreen() {
 
             </View>
 
-
-
             {/* Termos */}
 
             <TouchableOpacity
@@ -977,8 +907,6 @@ export default function RegistoScreen() {
               </Text>
 
             </TouchableOpacity>
-
-
 
             {/* Botão criar conta */}
 
@@ -1026,8 +954,6 @@ export default function RegistoScreen() {
 
             </TouchableOpacity>
 
-
-
             {/* Já tenho conta */}
 
             <View style={styles.jaTemConta}>
@@ -1052,8 +978,6 @@ export default function RegistoScreen() {
 
         </ScrollView>
 
-
-
         {/* Modal Província */}
 
         <ModalSelector
@@ -1068,7 +992,7 @@ export default function RegistoScreen() {
 
           valorSeleccionado={provincia}
 
-          onSeleccionar={(valor) => {
+          onSeleccionar={(valor: string) => {
 
             setProvincia(valor);
 
@@ -1084,8 +1008,6 @@ export default function RegistoScreen() {
 
         />
 
-
-
         {/* Modal Distrito */}
 
         <ModalSelector
@@ -1100,7 +1022,7 @@ export default function RegistoScreen() {
 
           valorSeleccionado={distrito}
 
-          onSeleccionar={(valor) => {
+          onSeleccionar={(valor: string) => {
 
             setDistrito(valor);
 
@@ -1124,11 +1046,7 @@ export default function RegistoScreen() {
 
 }
 
-
-
 // ============ COMPONENTES ============
-
-
 
 function SeccaoHeader({ icone, titulo, cor, numero }: any) {
 
@@ -1157,8 +1075,6 @@ function SeccaoHeader({ icone, titulo, cor, numero }: any) {
   );
 
 }
-
-
 
 function CampoInput({ label, icone, placeholder, value, onChangeText, focado, onFocus, onBlur, corPrincipal, keyboardType, autoCapitalize }: any) {
 
@@ -1208,8 +1124,6 @@ function CampoInput({ label, icone, placeholder, value, onChangeText, focado, on
 
 }
 
-
-
 function ModalSelector({ visivel, titulo, subtitulo, opcoes, valorSeleccionado, onSeleccionar, onFechar, corPrincipal, icone }: any) {
 
   return (
@@ -1234,13 +1148,11 @@ function ModalSelector({ visivel, titulo, subtitulo, opcoes, valorSeleccionado, 
 
           <View style={styles.modalHandle} />
 
-
-
           <View style={styles.modalHeader}>
 
             <View style={[styles.modalIconeContainer, { backgroundColor: `${corPrincipal}15` }]}>
 
-              <MaterialCommunityIcons name={icone} size={24} color={corPrincipal} />
+              <Icone name={icone} size={24} color={corPrincipal} />
 
             </View>
 
@@ -1259,8 +1171,6 @@ function ModalSelector({ visivel, titulo, subtitulo, opcoes, valorSeleccionado, 
             </TouchableOpacity>
 
           </View>
-
-
 
           <FlatList
 
@@ -1298,7 +1208,7 @@ function ModalSelector({ visivel, titulo, subtitulo, opcoes, valorSeleccionado, 
 
                       styles.modalOpcaoTitulo,
 
-                      seleccionado && { color: corPrincipal, fontWeight: '700' },
+                      seleccionado && { color: corPrincipal, fontFamily: Fonte.corpoSemi },
 
                     ]}>
 
@@ -1343,8 +1253,6 @@ function ModalSelector({ visivel, titulo, subtitulo, opcoes, valorSeleccionado, 
   );
 
 }
-
-
 
 const styles = StyleSheet.create({
 
@@ -1408,8 +1316,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Progresso
 
   progressoContainer: {
@@ -1454,17 +1360,13 @@ const styles = StyleSheet.create({
 
     textAlign: 'right',
 
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
 
   },
-
-
 
   scrollContent: { paddingBottom: Spacing.xl },
 
   content: { padding: Spacing.lg },
-
-
 
   titulos: { marginBottom: Spacing.lg },
 
@@ -1487,8 +1389,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
 
   },
-
-
 
   // Secções
 
@@ -1526,7 +1426,7 @@ const styles = StyleSheet.create({
 
     color: Colors.branco,
 
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
 
     fontSize: 12,
 
@@ -1573,8 +1473,6 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
 
   },
-
-
 
   // Campos
 
@@ -1664,8 +1562,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Telefone
 
   telefoneWrapper: {
@@ -1714,7 +1610,7 @@ const styles = StyleSheet.create({
 
   },
 
-  telefonePrefixoBandeira: { fontSize: 18 },
+  telefonePrefixoBandeira: { fontFamily: Fonte.corpo, fontSize: 18 },
 
   telefonePrefixoTexto: {
 
@@ -1739,8 +1635,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
 
   },
-
-
 
   // Dica
 
@@ -1767,8 +1661,6 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
 
   },
-
-
 
   // Força
 
@@ -1815,8 +1707,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
 
   },
-
-
 
   // Termos
 
@@ -1868,11 +1758,9 @@ const styles = StyleSheet.create({
 
   termosLink: {
 
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
 
   },
-
-
 
   // Botão
 
@@ -1912,8 +1800,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Já tenho
 
   jaTemConta: {
@@ -1943,8 +1829,6 @@ const styles = StyleSheet.create({
     ...Typography.bodyBold,
 
   },
-
-
 
   // Modal
 
@@ -2080,7 +1964,7 @@ const styles = StyleSheet.create({
 
     color: Colors.textoPrincipal,
 
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
 
   },
 

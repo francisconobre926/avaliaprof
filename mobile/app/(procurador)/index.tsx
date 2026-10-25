@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   TextInput,
   Dimensions,
-  StatusBar,
   Modal,
   Pressable,
   FlatList,
@@ -15,18 +14,16 @@ import {
   Alert,
   Image,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useFocusEffect } from 'expo-router';
 import * as Location from 'expo-location';
-import { Colors, Sombras } from '../../src/theme/colors';
+import { Sombras } from '../../src/theme/colors';
 import { Spacing, Typography, Radius } from '../../src/theme/typography';
 import {
   ANUNCIOS_MOCK,
   filtrarPorGrupo,
   filtrarPorCategoria,
-  contarPorGrupo,
   apenasDisponiveis,
 } from '../../src/data/anuncios-mock';
 import { FAIXAS_PRECO } from '../../src/data/faixas-preco';
@@ -38,18 +35,17 @@ import { useAuthGateStore } from '../../src/store/authGateStore';
 import { GrupoCategoria, CategoriaAnuncio, Anuncio } from '../../src/types';
 import { listarAnunciosLocais, AnuncioLocal } from '../../src/store/anunciosLocal';
 import CardAnuncio from '../../src/components/CardAnuncio';
+import TopBar from '../../src/components/TopBar';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 const { width } = Dimensions.get('window');
 
 // ============================================================
 // CORES DE MARCA GOHOME (do logo oficial)
-// Azul principal: #0082DE  ·  Laranja destaque: #FE8A00
+// Azul principal: #0A6BC0  ·  Laranja destaque: #E8760A
 // ============================================================
-const AZUL_HERO_INICIO = '#003A66';   // Azul profundo (topo do gradiente)
-const AZUL_HERO_MEIO = '#0061A6';     // Azul escuro
-const AZUL_HERO_FIM = '#0082DE';      // Azul principal GoHome
-const LARANJA_MARCA = '#FE8A00';      // Laranja GoHome oficial
-const LARANJA_ESCURO = '#CB6E00';
+const LARANJA_MARCA = '#E8760A';      // Laranja GoHome oficial
 
 /**
  * Converte um anúncio guardado no dispositivo para o formato consumido
@@ -102,28 +98,27 @@ function converterAnuncioLocal(anuncio: AnuncioLocal): Anuncio {
   } as unknown as Anuncio;
 }
 
-
 // ============ GRUPOS DO MARKETPLACE ============
 interface GrupoInfo {
   id: GrupoCategoria | 'todos';
   nome: string;
-  icone: string;
+  icone: keyof typeof Ionicons.glyphMap;
 }
 
 const GRUPOS: GrupoInfo[] = [
-  { id: 'todos', nome: 'Tudo', icone: 'view-grid' },
-  { id: 'imoveis', nome: 'Imóveis', icone: 'home-city' },
-  { id: 'veiculos', nome: 'Veículos', icone: 'car' },
-  { id: 'espacos', nome: 'Espaços', icone: 'party-popper' },
-  { id: 'alojamento', nome: 'Alojamento', icone: 'bed' },
-  { id: 'comercial', nome: 'Comercial', icone: 'storefront' },
-  { id: 'equipamentos', nome: 'Equipamentos', icone: 'wrench' },
-  { id: 'terrenos', nome: 'Terrenos', icone: 'map' },
+  { id: 'todos', nome: 'Tudo', icone: 'grid-outline' },
+  { id: 'imoveis', nome: 'Imóveis', icone: 'home-outline' },
+  { id: 'veiculos', nome: 'Veículos', icone: 'car-outline' },
+  { id: 'espacos', nome: 'Espaços', icone: 'sparkles-outline' },
+  { id: 'alojamento', nome: 'Alojamento', icone: 'bed-outline' },
+  { id: 'comercial', nome: 'Comercial', icone: 'storefront-outline' },
+  { id: 'equipamentos', nome: 'Equipam.', icone: 'construct-outline' },
+  { id: 'terrenos', nome: 'Terrenos', icone: 'map-outline' },
 ];
 
 // ============ CATEGORIAS POR GRUPO ============
 interface CategoriaInfo {
-  id: CategoriaAnuncio | 'todos';
+  id: CategoriaAnuncio | 'todos' | (string & {}); // inclui categorias legacy (ex.: espaco_casamento)
   nome: string;
   icone: any;
 }
@@ -364,108 +359,7 @@ export default function HomeProcurador() {
 
   return (
     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={AZUL_HERO_INICIO}
-      />
-
-      <SafeAreaView style={styles.heroSafeArea} edges={['top']}>
-        <LinearGradient
-          colors={[AZUL_HERO_INICIO, AZUL_HERO_MEIO, AZUL_HERO_FIM]}
-          locations={[0, 0.55, 1]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.heroHeader}
-        >
-          <View pointerEvents="none" style={styles.heroGlow} />
-          <View style={styles.heroTopRow}>
-            {/* Logo GoHome (azul "Go" + laranja "Home" como no logo oficial) */}
-            <Text style={styles.brandLogo}>
-              <Text style={styles.brandGo}>Go</Text>
-              <Text style={styles.brandHome}>Home</Text>
-            </Text>
-            <TouchableOpacity style={styles.heroNotification} activeOpacity={0.8}>
-              <Ionicons name="notifications-outline" size={25} color={AZUL_HERO_MEIO} />
-              <View style={styles.heroNotificationBadge}>
-                <Text style={styles.heroNotificationBadgeText}>3</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.heroWelcomeRow}>
-            <View style={styles.heroWelcomeText}>
-              <Text style={styles.heroEyebrow}>
-                {autenticado ? getSaudacao() : 'Bem-vindo(a)'}
-              </Text>
-              <Text numberOfLines={2} style={styles.heroTitle}>
-                {autenticado
-                  ? `${getPrimeiroNome}, encontra o que procuras.`
-                  : 'Encontra o teu próximo lugar.'}
-              </Text>
-              <TouchableOpacity
-                style={styles.heroLocation}
-                onPress={() => setModalLocalizacaoVisivel(true)}
-                activeOpacity={0.75}
-              >
-                {detectandoGPS ? (
-                  <MaterialCommunityIcons name="crosshairs-gps" size={17} color={LARANJA_MARCA} />
-                ) : (
-                  <Ionicons name="location" size={17} color={LARANJA_MARCA} />
-                )}
-                <Text style={styles.heroLocationText}>
-                  {detectandoGPS
-                    ? 'A detectar localização...'
-                    : `${localizacaoActual.cidade}, ${localizacaoActual.provincia}`}
-                </Text>
-                <Ionicons name="chevron-down" size={16} color="#FFFFFF" />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.heroIllustration}>
-              <View style={styles.heroIllustrationCircle} />
-              <MaterialCommunityIcons
-                name="home-city-outline"
-                size={88}
-                color="rgba(255,255,255,0.82)"
-              />
-            </View>
-          </View>
-          <View style={styles.heroOrangeAccent} />
-
-          {/* Barra de pesquisa integrada no cabeçalho */}
-          <View style={styles.pesquisaContainer}>
-            <View
-              style={[
-                styles.pesquisaInputWrapper,
-                { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil },
-              ]}
-            >
-              <Ionicons name="search" size={20} color={cores.textoSecundario} />
-              <TextInput
-                value={termoPesquisa}
-                onChangeText={setTermoPesquisa}
-                placeholder="Ex.: casa para arrendar na Beira"
-                placeholderTextColor={cores.textoTerciario}
-                style={[styles.pesquisaInput, { color: cores.textoPrincipal }]}
-                returnKeyType="search"
-                accessibilityLabel="Pesquisar anúncios"
-                clearButtonMode="while-editing"
-              />
-            </View>
-            <TouchableOpacity
-              style={styles.filtrosBotao}
-              activeOpacity={0.8}
-              onPress={irParaFiltrosAvancados}
-            >
-              <LinearGradient
-                colors={[LARANJA_MARCA, LARANJA_ESCURO]}
-                style={StyleSheet.absoluteFill}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              />
-              <Ionicons name="options" size={20} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-        </LinearGradient>
-      </SafeAreaView>
+      <TopBar />
 
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
@@ -476,56 +370,60 @@ export default function HomeProcurador() {
         )}
         scrollEventThrottle={16}
       >
-        {/* Filtro rápido por orçamento */}
-        <View style={styles.precoSection}>
-          <View style={styles.precoSectionHeader}>
-            <View style={styles.precoHeading}>
-              <View style={styles.precoIconWrap}>
-                <Ionicons name="pricetag-outline" size={17} color={LARANJA_MARCA} />
-              </View>
-              <View>
-                <Text style={[styles.precoTitle, { color: cores.textoPrincipal }]}>O teu orçamento</Text>
-                <Text style={[styles.precoSubtitle, { color: cores.textoSecundario }]}>Filtra por faixa de preço</Text>
-              </View>
-            </View>
-            <TouchableOpacity onPress={() => setModalPrecosVisivel(true)} style={styles.verFaixasButton} activeOpacity={0.8}>
-              <Text style={[styles.verFaixasText, { color: cores.principal }]}>Ver faixas</Text>
-              <Ionicons name="chevron-forward" size={15} color={cores.principal} />
+        {/* Localização activa — define a zona dos resultados */}
+        <TouchableOpacity
+          style={styles.localizacaoLinha}
+          onPress={() => setModalLocalizacaoVisivel(true)}
+          activeOpacity={0.6}
+          accessibilityLabel="Mudar localização"
+        >
+          <Ionicons
+            name={detectandoGPS ? 'locate-outline' : 'location-outline'}
+            size={15}
+            color={cores.textoSecundario}
+          />
+          <Text style={[styles.localizacaoRotulo, { color: cores.textoSecundario }]}>A procurar em</Text>
+          <Text numberOfLines={1} style={[styles.localizacaoValor, { color: cores.textoPrincipal }]}>
+            {detectandoGPS ? 'a detectar…' : localizacaoActual.cidade}
+          </Text>
+          <Ionicons name="chevron-down" size={14} color={cores.textoPrincipal} />
+        </TouchableOpacity>
+
+        {/* ============ PESQUISA ============ */}
+        <View style={[styles.filtroCard, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
+          <View style={styles.pesquisaLinha}>
+            <Ionicons name="search" size={18} color={cores.textoSecundario} />
+            <TextInput
+              value={termoPesquisa}
+              onChangeText={setTermoPesquisa}
+              placeholder="Casa, carro, salão de eventos…"
+              placeholderTextColor={cores.textoTerciario}
+              style={[styles.pesquisaInput, { color: cores.textoPrincipal }]}
+              returnKeyType="search"
+              accessibilityLabel="Pesquisar anúncios"
+            />
+            {termoPesquisa.length > 0 && (
+              <TouchableOpacity onPress={() => setTermoPesquisa('')} hitSlop={8} accessibilityLabel="Limpar pesquisa">
+                <Ionicons name="close-circle" size={17} color={cores.textoTerciario} />
+              </TouchableOpacity>
+            )}
+            <View style={[styles.pesquisaDivisor, { backgroundColor: cores.bordaSubtil }]} />
+            <TouchableOpacity
+              style={styles.filtrosBotao}
+              activeOpacity={0.7}
+              onPress={irParaFiltrosAvancados}
+              accessibilityLabel="Filtros"
+            >
+              <Ionicons name="options-outline" size={19} color={cores.textoPrincipal} />
+              {faixaActiva !== 'todos' && (
+                <View style={[styles.filtrosPonto, { borderColor: cores.fundoElevado }]} />
+              )}
             </TouchableOpacity>
           </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.precoChips}>
-            {FAIXAS_PRECO.map(faixa => {
-              const activo = faixaActiva === faixa.id;
-              return (
-                <TouchableOpacity
-                  key={faixa.id}
-                  onPress={() => setFaixaActiva(faixa.id)}
-                  activeOpacity={0.82}
-                  style={[
-                    styles.precoChip,
-                    {
-                      backgroundColor: activo ? LARANJA_MARCA : cores.fundoElevado,
-                      borderColor: activo ? LARANJA_MARCA : cores.bordaSubtil,
-                    },
-                  ]}
-                >
-                  <Text style={[
-                    styles.precoChipText,
-                    { color: activo ? '#FFFFFF' : cores.textoPrincipal },
-                  ]}>
-                    {faixa.labelCurto}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
         </View>
 
         {/* ============ GRUPOS DO MARKETPLACE ============ */}
         <View style={styles.gruposSeccao}>
-          <Text style={[styles.gruposTitulo, { color: cores.textoPrincipal }]}>
-            O que procuras?
-          </Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -533,135 +431,43 @@ export default function HomeProcurador() {
           >
             {GRUPOS.map((grupo) => {
               const activo = grupoActivo === grupo.id;
-              const contagem = grupo.id === 'todos'
-                ? anunciosCatalogo.length
-                : contarPorGrupo(anunciosCatalogo, grupo.id);
-              const palavraContagem = contagem === 1 ? 'anúncio' : 'anúncios';
-
               return (
                 <TouchableOpacity
                   key={grupo.id}
-                  style={[
-                    styles.grupoCard,
-                    { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil },
-                    activo && { borderColor: cores.principal, borderWidth: 2 },
-                  ]}
+                  style={styles.grupoItem}
                   onPress={() => setGrupoActivo(grupo.id)}
-                  activeOpacity={0.85}
+                  activeOpacity={0.75}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: activo }}
                 >
                   <View
                     style={[
                       styles.grupoIcone,
-                      { backgroundColor: activo ? cores.principal : cores.fundoSuave },
+                      activo
+                        ? { backgroundColor: cores.textoPrincipal }
+                        : { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil, borderWidth: 1 },
                     ]}
                   >
-                    <MaterialCommunityIcons
-                      name={grupo.icone as any}
+                    <Ionicons
+                      name={activo ? (grupo.icone.replace('-outline', '') as any) : grupo.icone}
                       size={22}
-                      color={activo ? '#FFFFFF' : cores.textoSecundario}
+                      color={activo ? cores.fundo : cores.textoPrincipal}
                     />
                   </View>
                   <Text
+                    numberOfLines={1}
                     style={[
                       styles.grupoNome,
-                      { color: activo ? cores.principal : cores.textoPrincipal },
+                      { color: activo ? cores.textoPrincipal : cores.textoSecundario },
+                      activo && { fontFamily: Fonte.corpoSemi },
                     ]}
                   >
                     {grupo.nome}
-                  </Text>
-                  <Text style={[styles.grupoContagem, { color: cores.textoSecundario }]}>
-                    {`${contagem} ${palavraContagem}`}
                   </Text>
                 </TouchableOpacity>
               );
             })}
           </ScrollView>
-        </View>
-
-        {/* ============ BANNER ROTATIVO ============ */}
-        <View style={styles.bannerContainer}>
-          {bannerIndex === 0 ? (
-            // Banner 1 — Promoção 50% (gradiente marca GoHome: azul→laranja)
-            <TouchableOpacity activeOpacity={0.95}>
-              <LinearGradient
-                colors={cores.gradiente}
-                style={styles.banner}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
-                <View style={styles.bannerLeft}>
-                  <View style={styles.bannerBadge}>
-                    <MaterialCommunityIcons name="tag" size={12} color="#FFFFFF" />
-                    <Text style={styles.bannerBadgeText}>PROMOÇÃO LANÇAMENTO</Text>
-                  </View>
-                  <Text style={styles.bannerTitulo}>50% de desconto</Text>
-                  <Text style={styles.bannerSubtitulo}>
-                    {`Em TUDO, durante 3 meses\nem ${localizacaoActual.cidade}`}
-                  </Text>
-                  <View style={styles.bannerCTA}>
-                    <Text style={styles.bannerCTAText}>Saber mais</Text>
-                    <Ionicons name="arrow-forward" size={14} color="#FFFFFF" />
-                  </View>
-                </View>
-                <View style={styles.bannerRight}>
-                  <View style={styles.bannerCircle1} />
-                  <View style={styles.bannerCircle2} />
-                  <MaterialCommunityIcons name="home-city" size={80} color="rgba(255, 255, 255, 0.9)" />
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
-          ) : (
-            // Banner 2 — Programa de referência (laranja GoHome)
-            <TouchableOpacity
-              activeOpacity={0.95}
-              onPress={() => router.push('/referencia' as any)}
-            >
-              <LinearGradient
-                colors={[LARANJA_MARCA, LARANJA_ESCURO]}
-                style={styles.banner}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
-                <View style={styles.bannerLeft}>
-                  <View style={styles.bannerBadge}>
-                    <MaterialCommunityIcons name="gift-outline" size={12} color="#FFFFFF" />
-                    <Text style={styles.bannerBadgeText}>CONVIDA E GANHA</Text>
-                  </View>
-                  <Text style={styles.bannerTitulo}>Ganha 10%</Text>
-                  <Text style={styles.bannerSubtitulo}>
-                    {`Partilha ${meuCodigo || 'o teu código'}\ne recebe sempre que pagarem`}
-                  </Text>
-                  <View style={styles.bannerCTA}>
-                    <Text style={styles.bannerCTAText}>Partilhar agora</Text>
-                    <Ionicons name="arrow-forward" size={14} color="#FFFFFF" />
-                  </View>
-                </View>
-                <View style={styles.bannerRight}>
-                  <View style={styles.bannerCircle1} />
-                  <View style={styles.bannerCircle2} />
-                  <MaterialCommunityIcons name="account-multiple-plus" size={80} color="rgba(255, 255, 255, 0.9)" />
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
-          )}
-
-          {/* Indicadores de página */}
-          <View style={styles.bannerDots}>
-            <TouchableOpacity
-              onPress={() => setBannerIndex(0)}
-              style={[
-                styles.bannerDot,
-                bannerIndex === 0 && styles.bannerDotActivo,
-              ]}
-            />
-            <TouchableOpacity
-              onPress={() => setBannerIndex(1)}
-              style={[
-                styles.bannerDot,
-                bannerIndex === 1 && styles.bannerDotActivo,
-              ]}
-            />
-          </View>
         </View>
 
         {/* Categorias do grupo activo */}
@@ -685,7 +491,7 @@ export default function HomeProcurador() {
                     style={[
                       styles.categoriaChip,
                       { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil },
-                      activo && { backgroundColor: cores.principal, borderColor: cores.principal },
+                      activo && { backgroundColor: cores.textoPrincipal, borderColor: cores.textoPrincipal },
                     ]}
                     onPress={() => setCategoriaActiva(cat.id)}
                     activeOpacity={0.8}
@@ -693,11 +499,11 @@ export default function HomeProcurador() {
                     <Ionicons
                       name={cat.icone}
                       size={16}
-                      color={activo ? '#FFFFFF' : cores.textoPrincipal}
+                      color={activo ? cores.fundo : cores.textoPrincipal}
                     />
                     <Text style={[
                       styles.categoriaChipTexto,
-                      { color: activo ? '#FFFFFF' : cores.textoPrincipal },
+                      { color: activo ? cores.fundo : cores.textoPrincipal },
                     ]}>
                       {cat.nome}
                     </Text>
@@ -746,6 +552,92 @@ export default function HomeProcurador() {
           </View>
         )}
 
+        {/* ============ BANNER ROTATIVO ============ */}
+        <View style={styles.bannerContainer}>
+          {bannerIndex === 0 ? (
+            // Banner 1 — Promoção 50% (gradiente marca GoHome: azul→laranja)
+            <TouchableOpacity activeOpacity={0.95}>
+              <LinearGradient
+                colors={cores.gradiente}
+                style={styles.banner}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <View style={styles.bannerLeft}>
+                  <View style={styles.bannerBadge}>
+                    <Icone name="tag" size={11} color="#FFFFFF" />
+                    <Text style={styles.bannerBadgeText}>PROMOÇÃO LANÇAMENTO</Text>
+                  </View>
+                  <Text style={styles.bannerTitulo}>50% de desconto</Text>
+                  <Text style={styles.bannerSubtitulo}>
+                    {`Em TUDO, durante 3 meses\nem ${localizacaoActual.cidade}`}
+                  </Text>
+                  <View style={styles.bannerCTA}>
+                    <Text style={styles.bannerCTAText}>Saber mais</Text>
+                    <Ionicons name="arrow-forward" size={14} color="#15181D" />
+                  </View>
+                </View>
+                <View style={styles.bannerRight}>
+                  <View style={styles.bannerCircle1} />
+                  <View style={styles.bannerCircle2} />
+                  <Icone name="home-city" size={72} color="rgba(255, 255, 255, 0.28)" />
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          ) : (
+            // Banner 2 — Programa de referência (laranja GoHome)
+            <TouchableOpacity
+              activeOpacity={0.95}
+              onPress={() => router.push('/referencia' as any)}
+            >
+              <LinearGradient
+                colors={['#1E2836', '#16202E']}
+                style={styles.banner}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <View style={styles.bannerLeft}>
+                  <View style={styles.bannerBadge}>
+                    <Icone name="gift-outline" size={12} color="#FFFFFF" />
+                    <Text style={styles.bannerBadgeText}>CONVIDA E GANHA</Text>
+                  </View>
+                  <Text style={styles.bannerTitulo}>Ganha 10%</Text>
+                  <Text style={styles.bannerSubtitulo}>
+                    {`Partilha ${meuCodigo || 'o teu código'}\ne recebe sempre que pagarem`}
+                  </Text>
+                  <View style={styles.bannerCTA}>
+                    <Text style={styles.bannerCTAText}>Partilhar agora</Text>
+                    <Ionicons name="arrow-forward" size={14} color="#15181D" />
+                  </View>
+                </View>
+                <View style={styles.bannerRight}>
+                  <View style={styles.bannerCircle1} />
+                  <View style={styles.bannerCircle2} />
+                  <Icone name="account-multiple-plus" size={72} color="rgba(255, 255, 255, 0.28)" />
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
+
+          {/* Indicadores de página */}
+          <View style={styles.bannerDots}>
+            <TouchableOpacity
+              onPress={() => setBannerIndex(0)}
+              style={[
+                styles.bannerDot,
+                bannerIndex === 0 && styles.bannerDotActivo,
+              ]}
+            />
+            <TouchableOpacity
+              onPress={() => setBannerIndex(1)}
+              style={[
+                styles.bannerDot,
+                bannerIndex === 1 && styles.bannerDotActivo,
+              ]}
+            />
+          </View>
+        </View>
+
         {/* Lista principal */}
         <View style={styles.seccao}>
           <View style={styles.seccaoHeader}>
@@ -785,7 +677,7 @@ export default function HomeProcurador() {
                   { backgroundColor: cores.fundoSuave, borderColor: cores.bordaSubtil },
                 ]}
               >
-                <MaterialCommunityIcons name="magnify-close" size={40} color={cores.textoTerciario} />
+                <Icone name="magnify-close" size={40} color={cores.textoTerciario} />
               </View>
               <Text style={[styles.vazioTitulo, { color: cores.textoPrincipal }]}>
                 Sem resultados
@@ -810,7 +702,7 @@ export default function HomeProcurador() {
           {!autenticado && anunciosFiltrados.length > totalVisivelVisitante && (
             <View style={styles.guestPrompt}>
               <View style={styles.guestPromptIcon}>
-                <Ionicons name="lock-closed-outline" size={22} color={LARANJA_MARCA} />
+                <Ionicons name="lock-closed-outline" size={20} color="#15181D" />
               </View>
               <Text style={styles.guestPromptTitle}>Há muito mais para descobrir</Text>
               <Text style={styles.guestPromptText}>
@@ -837,55 +729,56 @@ export default function HomeProcurador() {
           <Pressable style={StyleSheet.absoluteFill} onPress={() => setModalPrecosVisivel(false)} />
           <View style={[styles.modalContent, { backgroundColor: cores.fundoElevado, maxHeight: '78%' }]}>
             <View style={[styles.modalHandle, { backgroundColor: cores.bordaMedia }]} />
-            <View style={styles.modalHeader}>
-              <View style={styles.precoIconWrap}>
-                <Ionicons name="pricetag-outline" size={22} color={LARANJA_MARCA} />
-              </View>
+            <View style={styles.faixasCabecalho}>
               <View style={{ flex: 1 }}>
-                <Text style={[styles.modalTitulo, { color: cores.textoPrincipal }]}>Escolhe o teu orçamento</Text>
-                <Text style={[styles.modalSubtitulo, { color: cores.textoSecundario }]}>Mostramos anúncios dentro desta faixa</Text>
+                <Text style={[styles.faixasTitulo, { color: cores.textoPrincipal }]}>Orçamento mensal</Text>
+                <Text style={[styles.modalSubtitulo, { color: cores.textoSecundario }]}>Valores em meticais (MT)</Text>
               </View>
-              <TouchableOpacity onPress={() => setModalPrecosVisivel(false)} style={styles.modalFechar}>
-                <Ionicons name="close" size={21} color={cores.textoSecundario} />
+              <TouchableOpacity
+                onPress={() => setModalPrecosVisivel(false)}
+                style={[styles.modalFechar, { backgroundColor: cores.fundoSuave }]}
+                accessibilityLabel="Fechar"
+              >
+                <Ionicons name="close" size={20} color={cores.textoPrincipal} />
               </TouchableOpacity>
             </View>
             <FlatList
               data={FAIXAS_PRECO}
               keyExtractor={item => item.id}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={() => (
+                <View style={[styles.faixaSeparador, { backgroundColor: cores.bordaSubtil }]} />
+              )}
               renderItem={({ item }) => {
                 const activo = faixaActiva === item.id;
                 return (
                   <TouchableOpacity
-                    style={[
-                      styles.faixaRow,
-                      {
-                        backgroundColor: activo ? 'rgba(254, 138, 0, 0.08)' : cores.fundoSuave,
-                        borderColor: activo ? LARANJA_MARCA : cores.bordaSubtil,
-                      },
-                    ]}
+                    style={styles.faixaRow}
                     onPress={() => { setFaixaActiva(item.id); setModalPrecosVisivel(false); }}
-                    activeOpacity={0.82}
+                    activeOpacity={0.6}
+                    accessibilityRole="radio"
+                    accessibilityState={{ checked: activo }}
                   >
-                    <View style={[
-                      styles.faixaRowIcon,
-                      { backgroundColor: activo ? LARANJA_MARCA : 'rgba(254, 138, 0, 0.12)' },
-                    ]}>
-                      <MaterialCommunityIcons
-                        name={item.icone as any}
-                        size={20}
-                        color={activo ? '#FFFFFF' : LARANJA_MARCA}
-                      />
-                    </View>
                     <View style={{ flex: 1 }}>
                       <Text style={[styles.faixaRowTitle, { color: cores.textoPrincipal }]}>{item.label}</Text>
-                      <Text style={[styles.faixaRowSubtitle, { color: cores.textoSecundario }]}>{item.descricao}</Text>
+                      <Text style={[styles.faixaRowSubtitle, { color: cores.textoSecundario }]} numberOfLines={1}>
+                        {item.id === 'todos' ? item.descricao : `${item.publicoAlvo} · ${item.descricao}`}
+                      </Text>
                     </View>
-                    {activo && <Ionicons name="checkmark-circle" size={22} color={LARANJA_MARCA} />}
+                    <View
+                      style={[
+                        styles.faixaRadio,
+                        activo
+                          ? { backgroundColor: cores.textoPrincipal, borderColor: cores.textoPrincipal }
+                          : { borderColor: cores.bordaMedia },
+                      ]}
+                    >
+                      {activo && <Ionicons name="checkmark" size={14} color={cores.fundo} />}
+                    </View>
                   </TouchableOpacity>
                 );
               }}
-              contentContainerStyle={{ paddingBottom: Spacing.lg }}
+              contentContainerStyle={{ paddingBottom: Spacing.xl }}
             />
           </View>
         </View>
@@ -908,7 +801,7 @@ export default function HomeProcurador() {
 
             <View style={styles.modalHeader}>
               <View style={[styles.modalIconeContainer, { backgroundColor: cores.principalClara }]}>
-                <MaterialCommunityIcons name="map-marker-radius" size={24} color={cores.principal} />
+                <Icone name="map-marker-radius" size={24} color={cores.principal} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={[styles.modalTitulo, { color: cores.textoPrincipal }]}>Localização actual</Text>
@@ -936,7 +829,7 @@ export default function HomeProcurador() {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
               />
-              <MaterialCommunityIcons name="crosshairs-gps" size={20} color="#FFFFFF" />
+              <Icone name="crosshairs-gps" size={20} color="#FFFFFF" />
               <Text style={styles.gpsBotaoTexto}>Usar localização actual (GPS)</Text>
             </TouchableOpacity>
 
@@ -971,7 +864,7 @@ export default function HomeProcurador() {
                       styles.provinciaIcone,
                       { backgroundColor: activa ? cores.principal : cores.principalClara },
                     ]}>
-                      <MaterialCommunityIcons
+                      <Icone
                         name="map-marker"
                         size={18}
                         color={activa ? '#FFFFFF' : cores.principal}
@@ -1004,177 +897,69 @@ export default function HomeProcurador() {
 }
 
 const styles = StyleSheet.create({
-  heroSafeArea: { backgroundColor: AZUL_HERO_INICIO },
-  heroHeader: {
-    paddingHorizontal: Spacing.lg,
-    paddingTop: 8,
-    paddingBottom: 22,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  heroGlow: {
-    position: 'absolute',
-    width: 270,
-    height: 270,
-    borderRadius: 135,
-    backgroundColor: 'rgba(0, 130, 222, 0.22)',
-    right: -75,
-    top: 25,
-  },
-  heroTopRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    minHeight: 62,
-  },
-  brandLogo: { fontSize: 31, fontWeight: '900', letterSpacing: -1.5 },
-  brandGo: { color: '#FFFFFF' },
-  brandHome: { color: LARANJA_MARCA },
-  heroNotification: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 5,
-  },
-  heroNotificationBadge: {
-    position: 'absolute',
-    top: 1,
-    right: 0,
-    minWidth: 19,
-    height: 19,
-    borderRadius: 10,
-    backgroundColor: LARANJA_MARCA,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-  },
-  heroNotificationBadgeText: { color: '#FFFFFF', fontSize: 10, fontWeight: '900' },
-  heroWelcomeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 23,
-    minHeight: 130,
-  },
-  heroWelcomeText: { flex: 1, zIndex: 2, paddingRight: 4 },
-  heroEyebrow: { color: 'rgba(255,255,255,0.78)', fontSize: 16, fontWeight: '600', marginBottom: 5 },
-  heroTitle: { color: '#FFFFFF', fontSize: 25, lineHeight: 31, fontWeight: '900', letterSpacing: -0.6 },
-  heroLocation: {
+  localizacaoLinha: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
     gap: 5,
-    marginTop: 13,
-    paddingVertical: 5,
-    paddingRight: 8,
+    marginTop: 14,
+    marginHorizontal: Spacing.lg,
+    paddingVertical: 4,
   },
-  heroLocationText: { color: '#FFFFFF', fontSize: 14, fontWeight: '700' },
-  heroIllustration: {
-    width: 95,
-    height: 105,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: -4,
-  },
-  heroIllustrationCircle: {
-    position: 'absolute',
-    width: 112,
-    height: 112,
-    borderRadius: 56,
-    backgroundColor: 'rgba(0, 130, 222, 0.20)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
-  },
-  heroOrangeAccent: {
-    position: 'absolute',
-    height: 4,
-    width: 76,
-    borderRadius: 4,
-    backgroundColor: LARANJA_MARCA,
-    bottom: 92,
-    left: Spacing.lg,
-  },
-  precoSection: { marginTop: 18, paddingHorizontal: Spacing.lg },
-  precoSectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  precoHeading: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  precoIconWrap: {
-    width: 38,
-    height: 38,
-    borderRadius: 13,
-    backgroundColor: 'rgba(254, 138, 0, 0.12)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  precoTitle: { fontSize: 15, fontWeight: '800' },
-  precoSubtitle: { fontSize: 11, marginTop: 2 },
-  verFaixasButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-    paddingVertical: 8,
-    paddingLeft: 8,
-  },
-  verFaixasText: { fontSize: 12, fontWeight: '800' },
-  precoChips: { gap: 8, paddingRight: Spacing.lg },
-  precoChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 999,
-    borderWidth: 1,
-  },
-  precoChipText: { fontSize: 12, fontWeight: '800' },
-  faixaRow: {
+  localizacaoRotulo: { fontFamily: Fonte.corpo, fontSize: 13 },
+  localizacaoValor: { fontFamily: Fonte.corpoSemi, fontSize: 13, flexShrink: 1 },
+  faixasCabecalho: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    padding: 13,
-    borderRadius: 16,
-    borderWidth: 1,
-    marginBottom: 9,
+    paddingBottom: 8,
   },
-  faixaRowIcon: {
-    width: 42,
-    height: 42,
-    borderRadius: 14,
+  faixasTitulo: { ...Typography.h2 },
+  faixaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    paddingVertical: 14,
+  },
+  faixaSeparador: { height: StyleSheet.hairlineWidth },
+  faixaRowTitle: {
+    fontFamily: Fonte.tituloSemi,
+    fontSize: 16,
+    letterSpacing: -0.2,
+    fontVariant: ['tabular-nums'],
+  },
+  faixaRowSubtitle: { fontFamily: Fonte.corpo, fontSize: 12.5, marginTop: 2 },
+  faixaRadio: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  faixaRowTitle: { fontSize: 14, fontWeight: '800' },
-  faixaRowSubtitle: { fontSize: 11, lineHeight: 16, marginTop: 3 },
   guestPrompt: {
     marginTop: 20,
     marginHorizontal: Spacing.lg,
     padding: 20,
-    borderRadius: 22,
-    backgroundColor: 'rgba(254, 138, 0, 0.06)',
+    borderRadius: 18,
+    backgroundColor: 'rgba(21, 24, 29, 0.03)',
     borderWidth: 1,
-    borderColor: 'rgba(254, 138, 0, 0.25)',
+    borderColor: '#E7E5DF',
     alignItems: 'center',
   },
   guestPromptIcon: {
     width: 48,
     height: 48,
-    borderRadius: 16,
-    backgroundColor: 'rgba(254, 138, 0, 0.15)',
+    borderRadius: 14,
+    backgroundColor: 'rgba(21, 24, 29, 0.06)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
   },
-  guestPromptTitle: { color: '#17324D', fontSize: 17, fontWeight: '800', textAlign: 'center' },
+  guestPromptTitle: { color: '#15181D', fontSize: 19, fontFamily: Fonte.tituloSemi, letterSpacing: -0.3, textAlign: 'center' },
   guestPromptText: {
-    color: '#687789',
-    fontSize: 13,
+    color: '#5B616B',
+    fontFamily: Fonte.corpo, fontSize: 13,
     lineHeight: 19,
     textAlign: 'center',
     marginTop: 7,
@@ -1191,7 +976,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     alignSelf: 'stretch',
   },
-  guestPromptButtonText: { color: '#FFFFFF', fontSize: 13, fontWeight: '800' },
+  guestPromptButtonText: { color: '#FFFFFF', fontSize: 13, fontFamily: Fonte.corpoSemi },
   container: { flex: 1 },
   safeArea: {},
 
@@ -1218,10 +1003,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     ...Sombras.sm,
   },
-  avatarLetra: { ...Typography.h3, color: '#FFFFFF', fontWeight: '800' },
+  avatarLetra: { ...Typography.h3, color: '#FFFFFF', fontFamily: Fonte.corpoSemi },
   headerSaudacao: { ...Typography.bodyBold, marginBottom: 2 },
   headerLocalizacao: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  headerLocalizacaoTexto: { ...Typography.caption, fontWeight: '600' },
+  headerLocalizacaoTexto: { ...Typography.caption, fontFamily: Fonte.corpoSemi },
   headerBotao: {
     width: 44,
     height: 44,
@@ -1239,106 +1024,87 @@ const styles = StyleSheet.create({
     minWidth: 16,
     height: 16,
     borderRadius: 8,
-    backgroundColor: '#F44336',
+    backgroundColor: '#C2412D',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 4,
     borderWidth: 2,
   },
-  headerBotaoBadgeText: { color: '#FFFFFF', fontSize: 9, fontWeight: '800' },
+  headerBotaoBadgeText: { color: '#FFFFFF', fontSize: 9, fontFamily: Fonte.corpoSemi },
 
   scrollContent: { paddingBottom: Spacing.xxxl + 12 },
 
-  pesquisaContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 0,
-    paddingTop: 0,
-    marginTop: 22,
-    gap: Spacing.sm,
-    zIndex: 5,
+  filtroCard: {
+    marginHorizontal: Spacing.lg,
+    marginTop: 8,
+    borderRadius: 14,
+    borderWidth: 1,
   },
-  pesquisaInputWrapper: {
-    flex: 1,
+  pesquisaLinha: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 18,
-    paddingHorizontal: Spacing.base,
-    paddingVertical: 15,
-    gap: Spacing.sm,
-    borderWidth: 1,
-    minHeight: 54,
-    ...Sombras.sm,
+    gap: 10,
+    paddingLeft: 14,
+    paddingRight: 6,
+    height: 48,
   },
-  pesquisaInput: { flex: 1, ...Typography.body, padding: 0 },
+  pesquisaInput: { flex: 1, fontFamily: Fonte.corpo, fontSize: 15, padding: 0 },
+  pesquisaDivisor: { width: StyleSheet.hairlineWidth, height: 22 },
   filtrosBotao: {
-    width: 54,
-    height: 54,
-    borderRadius: 18,
-    overflow: 'hidden',
+    width: 40,
+    height: 40,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    ...Sombras.colorida(LARANJA_MARCA),
   },
-
-  gruposSeccao: { marginTop: Spacing.xl },
-  gruposTitulo: {
-    ...Typography.h2,
-    paddingHorizontal: Spacing.lg,
-    marginBottom: Spacing.md,
+  filtrosPonto: {
+    position: 'absolute',
+    top: 9,
+    right: 9,
+    width: 9,
+    height: 9,
+    borderRadius: 5,
+    borderWidth: 2,
+    backgroundColor: LARANJA_MARCA,
   },
+  gruposSeccao: { marginTop: 20 },
   gruposContainer: {
     paddingHorizontal: Spacing.lg,
-    gap: Spacing.sm,
+    gap: 4,
   },
-  grupoCard: {
-    width: Math.min(126, width * 0.34),
-    minHeight: 132,
-    padding: Spacing.md,
-    borderRadius: 20,
-    borderWidth: 1,
-    ...Sombras.sm,
-    alignItems: 'flex-start',
-  },
+  grupoItem: { width: 72, alignItems: 'center' },
   grupoIcone: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
+    width: 56,
+    height: 56,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: Spacing.sm,
+    marginBottom: 6,
   },
-  grupoNome: {
-    ...Typography.bodyBold,
-    fontSize: 13,
-    marginBottom: 2,
-  },
-  grupoContagem: {
-    ...Typography.caption,
-    fontSize: 10,
-  },
+  grupoNome: { fontFamily: Fonte.corpoMedio, fontSize: 12 },
 
   bannerContainer: {
     marginHorizontal: Spacing.lg,
     marginTop: Spacing.xl,
-    borderRadius: 24,
+    borderRadius: 20,
     overflow: 'hidden',
-    ...Sombras.colorida(LARANJA_MARCA),
   },
   bannerDots: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 6,
-    paddingVertical: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    gap: 5,
+    position: 'absolute',
+    right: Spacing.lg,
+    bottom: Spacing.lg,
   },
   bannerDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.35)',
   },
   bannerDotActivo: {
-    width: 24,
+    width: 18,
     backgroundColor: '#FFFFFF',
   },
   banner: {
@@ -1352,9 +1118,9 @@ const styles = StyleSheet.create({
   bannerBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    backgroundColor: LARANJA_MARCA,
     paddingHorizontal: Spacing.sm,
-    paddingVertical: 4,
+    paddingVertical: 3,
     borderRadius: Radius.sm,
     alignSelf: 'flex-start',
     gap: 4,
@@ -1370,20 +1136,20 @@ const styles = StyleSheet.create({
   bannerSubtitulo: {
     ...Typography.bodySmall,
     color: '#FFFFFF',
-    opacity: 0.95,
+    opacity: 0.72,
     marginBottom: Spacing.md,
   },
   bannerCTA: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm,
     borderRadius: Radius.full,
     alignSelf: 'flex-start',
     gap: 6,
   },
-  bannerCTAText: { ...Typography.buttonSmall, color: '#FFFFFF' },
+  bannerCTAText: { ...Typography.buttonSmall, color: '#15181D' },
   bannerRight: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -1396,7 +1162,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   bannerCircle2: {
     position: 'absolute',
@@ -1404,7 +1170,7 @@ const styles = StyleSheet.create({
     height: 130,
     borderRadius: 65,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
+    borderColor: 'rgba(255, 255, 255, 0.05)',
   },
 
   seccao: { marginTop: Spacing.xl },
@@ -1515,7 +1281,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     gap: Spacing.sm,
     marginBottom: Spacing.md,
-    ...Sombras.colorida('#0082DE'),
+    ...Sombras.colorida('#0A6BC0'),
   },
   gpsBotaoTexto: { ...Typography.button, color: '#FFFFFF' },
   modalSeparador: {

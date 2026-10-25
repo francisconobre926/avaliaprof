@@ -10,6 +10,7 @@ import { View, Text, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
 
+import { Fonte } from '../../theme/fonts';
 export type BadgeCor = 'azul' | 'laranja' | 'verde' | 'vermelho' | 'cinza' | 'premium';
 export type BadgeSize = 'sm' | 'md';
 
@@ -31,12 +32,12 @@ export const Badge: React.FC<BadgeProps> = ({
   const cores = useCores();
 
   const mapaCor: Record<BadgeCor, { fundo: string; texto: string }> = {
-    azul:     { fundo: 'rgba(0, 130, 222, 0.12)',   texto: '#0082DE' },
-    laranja:  { fundo: 'rgba(254, 138, 0, 0.14)',   texto: '#FE8A00' },
-    verde:    { fundo: 'rgba(76, 175, 80, 0.14)',   texto: '#4CAF50' },
-    vermelho: { fundo: 'rgba(244, 67, 54, 0.12)',   texto: '#F44336' },
+    azul:     { fundo: 'rgba(10, 107, 192, 0.12)',   texto: '#0A6BC0' },
+    laranja:  { fundo: 'rgba(232, 118, 10, 0.14)',   texto: '#E8760A' },
+    verde:    { fundo: 'rgba(76, 175, 80, 0.14)',   texto: '#2F7A4F' },
+    vermelho: { fundo: 'rgba(244, 67, 54, 0.12)',   texto: '#C2412D' },
     cinza:    { fundo: cores.fundoSuave,            texto: cores.textoSecundario },
-    premium:  { fundo: 'rgba(255, 179, 0, 0.14)',   texto: '#FFB300' },
+    premium:  { fundo: 'rgba(255, 179, 0, 0.14)',   texto: '#C9952F' },
   };
   const { fundo, texto } = mapaCor[cor];
 
@@ -66,7 +67,7 @@ export const Badge: React.FC<BadgeProps> = ({
         style={{
           color: texto,
           fontSize: szStyles.font,
-          fontWeight: '700',
+          fontFamily: Fonte.corpoSemi,
           letterSpacing: 0.2,
         }}
       >

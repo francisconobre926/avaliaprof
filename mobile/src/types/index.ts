@@ -284,6 +284,7 @@ export interface Anuncio {
   donoNome?: string;
   donoVerificado?: boolean;
   // Aliases legacy (ecrãs antigos usam estes nomes)
+  anuncianteId?: string;                // legacy (alias de dono)
   anuncianteNome?: string;              // legacy
   anuncianteTelefone1?: string;         // legacy
   anuncianteTelefone2?: string;         // legacy
@@ -355,4 +356,48 @@ export function anuncianteVerificado(anuncio: Anuncio): boolean {
  */
 export function dataPublicacaoAnuncio(anuncio: Anuncio): string {
   return anuncio.publicadoEm || anuncio.dataPublicacao || anuncio.dataCriacao;
+}
+
+// ============================================================
+// MODERAÇÃO (denúncias, avisos, suspensões)
+// ============================================================
+export * from './types-moderacao-snippet';
+
+// ============================================================
+// IMÓVEL (legacy — usado por imoveis-mock, CardImovel e imovel/[id])
+// ============================================================
+export interface Imovel {
+  id: string;
+  titulo: string;
+  descricaoCurta: string;
+  descricao: string;
+  tipo: CategoriaAnuncio | string;
+  finalidade: Finalidade;
+  preco: number;
+  periodicidade?: Periodicidade;
+  fotos: string[];
+  provincia: string;
+  cidade: string;
+  bairro: string;
+  latitude: number;
+  longitude: number;
+  moradaCompleta: string;
+  quartos?: number;
+  casasBanho?: number;
+  area: number;
+  mobilado: boolean;
+  agua: boolean;
+  energia: boolean;
+  wifi: boolean;
+  estacionamento: boolean;
+  anuncianteId: string;
+  anuncianteNome: string;
+  anuncianteRating: number;
+  anuncianteAvaliacoes: number;
+  anuncianteVerificado: boolean;
+  anuncianteTelefone1: string;
+  anuncianteTelefone2?: string;
+  publicadoEm: string;
+  visualizacoes: number;
+  favoritos: number;
 }

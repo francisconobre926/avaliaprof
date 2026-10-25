@@ -63,6 +63,8 @@ interface WalletState {
   podeSacar: () => boolean;
   pedirSaque: (valor: number, numeroMPesa: string) => Promise<(Transacao & { sucesso: true }) | null>;
   simularAprovacaoSaque: (id: string) => Promise<void>;
+  adicionarComissaoPendente: (valor: number, descricao: string) => Promise<void>;
+  confirmarComissao: (id: string) => Promise<void>;
 }
 
 const KEY_SALDO = '@gohome_carteira_v2_saldo';
@@ -231,6 +233,30 @@ export const useWalletStore = create<WalletState>((set, get) => ({
     );
     await persistirTransacoes(novasTransacoes);
     actualizarEstado(set, get().saldo, novasTransacoes, { carregado: true });
+  },
+
+  // Comissão de referência: fica pendente até o pagamento do convidado ser confirmado.
+  adicionarComissaoPendente: async (valor, descricao) => {
+    if (!Number.isFinite(valor) || valor <= 0) return;
+    const transacao: Transacao = {
+      id: gerarId(), tipo: 'referencia', valor, descricao,
+      data: new Date().toISOString(), estado: 'pending',
+    };
+    const novasTransacoes = [transacao, ...get().transacoes];
+    await persistirTransacoes(novasTransacoes);
+    actualizarEstado(set, get().saldo, novasTransacoes, { carregado: true });
+  },
+
+  confirmarComissao: async (id) => {
+    const estado = get();
+    const transacao = estado.transacoes.find(t => t.id === id);
+    if (!transacao || transacao.tipo !== 'referencia' || transacao.estado !== 'pending') return;
+    const novoSaldo = estado.saldo + transacao.valor;
+    const novasTransacoes = estado.transacoes.map(t =>
+      t.id === id ? { ...t, estado: 'approved' as const } : t
+    );
+    await Promise.all([persistirSaldo(novoSaldo), persistirTransacoes(novasTransacoes)]);
+    actualizarEstado(set, novoSaldo, novasTransacoes, { carregado: true });
   },
 
   podeSacar: () => get().saldo >= SAQUE_MINIMO,

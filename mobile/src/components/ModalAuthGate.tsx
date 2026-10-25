@@ -16,13 +16,15 @@ import {
   Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useAuthGateStore, CONFIG_MOTIVOS } from '../store/authGateStore';
 
-const LARANJA = '#FF7900';
+import { Fonte } from '../theme/fonts';
+import Icone from './Icone';
+const LARANJA = '#E8760A';
 const LARANJA_ESCURO = '#F45B00';
-const AZUL = '#0B2E59';
+const AZUL = '#16202E';
 const AZUL_SUAVE = '#647895';
 
 export default function ModalAuthGate() {
@@ -94,7 +96,7 @@ export default function ModalAuthGate() {
           >
             <View style={styles.brandRow}>
               <View style={styles.brandIcon}>
-                <MaterialCommunityIcons name="home-city" size={27} color="#FFFFFF" />
+                <Icone name="home-city" size={27} color="#FFFFFF" />
               </View>
               <View>
                 <Text style={styles.brandName}>Go<Text style={styles.brandAccent}>Home</Text></Text>
@@ -110,7 +112,7 @@ export default function ModalAuthGate() {
               </View>
               <View style={styles.heroIllustration}>
                 <View style={styles.heroCircle} />
-                <MaterialCommunityIcons name="home-heart" size={60} color={LARANJA} />
+                <Icone name="home-heart" size={60} color={LARANJA} />
                 <View style={styles.heroBadge}>
                   <Ionicons name="checkmark" size={15} color="#FFFFFF" />
                 </View>
@@ -124,7 +126,7 @@ export default function ModalAuthGate() {
 
             <View style={styles.benefitsGrid}>
               {config.beneficios.map((beneficio, idx) => {
-                const icons: Array<keyof typeof MaterialCommunityIcons.glyphMap> = [
+                const icons: Array<string> = [
                   'heart-outline',
                   'chat-processing-outline',
                   'bell-badge-outline',
@@ -133,7 +135,7 @@ export default function ModalAuthGate() {
                 return (
                   <View key={`${idx}-${beneficio}`} style={styles.benefitCard}>
                     <View style={styles.benefitIconWrap}>
-                      <MaterialCommunityIcons
+                      <Icone
                         name={icons[idx % icons.length]}
                         size={23}
                         color={LARANJA_ESCURO}
@@ -152,12 +154,12 @@ export default function ModalAuthGate() {
               accessibilityRole="button"
             >
               <LinearGradient
-                colors={['#FF9A1F', '#FF7900', '#F45B00']}
+                colors={['#FF9A1F', '#E8760A', '#F45B00']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={StyleSheet.absoluteFill}
               />
-              <MaterialCommunityIcons name="account-plus-outline" size={22} color="#FFFFFF" />
+              <Icone name="account-plus-outline" size={22} color="#FFFFFF" />
               <Text style={styles.primaryButtonText}>Criar conta grátis</Text>
               <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
             </TouchableOpacity>
@@ -252,7 +254,7 @@ const styles = StyleSheet.create({
   brandName: {
     color: AZUL,
     fontSize: 24,
-    fontWeight: '900',
+    fontFamily: Fonte.tituloBold,
     letterSpacing: -0.8,
     lineHeight: 27,
   },
@@ -262,7 +264,7 @@ const styles = StyleSheet.create({
   brandTagline: {
     color: AZUL_SUAVE,
     fontSize: 11,
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
     marginTop: 1,
     letterSpacing: 0.15,
   },
@@ -278,7 +280,7 @@ const styles = StyleSheet.create({
   eyebrow: {
     color: LARANJA_ESCURO,
     fontSize: 9,
-    fontWeight: '900',
+    fontFamily: Fonte.corpoBold,
     letterSpacing: 1.1,
     marginBottom: 8,
   },
@@ -286,7 +288,7 @@ const styles = StyleSheet.create({
     color: AZUL,
     fontSize: 26,
     lineHeight: 30,
-    fontWeight: '900',
+    fontFamily: Fonte.tituloBold,
     letterSpacing: -0.7,
     marginBottom: 9,
   },
@@ -294,7 +296,7 @@ const styles = StyleSheet.create({
     color: AZUL_SUAVE,
     fontSize: 13,
     lineHeight: 19,
-    fontWeight: '500',
+    fontFamily: Fonte.corpoMedio,
   },
   heroIllustration: {
     width: 94,
@@ -337,7 +339,7 @@ const styles = StyleSheet.create({
   benefitsTitle: {
     color: AZUL,
     fontSize: 14,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
   },
   benefitsAccent: {
     width: 24,
@@ -378,7 +380,7 @@ const styles = StyleSheet.create({
     color: '#29415F',
     fontSize: 11,
     lineHeight: 15,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
   },
   primaryButton: {
     minHeight: 56,
@@ -399,7 +401,7 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: '#FFFFFF',
     fontSize: 15,
-    fontWeight: '900',
+    fontFamily: Fonte.corpoBold,
     flex: 1,
   },
   secondaryButton: {
@@ -417,7 +419,7 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: AZUL,
     fontSize: 14,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
     flex: 1,
   },
   continueButton: {
@@ -428,13 +430,13 @@ const styles = StyleSheet.create({
   continueText: {
     color: '#74839A',
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
     textDecorationLine: 'underline',
     textDecorationColor: '#C5CEDB',
   },
   footerNote: {
     color: '#A0AABD',
-    fontSize: 10,
+    fontFamily: Fonte.corpo, fontSize: 10,
     textAlign: 'center',
     marginTop: 5,
   },

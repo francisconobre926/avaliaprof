@@ -21,12 +21,14 @@ import {
   Modal,
   Pressable,
 } from 'react-native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { DefinicaoCampo, OpcaoCampo, CampoPersonalizado } from '../data/campos-categoria/tipos';
 import { MODO_CONSTRUCTOR_PERSONALIZADO } from '../data/campos-categoria/outros';
 import { Colors } from '../theme/colors';
 import { Typography, Spacing, Radius } from '../theme/typography';
 
+import { Fonte } from '../theme/fonts';
+import Icone from './Icone';
 interface Props {
   campo: DefinicaoCampo;
   valor: any;
@@ -90,17 +92,17 @@ function CampoTexto({ campo, valor, onChange, erro }: {
       <Label campo={campo} />
       <View style={[styles.inputWrapper, erro && styles.inputErro]}>
         {campo.icone && (
-          <MaterialCommunityIcons
+          <Icone
             name={campo.icone as any}
             size={18}
-            color={erro ? '#D32F2F' : '#637894'}
+            color={erro ? '#C2412D' : '#5B616B'}
             style={styles.inputIcone}
           />
         )}
         <TextInput
           style={styles.inputCampo}
           placeholder={campo.dica || ''}
-          placeholderTextColor="#9BA8BC"
+          placeholderTextColor="#9A9EA5"
           value={valor?.toString() || ''}
           onChangeText={onChange}
           maxLength={campo.maxLength}
@@ -129,7 +131,7 @@ function CampoTextarea({ campo, valor, onChange, erro }: {
         <TextInput
           style={styles.textareaCampo}
           placeholder={campo.dica || ''}
-          placeholderTextColor="#9BA8BC"
+          placeholderTextColor="#9A9EA5"
           value={texto}
           onChangeText={onChange}
           multiline
@@ -141,7 +143,7 @@ function CampoTextarea({ campo, valor, onChange, erro }: {
       <View style={styles.rodape}>
         {erro ? <ErroInline texto={erro} /> : <View style={{ flex: 1 }} />}
         {campo.maxLength && (
-          <Text style={styles.contador}>
+          <Text style={styles.contadorTexto}>
             {`${texto.length}/${campo.maxLength}`}
           </Text>
         )}
@@ -164,17 +166,17 @@ function CampoNumero({ campo, valor, onChange, erro }: {
       <Label campo={campo} />
       <View style={[styles.inputWrapper, erro && styles.inputErro]}>
         {campo.icone && (
-          <MaterialCommunityIcons
+          <Icone
             name={campo.icone as any}
             size={18}
-            color={erro ? '#D32F2F' : '#637894'}
+            color={erro ? '#C2412D' : '#5B616B'}
             style={styles.inputIcone}
           />
         )}
         <TextInput
           style={styles.inputCampo}
           placeholder={campo.dica || '0'}
-          placeholderTextColor="#9BA8BC"
+          placeholderTextColor="#9A9EA5"
           value={valor?.toString() || ''}
           onChangeText={(txt) => {
             // Permite dígitos (e vírgula/ponto se decimal)
@@ -230,10 +232,10 @@ function CampoChip({ campo, valor, onChange, erro }: {
               activeOpacity={0.8}
             >
               {opcao.icone && (
-                <MaterialCommunityIcons
+                <Icone
                   name={opcao.icone as any}
                   size={14}
-                  color={activo ? '#FFFFFF' : '#0B2E59'}
+                  color={activo ? '#FFFFFF' : '#16202E'}
                 />
               )}
               <Text style={[styles.chipTexto, activo && styles.chipTextoActivo]}>
@@ -289,10 +291,10 @@ function CampoChipMulti({ campo, valor, onChange, erro }: {
                 <Ionicons name="checkmark" size={13} color="#FFFFFF" />
               )}
               {opcao.icone && !activo && (
-                <MaterialCommunityIcons
+                <Icone
                   name={opcao.icone as any}
                   size={14}
-                  color="#0B2E59"
+                  color="#16202E"
                 />
               )}
               <Text style={[styles.chipTexto, activo && styles.chipTextoActivo]}>
@@ -330,12 +332,12 @@ function CampoSelect({ campo, valor, onChange, erro }: {
         <View style={{ flex: 1, paddingVertical: 12 }}>
           <Text style={[
             styles.selectTexto,
-            !opcaoSelec && { color: '#9BA8BC' },
+            !opcaoSelec && { color: '#9A9EA5' },
           ]}>
             {opcaoSelec?.label || campo.dica || 'Escolhe uma opção'}
           </Text>
         </View>
-        <Ionicons name="chevron-down" size={18} color="#637894" />
+        <Ionicons name="chevron-down" size={18} color="#5B616B" />
       </TouchableOpacity>
       {erro && <ErroInline texto={erro} />}
 
@@ -362,10 +364,10 @@ function CampoSelect({ campo, valor, onChange, erro }: {
                       setModalVisivel(false);
                     }}
                   >
-                    <Text style={[styles.selectOpcaoTexto, activo && { color: '#FF7900', fontWeight: '800' }]}>
+                    <Text style={[styles.selectOpcaoTexto, activo && { color: '#E8760A', fontFamily: Fonte.corpoSemi }]}>
                       {opcao.label}
                     </Text>
-                    {activo && <Ionicons name="checkmark" size={20} color="#FF7900" />}
+                    {activo && <Ionicons name="checkmark" size={20} color="#E8760A" />}
                   </TouchableOpacity>
                 );
               })}
@@ -387,11 +389,11 @@ function CampoSwitch({ campo, valor, onChange }: {
 }) {
   return (
     <View style={[styles.switchContainer, valor && styles.switchContainerActivo]}>
-      <View style={[styles.switchIcone, valor && { backgroundColor: '#0B2E59' }]}>
-        <MaterialCommunityIcons
+      <View style={[styles.switchIcone, valor && { backgroundColor: '#16202E' }]}>
+        <Icone
           name={(campo.icone || 'check') as any}
           size={18}
-          color={valor ? '#FFFFFF' : '#0B2E59'}
+          color={valor ? '#FFFFFF' : '#16202E'}
         />
       </View>
       <View style={{ flex: 1 }}>
@@ -403,7 +405,7 @@ function CampoSwitch({ campo, valor, onChange }: {
       <Switch
         value={valor}
         onValueChange={onChange}
-        trackColor={{ false: '#DCE6F1', true: '#0B2E59' }}
+        trackColor={{ false: '#E7E5DF', true: '#16202E' }}
         thumbColor="#FFFFFF"
       />
     </View>
@@ -438,14 +440,14 @@ function CampoContador({ campo, valor, onChange }: {
           onPress={decrementar}
           disabled={num <= min}
         >
-          <Ionicons name="remove" size={20} color={num <= min ? '#C8D5E5' : '#0B2E59'} />
+          <Ionicons name="remove" size={20} color={num <= min ? '#C8D5E5' : '#16202E'} />
         </TouchableOpacity>
         <View style={styles.contadorValor}>
           {campo.icone && (
-            <MaterialCommunityIcons
+            <Icone
               name={campo.icone as any}
               size={16}
-              color="#0B2E59"
+              color="#16202E"
             />
           )}
           <Text style={styles.contadorValorTexto}>{num}</Text>
@@ -458,7 +460,7 @@ function CampoContador({ campo, valor, onChange }: {
           onPress={incrementar}
           disabled={num >= max}
         >
-          <Ionicons name="add" size={20} color={num >= max ? '#C8D5E5' : '#0B2E59'} />
+          <Ionicons name="add" size={20} color={num >= max ? '#C8D5E5' : '#16202E'} />
         </TouchableOpacity>
       </View>
     </View>
@@ -498,7 +500,7 @@ function ConstructorCamposPersonalizados({ valor, onChange }: {
     <View style={styles.wrapper}>
       {valor.length === 0 ? (
         <View style={styles.vazioBox}>
-          <MaterialCommunityIcons name="tag-plus" size={32} color="#637894" />
+          <Icone name="tag-plus" size={32} color="#5B616B" />
           <Text style={styles.vazioTitulo}>Sem características ainda</Text>
           <Text style={styles.vazioTexto}>
             Adiciona as características que fizerem sentido para o teu anúncio
@@ -516,7 +518,7 @@ function ConstructorCamposPersonalizados({ valor, onChange }: {
                 style={styles.itemCampoRemover}
                 onPress={() => remover(item.id)}
               >
-                <Ionicons name="close" size={16} color="#D32F2F" />
+                <Ionicons name="close" size={16} color="#C2412D" />
               </TouchableOpacity>
             </View>
           ))}
@@ -529,7 +531,7 @@ function ConstructorCamposPersonalizados({ valor, onChange }: {
           onPress={() => setModalVisivel(true)}
           activeOpacity={0.85}
         >
-          <Ionicons name="add-circle" size={20} color="#FF7900" />
+          <Ionicons name="add-circle" size={20} color="#E8760A" />
           <Text style={styles.adicionarBotaoTexto}>
             {valor.length === 0 ? 'Adicionar primeira característica' : 'Adicionar característica'}
           </Text>
@@ -556,7 +558,7 @@ function ConstructorCamposPersonalizados({ valor, onChange }: {
                 <TextInput
                   style={styles.modalInput}
                   placeholder="Ex: Peso, Cor, Material"
-                  placeholderTextColor="#9BA8BC"
+                  placeholderTextColor="#9A9EA5"
                   value={nomeNovo}
                   onChangeText={setNomeNovo}
                   maxLength={40}
@@ -570,7 +572,7 @@ function ConstructorCamposPersonalizados({ valor, onChange }: {
                 <TextInput
                   style={styles.modalInput}
                   placeholder="Ex: 5 kg, Vermelho, Alumínio"
-                  placeholderTextColor="#9BA8BC"
+                  placeholderTextColor="#9A9EA5"
                   value={valorNovo}
                   onChangeText={setValorNovo}
                   maxLength={80}
@@ -626,7 +628,7 @@ function Label({ campo, semMargem }: { campo: DefinicaoCampo; semMargem?: boolea
 function ErroInline({ texto }: { texto: string }) {
   return (
     <View style={styles.erroContainer}>
-      <Ionicons name="warning" size={13} color="#D32F2F" />
+      <Ionicons name="warning" size={13} color="#C2412D" />
       <Text style={styles.erroTexto}>{texto}</Text>
     </View>
   );
@@ -652,19 +654,19 @@ const styles = StyleSheet.create({
   },
   label: {
     ...Typography.bodyBold,
-    color: '#173455',
-    fontWeight: '800',
+    color: '#1E2836',
+    fontFamily: Fonte.corpoSemi,
     fontSize: 14,
   },
   obrigatorio: {
-    color: '#D32F2F',
-    fontWeight: '800',
+    color: '#C2412D',
+    fontFamily: Fonte.corpoSemi,
   },
   contadorBadge: {
     minWidth: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: '#FF7900',
+    backgroundColor: '#E8760A',
     paddingHorizontal: 7,
     justifyContent: 'center',
     alignItems: 'center',
@@ -672,7 +674,7 @@ const styles = StyleSheet.create({
   contadorBadgeTexto: {
     color: '#FFFFFF',
     fontSize: 11,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
   },
 
   // Inputs
@@ -682,11 +684,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 14,
     borderWidth: 1.2,
-    borderColor: '#DCE6F1',
+    borderColor: '#E7E5DF',
     overflow: 'hidden',
   },
   inputErro: {
-    borderColor: '#D32F2F',
+    borderColor: '#C2412D',
     borderWidth: 2,
     backgroundColor: '#FFF5F5',
   },
@@ -698,7 +700,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 14,
     ...Typography.body,
-    color: '#0B2E59',
+    color: '#16202E',
     fontSize: 15,
   },
   sufixo: {
@@ -706,7 +708,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     backgroundColor: '#F1F5FA',
     borderLeftWidth: 1,
-    borderLeftColor: '#DCE6F1',
+    borderLeftColor: '#E7E5DF',
   },
   sufixoTexto: {
     ...Typography.bodyBold,
@@ -719,7 +721,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 14,
     borderWidth: 1.2,
-    borderColor: '#DCE6F1',
+    borderColor: '#E7E5DF',
     minHeight: 110,
   },
   textareaCampo: {
@@ -727,7 +729,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     ...Typography.body,
-    color: '#0B2E59',
+    color: '#16202E',
     fontSize: 15,
     minHeight: 110,
     textAlignVertical: 'top',
@@ -738,7 +740,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 6,
   },
-  contador: {
+  contadorTexto: {
     ...Typography.caption,
     color: '#7D8FA7',
     fontSize: 11,
@@ -756,18 +758,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
     paddingVertical: 9,
     borderRadius: 20,
-    backgroundColor: '#F0F5FA',
+    backgroundColor: '#F4F3EF',
     borderWidth: 1,
-    borderColor: '#DCE6F1',
+    borderColor: '#E7E5DF',
     gap: 5,
   },
   chipActivo: {
-    backgroundColor: '#0B2E59',
-    borderColor: '#0B2E59',
+    backgroundColor: '#16202E',
+    borderColor: '#16202E',
   },
   chipTexto: {
     ...Typography.bodyBold,
-    color: '#0B2E59',
+    color: '#16202E',
     fontSize: 13,
   },
   chipTextoActivo: {
@@ -777,7 +779,7 @@ const styles = StyleSheet.create({
   // Select
   selectTexto: {
     ...Typography.body,
-    color: '#0B2E59',
+    color: '#16202E',
     paddingHorizontal: 14,
     fontSize: 15,
   },
@@ -791,7 +793,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#E0E8F2',
+    borderColor: '#E7E5DF',
     gap: 12,
   },
   switchContainerActivo: {
@@ -808,8 +810,8 @@ const styles = StyleSheet.create({
   },
   switchLabel: {
     ...Typography.bodyBold,
-    color: '#173455',
-    fontWeight: '800',
+    color: '#1E2836',
+    fontFamily: Fonte.corpoSemi,
     fontSize: 14,
   },
   switchDica: {
@@ -825,7 +827,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#DCE6F1',
+    borderColor: '#E7E5DF',
     overflow: 'hidden',
   },
   contadorBotao: {
@@ -848,13 +850,13 @@ const styles = StyleSheet.create({
   },
   contadorValorTexto: {
     ...Typography.h3,
-    color: '#0B2E59',
-    fontWeight: '800',
+    color: '#16202E',
+    fontFamily: Fonte.tituloSemi,
     fontSize: 20,
   },
   contadorSufixo: {
     ...Typography.caption,
-    color: '#637894',
+    color: '#5B616B',
     fontSize: 11,
   },
 
@@ -868,9 +870,9 @@ const styles = StyleSheet.create({
   },
   erroTexto: {
     ...Typography.caption,
-    color: '#D32F2F',
+    color: '#C2412D',
     fontSize: 11,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
   },
 
   // Modal
@@ -890,39 +892,39 @@ const styles = StyleSheet.create({
     width: 40,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#DCE6F1',
+    backgroundColor: '#E7E5DF',
     alignSelf: 'center',
     marginTop: 10,
     marginBottom: 12,
   },
   modalTitulo: {
     ...Typography.h3,
-    color: '#0B2E59',
-    fontWeight: '800',
+    color: '#16202E',
+    fontFamily: Fonte.corpoSemi,
     textAlign: 'center',
     marginBottom: 16,
     paddingHorizontal: 20,
   },
   modalLabel: {
     ...Typography.bodyBold,
-    color: '#173455',
+    color: '#1E2836',
     marginBottom: 7,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
     fontSize: 13,
     marginTop: 4,
   },
   modalInputWrapper: {
-    backgroundColor: '#F8F9FB',
+    backgroundColor: '#F7F6F2',
     borderRadius: 12,
     borderWidth: 1.2,
-    borderColor: '#DCE6F1',
+    borderColor: '#E7E5DF',
     marginBottom: 14,
   },
   modalInput: {
     paddingHorizontal: 14,
     paddingVertical: 12,
     ...Typography.body,
-    color: '#0B2E59',
+    color: '#16202E',
     fontSize: 15,
   },
   modalBotoes: {
@@ -934,19 +936,19 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 14,
     borderRadius: 14,
-    backgroundColor: '#F0F2F6',
+    backgroundColor: '#F4F3EF',
     alignItems: 'center',
   },
   modalBotaoCancelarTexto: {
-    color: '#0B2E59',
+    color: '#16202E',
     fontSize: 14,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
   },
   modalBotaoConfirmar: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 14,
-    backgroundColor: '#FF7900',
+    backgroundColor: '#E8760A',
     alignItems: 'center',
   },
   modalBotaoDesabilitado: {
@@ -955,7 +957,7 @@ const styles = StyleSheet.create({
   modalBotaoConfirmarTexto: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
   },
 
   // Opções do Select
@@ -966,23 +968,23 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F2F6',
+    borderBottomColor: '#F4F3EF',
   },
   selectOpcaoActiva: {
-    backgroundColor: '#FFF4E6',
+    backgroundColor: '#FBF0E3',
   },
   selectOpcaoTexto: {
     ...Typography.body,
-    color: '#0B2E59',
+    color: '#16202E',
     fontSize: 15,
   },
 
   // Constructor
   vazioBox: {
-    backgroundColor: '#F8F9FB',
+    backgroundColor: '#F7F6F2',
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#E0E8F2',
+    borderColor: '#E7E5DF',
     borderStyle: 'dashed',
     padding: 24,
     alignItems: 'center',
@@ -991,13 +993,13 @@ const styles = StyleSheet.create({
   },
   vazioTitulo: {
     ...Typography.bodyBold,
-    color: '#0B2E59',
-    fontWeight: '800',
+    color: '#16202E',
+    fontFamily: Fonte.corpoSemi,
     fontSize: 14,
   },
   vazioTexto: {
     ...Typography.caption,
-    color: '#637894',
+    color: '#5B616B',
     textAlign: 'center',
     fontSize: 12,
     maxWidth: 240,
@@ -1014,27 +1016,27 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E0E8F2',
+    borderColor: '#E7E5DF',
     gap: 10,
   },
   itemCampoNome: {
     ...Typography.caption,
-    color: '#637894',
+    color: '#5B616B',
     fontSize: 11,
     marginBottom: 2,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
   },
   itemCampoValor: {
     ...Typography.bodyBold,
-    color: '#0B2E59',
-    fontWeight: '800',
+    color: '#16202E',
+    fontFamily: Fonte.corpoSemi,
     fontSize: 14,
   },
   itemCampoRemover: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#FFEBEE',
+    backgroundColor: '#FBECE9',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -1047,14 +1049,14 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: '#FFF8F1',
     borderWidth: 1.5,
-    borderColor: '#FF7900',
+    borderColor: '#E8760A',
     borderStyle: 'dashed',
     gap: 7,
   },
   adicionarBotaoTexto: {
     ...Typography.button,
     color: '#D95E00',
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
     fontSize: 13,
     flex: 1,
     textAlign: 'center',

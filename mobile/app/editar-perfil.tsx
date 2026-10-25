@@ -20,13 +20,15 @@ import {
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { Colors, Sombras } from '../src/theme/colors';
 import { Spacing, Typography, Radius } from '../src/theme/typography';
 import { PROVINCIAS_MOCAMBIQUE, getDistritos } from '../src/data/mocambique';
 import { useUserStore } from '../src/store/userStore';
 
+import { Fonte } from '../src/theme/fonts';
+import Icone from '../src/components/Icone';
 export default function EditarPerfilScreen() {
   const router = useRouter();
 
@@ -247,7 +249,7 @@ export default function EditarPerfilScreen() {
       <View style={[styles.container, styles.sucessoWrapper]}>
         <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
         <LinearGradient
-          colors={['#0B2E59', '#123F70']}
+          colors={['#16202E', '#123F70']}
           style={StyleSheet.absoluteFill}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -272,11 +274,11 @@ export default function EditarPerfilScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <StatusBar barStyle="light-content" backgroundColor="#0B2E59" />
+      <StatusBar barStyle="light-content" backgroundColor="#16202E" />
       <SafeAreaView style={styles.safeAreaTop} edges={['top']}>
         {/* Header */}
         <LinearGradient
-          colors={['#0B2E59', '#123F70']}
+          colors={['#16202E', '#123F70']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
@@ -295,13 +297,13 @@ export default function EditarPerfilScreen() {
         {/* Barra de perfil completo */}
         <View style={styles.perfilCompletoContainer}>
           <View style={styles.perfilCompletoInfo}>
-            <MaterialCommunityIcons name="account-check" size={14} color={Colors.azul} />
+            <Icone name="account-check" size={14} color={Colors.azul} />
             <Text style={styles.perfilCompletoTexto}>Perfil {perfilCompleto}% completo</Text>
           </View>
           <View style={styles.perfilCompletoBar}>
             <View style={[styles.perfilCompletoFill, { width: `${perfilCompleto}%` }]}>
               <LinearGradient
-                colors={['#FF7900', '#FF9A24']}
+                colors={['#E8760A', '#FF9A24']}
                 style={StyleSheet.absoluteFill}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
@@ -362,7 +364,7 @@ export default function EditarPerfilScreen() {
               <Text style={styles.campoLabel}>Nome completo</Text>
               <View style={[
                 styles.inputWrapper,
-                campoFocado === 'nome' && { borderColor: '#FF7900', borderWidth: 1.5 },
+                campoFocado === 'nome' && { borderColor: '#E8760A', borderWidth: 1.5 },
               ]}>
                 <Ionicons name="person-outline" size={20} color={Colors.textoSecundario} />
                 <TextInput
@@ -385,7 +387,7 @@ export default function EditarPerfilScreen() {
               </View>
               <View style={[
                 styles.inputWrapper,
-                campoFocado === 'email' && { borderColor: '#FF7900', borderWidth: 1.5 },
+                campoFocado === 'email' && { borderColor: '#E8760A', borderWidth: 1.5 },
               ]}>
                 <Ionicons name="mail-outline" size={20} color={Colors.textoSecundario} />
                 <TextInput
@@ -415,7 +417,7 @@ export default function EditarPerfilScreen() {
               <Text style={styles.campoLabel}>Telefone</Text>
               <View style={[
                 styles.telefoneWrapper,
-                campoFocado === 'telefone' && { borderColor: '#FF7900', borderWidth: 1.5 },
+                campoFocado === 'telefone' && { borderColor: '#E8760A', borderWidth: 1.5 },
               ]}>
                 <View style={styles.telefonePrefixo}>
                   <Text style={styles.telefonePrefixoBandeira}>🇲🇿</Text>
@@ -446,7 +448,7 @@ export default function EditarPerfilScreen() {
               <TouchableOpacity
                 style={[
                   styles.selectorWrapper,
-                  provincia && { borderColor: '#FF7900', borderWidth: 1.5 },
+                  provincia && { borderColor: '#E8760A', borderWidth: 1.5 },
                 ]}
                 onPress={() => setModalProvinciaVisivel(true)}
                 activeOpacity={0.8}
@@ -469,13 +471,13 @@ export default function EditarPerfilScreen() {
                 style={[
                   styles.selectorWrapper,
                   !provincia && { opacity: 0.5 },
-                  distrito && { borderColor: '#FF7900', borderWidth: 1.5 },
+                  distrito && { borderColor: '#E8760A', borderWidth: 1.5 },
                 ]}
                 onPress={() => provincia && setModalDistritoVisivel(true)}
                 disabled={!provincia}
                 activeOpacity={0.8}
               >
-                <MaterialCommunityIcons name="map-marker" size={20} color={Colors.textoSecundario} />
+                <Icone name="map-marker" size={20} color={Colors.textoSecundario} />
                 <Text style={[
                   styles.selectorText,
                   !distrito && { color: Colors.textoTerciario },
@@ -530,7 +532,7 @@ export default function EditarPerfilScreen() {
           {/* Info card sobre localização actual */}
           <View style={styles.infoCard}>
             <View style={styles.infoIcone}>
-              <MaterialCommunityIcons name="information" size={18} color={Colors.azul} />
+              <Icone name="information" size={18} color={Colors.azul} />
             </View>
             <View style={styles.infoConteudo}>
               <Text style={styles.infoTitulo}>Localização actual</Text>
@@ -556,7 +558,7 @@ export default function EditarPerfilScreen() {
           activeOpacity={0.9}
         >
           <LinearGradient
-            colors={['#FF7900', '#F05A00']}
+            colors={['#E8760A', '#F05A00']}
             style={styles.botaoGuardarGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
@@ -643,7 +645,7 @@ export default function EditarPerfilScreen() {
         subtitulo="Onde vives em Moçambique?"
         opcoes={PROVINCIAS_MOCAMBIQUE.map(p => ({ label: p.nome, value: p.nome, descricao: `Capital: ${p.capital}` }))}
         valorSeleccionado={provincia}
-        onSeleccionar={(valor) => {
+        onSeleccionar={(valor: string) => {
           setProvincia(valor);
           setModalProvinciaVisivel(false);
         }}
@@ -658,7 +660,7 @@ export default function EditarPerfilScreen() {
         subtitulo={`Distritos de ${provincia}`}
         opcoes={distritosDisponiveis.map(d => ({ label: d, value: d }))}
         valorSeleccionado={distrito}
-        onSeleccionar={(valor) => {
+        onSeleccionar={(valor: string) => {
           setDistrito(valor);
           setModalDistritoVisivel(false);
         }}
@@ -696,7 +698,7 @@ function ModalSelector({ visivel, titulo, subtitulo, opcoes, valorSeleccionado, 
 
           <View style={styles.modalHeader}>
             <View style={styles.modalHeaderIcone}>
-              <MaterialCommunityIcons name={icone} size={24} color={Colors.azul} />
+              <Icone name={icone} size={24} color={Colors.azul} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.modalHeaderTitulo}>{titulo}</Text>
@@ -725,7 +727,7 @@ function ModalSelector({ visivel, titulo, subtitulo, opcoes, valorSeleccionado, 
                   <View style={styles.modalOpcaoInfo}>
                     <Text style={[
                       styles.modalOpcaoTitulo,
-                      seleccionado && { color: '#0B2E59', fontWeight: '700' },
+                      seleccionado && { color: '#16202E', fontFamily: Fonte.corpoSemi },
                     ]}>
                       {item.label}
                     </Text>
@@ -752,7 +754,7 @@ function ModalSelector({ visivel, titulo, subtitulo, opcoes, valorSeleccionado, 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F4F7FB' },
   safeAreaTop: {
-    backgroundColor: '#0B2E59',
+    backgroundColor: '#16202E',
   },
   header: {
     flexDirection: 'row',
@@ -772,7 +774,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.18)',
   },
-  headerTitulo: { ...Typography.h3, color: '#FFFFFF', fontWeight: '800' },
+  headerTitulo: { ...Typography.h3, color: '#FFFFFF', fontFamily: Fonte.corpoSemi },
 
   // Perfil completo
   perfilCompletoContainer: {
@@ -865,7 +867,7 @@ const styles = StyleSheet.create({
   },
   fotoInicialTexto: {
     fontSize: 48,
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
     color: Colors.branco,
   },
   fotoEditBadge: {
@@ -875,7 +877,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#FF7900',
+    backgroundColor: '#E8760A',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
@@ -889,7 +891,7 @@ const styles = StyleSheet.create({
   },
   fotoLink: {
     ...Typography.bodyBold,
-    color: '#FF7900',
+    color: '#E8760A',
   },
 
   // Secções
@@ -1012,7 +1014,7 @@ const styles = StyleSheet.create({
     borderRightColor: Colors.bordaSubtil,
     marginRight: Spacing.sm,
   },
-  telefonePrefixoBandeira: { fontSize: 18 },
+  telefonePrefixoBandeira: { fontFamily: Fonte.corpo, fontSize: 18 },
   telefonePrefixoTexto: {
     ...Typography.bodyBold,
     color: Colors.textoPrincipal,
@@ -1037,7 +1039,7 @@ const styles = StyleSheet.create({
   avisoTexto: {
     ...Typography.caption,
     color: Colors.aviso,
-    fontWeight: '600',
+    fontFamily: Fonte.corpoSemi,
   },
 
   // Acção card
@@ -1082,7 +1084,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#EAF1F8',
     borderRadius: Radius.lg,
     borderLeftWidth: 4,
-    borderLeftColor: '#FF7900',
+    borderLeftColor: '#E8760A',
     gap: Spacing.sm,
   },
   infoIcone: {
@@ -1170,7 +1172,7 @@ const styles = StyleSheet.create({
     color: Colors.branco,
     marginBottom: Spacing.sm,
     textAlign: 'center',
-    fontWeight: '800',
+    fontFamily: Fonte.tituloSemi,
   },
   sucessoSubtitulo: {
     ...Typography.bodyLarge,
@@ -1277,7 +1279,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#FF7900',
+    backgroundColor: '#E8760A',
     justifyContent: 'center',
     alignItems: 'center',
   },

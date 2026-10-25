@@ -3,10 +3,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { Platform } from 'react-native';
 import { useCores } from '../../src/store/themeStore';
 
+import { Fonte } from '../../src/theme/fonts';
 // ============================================================
 // CORES GOHOME OFICIAIS
 // ============================================================
-const LARANJA_MARCA = '#FE8A00';
+const LARANJA_MARCA = '#E8760A';
 
 export default function AnuncianteLayout() {
   const cores = useCores();
@@ -20,7 +21,7 @@ export default function AnuncianteLayout() {
         tabBarShowLabel: true,
         tabBarLabelStyle: {
           fontSize: 11,
-          fontWeight: '600',
+          fontFamily: Fonte.corpoSemi,
           marginTop: -2,
         },
         tabBarStyle: {

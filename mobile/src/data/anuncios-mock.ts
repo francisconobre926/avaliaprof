@@ -22,6 +22,7 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     provincia: 'Sofala',
     cidade: 'Beira',
     bairro: 'Macúti',
+    zona: 'Macúti, Beira',
     latitude: -19.8296,
     longitude: 34.8541,
     moradaCompleta: 'Rua da Universidade, nº 45, Macúti, Beira',
@@ -32,9 +33,10 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     anuncianteVerificado: true,
     anuncianteTelefone1: '841234567',
     anuncianteTelefone2: '871234567',
-    estado: 'disponivel',
+    estado: 'activo',
     publicadoEm: '2026-10-10T08:00:00Z',
-    expiraEm: '2026-11-09T08:00:00Z',
+    dataCriacao: '2026-10-10T08:00:00Z',
+    dataExpiracao: '2026-11-09T08:00:00Z',
     visualizacoes: 147,
     favoritos: 23,
     caracteristicas: {
@@ -67,6 +69,7 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     provincia: 'Sofala',
     cidade: 'Beira',
     bairro: 'Ponta-Gêa',
+    zona: 'Ponta-Gêa, Beira',
     latitude: -19.8436,
     longitude: 34.8389,
     moradaCompleta: 'Av. Eduardo Mondlane, Edifício Mar Azul, 3º andar, Ponta-Gêa',
@@ -77,9 +80,10 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     anuncianteVerificado: true,
     anuncianteTelefone1: '843456789',
     anuncianteTelefone2: '873456789',
-    estado: 'disponivel',
+    estado: 'activo',
     publicadoEm: '2026-10-08T10:30:00Z',
-    expiraEm: '2026-11-07T10:30:00Z',
+    dataCriacao: '2026-10-08T10:30:00Z',
+    dataExpiracao: '2026-11-07T10:30:00Z',
     visualizacoes: 342,
     favoritos: 67,
     caracteristicas: {
@@ -113,6 +117,7 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     provincia: 'Sofala',
     cidade: 'Beira',
     bairro: 'Matacuane',
+    zona: 'Matacuane, Beira',
     latitude: -19.8215,
     longitude: 34.8398,
     moradaCompleta: 'Rua 7 de Abril, nº 128, Matacuane, Beira',
@@ -123,9 +128,10 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     anuncianteVerificado: false,
     anuncianteTelefone1: '845678912',
     anuncianteTelefone2: '875678912',
-    estado: 'disponivel',
+    estado: 'activo',
     publicadoEm: '2026-10-05T14:20:00Z',
-    expiraEm: '2026-11-04T14:20:00Z',
+    dataCriacao: '2026-10-05T14:20:00Z',
+    dataExpiracao: '2026-11-04T14:20:00Z',
     visualizacoes: 89,
     favoritos: 15,
     caracteristicas: {
@@ -159,6 +165,7 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     provincia: 'Sofala',
     cidade: 'Beira',
     bairro: 'Centro',
+    zona: 'Centro, Beira',
     latitude: -19.8436,
     longitude: 34.8389,
     moradaCompleta: 'Av. Poder Popular, nº 56, Centro, Beira',
@@ -169,9 +176,10 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     anuncianteVerificado: true,
     anuncianteTelefone1: '843456789',
     anuncianteTelefone2: '873456789',
-    estado: 'disponivel',
+    estado: 'activo',
     publicadoEm: '2026-10-11T09:00:00Z',
-    expiraEm: '2026-11-10T09:00:00Z',
+    dataCriacao: '2026-10-11T09:00:00Z',
+    dataExpiracao: '2026-11-10T09:00:00Z',
     visualizacoes: 54,
     favoritos: 8,
     caracteristicas: {
@@ -205,6 +213,7 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     provincia: 'Sofala',
     cidade: 'Beira',
     bairro: 'Macúti',
+    zona: 'Macúti, Beira',
     latitude: -19.8296,
     longitude: 34.8541,
     moradaCompleta: 'Av. das FPLM, Macúti, Beira',
@@ -215,9 +224,10 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     anuncianteVerificado: true,
     anuncianteTelefone1: '846789012',
     anuncianteTelefone2: '876789012',
-    estado: 'disponivel',
+    estado: 'activo',
     publicadoEm: '2026-10-09T16:00:00Z',
-    expiraEm: '2026-11-08T16:00:00Z',
+    dataCriacao: '2026-10-09T16:00:00Z',
+    dataExpiracao: '2026-11-08T16:00:00Z',
     visualizacoes: 203,
     favoritos: 34,
     caracteristicas: {
@@ -250,6 +260,7 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     provincia: 'Sofala',
     cidade: 'Beira',
     bairro: 'Manga',
+    zona: 'Manga, Beira',
     latitude: -19.8150,
     longitude: 34.8650,
     moradaCompleta: 'Rua da Manga, Manga, Beira',
@@ -260,9 +271,10 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     anuncianteVerificado: false,
     anuncianteTelefone1: '847890123',
     anuncianteTelefone2: '877890123',
-    estado: 'disponivel',
+    estado: 'activo',
     publicadoEm: '2026-10-07T11:15:00Z',
-    expiraEm: '2026-11-06T11:15:00Z',
+    dataCriacao: '2026-10-07T11:15:00Z',
+    dataExpiracao: '2026-11-06T11:15:00Z',
     visualizacoes: 76,
     favoritos: 11,
     caracteristicas: {
@@ -299,6 +311,7 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     provincia: 'Sofala',
     cidade: 'Beira',
     bairro: 'Palmeiras',
+    zona: 'Palmeiras, Beira',
     latitude: -19.8352,
     longitude: 34.8215,
     moradaCompleta: 'Rua das Palmeiras, nº 23, Palmeiras, Beira',
@@ -309,9 +322,10 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     anuncianteVerificado: true,
     anuncianteTelefone1: '848901234',
     anuncianteTelefone2: '878901234',
-    estado: 'disponivel',
+    estado: 'activo',
     publicadoEm: '2026-10-06T13:00:00Z',
-    expiraEm: '2026-11-05T13:00:00Z',
+    dataCriacao: '2026-10-06T13:00:00Z',
+    dataExpiracao: '2026-11-05T13:00:00Z',
     visualizacoes: 128,
     favoritos: 29,
     caracteristicas: {
@@ -347,6 +361,7 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     provincia: 'Sofala',
     cidade: 'Beira',
     bairro: 'Macúti',
+    zona: 'Macúti, Beira',
     latitude: -19.8296,
     longitude: 34.8541,
     moradaCompleta: 'Av. das FPLM, Macúti, Beira',
@@ -357,9 +372,10 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     anuncianteVerificado: true,
     anuncianteTelefone1: '849012345',
     anuncianteTelefone2: '879012345',
-    estado: 'disponivel',
+    estado: 'activo',
     publicadoEm: '2026-10-04T08:00:00Z',
-    expiraEm: '2026-11-03T08:00:00Z',
+    dataCriacao: '2026-10-04T08:00:00Z',
+    dataExpiracao: '2026-11-03T08:00:00Z',
     visualizacoes: 487,
     favoritos: 89,
     caracteristicas: {
@@ -394,6 +410,7 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     provincia: 'Sofala',
     cidade: 'Beira',
     bairro: 'Chaimite',
+    zona: 'Chaimite, Beira',
     latitude: -19.8400,
     longitude: 34.8300,
     moradaCompleta: 'Av. da Industria, Chaimite, Beira',
@@ -404,9 +421,10 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     anuncianteVerificado: true,
     anuncianteTelefone1: '850123456',
     anuncianteTelefone2: '870123456',
-    estado: 'disponivel',
+    estado: 'activo',
     publicadoEm: '2026-10-03T15:30:00Z',
-    expiraEm: '2026-11-02T15:30:00Z',
+    dataCriacao: '2026-10-03T15:30:00Z',
+    dataExpiracao: '2026-11-02T15:30:00Z',
     visualizacoes: 42,
     favoritos: 6,
     caracteristicas: {
@@ -440,6 +458,7 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     provincia: 'Sofala',
     cidade: 'Beira',
     bairro: 'Chipangara',
+    zona: 'Chipangara, Beira',
     latitude: -19.7950,
     longitude: 34.8800,
     moradaCompleta: 'Zona de Chipangara, Beira',
@@ -450,9 +469,10 @@ export const ANUNCIOS_MOCK: Anuncio[] = [
     anuncianteVerificado: false,
     anuncianteTelefone1: '845678912',
     anuncianteTelefone2: '875678912',
-    estado: 'disponivel',
+    estado: 'activo',
     publicadoEm: '2026-10-01T10:00:00Z',
-    expiraEm: '2026-10-31T10:00:00Z',
+    dataCriacao: '2026-10-01T10:00:00Z',
+    dataExpiracao: '2026-10-31T10:00:00Z',
     visualizacoes: 67,
     favoritos: 14,
     caracteristicas: {
@@ -546,9 +566,9 @@ export function procurarAnuncios(anuncios: Anuncio[], texto: string): Anuncio[] 
   const textoLower = texto.toLowerCase();
   return anuncios.filter(a =>
     a.titulo.toLowerCase().includes(textoLower) ||
-    a.descricaoCurta.toLowerCase().includes(textoLower) ||
-    a.bairro.toLowerCase().includes(textoLower) ||
-    a.cidade.toLowerCase().includes(textoLower)
+    (a.descricaoCurta ?? '').toLowerCase().includes(textoLower) ||
+    (a.bairro ?? '').toLowerCase().includes(textoLower) ||
+    (a.cidade ?? '').toLowerCase().includes(textoLower)
   );
 }
 
@@ -571,6 +591,6 @@ export function contarPorCategoria(anuncios: Anuncio[], categoria: string): numb
  */
 export function apenasDisponiveis(anuncios: Anuncio[]): Anuncio[] {
   return anuncios.filter(a =>
-    a.estado === 'disponivel' || a.estado === 'em_negociacao'
+    a.estado === 'activo'
   );
 }

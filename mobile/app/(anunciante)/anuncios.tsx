@@ -2,7 +2,7 @@
  * app/(anunciante)/anuncios.tsx
  *
  * Lista de anúncios do dono com separadores por estado.
- * Paleta GoHome aplicada (azul #0082DE + laranja #FE8A00).
+ * Topo: TopBar partilhada (acção "novo anúncio") + título simples.
  *
  * Separadores: Activos | Pausados | Fechados | Expirados
  * Cada separador mostra badge com contador.
@@ -18,11 +18,9 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Typography } from '../../src/theme/typography';
+import { Typography, Spacing } from '../../src/theme/typography';
 import { useCores } from '../../src/store/themeStore';
 import {
   EstadoAnuncio,
@@ -32,16 +30,17 @@ import {
   Finalidade,
 } from '../../src/types';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
+import TopBar, { TopBarBotao } from '../../src/components/TopBar';
 // ============================================================
 // CORES GOHOME OFICIAIS
 // ============================================================
-const AZUL_MARCA = '#0082DE';
-const AZUL_ESCURO = '#0061A6';
-const AZUL_HERO_INICIO = '#003A66';
-const LARANJA_MARCA = '#FE8A00';
-const LARANJA_ESCURO = '#CB6E00';
-const LARANJA_PALE = 'rgba(254, 138, 0, 0.1)';
-const VERDE = '#2E7D32';
+const AZUL_MARCA = '#0A6BC0';
+const LARANJA_MARCA = '#E8760A';
+const LARANJA_ESCURO = '#B95A05';
+const LARANJA_PALE = 'rgba(232, 118, 10, 0.1)';
+const VERDE = '#2F7A4F';
 
 // ============================================================
 // MOCK — anúncios de exemplo
@@ -191,28 +190,19 @@ export default function AnunciosScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <SafeAreaView edges={['top']} style={[styles.safeHeader, { backgroundColor: cores.fundoElevado }]}>
-        <View style={styles.header}>
-          <View style={{ flex: 1 }}>
-            <Text style={[styles.headerTitulo, { color: cores.textoPrincipal }]}>
-              Meus anúncios
-            </Text>
-            <Text style={[styles.headerSubtitulo, { color: cores.textoSecundario }]}>
-              {`${totalAnuncios} anúncios no total`}
-            </Text>
-          </View>
-          <TouchableOpacity style={styles.btnNovo} onPress={irParaPublicar} activeOpacity={0.9}>
-            <LinearGradient
-              colors={[LARANJA_MARCA, LARANJA_ESCURO]}
-              style={StyleSheet.absoluteFill}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            />
-            <Ionicons name="add" size={20} color="#FFFFFF" />
-          </TouchableOpacity>
-        </View>
+      <TopBar
+        acoes={<TopBarBotao icone="add" rotulo="Novo anúncio" onPress={irParaPublicar} />}
+      />
 
-        {/* Separadores */}
+      {/* Título + separadores (fixos por cima da lista) */}
+      <View style={styles.cabecalho}>
+        <Text style={[styles.titulo, { color: cores.textoPrincipal }]}>Meus anúncios</Text>
+        <Text style={[styles.subtitulo, { color: cores.textoSecundario }]}>
+          {`${totalAnuncios} anúncios no total`}
+        </Text>
+      </View>
+
+      <View>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -226,29 +216,31 @@ export default function AnunciosScreen() {
                 key={sep.id}
                 style={[
                   styles.separador,
-                  { backgroundColor: cores.fundoSuave },
-                  activo && { backgroundColor: AZUL_HERO_INICIO },
+                  { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil },
+                  activo && { backgroundColor: cores.textoPrincipal, borderColor: cores.textoPrincipal },
                 ]}
                 onPress={() => setSeparadorActivo(sep.id)}
                 activeOpacity={0.8}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: activo }}
               >
                 <Text style={[
                   styles.separadorLabel,
                   { color: cores.textoSecundario },
-                  activo && { color: '#FFFFFF' },
+                  activo && { color: cores.fundo },
                 ]}>
                   {sep.label}
                 </Text>
                 {contagem > 0 && (
                   <View style={[
                     styles.separadorBadge,
-                    { backgroundColor: cores.bordaMedia },
-                    activo && { backgroundColor: LARANJA_MARCA },
+                    { backgroundColor: cores.fundoSuave },
+                    activo && { backgroundColor: cores.fundo },
                   ]}>
                     <Text style={[
                       styles.separadorBadgeTexto,
                       { color: cores.textoSecundario },
-                      activo && { color: '#FFFFFF' },
+                      activo && { color: cores.textoPrincipal },
                     ]}>
                       {contagem}
                     </Text>
@@ -258,12 +250,12 @@ export default function AnunciosScreen() {
             );
           })}
         </ScrollView>
-      </SafeAreaView>
+      </View>
 
       {/* Lista de anúncios */}
       {anunciosFiltrados.length === 0 ? (
         <View style={styles.vazioContainer}>
-          <MaterialCommunityIcons name="package-variant" size={60} color={cores.textoTerciario} />
+          <Icone name="package-variant" size={60} color={cores.textoTerciario} />
           <Text style={[styles.vazioTitulo, { color: cores.textoPrincipal }]}>
             Nenhum anúncio {SEPARADORES.find(s => s.id === separadorActivo)?.label.toLowerCase()}
           </Text>
@@ -275,13 +267,7 @@ export default function AnunciosScreen() {
               : 'Nada por aqui para já.'}
           </Text>
           {separadorActivo === 'activos' && (
-            <TouchableOpacity style={styles.vazioBtn} onPress={irParaPublicar}>
-              <LinearGradient
-                colors={[LARANJA_MARCA, LARANJA_ESCURO]}
-                style={StyleSheet.absoluteFill}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-              />
+            <TouchableOpacity style={styles.vazioBtn} onPress={irParaPublicar} activeOpacity={0.85}>
               <Ionicons name="add" size={18} color="#FFFFFF" />
               <Text style={styles.vazioBtnTexto}>Publicar anúncio</Text>
             </TouchableOpacity>
@@ -360,7 +346,7 @@ function AnuncioCard({
           {anuncio.titulo}
         </Text>
         <View style={styles.cardMetadados}>
-          <MaterialCommunityIcons name="map-marker" size={13} color={cores.textoSecundario} />
+          <Icone name="map-marker" size={13} color={cores.textoSecundario} />
           <Text style={[styles.cardZona, { color: cores.textoSecundario }]}>{anuncio.zona}</Text>
         </View>
 
@@ -381,14 +367,14 @@ function AnuncioCard({
             </Text>
           </View>
           <View style={styles.cardStatItem}>
-            <MaterialCommunityIcons name="account-check" size={13} color={cores.textoSecundario} />
+            <Icone name="account-check" size={13} color={cores.textoSecundario} />
             <Text style={[styles.cardStatValor, { color: cores.textoPrincipal }]}>
               {anuncio.contactos}
             </Text>
           </View>
           {anuncio.diasRestantes !== undefined && !fechado && (
             <View style={styles.cardStatItem}>
-              <MaterialCommunityIcons name="calendar-clock" size={13} color={cores.textoSecundario} />
+              <Icone name="calendar-clock" size={13} color={cores.textoSecundario} />
               <Text style={[styles.cardStatValor, { color: cores.textoPrincipal }]}>
                 {`${anuncio.diasRestantes}d`}
               </Text>
@@ -399,7 +385,7 @@ function AnuncioCard({
         {fechado && (
           <View style={[styles.cardFechoRodape, { borderTopColor: cores.bordaSubtil }]}>
             <View style={styles.cardFechoInfo}>
-              <MaterialCommunityIcons name="handshake" size={14} color={AZUL_MARCA} />
+              <Icone name="handshake" size={14} color={AZUL_MARCA} />
               <Text style={[styles.cardFechoTexto, { color: AZUL_MARCA }]}>
                 {`Fechado em ${dataFechoFormatada}`}
               </Text>
@@ -416,7 +402,7 @@ function AnuncioCard({
               onPress={onRepublicar}
               activeOpacity={0.85}
             >
-              <MaterialCommunityIcons name="refresh" size={14} color={LARANJA_ESCURO} />
+              <Icone name="refresh" size={14} color={LARANJA_ESCURO} />
               <Text style={styles.cardFechoBtnTexto}>Publicar novamente</Text>
             </TouchableOpacity>
           </View>
@@ -428,30 +414,22 @@ function AnuncioCard({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  safeHeader: {},
-  header: {
-    flexDirection: 'row', alignItems: 'center',
-    paddingHorizontal: 20, paddingVertical: 14, gap: 12,
-  },
-  headerTitulo: { ...Typography.h2, fontWeight: '800', fontSize: 22 },
-  headerSubtitulo: { ...Typography.caption, fontSize: 12, marginTop: 2 },
-  btnNovo: {
-    width: 44, height: 44, borderRadius: 14,
-    overflow: 'hidden', justifyContent: 'center', alignItems: 'center',
-  },
+  cabecalho: { paddingHorizontal: Spacing.lg, marginTop: 16, marginBottom: 12 },
+  titulo: { ...Typography.h1 },
+  subtitulo: { fontSize: 13, fontFamily: Fonte.corpo, marginTop: 2 },
 
-  separadoresContainer: { paddingHorizontal: 16, paddingBottom: 14, gap: 8 },
+  separadoresContainer: { paddingHorizontal: Spacing.lg, paddingBottom: 4, gap: 8 },
   separador: {
     flexDirection: 'row', alignItems: 'center',
-    paddingHorizontal: 14, paddingVertical: 9,
-    borderRadius: 20, gap: 7,
+    paddingHorizontal: 14, paddingVertical: 8,
+    borderRadius: 999, borderWidth: 1, gap: 7,
   },
-  separadorLabel: { ...Typography.bodyBold, fontSize: 13, fontWeight: '800' },
+  separadorLabel: { ...Typography.bodyBold, fontSize: 13, fontFamily: Fonte.corpoSemi },
   separadorBadge: {
     minWidth: 20, height: 20, paddingHorizontal: 6, borderRadius: 10,
     justifyContent: 'center', alignItems: 'center',
   },
-  separadorBadgeTexto: { fontSize: 10, fontWeight: '800' },
+  separadorBadgeTexto: { fontSize: 10, fontFamily: Fonte.corpoSemi },
 
   lista: { padding: 16, gap: 14, paddingBottom: 100 },
 
@@ -460,7 +438,7 @@ const styles = StyleSheet.create({
     borderRadius: 16, overflow: 'hidden',
     borderWidth: 1,
   },
-  cardImagemWrap: { width: 110, position: 'relative', backgroundColor: '#E8EEF5' },
+  cardImagemWrap: { width: 110, position: 'relative', backgroundColor: '#E7E5DF' },
   cardImagem: { width: '100%', height: '100%' },
   cardImagemOverlay: {
     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
@@ -473,41 +451,42 @@ const styles = StyleSheet.create({
     borderRadius: 10, gap: 4,
   },
   cardEstadoDot: { width: 5, height: 5, borderRadius: 2.5, backgroundColor: '#FFFFFF' },
-  cardEstadoTexto: { color: '#FFFFFF', fontSize: 8, fontWeight: '800', letterSpacing: 0.4 },
+  cardEstadoTexto: { color: '#FFFFFF', fontSize: 8, fontFamily: Fonte.corpoSemi, letterSpacing: 0.4 },
   cardConteudo: { flex: 1, padding: 12, justifyContent: 'space-between' },
-  cardTitulo: { ...Typography.bodyBold, fontWeight: '800', fontSize: 13, lineHeight: 17, marginBottom: 4 },
+  cardTitulo: { ...Typography.bodyBold, fontFamily: Fonte.corpoSemi, fontSize: 13, lineHeight: 17, marginBottom: 4 },
   cardMetadados: { flexDirection: 'row', alignItems: 'center', gap: 3, marginBottom: 6 },
   cardZona: { ...Typography.caption, fontSize: 11 },
   cardPrecoLinha: { flexDirection: 'row', alignItems: 'baseline', gap: 3, marginBottom: 7 },
-  cardPreco: { ...Typography.h4, fontWeight: '900', fontSize: 15 },
-  cardPrecoSufixo: { ...Typography.caption, fontSize: 11, fontWeight: '600' },
+  cardPreco: { ...Typography.h4, fontFamily: Fonte.corpoBold, fontSize: 15 },
+  cardPrecoSufixo: { ...Typography.caption, fontSize: 11, fontFamily: Fonte.corpoSemi },
   cardStats: { flexDirection: 'row', gap: 12, paddingTop: 7, borderTopWidth: 1 },
   cardStatItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  cardStatValor: { ...Typography.caption, fontSize: 11, fontWeight: '800' },
+  cardStatValor: { ...Typography.caption, fontSize: 11, fontFamily: Fonte.corpoSemi },
 
   cardFechoRodape: { marginTop: 8, paddingTop: 8, borderTopWidth: 1, gap: 7 },
   cardFechoInfo: { flexDirection: 'row', alignItems: 'center', gap: 5, flexWrap: 'wrap' },
-  cardFechoTexto: { ...Typography.caption, fontSize: 11, fontWeight: '700', flex: 1 },
+  cardFechoTexto: { ...Typography.caption, fontSize: 11, fontFamily: Fonte.corpoSemi, flex: 1 },
   cardFechoCreditBadge: {
     backgroundColor: VERDE,
     paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8,
   },
-  cardFechoCreditTexto: { color: '#FFFFFF', fontSize: 10, fontWeight: '800' },
+  cardFechoCreditTexto: { color: '#FFFFFF', fontSize: 10, fontFamily: Fonte.corpoSemi },
   cardFechoBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     gap: 5, paddingVertical: 7,
     backgroundColor: LARANJA_PALE,
-    borderRadius: 9, borderWidth: 1, borderColor: 'rgba(254, 138, 0, 0.3)',
+    borderRadius: 9, borderWidth: 1, borderColor: 'rgba(232, 118, 10, 0.3)',
   },
-  cardFechoBtnTexto: { color: LARANJA_ESCURO, fontSize: 11, fontWeight: '800' },
+  cardFechoBtnTexto: { color: LARANJA_ESCURO, fontSize: 11, fontFamily: Fonte.corpoSemi },
 
   vazioContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 40, gap: 10 },
-  vazioTitulo: { ...Typography.h4, fontWeight: '800', textAlign: 'center', fontSize: 15, marginTop: 10 },
+  vazioTitulo: { ...Typography.h4, fontFamily: Fonte.corpoSemi, textAlign: 'center', fontSize: 15, marginTop: 10 },
   vazioTexto: { ...Typography.body, textAlign: 'center', fontSize: 13, lineHeight: 19, marginBottom: 10 },
   vazioBtn: {
     flexDirection: 'row', alignItems: 'center',
     paddingHorizontal: 20, paddingVertical: 13,
-    borderRadius: 13, overflow: 'hidden', gap: 7,
+    borderRadius: 13, gap: 7,
+    backgroundColor: AZUL_MARCA,
   },
-  vazioBtnTexto: { color: '#FFFFFF', fontSize: 14, fontWeight: '800' },
+  vazioBtnTexto: { color: '#FFFFFF', fontSize: 14, fontFamily: Fonte.corpoSemi },
 });

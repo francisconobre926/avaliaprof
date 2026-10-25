@@ -32,7 +32,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 import * as ImagePicker from 'expo-image-picker';
 
@@ -40,15 +40,12 @@ import { Colors, Sombras } from '../../src/theme/colors';
 
 import { Spacing, Typography, Radius } from '../../src/theme/typography';
 
-
-
+import Icone from '../../src/components/Icone';
 export default function AdicionarFotoScreen() {
 
   const router = useRouter();
 
   const { papel } = useLocalSearchParams<{ papel: 'procurador' | 'anunciante' }>();
-
-
 
   const [foto, setFoto] = useState<string | null>(null);
 
@@ -56,23 +53,17 @@ export default function AdicionarFotoScreen() {
 
   const [loading, setLoading] = useState(false);
 
-
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const slideAnim = useRef(new Animated.Value(30)).current;
 
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
-
-
   const isAnunciante = papel === 'anunciante';
 
-  const corPrincipal = isAnunciante ? '#FF7900' : '#0B2E59';
+  const corPrincipal = isAnunciante ? '#E8760A' : '#16202E';
 
-  const gradiente = isAnunciante ? ['#FF7900', '#E96500'] as const : ['#0B2E59', '#174A7E'] as const;
-
-
+  const gradiente = isAnunciante ? ['#E8760A', '#E96500'] as const : ['#16202E', '#174A7E'] as const;
 
   useEffect(() => {
 
@@ -101,8 +92,6 @@ export default function AdicionarFotoScreen() {
       }),
 
     ]).start();
-
-
 
     // Animação de pulso contínua no círculo
 
@@ -136,8 +125,6 @@ export default function AdicionarFotoScreen() {
 
   }, []);
 
-
-
   const tirarFoto = async () => {
 
     setModalVisivel(false);
@@ -169,8 +156,6 @@ export default function AdicionarFotoScreen() {
     }
 
   };
-
-
 
   const escolherGaleria = async () => {
 
@@ -206,15 +191,11 @@ export default function AdicionarFotoScreen() {
 
   };
 
-
-
   const removerFoto = () => {
 
     setFoto(null);
 
   };
-
-
 
   const continuar = () => {
 
@@ -229,8 +210,6 @@ export default function AdicionarFotoScreen() {
     }, 800);
 
   };
-
-
 
   const saltar = () => {
 
@@ -259,8 +238,6 @@ export default function AdicionarFotoScreen() {
     );
 
   };
-
-
 
   return (
 
@@ -296,8 +273,6 @@ export default function AdicionarFotoScreen() {
 
         </View>
 
-
-
         <ScrollView
 
           showsVerticalScrollIndicator={false}
@@ -332,8 +307,6 @@ export default function AdicionarFotoScreen() {
 
             </View>
 
-
-
             {/* Título */}
 
             <Text style={styles.titulo}>Falta pouco!</Text>
@@ -343,8 +316,6 @@ export default function AdicionarFotoScreen() {
               Adiciona uma foto para{'\n'}completares o teu perfil
 
             </Text>
-
-
 
             {/* Foto container com animação */}
 
@@ -367,8 +338,6 @@ export default function AdicionarFotoScreen() {
               />
 
               <View style={[styles.circuloDecorativo, styles.circuloMedio, { borderColor: `${corPrincipal}30` }]} />
-
-
 
               {/* Foto principal */}
 
@@ -422,7 +391,7 @@ export default function AdicionarFotoScreen() {
 
                     <View style={[styles.fotoPlaceholderIcone, { backgroundColor: `${corPrincipal}15` }]}>
 
-                      <MaterialCommunityIcons name="camera-plus" size={40} color={corPrincipal} />
+                      <Icone name="camera-plus" size={40} color={corPrincipal} />
 
                     </View>
 
@@ -437,8 +406,6 @@ export default function AdicionarFotoScreen() {
                 )}
 
               </TouchableOpacity>
-
-
 
               {/* Botão remover flutuante */}
 
@@ -462,15 +429,11 @@ export default function AdicionarFotoScreen() {
 
             </View>
 
-
-
             {/* Benefícios */}
 
             <View style={styles.beneficios}>
 
               <Text style={styles.beneficiosTitulo}>Porquê adicionar foto?</Text>
-
-
 
               <BeneficioItem
 
@@ -484,8 +447,6 @@ export default function AdicionarFotoScreen() {
 
               />
 
-
-
               <BeneficioItem
 
                 icone="shield-checkmark"
@@ -497,8 +458,6 @@ export default function AdicionarFotoScreen() {
                 descricao="As pessoas confiam mais em perfis com fotos reais"
 
               />
-
-
 
               <BeneficioItem
 
@@ -525,8 +484,6 @@ export default function AdicionarFotoScreen() {
           </Animated.View>
 
         </ScrollView>
-
-
 
         {/* Footer */}
 
@@ -586,8 +543,6 @@ export default function AdicionarFotoScreen() {
 
           </TouchableOpacity>
 
-
-
           <TouchableOpacity
 
             style={styles.saltarSecundario}
@@ -607,8 +562,6 @@ export default function AdicionarFotoScreen() {
           </TouchableOpacity>
 
         </View>
-
-
 
         {/* Modal escolha */}
 
@@ -640,8 +593,6 @@ export default function AdicionarFotoScreen() {
 
               <Text style={styles.modalSubtitulo}>Como queres adicionar a tua foto?</Text>
 
-
-
               <TouchableOpacity
 
                 style={styles.modalOpcao}
@@ -669,8 +620,6 @@ export default function AdicionarFotoScreen() {
                 <Ionicons name="chevron-forward" size={20} color={Colors.textoTerciario} />
 
               </TouchableOpacity>
-
-
 
               <TouchableOpacity
 
@@ -700,8 +649,6 @@ export default function AdicionarFotoScreen() {
 
               </TouchableOpacity>
 
-
-
               <TouchableOpacity
 
                 style={styles.modalCancelar}
@@ -730,8 +677,6 @@ export default function AdicionarFotoScreen() {
 
 }
 
-
-
 function BeneficioItem({ icone, cor, titulo, descricao }: any) {
 
   return (
@@ -757,8 +702,6 @@ function BeneficioItem({ icone, cor, titulo, descricao }: any) {
   );
 
 }
-
-
 
 const styles = StyleSheet.create({
 
@@ -822,8 +765,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Sucesso badge
 
   sucessoBadge: {
@@ -872,8 +813,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Título
 
   titulo: {
@@ -901,8 +840,6 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
 
   },
-
-
 
   // Foto
 
@@ -1094,8 +1031,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Benefícios
 
   beneficios: {
@@ -1172,8 +1107,6 @@ const styles = StyleSheet.create({
 
   },
 
-
-
   // Footer
 
   footer: {
@@ -1241,8 +1174,6 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
 
   },
-
-
 
   // Modal
 

@@ -19,20 +19,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserStore } from '../../src/store/userStore';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
+import { Fonte } from '../../src/theme/fonts';
+import Icone from '../../src/components/Icone';
 const C = {
   background: '#F5F9FF',
-  backgroundLight: '#EAF4FF',
+  backgroundLight: '#EAF2FA',
   surface: '#FFFFFF',
-  blue: '#087CF0',
+  blue: '#0A6BC0',
   blueLight: '#19B5FF',
   blueDeep: '#034B9B',
   orange: '#FF6A00',
   orangeLight: '#FFAB19',
   white: '#F5F8FF',
   muted: '#647D99',
-  border: '#D8E6F5',
+  border: '#E7E5DF',
   green: '#45E5B0',
 };
 
@@ -40,7 +42,7 @@ const CHAVE_ONBOARDING_CONCLUIDO = '@gohome_onboarding_concluido';
 
 type Slide = {
   id: string;
-  icone: keyof typeof MaterialCommunityIcons.glyphMap;
+  icone: string;
   gradiente: readonly [string, string, ...string[]];
   titulo: string;
   descricao: string;
@@ -52,7 +54,7 @@ const slides: Slide[] = [
   {
     id: '1',
     icone: 'home-city-outline',
-    gradiente: ['#087CF0', '#034B9B'],
+    gradiente: ['#0A6BC0', '#034B9B'],
     titulo: 'Tudo num só lugar',
     descricao:
       'Descobre imóveis, veículos, alojamentos, espaços comerciais, produtos e serviços numa única plataforma.',
@@ -62,7 +64,7 @@ const slides: Slide[] = [
   {
     id: '2',
     icone: 'map-search-outline',
-    gradiente: ['#087CF0', '#0878E8'],
+    gradiente: ['#0A6BC0', '#0878E8'],
     titulo: 'Encontra o que procuras',
     descricao:
       'Explora categorias, pesquisa por localização e compara opções para encontrares a solução ideal para ti.',
@@ -72,7 +74,7 @@ const slides: Slide[] = [
   {
     id: '3',
     icone: 'handshake-outline',
-    gradiente: ['#087CF0', '#FF6A00'],
+    gradiente: ['#0A6BC0', '#FF6A00'],
     titulo: 'Encontra. Conecta-te. Negocia.',
     descricao:
       'Entra em contacto com anunciantes, descobre oportunidades e publica os teus próprios anúncios no GoHome.',
@@ -94,7 +96,6 @@ export default function OnboardingScreen() {
   const brilho = useRef(new Animated.Value(0)).current;
 
   const usuario = useUserStore(state => state.usuario);
-  const isLogado = useUserStore(state => state.isLogado);
   const carregado = useUserStore(state => state.carregado);
   const carregarUsuario = useUserStore(state => state.carregarUsuario);
 
@@ -141,8 +142,8 @@ export default function OnboardingScreen() {
 
         const estado = useUserStore.getState();
 
-        if (estado.isLogado && estado.usuario) {
-          irParaInicio(estado.usuario.papel);
+        if (estado.usuario) {
+          irParaInicio(estado.papel);
           return;
         }
 
@@ -273,7 +274,7 @@ export default function OnboardingScreen() {
       {/* Fundo futurista */}
       <View pointerEvents="none" style={StyleSheet.absoluteFill}>
         <LinearGradient
-          colors={['#EAF4FF', '#F8FBFF', '#FFFFFF']}
+          colors={['#EAF2FA', '#F8FBFF', '#FFFFFF']}
           locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -438,7 +439,7 @@ export default function OnboardingScreen() {
 
                     <View style={styles.reflexoIcone} />
 
-                    <MaterialCommunityIcons
+                    <Icone
                       name={item.icone}
                       size={tamanhoIlustracao * 0.39}
                       color={C.white}
@@ -661,7 +662,7 @@ const styles = StyleSheet.create({
   carregamentoTexto: {
     color: C.muted,
     fontSize: 9,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
     letterSpacing: 2,
     marginTop: 15,
   },
@@ -752,7 +753,7 @@ const styles = StyleSheet.create({
   saltarText: {
     color: C.white,
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
   },
 
   // Slide
@@ -856,7 +857,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 12,
-    backgroundColor: '#EAF4FF',
+    backgroundColor: '#EAF2FA',
     borderWidth: 1,
     borderColor: 'rgba(69,229,176,0.3)',
     alignItems: 'center',
@@ -898,7 +899,7 @@ const styles = StyleSheet.create({
   destaqueBadgeText: {
     color: C.blueLight,
     fontSize: 9,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.5,
   },
 
@@ -911,22 +912,22 @@ const styles = StyleSheet.create({
   numeroSlide: {
     color: C.orangeLight,
     fontSize: 10,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
     letterSpacing: 2.5,
     marginBottom: 10,
   },
   titulo: {
-    color: '#17324D',
+    color: '#1E2836',
     fontSize: 30,
     lineHeight: 37,
-    fontWeight: '900',
+    fontFamily: Fonte.tituloBold,
     textAlign: 'center',
     letterSpacing: -0.9,
     marginBottom: 14,
   },
   descricao: {
-    color: '#536B86',
-    fontSize: 14,
+    color: '#5B616B',
+    fontFamily: Fonte.corpo, fontSize: 14,
     lineHeight: 23,
     textAlign: 'center',
     maxWidth: 365,
@@ -947,17 +948,17 @@ const styles = StyleSheet.create({
   progressoLabel: {
     color: '#647D99',
     fontSize: 8,
-    fontWeight: '800',
+    fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.25,
   },
   progressoNumero: {
     color: C.blueLight,
     fontSize: 11,
-    fontWeight: '900',
+    fontFamily: Fonte.corpoBold,
   },
   progressoTotal: {
-    color: '#7187A2',
-    fontWeight: '600',
+    color: '#8E939B',
+    fontFamily: Fonte.corpoSemi,
   },
   dots: {
     flexDirection: 'row',
@@ -970,7 +971,7 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 4,
     overflow: 'hidden',
-    backgroundColor: '#D8E6F5',
+    backgroundColor: '#E7E5DF',
   },
   botaoContainer: {
     borderRadius: 17,
@@ -993,7 +994,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: C.white,
     fontSize: 16,
-    fontWeight: '900',
+    fontFamily: Fonte.corpoBold,
     textAlign: 'center',
     marginLeft: 37,
   },
@@ -1017,12 +1018,12 @@ const styles = StyleSheet.create({
   assinaturaLinha: {
     width: 22,
     height: 1,
-    backgroundColor: '#D8E6F5',
+    backgroundColor: '#E7E5DF',
   },
   assinaturaTexto: {
-    color: '#7187A2',
+    color: '#8E939B',
     fontSize: 8,
-    fontWeight: '700',
+    fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.8,
   },
 });

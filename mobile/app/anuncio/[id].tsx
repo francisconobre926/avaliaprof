@@ -22,6 +22,7 @@ import { useCores } from '../../src/store/themeStore';
 import { ANUNCIOS_MOCK, formatarPrecoCompleto, tempoDesde } from '../../src/data/anuncios-mock';
 import { Anuncio } from '../../src/types';
 import { obterAnuncioLocal } from '../../src/store/anunciosLocal';
+import { useAuthGate } from '../../src/hooks/useAuthGate';
 
 import { Fonte } from '../../src/theme/fonts';
 import Icone from '../../src/components/Icone';
@@ -69,11 +70,14 @@ export default function DetalheAnuncio() {
   }>();
   const router = useRouter();
   const cores = useCores();
+  const { requerConta } = useAuthGate();
 
   const [anuncio, setAnuncio] = useState<Anuncio | null>(null);
   const [fotoIndex, setFotoIndex] = useState(0);
   const [favoritado, setFavoritado] = useState(false);
-  const estaDesbloqueado = desbloqueado === 'true';
+  // TEMPORÁRIO: sem restrição de conta/pagamento. Para reactivar o desbloqueio pago,
+  // voltar a `desbloqueado === 'true'`.
+  const estaDesbloqueado = true || desbloqueado === 'true';
 
   useEffect(() => {
     let activo = true;
@@ -226,6 +230,10 @@ export default function DetalheAnuncio() {
     const url = `https://wa.me/${telefone}?text=${texto}`;
     try { await Linking.openURL(url); }
     catch { Alert.alert('WhatsApp', 'Não foi possível abrir o WhatsApp neste dispositivo.'); }
+  };
+
+  const reservarDatas = () => {
+    requerConta('generico', () => router.push({ pathname: '/reservar/[id]' as any, params: { id: anuncio.id } }));
   };
 
   const abrirChat = () => {
@@ -410,6 +418,16 @@ export default function DetalheAnuncio() {
         {/* ============ ACÇÕES: GPS E CHAT ============ */}
         <View style={[styles.secçao, { backgroundColor: cores.fundoElevado, marginTop: Spacing.sm }]}>
           <Text style={[styles.secçaoTitulo, { color: cores.textoPrincipal }]}>Próximos passos</Text>
+          {anuncio.finalidade !== 'vender' && (
+            <TouchableOpacity style={[styles.acaoPrincipal, { backgroundColor: LARANJA_MARCA, marginBottom: 10 }]} onPress={reservarDatas} activeOpacity={0.85}>
+              <Ionicons name="calendar" size={20} color="#FFFFFF" />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.acaoPrincipalTitulo}>Reservar datas</Text>
+                <Text style={styles.acaoPrincipalSubtitulo}>Pague por M-Pesa ou e-Mola · cancelamento grátis até 48 h antes</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="#FFFFFF" />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity style={styles.acaoPrincipal} onPress={abrirGoogleMaps} activeOpacity={0.85}>
             <LinearGradient colors={[AZUL_ESCURO, AZUL_MARCA]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} />
             <Ionicons name="navigate" size={20} color="#FFFFFF" />

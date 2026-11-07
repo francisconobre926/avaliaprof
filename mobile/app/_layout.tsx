@@ -60,6 +60,7 @@ export default function RootLayout() {
         <Stack.Screen name="(anunciante)" />
         <Stack.Screen name="anuncio/[id]" />
         <Stack.Screen name="imovel/[id]" />
+        <Stack.Screen name="reservar/[id]" />
         <Stack.Screen name="pagamento" />
         <Stack.Screen name="chat/[id]" />
         <Stack.Screen name="editar-perfil" />

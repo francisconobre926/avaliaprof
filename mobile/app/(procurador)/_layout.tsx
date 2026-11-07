@@ -62,6 +62,15 @@ export default function ProcuradorLayout() {
         }}
       />
       <Tabs.Screen
+        name="reservas"
+        options={{
+          title: 'Reservas',
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'calendar' : 'calendar-outline'} color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="mensagens"
         options={{
           title: 'Mensagens',

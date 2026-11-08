@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     papelBadgeText: {
         ...Typography.captionBold,
         letterSpacing: 0.5,
-        fontSize: 10,
+        fontSize: 12,
     },
     progressoContainer: {
         paddingHorizontal: Spacing.lg,

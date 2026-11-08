@@ -5,14 +5,13 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  StatusBar,
   Share,
   Alert,
   Modal,
   Pressable,
   Clipboard,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import TopBar, { TopBarBotao } from '../src/components/TopBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -135,7 +134,11 @@ export default function ReferenciaScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      <TopBar
+        titulo="Convida e ganha"
+        onVoltar={() => router.back()}
+        acoes={<TopBarBotao icone="help-circle-outline" rotulo="Ajuda" onPress={() => setModalInfoVisivel(true)} />}
+      />
 
       {/* ============ HERO ============ */}
       <LinearGradient
@@ -144,29 +147,11 @@ export default function ReferenciaScreen() {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
-        <SafeAreaView edges={['top']}>
-          <View style={styles.heroHeader}>
-            <TouchableOpacity
-              style={styles.heroBotao}
-              onPress={() => router.back()}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
-            </TouchableOpacity>
-            <Text style={styles.heroTitulo}>Convida e ganha</Text>
-            <TouchableOpacity
-              style={styles.heroBotao}
-              onPress={() => setModalInfoVisivel(true)}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="help-circle-outline" size={22} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-
+        <View>
           {/* Chamada principal */}
           <View style={styles.heroCenter}>
             <View style={styles.heroIconeContainer}>
-              <Icone name="gift-outline" size={36} color="#FFFFFF" />
+              <Icone name="gift-outline" size={36} color={Colors.branco} />
             </View>
             <Text style={styles.heroTexto}>
               Ganha <Text style={styles.heroTextoDestaque}>10%</Text> de tudo que os teus convidados paguem no GoHome
@@ -175,7 +160,7 @@ export default function ReferenciaScreen() {
               Sem limite de ganhos. Para sempre.
             </Text>
           </View>
-        </SafeAreaView>
+        </View>
       </LinearGradient>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -192,7 +177,7 @@ export default function ReferenciaScreen() {
               onPress={copiarCodigo}
               activeOpacity={0.85}
             >
-              <Ionicons name="copy" size={14} color="#FFFFFF" />
+              <Ionicons name="copy" size={14} color={Colors.branco} />
               <Text style={styles.copiarBotaoTexto}>Copiar</Text>
             </TouchableOpacity>
           </View>
@@ -213,7 +198,7 @@ export default function ReferenciaScreen() {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
               />
-              <Icone name="share-variant" size={18} color="#FFFFFF" />
+              <Icone name="share-variant" size={18} color={Colors.branco} />
               <Text style={styles.partilharBotaoTexto}>Partilhar convite</Text>
             </TouchableOpacity>
 
@@ -236,8 +221,8 @@ export default function ReferenciaScreen() {
           <View style={styles.statsRow}>
             <StatCard
               icone="cash-check"
-              cor={Colors.verde}
-              corFundo="rgba(76, 175, 80, 0.1)"
+              cor={Colors.verdeTexto}
+              corFundo="rgba(52, 168, 83, 0.1)"
               label="Confirmado"
               valor={formatarValor(totalGanho)}
               cores={cores}
@@ -245,7 +230,7 @@ export default function ReferenciaScreen() {
             <StatCard
               icone="clock-outline"
               cor={Colors.aviso}
-              corFundo="rgba(255, 152, 0, 0.1)"
+              corFundo="rgba(26, 115, 232, 0.1)"
               label="Pendente"
               valor={formatarValor(totalPendente)}
               cores={cores}
@@ -264,7 +249,7 @@ export default function ReferenciaScreen() {
             <StatCard
               icone="trending-up"
               cor={Colors.premium}
-              corFundo="rgba(255, 193, 7, 0.1)"
+              corFundo="rgba(154, 84, 0, 0.1)"
               label="Taxa conversão"
               valor={`${taxaConversao}%`}
               cores={cores}
@@ -323,12 +308,12 @@ export default function ReferenciaScreen() {
             end={{ x: 1, y: 1 }}
           />
           <View style={styles.ctaConteudo}>
-            <Icone name="rocket-launch" size={32} color="#FFFFFF" />
+            <Icone name="rocket-launch" size={32} color={Colors.branco} />
             <View style={{ flex: 1 }}>
               <Text style={styles.ctaTitulo}>Pronto para ganhar mais?</Text>
               <Text style={styles.ctaTexto}>Partilha agora com amigos</Text>
             </View>
-            <Ionicons name="arrow-forward" size={22} color="#FFFFFF" />
+            <Ionicons name="arrow-forward" size={22} color={Colors.branco} />
           </View>
         </TouchableOpacity>
 
@@ -429,7 +414,7 @@ export default function ReferenciaScreen() {
             <View style={[styles.modalHandle, { backgroundColor: cores.bordaMedia }]} />
 
             <View style={styles.modalHeader}>
-              <View style={[styles.modalIcone, { backgroundColor: 'rgba(255, 193, 7, 0.15)' }]}>
+              <View style={[styles.modalIcone, { backgroundColor: 'rgba(154, 84, 0, 0.15)' }]}>
                 <Icone name="flask-outline" size={24} color={Colors.premium} />
               </View>
               <View style={{ flex: 1 }}>
@@ -463,7 +448,7 @@ export default function ReferenciaScreen() {
                     }}
                     activeOpacity={0.85}
                   >
-                    <Icone name="cash-plus" size={20} color="#FFFFFF" />
+                    <Icone name="cash-plus" size={20} color={Colors.branco} />
                     <View style={{ flex: 1 }}>
                       <Text style={styles.demoBotaoTitulo}>Simular pagamento</Text>
                       <Text style={styles.demoBotaoSubtitulo}>
@@ -477,14 +462,14 @@ export default function ReferenciaScreen() {
 
                 {convidadoSeleccionado.estado === 'pagou_pendente' && (
                   <TouchableOpacity
-                    style={[styles.demoBotao, { backgroundColor: Colors.verde }]}
+                    style={[styles.demoBotao, { backgroundColor: Colors.verdeTexto }]}
                     onPress={() => {
                       simularConfirmacao(convidadoSeleccionado);
                       setModalDemoVisivel(false);
                     }}
                     activeOpacity={0.85}
                   >
-                    <Icone name="check-circle" size={20} color="#FFFFFF" />
+                    <Icone name="check-circle" size={20} color={Colors.branco} />
                     <View style={{ flex: 1 }}>
                       <Text style={styles.demoBotaoTitulo}>Confirmar pagamento</Text>
                       <Text style={styles.demoBotaoSubtitulo}>
@@ -495,9 +480,9 @@ export default function ReferenciaScreen() {
                 )}
 
                 {convidadoSeleccionado.estado === 'pagou_confirmado' && (
-                  <View style={[styles.demoFeito, { backgroundColor: 'rgba(76, 175, 80, 0.1)' }]}>
-                    <Icone name="check-decagram" size={32} color={Colors.verde} />
-                    <Text style={[styles.demoFeitoTexto, { color: Colors.verde }]}>
+                  <View style={[styles.demoFeito, { backgroundColor: 'rgba(52, 168, 83, 0.1)' }]}>
+                    <Icone name="check-decagram" size={32} color={Colors.verdeTexto} />
+                    <Text style={[styles.demoFeitoTexto, { color: Colors.verdeTexto }]}>
                       Comissão já recebida
                     </Text>
                   </View>
@@ -532,7 +517,7 @@ function ConvidadoItem({ convidado, cores, onPress }: any) {
   const coresMap: Record<string, string> = {
     cinza: cores.textoSecundario,
     laranja: Colors.aviso,
-    verde: Colors.verde,
+    verde: Colors.verdeTexto,
     vermelho: Colors.erro,
   };
   const corFinal = coresMap[corEstado];
@@ -545,7 +530,7 @@ function ConvidadoItem({ convidado, cores, onPress }: any) {
       activeOpacity={0.7}
     >
       <View style={[styles.convidadoAvatar, { backgroundColor: cores.principalClara }]}>
-        <Text style={[styles.convidadoInicial, { color: cores.principal }]}>{inicial}</Text>
+        <Text style={[styles.convidadoInicial, { color: cores.principalTexto }]}>{inicial}</Text>
       </View>
 
       <View style={styles.convidadoInfo}>
@@ -577,7 +562,7 @@ function ConvidadoItem({ convidado, cores, onPress }: any) {
           </Text>
         </View>
         {convidado.comissaoGerada > 0 && (
-          <Text style={[styles.convidadoComissao, { color: Colors.verde }]}>
+          <Text style={[styles.convidadoComissao, { color: Colors.verdeTexto }]}>
             {`+${formatarValor(convidado.comissaoGerada)}`}
           </Text>
         )}
@@ -608,26 +593,10 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
 
   hero: { paddingBottom: Spacing.xl },
-  heroHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-  },
-  heroBotao: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  heroTitulo: { ...Typography.h2, color: '#FFFFFF' },
   heroCenter: {
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.md,
+    paddingTop: Spacing.lg,
   },
   heroIconeContainer: {
     width: 72,
@@ -642,7 +611,7 @@ const styles = StyleSheet.create({
   },
   heroTexto: {
     ...Typography.h3,
-    color: '#FFFFFF',
+    color: Colors.branco,
     textAlign: 'center',
     marginBottom: 6,
     lineHeight: 24,
@@ -697,13 +666,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   copiarBotaoTexto: {
-    color: '#FFFFFF',
+    color: Colors.branco,
     fontSize: 12,
     fontFamily: Fonte.corpoSemi,
   },
   linkLabel: {
     ...Typography.caption,
-    fontSize: 11,
+    fontSize: 12,
     marginBottom: Spacing.md,
   },
   accoes: {
@@ -719,11 +688,11 @@ const styles = StyleSheet.create({
     borderRadius: Radius.full,
     overflow: 'hidden',
     gap: 8,
-    ...Sombras.colorida('#0A6BC0'),
+    ...Sombras.colorida(Colors.azul),
   },
   partilharBotaoTexto: {
     ...Typography.button,
-    color: '#FFFFFF',
+    color: Colors.branco,
   },
   linkBotao: {
     width: 48,
@@ -765,7 +734,7 @@ const styles = StyleSheet.create({
   },
   statLabel: {
     ...Typography.caption,
-    fontSize: 11,
+    fontSize: 12,
     marginBottom: 2,
   },
   statValor: {
@@ -831,12 +800,12 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   convidadoPapelTexto: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
   },
   convidadoTempo: {
     ...Typography.caption,
-    fontSize: 11,
+    fontSize: 12,
   },
   convidadoRight: {
     alignItems: 'flex-end',
@@ -856,7 +825,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   estadoBadgeTexto: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
   },
   convidadoComissao: {
@@ -883,7 +852,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.lg,
     borderRadius: Radius.xl,
     overflow: 'hidden',
-    ...Sombras.colorida('#0A6BC0'),
+    ...Sombras.colorida(Colors.azul),
   },
   ctaConteudo: {
     flexDirection: 'row',
@@ -893,7 +862,7 @@ const styles = StyleSheet.create({
   },
   ctaTitulo: {
     ...Typography.bodyBold,
-    color: '#FFFFFF',
+    color: Colors.branco,
     fontSize: 15,
     marginBottom: 2,
   },
@@ -959,7 +928,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   passoNumeroTexto: {
-    color: '#FFFFFF',
+    color: Colors.branco,
     fontSize: 14,
     fontFamily: Fonte.corpoSemi,
   },
@@ -1019,7 +988,7 @@ const styles = StyleSheet.create({
   },
   demoBotaoTitulo: {
     ...Typography.bodyBold,
-    color: '#FFFFFF',
+    color: Colors.branco,
     marginBottom: 2,
   },
   demoBotaoSubtitulo: {

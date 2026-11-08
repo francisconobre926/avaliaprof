@@ -24,14 +24,13 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  StatusBar,
   Animated,
   Easing,
   BackHandler,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import TopBar from '../../src/components/TopBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -42,16 +41,17 @@ import { useWalletStore, formatarValor } from '../../src/store/walletStore';
 
 import { Fonte } from '../../src/theme/fonts';
 import Icone from '../../src/components/Icone';
+import { Colors } from '../../src/theme/colors';
 // ============================================================
 // CORES GOHOME
 // ============================================================
-const AZUL_HERO_INICIO = '#0A6BC0';   // Azul GoHome — o mesmo da "Promoção lançamento"
-const AZUL_HERO_FIM = '#095FAA';
-const LARANJA_MARCA = '#E8760A';
-const LARANJA_ESCURO = '#B95A05';
-const VERDE_SUCESSO = '#2F7A4F';
-const VERMELHO_ERRO = '#C2412D';
-const AMARELO_AVISO = '#E8760A';
+const AZUL_HERO_INICIO = Colors.azul;   // Azul GoHome — o mesmo da "Promoção lançamento"
+const AZUL_HERO_FIM = Colors.azulTexto;
+const COR_ACENTO = Colors.azul;
+const COR_ACENTO_ESCURO = Colors.azulTexto;
+const VERDE_SUCESSO = Colors.verdeTexto;
+const VERMELHO_ERRO = Colors.erro;
+const AMARELO_AVISO = Colors.azul;
 
 type MetodoPagamento = 'mpesa' | 'emola' | 'credito';
 
@@ -267,33 +267,22 @@ export default function PagamentoDesbloqueio() {
   // ============ UI ============
   return (
     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <StatusBar barStyle="light-content" backgroundColor={AZUL_HERO_INICIO} />
+      <TopBar
+        titulo="Pagamento"
+        onVoltar={() => {
+          if (estado === 'formulario' || estado === 'sucesso') router.back();
+          else setModalCancelarVisivel(true);
+        }}
+        acoes={<></>}
+      />
 
       {/* HEADER */}
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
-        <LinearGradient
-          colors={[AZUL_HERO_INICIO, AZUL_HERO_FIM]}
-          style={styles.header}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <View style={styles.headerTop}>
-            <TouchableOpacity
-              style={styles.headerBotao}
-              onPress={() => {
-                if (estado === 'formulario' || estado === 'sucesso') router.back();
-                else setModalCancelarVisivel(true);
-              }}
-            >
-              <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
-            </TouchableOpacity>
-            <View style={styles.headerCenter}>
-              <Text style={styles.headerLabel}>DESBLOQUEIO DE CONTACTO</Text>
-              <Text style={styles.headerTitulo}>Pagamento</Text>
-            </View>
-            <View style={styles.headerBotao} />
-          </View>
-
+      <LinearGradient
+        colors={[AZUL_HERO_INICIO, AZUL_HERO_FIM]}
+        style={styles.header}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
           {/* Montante */}
           <View style={styles.montanteContainer}>
             <Text style={styles.montanteLabel}>Vais desbloquear por</Text>
@@ -302,14 +291,13 @@ export default function PagamentoDesbloqueio() {
               <Text style={styles.montanteMoeda}>MT</Text>
             </View>
             <View style={styles.descontoBadge}>
-              <Icone name="tag" size={12} color="#FFFFFF" />
+              <Icone name="tag" size={12} color={Colors.branco} />
               <Text style={styles.descontoBadgeTexto}>
                 50% OFF — Antes {valorNormal} MT
               </Text>
             </View>
           </View>
-        </LinearGradient>
-      </SafeAreaView>
+      </LinearGradient>
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -327,7 +315,7 @@ export default function PagamentoDesbloqueio() {
               <View style={[styles.resumoCard, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
                 <View style={styles.resumoHeader}>
                   <Icone name="lock-open-outline" size={20} color={cores.principal} />
-                  <Text style={[styles.resumoTitulo, { color: cores.principal }]}>Vais desbloquear</Text>
+                  <Text style={[styles.resumoTitulo, { color: cores.principalTexto }]}>Vais desbloquear</Text>
                 </View>
                 <Text style={[styles.resumoAnuncioTitulo, { color: cores.textoPrincipal }]} numberOfLines={2}>
                   {titulo}
@@ -356,7 +344,7 @@ export default function PagamentoDesbloqueio() {
                 </View>
                 <View style={styles.resumoLinhaInfo}>
                   <Text style={[styles.resumoLabel, { color: cores.textoSecundario }]}>Valor</Text>
-                  <Text style={[styles.resumoValor, { color: LARANJA_MARCA, fontFamily: Fonte.corpoBold }]}>
+                  <Text style={[styles.resumoValor, { color: COR_ACENTO, fontFamily: Fonte.corpoBold }]}>
                     {valorPago} MT
                   </Text>
                 </View>
@@ -403,13 +391,13 @@ export default function PagamentoDesbloqueio() {
                   style={[
                     styles.metodoCard,
                     { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil },
-                    metodo === 'mpesa' && { borderColor: '#ED1C24', borderWidth: 2 },
+                    metodo === 'mpesa' && { borderColor: Colors.erro, borderWidth: 2 },
                   ]}
                   onPress={() => setMetodo('mpesa')}
                   activeOpacity={0.85}
                 >
                   <View style={[styles.metodoIcone, { backgroundColor: 'rgba(237, 28, 36, 0.1)' }]}>
-                    <Icone name="cellphone" size={22} color="#ED1C24" />
+                    <Icone name="cellphone" size={22} color={Colors.erro} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={[styles.metodoNome, { color: cores.textoPrincipal }]}>M-Pesa</Text>
@@ -418,7 +406,7 @@ export default function PagamentoDesbloqueio() {
                     </Text>
                   </View>
                   {metodo === 'mpesa' && (
-                    <Ionicons name="checkmark-circle" size={22} color="#ED1C24" />
+                    <Ionicons name="checkmark-circle" size={22} color={Colors.erro} />
                   )}
                 </TouchableOpacity>
 
@@ -427,13 +415,13 @@ export default function PagamentoDesbloqueio() {
                   style={[
                     styles.metodoCard,
                     { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil },
-                    metodo === 'emola' && { borderColor: '#0066B3', borderWidth: 2 },
+                    metodo === 'emola' && { borderColor: Colors.azul, borderWidth: 2 },
                   ]}
                   onPress={() => setMetodo('emola')}
                   activeOpacity={0.85}
                 >
                   <View style={[styles.metodoIcone, { backgroundColor: 'rgba(0, 102, 179, 0.1)' }]}>
-                    <Icone name="cellphone-wireless" size={22} color="#0066B3" />
+                    <Icone name="cellphone-wireless" size={22} color={Colors.azul} />
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={[styles.metodoNome, { color: cores.textoPrincipal }]}>eMola</Text>
@@ -442,7 +430,7 @@ export default function PagamentoDesbloqueio() {
                     </Text>
                   </View>
                   {metodo === 'emola' && (
-                    <Ionicons name="checkmark-circle" size={22} color="#0066B3" />
+                    <Ionicons name="checkmark-circle" size={22} color={Colors.azul} />
                   )}
                 </TouchableOpacity>
               </View>
@@ -459,7 +447,7 @@ export default function PagamentoDesbloqueio() {
                     erroNumero && { borderColor: VERMELHO_ERRO, backgroundColor: 'rgba(211, 47, 47, 0.05)' },
                   ]}>
                     <View style={[styles.inputPrefixo, { backgroundColor: cores.principalClara, borderRightColor: cores.bordaSubtil }]}>
-                      <Text style={[styles.inputPrefixoTexto, { color: cores.principal }]}>+258</Text>
+                      <Text style={[styles.inputPrefixoTexto, { color: cores.principalTexto }]}>+258</Text>
                     </View>
                     <TextInput
                       style={[styles.inputCampo, { color: cores.textoPrincipal }]}
@@ -495,7 +483,7 @@ export default function PagamentoDesbloqueio() {
               )}
 
               {/* Aviso de segurança */}
-              <View style={[styles.avisoBox, { backgroundColor: 'rgba(10, 107, 192, 0.06)', borderColor: 'rgba(10, 107, 192, 0.2)' }]}>
+              <View style={[styles.avisoBox, { backgroundColor: 'rgba(26, 115, 232, 0.06)', borderColor: 'rgba(26, 115, 232, 0.2)' }]}>
                 <Ionicons name="shield-checkmark" size={18} color={cores.principal} />
                 <Text style={[styles.avisoTexto, { color: cores.textoSecundario }]}>
                   Este valor só paga o <Text style={{ fontFamily: Fonte.corpoSemi, color: cores.textoPrincipal }}>desbloqueio do contacto</Text>.{'\n'}
@@ -510,7 +498,7 @@ export default function PagamentoDesbloqueio() {
                 activeOpacity={0.85}
               >
                 <LinearGradient
-                  colors={[LARANJA_MARCA, LARANJA_ESCURO]}
+                  colors={[COR_ACENTO, COR_ACENTO_ESCURO]}
                   style={StyleSheet.absoluteFill}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
@@ -518,7 +506,7 @@ export default function PagamentoDesbloqueio() {
                 <Icone
                   name={metodo === 'credito' ? 'wallet' : 'credit-card-check'}
                   size={22}
-                  color="#FFFFFF"
+                  color={Colors.branco}
                 />
                 <Text style={styles.botaoPagarTexto}>
                   {metodo === 'credito'
@@ -534,7 +522,7 @@ export default function PagamentoDesbloqueio() {
             <View style={styles.conteudoProcessando}>
               <Animated.View style={[styles.loadingCirculo, { transform: [{ scale: pulseValue }] }]}>
                 <Animated.View style={{ transform: [{ rotate: spin }] }}>
-                  <Icone name="loading" size={48} color={LARANJA_MARCA} />
+                  <Icone name="loading" size={48} color={COR_ACENTO} />
                 </Animated.View>
               </Animated.View>
               <Text style={[styles.processandoTitulo, { color: cores.textoPrincipal }]}>
@@ -550,7 +538,7 @@ export default function PagamentoDesbloqueio() {
           {estado === 'aguardando_pin' && (
             <View style={styles.conteudoProcessando}>
               <Animated.View style={[styles.loadingCirculo, { transform: [{ scale: pulseValue }] }]}>
-                <Icone name="cellphone-key" size={48} color={LARANJA_MARCA} />
+                <Icone name="cellphone-key" size={48} color={COR_ACENTO} />
               </Animated.View>
               <Text style={[styles.processandoTitulo, { color: cores.textoPrincipal }]}>
                 Verifica o teu telefone
@@ -562,10 +550,10 @@ export default function PagamentoDesbloqueio() {
 
               <View style={[
                 styles.timerBox,
-                { backgroundColor: tempoCritico ? 'rgba(211,47,47,0.1)' : 'rgba(232, 118, 10,0.1)', borderColor: tempoCritico ? VERMELHO_ERRO : LARANJA_MARCA },
+                { backgroundColor: tempoCritico ? 'rgba(211,47,47,0.1)' : 'rgba(26, 115, 232,0.1)', borderColor: tempoCritico ? VERMELHO_ERRO : COR_ACENTO },
               ]}>
-                <Ionicons name="time" size={18} color={tempoCritico ? VERMELHO_ERRO : LARANJA_MARCA} />
-                <Text style={[styles.timerTexto, { color: tempoCritico ? VERMELHO_ERRO : LARANJA_MARCA }]}>
+                <Ionicons name="time" size={18} color={tempoCritico ? VERMELHO_ERRO : COR_ACENTO} />
+                <Text style={[styles.timerTexto, { color: tempoCritico ? VERMELHO_ERRO : COR_ACENTO }]}>
                   Tempo restante: {formatarTempo(tempoRestante)}
                 </Text>
               </View>
@@ -578,7 +566,7 @@ export default function PagamentoDesbloqueio() {
                   `Confirma o pagamento de ${valorPago} MT`,
                 ].map((texto, i) => (
                   <View key={i} style={styles.instrucaoItem}>
-                    <View style={[styles.instrucaoNumero, { backgroundColor: LARANJA_MARCA }]}>
+                    <View style={[styles.instrucaoNumero, { backgroundColor: COR_ACENTO }]}>
                       <Text style={styles.instrucaoNumeroTexto}>{i + 1}</Text>
                     </View>
                     <Text style={[styles.instrucaoTexto, { color: cores.textoPrincipal }]}>{texto}</Text>
@@ -596,15 +584,15 @@ export default function PagamentoDesbloqueio() {
                 </View>
                 <View style={styles.demoBotoes}>
                   <TouchableOpacity style={[styles.demoBotao, { backgroundColor: VERDE_SUCESSO }]} onPress={simularSucesso}>
-                    <Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
+                    <Ionicons name="checkmark-circle" size={16} color={Colors.branco} />
                     <Text style={styles.demoBotaoTexto}>Sucesso</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.demoBotao, { backgroundColor: VERMELHO_ERRO }]} onPress={simularFalha}>
-                    <Ionicons name="close-circle" size={16} color="#FFFFFF" />
+                    <Ionicons name="close-circle" size={16} color={Colors.branco} />
                     <Text style={styles.demoBotaoTexto}>Falha</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.demoBotao, { backgroundColor: AMARELO_AVISO }]} onPress={simularTimeout}>
-                    <Ionicons name="time" size={16} color="#FFFFFF" />
+                    <Ionicons name="time" size={16} color={Colors.branco} />
                     <Text style={styles.demoBotaoTexto}>Timeout</Text>
                   </TouchableOpacity>
                 </View>
@@ -620,7 +608,7 @@ export default function PagamentoDesbloqueio() {
           {estado === 'sucesso' && (
             <View style={styles.conteudoProcessando}>
               <View style={[styles.sucessoCirculo, { backgroundColor: VERDE_SUCESSO }]}>
-                <Ionicons name="checkmark" size={60} color="#FFFFFF" />
+                <Ionicons name="checkmark" size={60} color={Colors.branco} />
               </View>
               <Text style={[styles.sucessoTitulo, { color: VERDE_SUCESSO }]}>Contacto desbloqueado!</Text>
               <Text style={[styles.processandoSubtitulo, { color: cores.textoSecundario }]}>
@@ -633,7 +621,7 @@ export default function PagamentoDesbloqueio() {
           {estado === 'falha' && (
             <View style={styles.conteudoProcessando}>
               <View style={[styles.sucessoCirculo, { backgroundColor: VERMELHO_ERRO }]}>
-                <Ionicons name="close" size={60} color="#FFFFFF" />
+                <Ionicons name="close" size={60} color={Colors.branco} />
               </View>
               <Text style={[styles.sucessoTitulo, { color: VERMELHO_ERRO }]}>Pagamento recusado</Text>
               <Text style={[styles.processandoSubtitulo, { color: cores.textoSecundario }]}>
@@ -643,8 +631,8 @@ export default function PagamentoDesbloqueio() {
               </Text>
 
               <TouchableOpacity style={styles.botaoPagar} onPress={tentarNovamente} activeOpacity={0.85}>
-                <LinearGradient colors={[LARANJA_MARCA, LARANJA_ESCURO]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
-                <Icone name="refresh" size={20} color="#FFFFFF" />
+                <LinearGradient colors={[COR_ACENTO, COR_ACENTO_ESCURO]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
+                <Icone name="refresh" size={20} color={Colors.branco} />
                 <Text style={styles.botaoPagarTexto}>Tentar novamente</Text>
               </TouchableOpacity>
 
@@ -658,7 +646,7 @@ export default function PagamentoDesbloqueio() {
           {estado === 'timeout' && (
             <View style={styles.conteudoProcessando}>
               <View style={[styles.sucessoCirculo, { backgroundColor: AMARELO_AVISO }]}>
-                <Ionicons name="time" size={60} color="#FFFFFF" />
+                <Ionicons name="time" size={60} color={Colors.branco} />
               </View>
               <Text style={[styles.sucessoTitulo, { color: AMARELO_AVISO }]}>Tempo esgotado</Text>
               <Text style={[styles.processandoSubtitulo, { color: cores.textoSecundario }]}>
@@ -667,8 +655,8 @@ export default function PagamentoDesbloqueio() {
               </Text>
 
               <TouchableOpacity style={styles.botaoPagar} onPress={tentarNovamente} activeOpacity={0.85}>
-                <LinearGradient colors={[LARANJA_MARCA, LARANJA_ESCURO]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
-                <Icone name="refresh" size={20} color="#FFFFFF" />
+                <LinearGradient colors={[COR_ACENTO, COR_ACENTO_ESCURO]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
+                <Icone name="refresh" size={20} color={Colors.branco} />
                 <Text style={styles.botaoPagarTexto}>Tentar novamente</Text>
               </TouchableOpacity>
 
@@ -693,7 +681,7 @@ export default function PagamentoDesbloqueio() {
             </Text>
             <View style={styles.modalCancelarBotoes}>
               <TouchableOpacity
-                style={[styles.modalCancelarBotaoVoltar, { backgroundColor: LARANJA_MARCA }]}
+                style={[styles.modalCancelarBotaoVoltar, { backgroundColor: COR_ACENTO }]}
                 onPress={() => setModalCancelarVisivel(false)}
               >
                 <Text style={styles.modalCancelarBotaoVoltarTexto}>Continuar pagamento</Text>
@@ -717,27 +705,21 @@ export default function PagamentoDesbloqueio() {
 // ============================================================
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  safeArea: { backgroundColor: AZUL_HERO_INICIO },
 
   // Header
-  header: { paddingHorizontal: Spacing.lg, paddingBottom: Spacing.xl },
-  headerTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: Spacing.md },
-  headerBotao: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.15)', justifyContent: 'center', alignItems: 'center' },
-  headerCenter: { alignItems: 'center' },
-  headerLabel: { color: 'rgba(255,255,255,0.75)', fontSize: 9, letterSpacing: 1.5, fontFamily: Fonte.corpoSemi, marginBottom: 2 },
-  headerTitulo: { color: '#FFFFFF', fontSize: 18, fontFamily: Fonte.corpoSemi },
+  header: { paddingHorizontal: Spacing.lg, paddingTop: Spacing.sm, paddingBottom: Spacing.xl },
 
   // Montante
   montanteContainer: { alignItems: 'center', paddingVertical: Spacing.lg },
   montanteLabel: { color: 'rgba(255,255,255,0.85)', fontFamily: Fonte.corpo, fontSize: 13, marginBottom: 8 },
   montanteLinha: { flexDirection: 'row', alignItems: 'baseline', gap: 8, marginBottom: 12 },
-  montanteValor: { color: '#FFFFFF', fontSize: 56, fontFamily: Fonte.tituloBold, lineHeight: 60 },
-  montanteMoeda: { color: '#FFFFFF', fontSize: 24, fontFamily: Fonte.tituloSemi },
+  montanteValor: { color: Colors.branco, fontSize: 56, fontFamily: Fonte.tituloBold, lineHeight: 60 },
+  montanteMoeda: { color: Colors.branco, fontSize: 24, fontFamily: Fonte.tituloSemi },
   descontoBadge: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: LARANJA_MARCA,
+    flexDirection: 'row', alignItems: 'center', backgroundColor: COR_ACENTO,
     paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, gap: 5,
   },
-  descontoBadgeTexto: { color: '#FFFFFF', fontSize: 11, fontFamily: Fonte.corpoSemi, letterSpacing: 0.3 },
+  descontoBadgeTexto: { color: Colors.branco, fontSize: 12, fontFamily: Fonte.corpoSemi, letterSpacing: 0.3 },
 
   scrollContent: { paddingBottom: Spacing.xxxl },
 
@@ -760,7 +742,7 @@ const styles = StyleSheet.create({
 
   // Métodos
   metodoSelector: { gap: Spacing.sm },
-  metodoLabel: { fontSize: 11, fontFamily: Fonte.corpoSemi, letterSpacing: 1, marginBottom: 4, paddingHorizontal: 4 },
+  metodoLabel: { fontSize: 12, fontFamily: Fonte.corpoSemi, letterSpacing: 1, marginBottom: 4, paddingHorizontal: 4 },
   metodoCard: {
     flexDirection: 'row', alignItems: 'center', padding: 14, borderRadius: 14,
     borderWidth: 1, gap: 12,
@@ -775,11 +757,11 @@ const styles = StyleSheet.create({
   inputWrapper: { flexDirection: 'row', alignItems: 'center', borderRadius: 14, borderWidth: 1.5, overflow: 'hidden' },
   inputPrefixo: { paddingHorizontal: 14, paddingVertical: 14, borderRightWidth: 1 },
   inputPrefixoTexto: { fontSize: 15, fontFamily: Fonte.corpoSemi },
-  inputCampo: { flex: 1, paddingHorizontal: 14, paddingVertical: 14, fontSize: 17, fontFamily: Fonte.corpoSemi },
-  inputCheck: { width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(46, 125, 50, 0.15)', justifyContent: 'center', alignItems: 'center', marginRight: 12 },
+  inputCampo: { flex: 1, paddingHorizontal: 14, paddingVertical: 14, fontSize: 18, fontFamily: Fonte.corpoSemi },
+  inputCheck: { width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(52, 168, 83, 0.15)', justifyContent: 'center', alignItems: 'center', marginRight: 12 },
   inputErro: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 8 },
   inputErroTexto: { ...Typography.caption, color: VERMELHO_ERRO, fontFamily: Fonte.corpoSemi },
-  inputDica: { ...Typography.caption, marginTop: 8, fontSize: 11 },
+  inputDica: { ...Typography.caption, marginTop: 8, fontSize: 12 },
 
   // Aviso
   avisoBox: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, padding: 14, borderRadius: 14, borderWidth: 1 },
@@ -789,16 +771,16 @@ const styles = StyleSheet.create({
   botaoPagar: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     paddingVertical: 16, borderRadius: 16, overflow: 'hidden', gap: 10, marginTop: 4,
-    shadowColor: LARANJA_MARCA, shadowOpacity: 0.3, shadowRadius: 10, elevation: 5,
+    shadowColor: COR_ACENTO, shadowOpacity: 0.3, shadowRadius: 10, elevation: 5,
   },
-  botaoPagarTexto: { color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi },
+  botaoPagarTexto: { color: Colors.branco, fontSize: 15, fontFamily: Fonte.corpoSemi },
 
   // Processando
   conteudoProcessando: { padding: Spacing.lg, alignItems: 'center', paddingTop: 40 },
   loadingCirculo: {
-    width: 120, height: 120, borderRadius: 60, backgroundColor: 'rgba(232, 118, 10, 0.1)',
+    width: 120, height: 120, borderRadius: 60, backgroundColor: 'rgba(26, 115, 232, 0.1)',
     justifyContent: 'center', alignItems: 'center', marginBottom: 24,
-    borderWidth: 4, borderColor: 'rgba(232, 118, 10, 0.25)',
+    borderWidth: 4, borderColor: 'rgba(26, 115, 232, 0.25)',
   },
   processandoTitulo: { ...Typography.h2, textAlign: 'center', marginBottom: 8, fontFamily: Fonte.tituloSemi },
   processandoSubtitulo: { ...Typography.body, textAlign: 'center', marginBottom: 24, lineHeight: 20 },
@@ -815,16 +797,16 @@ const styles = StyleSheet.create({
   instrucoesTitulo: { marginBottom: 12, fontFamily: Fonte.corpoSemi, fontSize: 14 },
   instrucaoItem: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 6 },
   instrucaoNumero: { width: 24, height: 24, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
-  instrucaoNumeroTexto: { color: '#FFFFFF', fontSize: 12, fontFamily: Fonte.corpoSemi },
+  instrucaoNumeroTexto: { color: Colors.branco, fontSize: 12, fontFamily: Fonte.corpoSemi },
   instrucaoTexto: { flex: 1, fontFamily: Fonte.corpo, fontSize: 13 },
 
   // Demo
   demoContainer: { width: '100%', marginTop: 10, marginBottom: 10, padding: 14, borderRadius: 14, borderWidth: 1, borderStyle: 'dashed' },
   demoHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 },
-  demoLabel: { fontSize: 10, fontFamily: Fonte.corpoSemi, letterSpacing: 0.8 },
+  demoLabel: { fontSize: 12, fontFamily: Fonte.corpoSemi, letterSpacing: 0.8 },
   demoBotoes: { flexDirection: 'row', gap: 8 },
   demoBotao: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 9, borderRadius: 10, gap: 5 },
-  demoBotaoTexto: { color: '#FFFFFF', fontSize: 12, fontFamily: Fonte.corpoSemi },
+  demoBotaoTexto: { color: Colors.branco, fontSize: 12, fontFamily: Fonte.corpoSemi },
 
   cancelarBotao: { paddingVertical: 12, marginTop: 6 },
   cancelarBotaoTexto: { fontSize: 14, fontFamily: Fonte.corpoSemi, textAlign: 'center', textDecorationLine: 'underline' },
@@ -852,7 +834,7 @@ const styles = StyleSheet.create({
   modalCancelarTexto: { ...Typography.body, textAlign: 'center', marginBottom: 20, lineHeight: 20, fontSize: 14 },
   modalCancelarBotoes: { width: '100%', gap: 10 },
   modalCancelarBotaoVoltar: { paddingVertical: 14, borderRadius: 14, alignItems: 'center' },
-  modalCancelarBotaoVoltarTexto: { color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi },
+  modalCancelarBotaoVoltarTexto: { color: Colors.branco, fontSize: 15, fontFamily: Fonte.corpoSemi },
   modalCancelarBotaoCancelar: { paddingVertical: 14, borderRadius: 14, alignItems: 'center' },
   modalCancelarBotaoCancelarTexto: { color: VERMELHO_ERRO, fontSize: 14, fontFamily: Fonte.corpoSemi },
 });

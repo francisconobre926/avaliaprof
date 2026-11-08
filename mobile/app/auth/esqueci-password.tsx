@@ -563,7 +563,7 @@ export default function EsqueciPasswordScreen() {
 
                 {email.length > 0 && validarEmail(email) && (
 
-                  <Ionicons name="checkmark-circle" size={20} color={Colors.verde} />
+                  <Ionicons name="checkmark-circle" size={20} color={Colors.verdeTexto} />
 
                 )}
 
@@ -733,7 +733,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 70,
 
-    backgroundColor: 'rgba(33, 150, 243, 0.05)',
+    backgroundColor: 'rgba(26, 115, 232, 0.05)',
 
     justifyContent: 'center',
 
@@ -749,7 +749,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 55,
 
-    backgroundColor: 'rgba(33, 150, 243, 0.1)',
+    backgroundColor: 'rgba(26, 115, 232, 0.1)',
 
     justifyContent: 'center',
 
@@ -765,7 +765,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 40,
 
-    backgroundColor: 'rgba(33, 150, 243, 0.2)',
+    backgroundColor: 'rgba(26, 115, 232, 0.2)',
 
     justifyContent: 'center',
 
@@ -809,7 +809,7 @@ const styles = StyleSheet.create({
 
     flexDirection: 'row',
 
-    backgroundColor: 'rgba(33, 150, 243, 0.08)',
+    backgroundColor: 'rgba(26, 115, 232, 0.08)',
 
     padding: Spacing.md,
 
@@ -973,7 +973,7 @@ const styles = StyleSheet.create({
 
     ...Typography.bodyBold,
 
-    color: Colors.azul,
+    color: Colors.azulTexto,
 
   },
 
@@ -1041,7 +1041,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 90,
 
-    backgroundColor: 'rgba(76, 175, 80, 0.08)',
+    backgroundColor: 'rgba(52, 168, 83, 0.08)',
 
   },
 
@@ -1055,7 +1055,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 70,
 
-    backgroundColor: 'rgba(76, 175, 80, 0.15)',
+    backgroundColor: 'rgba(52, 168, 83, 0.15)',
 
   },
 
@@ -1071,7 +1071,7 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
 
-    ...Sombras.colorida('#2F7A4F'),
+    ...Sombras.colorida(Colors.verdeTexto),
 
   },
 
@@ -1107,7 +1107,7 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
 
-    backgroundColor: 'rgba(33, 150, 243, 0.1)',
+    backgroundColor: 'rgba(26, 115, 232, 0.1)',
 
     paddingHorizontal: Spacing.md,
 
@@ -1121,7 +1121,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: 'rgba(33, 150, 243, 0.2)',
+    borderColor: 'rgba(26, 115, 232, 0.2)',
 
   },
 
@@ -1129,7 +1129,7 @@ const styles = StyleSheet.create({
 
     ...Typography.bodyBold,
 
-    color: Colors.azul,
+    color: Colors.azulTexto,
 
   },
 
@@ -1183,7 +1183,7 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
 
-    ...Sombras.colorida('#0A6BC0'),
+    ...Sombras.colorida(Colors.azul),
 
   },
 
@@ -1249,7 +1249,7 @@ const styles = StyleSheet.create({
 
     justifyContent: 'center',
 
-    backgroundColor: 'rgba(33, 150, 243, 0.1)',
+    backgroundColor: 'rgba(26, 115, 232, 0.1)',
 
     paddingHorizontal: Spacing.lg,
 
@@ -1261,7 +1261,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: 'rgba(33, 150, 243, 0.3)',
+    borderColor: 'rgba(26, 115, 232, 0.3)',
 
     borderStyle: 'dashed',
 
@@ -1271,7 +1271,7 @@ const styles = StyleSheet.create({
 
     ...Typography.bodyBold,
 
-    color: Colors.azul,
+    color: Colors.azulTexto,
 
   },
 
@@ -1319,7 +1319,7 @@ const styles = StyleSheet.create({
 
     ...Typography.button,
 
-    color: Colors.azul,
+    color: Colors.azulTexto,
 
   },
 

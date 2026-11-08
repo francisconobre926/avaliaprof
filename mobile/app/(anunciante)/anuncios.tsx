@@ -33,14 +33,15 @@ import {
 import { Fonte } from '../../src/theme/fonts';
 import Icone from '../../src/components/Icone';
 import TopBar, { TopBarBotao } from '../../src/components/TopBar';
+import { Colors } from '../../src/theme/colors';
 // ============================================================
 // CORES GOHOME OFICIAIS
 // ============================================================
-const AZUL_MARCA = '#0A6BC0';
-const LARANJA_MARCA = '#E8760A';
-const LARANJA_ESCURO = '#B95A05';
-const LARANJA_PALE = 'rgba(232, 118, 10, 0.1)';
-const VERDE = '#2F7A4F';
+const AZUL_MARCA = Colors.azul;
+const COR_ACENTO = Colors.azul;
+const COR_ACENTO_ESCURO = Colors.azulTexto;
+const LARANJA_PALE = 'rgba(26, 115, 232, 0.1)';
+const VERDE = Colors.verdeTexto;
 
 // ============================================================
 // MOCK — anúncios de exemplo
@@ -268,7 +269,7 @@ export default function AnunciosScreen() {
           </Text>
           {separadorActivo === 'activos' && (
             <TouchableOpacity style={styles.vazioBtn} onPress={irParaPublicar} activeOpacity={0.85}>
-              <Ionicons name="add" size={18} color="#FFFFFF" />
+              <Ionicons name="add" size={18} color={Colors.branco} />
               <Text style={styles.vazioBtnTexto}>Publicar anúncio</Text>
             </TouchableOpacity>
           )}
@@ -351,7 +352,7 @@ function AnuncioCard({
         </View>
 
         <View style={styles.cardPrecoLinha}>
-          <Text style={[styles.cardPreco, { color: LARANJA_MARCA }]}>{`${precoFormatado} MT`}</Text>
+          <Text style={[styles.cardPreco, { color: COR_ACENTO }]}>{`${precoFormatado} MT`}</Text>
           {sufixoPreco && (
             <Text style={[styles.cardPrecoSufixo, { color: cores.textoSecundario }]}>
               {sufixoPreco}
@@ -402,7 +403,7 @@ function AnuncioCard({
               onPress={onRepublicar}
               activeOpacity={0.85}
             >
-              <Icone name="refresh" size={14} color={LARANJA_ESCURO} />
+              <Icone name="refresh" size={14} color={COR_ACENTO_ESCURO} />
               <Text style={styles.cardFechoBtnTexto}>Publicar novamente</Text>
             </TouchableOpacity>
           </View>
@@ -429,7 +430,7 @@ const styles = StyleSheet.create({
     minWidth: 20, height: 20, paddingHorizontal: 6, borderRadius: 10,
     justifyContent: 'center', alignItems: 'center',
   },
-  separadorBadgeTexto: { fontSize: 10, fontFamily: Fonte.corpoSemi },
+  separadorBadgeTexto: { fontSize: 12, fontFamily: Fonte.corpoSemi },
 
   lista: { padding: 16, gap: 14, paddingBottom: 100 },
 
@@ -438,7 +439,7 @@ const styles = StyleSheet.create({
     borderRadius: 16, overflow: 'hidden',
     borderWidth: 1,
   },
-  cardImagemWrap: { width: 110, position: 'relative', backgroundColor: '#E7E5DF' },
+  cardImagemWrap: { width: 110, position: 'relative', backgroundColor: Colors.borda },
   cardImagem: { width: '100%', height: '100%' },
   cardImagemOverlay: {
     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
@@ -450,34 +451,34 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7, paddingVertical: 3,
     borderRadius: 10, gap: 4,
   },
-  cardEstadoDot: { width: 5, height: 5, borderRadius: 2.5, backgroundColor: '#FFFFFF' },
-  cardEstadoTexto: { color: '#FFFFFF', fontSize: 8, fontFamily: Fonte.corpoSemi, letterSpacing: 0.4 },
+  cardEstadoDot: { width: 5, height: 5, borderRadius: 2.5, backgroundColor: Colors.branco },
+  cardEstadoTexto: { color: Colors.branco, fontSize: 12, fontFamily: Fonte.corpoSemi, letterSpacing: 0.4 },
   cardConteudo: { flex: 1, padding: 12, justifyContent: 'space-between' },
   cardTitulo: { ...Typography.bodyBold, fontFamily: Fonte.corpoSemi, fontSize: 13, lineHeight: 17, marginBottom: 4 },
   cardMetadados: { flexDirection: 'row', alignItems: 'center', gap: 3, marginBottom: 6 },
-  cardZona: { ...Typography.caption, fontSize: 11 },
+  cardZona: { ...Typography.caption, fontSize: 12 },
   cardPrecoLinha: { flexDirection: 'row', alignItems: 'baseline', gap: 3, marginBottom: 7 },
   cardPreco: { ...Typography.h4, fontFamily: Fonte.corpoBold, fontSize: 15 },
-  cardPrecoSufixo: { ...Typography.caption, fontSize: 11, fontFamily: Fonte.corpoSemi },
+  cardPrecoSufixo: { ...Typography.caption, fontSize: 12, fontFamily: Fonte.corpoSemi },
   cardStats: { flexDirection: 'row', gap: 12, paddingTop: 7, borderTopWidth: 1 },
   cardStatItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  cardStatValor: { ...Typography.caption, fontSize: 11, fontFamily: Fonte.corpoSemi },
+  cardStatValor: { ...Typography.caption, fontSize: 12, fontFamily: Fonte.corpoSemi },
 
   cardFechoRodape: { marginTop: 8, paddingTop: 8, borderTopWidth: 1, gap: 7 },
   cardFechoInfo: { flexDirection: 'row', alignItems: 'center', gap: 5, flexWrap: 'wrap' },
-  cardFechoTexto: { ...Typography.caption, fontSize: 11, fontFamily: Fonte.corpoSemi, flex: 1 },
+  cardFechoTexto: { ...Typography.caption, fontSize: 12, fontFamily: Fonte.corpoSemi, flex: 1 },
   cardFechoCreditBadge: {
     backgroundColor: VERDE,
     paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8,
   },
-  cardFechoCreditTexto: { color: '#FFFFFF', fontSize: 10, fontFamily: Fonte.corpoSemi },
+  cardFechoCreditTexto: { color: Colors.branco, fontSize: 12, fontFamily: Fonte.corpoSemi },
   cardFechoBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     gap: 5, paddingVertical: 7,
     backgroundColor: LARANJA_PALE,
-    borderRadius: 9, borderWidth: 1, borderColor: 'rgba(232, 118, 10, 0.3)',
+    borderRadius: 9, borderWidth: 1, borderColor: 'rgba(26, 115, 232, 0.3)',
   },
-  cardFechoBtnTexto: { color: LARANJA_ESCURO, fontSize: 11, fontFamily: Fonte.corpoSemi },
+  cardFechoBtnTexto: { color: COR_ACENTO_ESCURO, fontSize: 12, fontFamily: Fonte.corpoSemi },
 
   vazioContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 40, gap: 10 },
   vazioTitulo: { ...Typography.h4, fontFamily: Fonte.corpoSemi, textAlign: 'center', fontSize: 15, marginTop: 10 },
@@ -488,5 +489,5 @@ const styles = StyleSheet.create({
     borderRadius: 13, gap: 7,
     backgroundColor: AZUL_MARCA,
   },
-  vazioBtnTexto: { color: '#FFFFFF', fontSize: 14, fontFamily: Fonte.corpoSemi },
+  vazioBtnTexto: { color: Colors.branco, fontSize: 14, fontFamily: Fonte.corpoSemi },
 });

@@ -8,7 +8,6 @@ import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
-  StatusBar,
   Image,
   Modal,
   Pressable,
@@ -17,6 +16,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import TopBar, { TopBarBotao } from '../../src/components/TopBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -137,7 +137,7 @@ const mensagensIniciaisMock: Record<string, Mensagem[]> = {
     },
     {
       id: 'm3',
-      texto: 'Perfeito, aguardo a tua visita amanhã às 10h ✓✓',
+      texto: 'Perfeito, aguardo a tua visita amanhã às 10h',
       autor: 'outro',
       hora: new Date(Date.now() - 86400000 * 2),
       tipo: 'texto',
@@ -363,7 +363,7 @@ export default function ChatScreen() {
                   <Ionicons
                     name="checkmark-done"
                     size={14}
-                    color={item.lida ? '#4FC3F7' : 'rgba(255,255,255,0.8)'}
+                    color={item.lida ? Colors.azulClaro : 'rgba(255,255,255,0.8)'}
                   />
                 )}
               </View>
@@ -375,7 +375,7 @@ export default function ChatScreen() {
             ]}>
               {isMinha ? (
                 <LinearGradient
-                  colors={['#E8760A', '#FF5A1F']}
+                  colors={[Colors.azul, Colors.erro]}
                   style={StyleSheet.absoluteFill}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -398,7 +398,7 @@ export default function ChatScreen() {
                   <Ionicons
                     name="checkmark-done"
                     size={14}
-                    color={item.lida ? '#4FC3F7' : 'rgba(255,255,255,0.7)'}
+                    color={item.lida ? Colors.azulClaro : 'rgba(255,255,255,0.7)'}
                   />
                 )}
               </View>
@@ -411,67 +411,17 @@ export default function ChatScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={Colors.branco} />
-      <SafeAreaView style={styles.safeAreaTop} edges={['top']}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.botaoVoltar}
-            onPress={() => router.back()}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="arrow-back" size={22} color={Colors.textoPrincipal} />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.headerInfo} activeOpacity={0.7}>
-            <View style={styles.headerAvatarContainer}>
-              <LinearGradient
-                colors={['#E8760A', '#FF5A1F']}
-                style={styles.headerAvatar}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
-                <Text style={styles.headerAvatarLetra}>
-                  {conversa.nome.charAt(0)}
-                </Text>
-              </LinearGradient>
-              {conversa.online && <View style={styles.headerOnlineDot} />}
-            </View>
-            <View style={styles.headerTextos}>
-              <View style={styles.headerNomeContainer}>
-                <Text style={styles.headerNome} numberOfLines={1}>
-                  {conversa.nome}
-                </Text>
-                {conversa.verificado && (
-                  <View style={styles.verificadoBadge}>
-                    <Ionicons name="checkmark" size={9} color={Colors.branco} />
-                  </View>
-                )}
-              </View>
-              <Text style={styles.headerStatus}>
-                {conversa.online ? 'Online agora' : 'Última actividade recente'}
-              </Text>
-            </View>
-          </TouchableOpacity>
-
-          <View style={styles.headerAcoes}>
-            <TouchableOpacity
-              style={styles.headerAcaoBotao}
-              activeOpacity={0.7}
-              onPress={() => Alert.alert('Chamada', 'Funcionalidade em breve')}
-            >
-              <Ionicons name="call" size={18} color={'#16202E'} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.headerAcaoBotao}
-              onPress={() => setModalOpcoesVisivel(true)}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="ellipsis-vertical" size={18} color={Colors.textoPrincipal} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
+      <TopBar
+        titulo={conversa.nome}
+        onVoltar={() => router.back()}
+        acoes={
+          <>
+            <TopBarBotao icone="call" rotulo="Chamar" onPress={() => Alert.alert('Chamada', 'Funcionalidade em breve')} />
+            <TopBarBotao icone="ellipsis-vertical" rotulo="Opções" onPress={() => setModalOpcoesVisivel(true)} />
+          </>
+        }
+      />
+      <View style={styles.safeAreaTop}>
         {/* Card do imóvel */}
         {imovel && (
           <TouchableOpacity
@@ -482,7 +432,7 @@ export default function ChatScreen() {
             <Image source={{ uri: imovel.fotos[0] }} style={styles.imovelFoto} />
             <View style={styles.imovelInfo}>
               <View style={styles.imovelBadge}>
-                <Icone name="home" size={10} color={'#16202E'} />
+                <Icone name="home" size={10} color={Colors.carvao} />
                 <Text style={styles.imovelBadgeText}>IMÓVEL EM CONVERSA</Text>
               </View>
               <Text style={styles.imovelTitulo} numberOfLines={1}>
@@ -495,7 +445,7 @@ export default function ChatScreen() {
             <Ionicons name="chevron-forward" size={20} color={Colors.textoTerciario} />
           </TouchableOpacity>
         )}
-      </SafeAreaView>
+      </View>
 
       {/* Área de mensagens */}
       <KeyboardAvoidingView
@@ -543,7 +493,7 @@ export default function ChatScreen() {
               onPress={() => setModalAnexoVisivel(true)}
               activeOpacity={0.7}
             >
-              <Ionicons name="add" size={24} color={'#16202E'} />
+              <Ionicons name="add" size={24} color={Colors.carvao} />
             </TouchableOpacity>
 
             <View style={styles.inputCampo}>
@@ -572,7 +522,7 @@ export default function ChatScreen() {
                 activeOpacity={0.85}
               >
                 <LinearGradient
-                  colors={['#E8760A', '#FF5A1F']}
+                  colors={[Colors.azul, Colors.erro]}
                   style={StyleSheet.absoluteFill}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -634,8 +584,8 @@ export default function ChatScreen() {
               onPress={tirarFoto}
               activeOpacity={0.7}
             >
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FBF0E3' }]}>
-                <Ionicons name="camera" size={22} color={'#16202E'} />
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: Colors.azulSuave }]}>
+                <Ionicons name="camera" size={22} color={Colors.carvao} />
               </View>
               <View style={styles.modalOpcaoInfo}>
                 <Text style={styles.modalOpcaoTitulo}>Câmara</Text>
@@ -650,7 +600,7 @@ export default function ChatScreen() {
               activeOpacity={0.7}
             >
               <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(22, 163, 74, 0.10)' }]}>
-                <Ionicons name="images" size={22} color={Colors.verde} />
+                <Ionicons name="images" size={22} color={Colors.verdeTexto} />
               </View>
               <View style={styles.modalOpcaoInfo}>
                 <Text style={styles.modalOpcaoTitulo}>Galeria</Text>
@@ -667,7 +617,7 @@ export default function ChatScreen() {
               }}
               activeOpacity={0.7}
             >
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FBF0E3' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: Colors.azulSuave }]}>
                 <Ionicons name="location" size={22} color={Colors.aviso} />
               </View>
               <View style={styles.modalOpcaoInfo}>
@@ -704,14 +654,14 @@ export default function ChatScreen() {
             <Text style={styles.modalTitulo}>Opções</Text>
 
             <TouchableOpacity style={styles.modalOpcao} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FBF0E3' }]}>
-                <Ionicons name="person" size={22} color={'#16202E'} />
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: Colors.azulSuave }]}>
+                <Ionicons name="person" size={22} color={Colors.carvao} />
               </View>
               <Text style={styles.modalOpcaoTitulo}>Ver perfil</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.modalOpcao} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FBF0E3' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: Colors.azulSuave }]}>
                 <Ionicons name="notifications-off" size={22} color={Colors.aviso} />
               </View>
               <Text style={styles.modalOpcaoTitulo}>Silenciar notificações</Text>
@@ -725,14 +675,14 @@ export default function ChatScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.modalOpcao} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(244, 67, 54, 0.15)' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(179, 38, 30, 0.15)' }]}>
                 <Ionicons name="flag" size={22} color={Colors.erro} />
               </View>
               <Text style={[styles.modalOpcaoTitulo, { color: Colors.erro }]}>Denunciar</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.modalOpcao} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(244, 67, 54, 0.15)' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(179, 38, 30, 0.15)' }]}>
                 <Ionicons name="trash" size={22} color={Colors.erro} />
               </View>
               <Text style={[styles.modalOpcaoTitulo, { color: Colors.erro }]}>Apagar conversa</Text>
@@ -753,115 +703,29 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F6F8FB' },
+  container: { flex: 1, backgroundColor: Colors.gelo },
   safeAreaTop: {
     backgroundColor: Colors.branco,
     borderBottomWidth: 1,
-    borderBottomColor: '#E8EDF3',
+    borderBottomColor: Colors.fundoSuave,
+    paddingTop: Spacing.sm,
     ...Sombras.sm,
-  },
-
-  // Header
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.sm,
-    gap: Spacing.xs,
-  },
-  botaoVoltar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerInfo: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  headerAvatarContainer: {
-    position: 'relative',
-  },
-  headerAvatar: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerAvatarLetra: {
-    ...Typography.h3,
-    color: Colors.branco,
-    fontFamily: Fonte.corpoSemi,
-  },
-  headerOnlineDot: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: Colors.verde,
-    borderWidth: 2,
-    borderColor: Colors.branco,
-  },
-  headerTextos: {
-    flex: 1,
-  },
-  headerNomeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  headerNome: {
-    ...Typography.bodyBold,
-    color: Colors.textoPrincipal,
-    fontSize: 15,
-    flexShrink: 1,
-  },
-  verificadoBadge: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: '#16202E',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerStatus: {
-    ...Typography.caption,
-    color: Colors.textoSecundario,
-    marginTop: 1,
-  },
-  headerAcoes: {
-    flexDirection: 'row',
-    gap: 4,
-  },
-  headerAcaoBotao: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.fundoSuave,
   },
 
   // Card imóvel
   imovelCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF7F0',
+    backgroundColor: Colors.azulSuave,
     marginHorizontal: Spacing.md,
     marginBottom: Spacing.sm,
     padding: Spacing.sm,
     borderRadius: 16,
     gap: Spacing.sm,
     borderWidth: 1,
-    borderColor: '#F1D9C7',
+    borderColor: Colors.azulSuave,
     borderLeftWidth: 3,
-    borderLeftColor: '#E8760A',
+    borderLeftColor: Colors.azul,
   },
   imovelFoto: {
     width: 48,
@@ -879,8 +743,8 @@ const styles = StyleSheet.create({
   },
   imovelBadgeText: {
     ...Typography.captionBold,
-    color: '#16202E',
-    fontSize: 9,
+    color: Colors.carvao,
+    fontSize: 12,
     letterSpacing: 0.5,
   },
   imovelTitulo: {
@@ -890,7 +754,7 @@ const styles = StyleSheet.create({
   },
   imovelPreco: {
     ...Typography.captionBold,
-    color: '#16202E',
+    color: Colors.carvao,
     fontSize: 12,
     marginTop: 2,
   },
@@ -927,7 +791,7 @@ const styles = StyleSheet.create({
   separadorTexto: {
     ...Typography.captionBold,
     color: Colors.textoSecundario,
-    fontSize: 11,
+    fontSize: 12,
     letterSpacing: 0.5,
   },
 
@@ -976,7 +840,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   mensagemHora: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: Fonte.corpoMedio,
   },
 
@@ -1052,16 +916,16 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FBF0E3',
+    backgroundColor: Colors.azulSuave,
   },
   inputCampo: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-end',
-    backgroundColor: '#F4F6F9',
+    backgroundColor: Colors.fundoSuave,
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: '#E8EDF3',
+    borderColor: Colors.fundoSuave,
     paddingHorizontal: Spacing.md,
     paddingVertical: 6,
     minHeight: 44,
@@ -1085,16 +949,16 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
-    ...Sombras.colorida('#E8760A'),
+    ...Sombras.colorida(Colors.azul),
   },
   inputBotaoMic: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#E8760A',
+    backgroundColor: Colors.azul,
     justifyContent: 'center',
     alignItems: 'center',
-    ...Sombras.colorida('#E8760A'),
+    ...Sombras.colorida(Colors.azul),
   },
 
   // Modal

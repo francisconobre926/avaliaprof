@@ -169,9 +169,9 @@ export default function NovaPasswordScreen() {
 
     if (pontos === 2) return { forca: 2, cor: Colors.aviso, texto: 'Média', label: 'Aceitável' };
 
-    if (pontos === 3) return { forca: 3, cor: '#F5B800', texto: 'Boa', label: 'Boa segurança' };
+    if (pontos === 3) return { forca: 3, cor: Colors.aviso, texto: 'Boa', label: 'Boa segurança' };
 
-    return { forca: 4, cor: Colors.verde, texto: 'Excelente', label: 'Muito segura' };
+    return { forca: 4, cor: Colors.verdeTexto, texto: 'Excelente', label: 'Muito segura' };
 
   };
 
@@ -285,7 +285,7 @@ export default function NovaPasswordScreen() {
 
               <View style={styles.sucessoIcone}>
 
-                <Ionicons name="shield-checkmark" size={70} color={Colors.verde} />
+                <Ionicons name="shield-checkmark" size={70} color={Colors.verdeTexto} />
 
               </View>
 
@@ -393,7 +393,7 @@ export default function NovaPasswordScreen() {
 
           <View style={styles.headerBadge}>
 
-            <Ionicons name="shield-checkmark" size={12} color={Colors.verde} />
+            <Ionicons name="shield-checkmark" size={12} color={Colors.verdeTexto} />
 
             <Text style={styles.headerBadgeText}>LINK VÁLIDO</Text>
 
@@ -625,7 +625,7 @@ export default function NovaPasswordScreen() {
 
                 {passwordsIguais ? (
 
-                  <Ionicons name="checkmark-circle" size={20} color={Colors.verde} />
+                  <Ionicons name="checkmark-circle" size={20} color={Colors.verdeTexto} />
 
                 ) : passwordsDiferentes ? (
 
@@ -667,7 +667,7 @@ export default function NovaPasswordScreen() {
 
                 <View style={styles.sucessoMensagem}>
 
-                  <Ionicons name="checkmark-circle" size={14} color={Colors.verde} />
+                  <Ionicons name="checkmark-circle" size={14} color={Colors.verdeTexto} />
 
                   <Text style={styles.sucessoMensagemText}>As passwords coincidem</Text>
 
@@ -779,7 +779,7 @@ function RequisitoItem({ valido, texto }: any) {
 
         styles.requisitoCheck,
 
-        valido && { backgroundColor: Colors.verde },
+        valido && { backgroundColor: Colors.verdeTexto },
 
       ]}>
 
@@ -859,7 +859,7 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
 
-    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    backgroundColor: 'rgba(52, 168, 83, 0.1)',
 
     paddingHorizontal: Spacing.md,
 
@@ -871,7 +871,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: 'rgba(76, 175, 80, 0.25)',
+    borderColor: 'rgba(52, 168, 83, 0.25)',
 
   },
 
@@ -879,11 +879,11 @@ const styles = StyleSheet.create({
 
     ...Typography.captionBold,
 
-    color: Colors.verde,
+    color: Colors.verdeTexto,
 
     letterSpacing: 0.5,
 
-    fontSize: 10,
+    fontSize: 12,
 
   },
 
@@ -919,7 +919,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 70,
 
-    backgroundColor: 'rgba(33, 150, 243, 0.05)',
+    backgroundColor: 'rgba(26, 115, 232, 0.05)',
 
     justifyContent: 'center',
 
@@ -935,7 +935,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 55,
 
-    backgroundColor: 'rgba(33, 150, 243, 0.1)',
+    backgroundColor: 'rgba(26, 115, 232, 0.1)',
 
     justifyContent: 'center',
 
@@ -955,7 +955,7 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
 
-    ...Sombras.colorida('#0A6BC0'),
+    ...Sombras.colorida(Colors.azul),
 
   },
 
@@ -1093,7 +1093,7 @@ const styles = StyleSheet.create({
 
     ...Typography.captionBold,
 
-    fontSize: 11,
+    fontSize: 12,
 
   },
 
@@ -1103,7 +1103,7 @@ const styles = StyleSheet.create({
 
     color: Colors.textoTerciario,
 
-    fontSize: 11,
+    fontSize: 12,
 
   },
 
@@ -1227,7 +1227,7 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: Colors.verde,
+    color: Colors.verdeTexto,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -1239,7 +1239,7 @@ const styles = StyleSheet.create({
 
     flexDirection: 'row',
 
-    backgroundColor: 'rgba(255, 152, 0, 0.08)',
+    backgroundColor: 'rgba(26, 115, 232, 0.08)',
 
     padding: Spacing.md,
 
@@ -1265,7 +1265,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 16,
 
-    backgroundColor: 'rgba(255, 152, 0, 0.15)',
+    backgroundColor: 'rgba(26, 115, 232, 0.15)',
 
     justifyContent: 'center',
 

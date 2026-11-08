@@ -1,4 +1,5 @@
-/**
+
+import { Colors } from '../theme/colors';/**
  * src/types/index.ts  —  versão 3
  *
  * Agora inclui TODOS os campos legacy usados no projecto antigo
@@ -191,9 +192,9 @@ export function labelEstadoAnuncio(estado: EstadoAnuncio): string {
 
 export function corEstadoAnuncio(estado: EstadoAnuncio): string {
   const map: Record<EstadoAnuncio, string> = {
-    activo: '#2E7D32', pausado: '#F57C00', expirado: '#9E9E9E',
-    arrendado: '#1976D2', vendido: '#1976D2', reservado: '#1976D2',
-    rascunho: '#9E9E9E', em_revisao: '#F57C00', removido: '#D32F2F',
+    activo: Colors.verdeTexto, pausado: Colors.azul, expirado: Colors.textoTerciario,
+    arrendado: Colors.azul, vendido: Colors.azul, reservado: Colors.azul,
+    rascunho: Colors.textoTerciario, em_revisao: Colors.azul, removido: Colors.erro,
   };
   return map[estado];
 }

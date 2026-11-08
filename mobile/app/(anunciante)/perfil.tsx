@@ -14,18 +14,19 @@ import { useCores } from '../../src/store/themeStore';
 import { Fonte } from '../../src/theme/fonts';
 import { Typography, Spacing } from '../../src/theme/typography';
 import TopBar, { TopBarBotao } from '../../src/components/TopBar';
+import { Colors } from '../../src/theme/colors';
 // ============================================================
 // CORES GOHOME OFICIAIS
 // ============================================================
-const AZUL_MARCA = '#0A6BC0';
-const AZUL_ESCURO = '#08508F';
-const LARANJA_MARCA = '#E8760A';
-const LARANJA_PALE = 'rgba(232, 118, 10, 0.12)';
-const VERDE = '#159957';
-const VERDE_PALE = '#E8F7EF';
-const VERMELHO = '#D64545';
-const VERMELHO_PALE = '#FFF0F0';
-const AZUL_PALE = 'rgba(10, 107, 192, 0.1)';
+const AZUL_MARCA = Colors.azul;
+const AZUL_ESCURO = Colors.azulTexto;
+const COR_ACENTO = Colors.azul;
+const LARANJA_PALE = 'rgba(26, 115, 232, 0.12)';
+const VERDE = Colors.verdeTexto;
+const VERDE_PALE = Colors.verdeSuave;
+const VERMELHO = Colors.erro;
+const VERMELHO_PALE = Colors.erroFundo;
+const AZUL_PALE = 'rgba(26, 115, 232, 0.1)';
 
 export default function PerfilAnunciante() {
   const router = useRouter();
@@ -35,6 +36,12 @@ export default function PerfilAnunciante() {
 
   const nomeExibir = usuario?.nome?.trim() || 'Anunciante';
   const inicialAvatar = nomeExibir.charAt(0).toUpperCase();
+
+  const escolherPapelStore = useUserStore((state) => state.escolherPapel);
+  const voltarAProcurar = async () => {
+    await escolherPapelStore('procurador');
+    router.replace('/(procurador)' as never);
+  };
 
   const confirmarResetDesenvolvimento = () => {
     Alert.alert(
@@ -48,7 +55,7 @@ export default function PerfilAnunciante() {
           onPress: async () => {
             try {
               await limparDadosLocais();
-              router.replace('/onboarding/escolha-papel' as never);
+              router.replace('/' as never);
             } catch (error) {
               console.error('[PerfilAnunciante] erro ao reiniciar dados:', error);
               Alert.alert(
@@ -75,7 +82,7 @@ export default function PerfilAnunciante() {
           <View style={styles.avatarWrap}>
             <Text style={styles.avatarLetra}>{inicialAvatar}</Text>
             <View style={[styles.verificado, { borderColor: cores.fundoElevado }]}>
-              <Ionicons name="checkmark" size={12} color="#FFFFFF" />
+              <Ionicons name="checkmark" size={12} color={Colors.branco} />
             </View>
           </View>
           <View style={styles.profileText}>
@@ -87,7 +94,7 @@ export default function PerfilAnunciante() {
               </Text>
             </View>
             <View style={styles.ratingContainer}>
-              <Ionicons name="star" size={14} color="#F6B51B" />
+              <Ionicons name="star" size={14} color={Colors.aviso} />
               <Text style={[styles.ratingValor, { color: cores.textoPrincipal }]}>4.8</Text>
               <Text style={[styles.ratingCount, { color: cores.textoSecundario }]}>
                 · 47 avaliações
@@ -109,12 +116,12 @@ export default function PerfilAnunciante() {
           <SectionTitle title="A minha conta" subtitle="Dados e preferências pessoais" cores={cores} />
           <MenuItem icon="person-outline" tint={AZUL_PALE} iconColor={AZUL_MARCA} title="Informações pessoais" description="Nome, email e telefone" onPress={() => router.push('/editar-perfil')} cores={cores} />
           <MenuItem icon="card-outline" tint={VERDE_PALE} iconColor={VERDE} title="Pagamentos" description="Métodos e histórico de pagamentos" onPress={() => router.push('/carteira' as any)} cores={cores} />
-          <MenuItem icon="notifications-outline" tint={LARANJA_PALE} iconColor={LARANJA_MARCA} title="Notificações" description="Escolhe o que queres receber" onPress={() => {}} cores={cores} />
-          <MenuItem icon="color-palette-outline" tint="#F0ECFF" iconColor="#7556C8" title="Aparência" description="Tema e cores da aplicação" onPress={() => router.push('/aparencia')} cores={cores} />
+          <MenuItem icon="notifications-outline" tint={LARANJA_PALE} iconColor={COR_ACENTO} title="Notificações" description="Escolhe o que queres receber" onPress={() => {}} cores={cores} />
+          <MenuItem icon="color-palette-outline" tint={Colors.azulSuave} iconColor={Colors.azul} title="Aparência" description="Tema e cores da aplicação" onPress={() => router.push('/aparencia')} cores={cores} />
 
           <SectionTitle title="O meu negócio" subtitle="Acompanha a actividade dos anúncios" cores={cores} />
           <MenuItem icon="stats-chart-outline" tint={AZUL_PALE} iconColor={AZUL_MARCA} title="Estatísticas" description="Desempenho dos anúncios" onPress={() => {}} cores={cores} />
-          <MenuItem icon="bookmark-outline" tint={LARANJA_PALE} iconColor={LARANJA_MARCA} title="Avaliações recebidas" description="Consulta as opiniões dos utilizadores" onPress={() => {}} cores={cores} />
+          <MenuItem icon="bookmark-outline" tint={LARANJA_PALE} iconColor={COR_ACENTO} title="Avaliações recebidas" description="Consulta as opiniões dos utilizadores" onPress={() => {}} cores={cores} />
           <MenuItem icon="pricetag-outline" tint={VERDE_PALE} iconColor={VERDE} title="Promoções" description="Ofertas e destaques disponíveis" onPress={() => {}} cores={cores} />
 
           <SectionTitle title="Ajuda e segurança" subtitle="Estamos aqui para ajudar" cores={cores} />
@@ -124,11 +131,11 @@ export default function PerfilAnunciante() {
 
           <TouchableOpacity
             style={styles.logoutBotao}
-            onPress={() => router.replace('/onboarding/escolha-papel')}
+            onPress={voltarAProcurar}
             activeOpacity={0.85}
           >
-            <Ionicons name="swap-horizontal-outline" size={20} color={VERMELHO} />
-            <Text style={styles.logoutTexto}>Trocar de perfil</Text>
+            <Ionicons name="search-outline" size={20} color={VERMELHO} />
+            <Text style={styles.logoutTexto}>Voltar a procurar espaços</Text>
             <Ionicons name="chevron-forward" size={18} color={VERMELHO} />
           </TouchableOpacity>
 
@@ -165,7 +172,7 @@ function TrustItem({ icon, title, subtitle, cores }: any) {
   return (
     <View style={styles.trustItem}>
       <View style={styles.trustIcon}>
-        <Ionicons name={icon} size={19} color={LARANJA_MARCA} />
+        <Ionicons name={icon} size={19} color={COR_ACENTO} />
       </View>
       <View>
         <Text style={[styles.trustTitle, { color: cores.textoPrincipal }]}>{title}</Text>
@@ -224,7 +231,7 @@ const styles = StyleSheet.create({
     backgroundColor: LARANJA_PALE,
     alignItems: 'center', justifyContent: 'center', position: 'relative',
   },
-  avatarLetra: { fontSize: 29, fontFamily: Fonte.tituloSemi, color: LARANJA_MARCA },
+  avatarLetra: { fontSize: 28, fontFamily: Fonte.tituloSemi, color: COR_ACENTO },
   verificado: {
     position: 'absolute', right: -3, bottom: -3,
     width: 22, height: 22, borderRadius: 11,
@@ -232,7 +239,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   profileText: { flex: 1 },
-  nome: { fontSize: 17, lineHeight: 22, fontFamily: Fonte.corpoSemi },
+  nome: { fontSize: 18, lineHeight: 22, fontFamily: Fonte.corpoSemi },
   tipoContainer: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 4 },
   tipo: { fontSize: 12, fontFamily: Fonte.corpoSemi },
   ratingContainer: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 7 },
@@ -252,8 +259,8 @@ const styles = StyleSheet.create({
     backgroundColor: LARANJA_PALE,
     alignItems: 'center', justifyContent: 'center',
   },
-  trustTitle: { fontSize: 11, fontFamily: Fonte.corpoSemi },
-  trustSubtitle: { fontFamily: Fonte.corpo, fontSize: 10, marginTop: 2 },
+  trustTitle: { fontSize: 12, fontFamily: Fonte.corpoSemi },
+  trustSubtitle: { fontFamily: Fonte.corpo, fontSize: 12, marginTop: 2 },
   trustDivider: { width: 1, height: 28 },
 
   menu: { paddingHorizontal: 18, paddingTop: 12 },
@@ -269,27 +276,27 @@ const styles = StyleSheet.create({
   menuIcon: { width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
   menuInfo: { flex: 1 },
   menuTitle: { fontSize: 14, fontFamily: Fonte.corpoSemi },
-  menuDescription: { fontFamily: Fonte.corpo, fontSize: 11, marginTop: 4, lineHeight: 15 },
+  menuDescription: { fontFamily: Fonte.corpo, fontSize: 12, marginTop: 4, lineHeight: 15 },
   badge: {
-    backgroundColor: LARANJA_PALE, color: LARANJA_MARCA,
-    fontSize: 10, fontFamily: Fonte.corpoSemi,
+    backgroundColor: LARANJA_PALE, color: COR_ACENTO,
+    fontSize: 12, fontFamily: Fonte.corpoSemi,
     paddingHorizontal: 8, paddingVertical: 5, borderRadius: 8,
   },
   logoutBotao: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
     padding: 15, marginTop: 20,
     backgroundColor: VERMELHO_PALE,
-    borderRadius: 16, borderWidth: 1, borderColor: '#F9DADA',
+    borderRadius: 16, borderWidth: 1, borderColor: Colors.erroFundo,
   },
   logoutTexto: { flex: 1, color: VERMELHO, fontSize: 14, fontFamily: Fonte.corpoSemi },
   resetDevBotao: {
     flexDirection: 'row', alignItems: 'center',
     gap: 11, padding: 14, marginTop: 12,
     backgroundColor: AZUL_PALE,
-    borderRadius: 16, borderWidth: 1, borderColor: 'rgba(10, 107, 192, 0.25)',
+    borderRadius: 16, borderWidth: 1, borderColor: 'rgba(26, 115, 232, 0.25)',
   },
   resetDevInfo: { flex: 1 },
   resetDevTitulo: { color: AZUL_ESCURO, fontSize: 13, fontFamily: Fonte.corpoSemi },
-  resetDevDescricao: { fontFamily: Fonte.corpo, fontSize: 11, lineHeight: 15, marginTop: 4 },
-  versao: { textAlign: 'center', fontFamily: Fonte.corpo, fontSize: 11, marginTop: 22 },
+  resetDevDescricao: { fontFamily: Fonte.corpo, fontSize: 12, lineHeight: 15, marginTop: 4 },
+  versao: { textAlign: 'center', fontFamily: Fonte.corpo, fontSize: 12, marginTop: 22 },
 });

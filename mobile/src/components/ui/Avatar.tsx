@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
 
 import { Fonte } from '../../theme/fonts';
+import { Colors } from '../../theme/colors';
 export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl';
 
 interface AvatarProps {
@@ -38,7 +39,7 @@ function corPorNome(nome: string, cores: string[]): string {
   return cores[Math.abs(hash) % cores.length];
 }
 
-const PALETA_AVATARES = ['#0A6BC0', '#E8760A', '#2F7A4F', '#E91E63', '#9C27B0', '#00BCD4', '#FF5722'];
+const PALETA_AVATARES = [Colors.azul, Colors.azul, Colors.verdeTexto, Colors.azul, Colors.azul, Colors.azul, Colors.erro];
 
 export const Avatar: React.FC<AvatarProps> = ({
   nome,
@@ -82,7 +83,7 @@ export const Avatar: React.FC<AvatarProps> = ({
             justifyContent: 'center',
           }}
         >
-          <Text style={{ color: '#FFFFFF', fontSize: sz.font, fontFamily: Fonte.corpoSemi }}>
+          <Text style={{ color: Colors.branco, fontSize: sz.font, fontFamily: Fonte.corpoSemi }}>
             {iniciais}
           </Text>
         </View>
@@ -98,11 +99,11 @@ export const Avatar: React.FC<AvatarProps> = ({
               borderRadius: sz.badge / 2,
               borderWidth: 2,
               borderColor: cores.fundoElevado,
-              backgroundColor: '#0A6BC0',
+              backgroundColor: Colors.azul,
             },
           ]}
         >
-          <Ionicons name="checkmark" size={sz.badgeIcon} color="#FFFFFF" />
+          <Ionicons name="checkmark" size={sz.badgeIcon} color={Colors.branco} />
         </View>
       )}
     </View>

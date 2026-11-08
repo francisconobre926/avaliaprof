@@ -41,6 +41,7 @@ import { Typography } from '../theme/typography';
 
 import { Fonte } from '../theme/fonts';
 import Icone from './Icone';
+import { Colors } from '../theme/colors';
 type EstadoModal = 'processando' | 'limpo' | 'suspeito' | 'bloqueado';
 
 interface Props {
@@ -212,12 +213,12 @@ export default function ModalVerificacaoOCR({
               <View style={styles.processandoCabecalho}>
                 <Animated.View style={[styles.loadingIcone, { transform: [{ rotate: spin }] }]}>
                   <LinearGradient
-                    colors={['#FF9A00', '#FF5A00']}
+                    colors={[Colors.azul, Colors.azul]}
                     style={StyleSheet.absoluteFill}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                   />
-                  <Icone name="eye-check" size={32} color="#FFFFFF" />
+                  <Icone name="eye-check" size={32} color={Colors.branco} />
                 </Animated.View>
 
                 <Text style={styles.processandoTitulo}>A verificar as tuas fotos</Text>
@@ -281,19 +282,19 @@ export default function ModalVerificacaoOCR({
                         key={idx}
                         style={[
                           styles.parcialDot,
-                          r.estado === 'limpa' && { backgroundColor: '#2F7A4F' },
-                          r.estado === 'suspeita' && { backgroundColor: '#E8760A' },
-                          r.estado === 'bloqueada' && { backgroundColor: '#C2412D' },
+                          r.estado === 'limpa' && { backgroundColor: Colors.verdeTexto },
+                          r.estado === 'suspeita' && { backgroundColor: Colors.azul },
+                          r.estado === 'bloqueada' && { backgroundColor: Colors.erro },
                         ]}
                       >
                         {r.estado === 'limpa' && (
-                          <Ionicons name="checkmark" size={10} color="#FFFFFF" />
+                          <Ionicons name="checkmark" size={10} color={Colors.branco} />
                         )}
                         {r.estado === 'suspeita' && (
-                          <Ionicons name="warning" size={10} color="#FFFFFF" />
+                          <Ionicons name="warning" size={10} color={Colors.branco} />
                         )}
                         {r.estado === 'bloqueada' && (
-                          <Ionicons name="close" size={10} color="#FFFFFF" />
+                          <Ionicons name="close" size={10} color={Colors.branco} />
                         )}
                       </View>
                     ))}
@@ -310,7 +311,7 @@ export default function ModalVerificacaoOCR({
           {estado === 'limpo' && (
             <View style={styles.sucessoContainer}>
               <View style={styles.sucessoIcone}>
-                <Ionicons name="checkmark" size={54} color="#FFFFFF" />
+                <Ionicons name="checkmark" size={54} color={Colors.branco} />
               </View>
               <Text style={styles.sucessoTitulo}>Fotos aprovadas!</Text>
               <Text style={styles.sucessoSubtitulo}>
@@ -319,7 +320,7 @@ export default function ModalVerificacaoOCR({
               {contagem && (
                 <View style={styles.sucessoStats}>
                   <View style={styles.sucessoStat}>
-                    <Ionicons name="checkmark-circle" size={16} color="#2F7A4F" />
+                    <Ionicons name="checkmark-circle" size={16} color={Colors.verdeTexto} />
                     <Text style={styles.sucessoStatTexto}>
                       {`${contagem.limpas} ${contagem.limpas === 1 ? 'foto limpa' : 'fotos limpas'}`}
                     </Text>
@@ -334,8 +335,8 @@ export default function ModalVerificacaoOCR({
           {estado === 'suspeito' && resultadoFinal && (
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={styles.suspeitoCabecalho}>
-                <View style={[styles.estadoIcone, { backgroundColor: '#FBF0E3' }]}>
-                  <Icone name="eye-outline" size={32} color="#E8760A" />
+                <View style={[styles.estadoIcone, { backgroundColor: Colors.azulSuave }]}>
+                  <Icone name="eye-outline" size={32} color={Colors.azul} />
                 </View>
                 <Text style={styles.estadoTitulo}>Verificação adicional necessária</Text>
                 <Text style={styles.estadoSubtitulo}>
@@ -350,7 +351,7 @@ export default function ModalVerificacaoOCR({
                       <Image source={{ uri: f.uri }} style={styles.fotoProblemaImg} />
                       <View style={styles.fotoProblemaOverlay}>
                         <View style={styles.fotoProblemaBadge}>
-                          <Icone name="eye-outline" size={13} color="#FFFFFF" />
+                          <Icone name="eye-outline" size={13} color={Colors.branco} />
                           <Text style={styles.fotoProblemaBadgeTexto}>
                             {`Foto ${f.indice + 1}`}
                           </Text>
@@ -398,7 +399,7 @@ export default function ModalVerificacaoOCR({
                   }}
                   activeOpacity={0.85}
                 >
-                  <Icone name="image-remove" size={18} color="#C2412D" />
+                  <Icone name="image-remove" size={18} color={Colors.erro} />
                   <Text style={styles.btnSecundarioTexto}>Substituir foto</Text>
                 </TouchableOpacity>
 
@@ -408,12 +409,12 @@ export default function ModalVerificacaoOCR({
                   activeOpacity={0.9}
                 >
                   <LinearGradient
-                    colors={['#FF9A00', '#FF5A00']}
+                    colors={[Colors.azul, Colors.azul]}
                     style={StyleSheet.absoluteFill}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                   />
-                  <Icone name="shield-check" size={18} color="#FFFFFF" />
+                  <Icone name="shield-check" size={18} color={Colors.branco} />
                   <Text style={styles.btnPrincipalTexto}>Confirmar e continuar</Text>
                 </TouchableOpacity>
               </View>
@@ -428,8 +429,8 @@ export default function ModalVerificacaoOCR({
           {estado === 'bloqueado' && resultadoFinal && (
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={styles.bloqueadoCabecalho}>
-                <View style={[styles.estadoIcone, { backgroundColor: '#FBECE9' }]}>
-                  <Icone name="shield-alert" size={32} color="#C2412D" />
+                <View style={[styles.estadoIcone, { backgroundColor: Colors.erroFundo }]}>
+                  <Icone name="shield-alert" size={32} color={Colors.erro} />
                 </View>
                 <Text style={styles.estadoTitulo}>Contactos detectados nas fotos</Text>
                 <Text style={styles.estadoSubtitulo}>
@@ -439,7 +440,7 @@ export default function ModalVerificacaoOCR({
 
               {/* Caixa explicativa */}
               <View style={styles.explicacaoBox}>
-                <Icone name="information" size={16} color="#C2412D" />
+                <Icone name="information" size={16} color={Colors.erro} />
                 <Text style={styles.explicacaoTexto}>
                   Partilhar contactos nas fotos (telefones, WhatsApp, emails) viola as regras do GoHome.
                   Os procuradores desbloqueiam o teu contacto pela app.
@@ -454,7 +455,7 @@ export default function ModalVerificacaoOCR({
                       <Image source={{ uri: f.uri }} style={styles.fotoBloqueadaImg} />
                       <View style={styles.fotoBloqueadaOverlay}>
                         <View style={styles.fotoBloqueadaBadge}>
-                          <Icone name="close-circle" size={13} color="#FFFFFF" />
+                          <Icone name="close-circle" size={13} color={Colors.branco} />
                           <Text style={styles.fotoBloqueadaBadgeTexto}>
                             {`Foto ${f.indice + 1} — Bloqueada`}
                           </Text>
@@ -496,7 +497,7 @@ export default function ModalVerificacaoOCR({
                         onPress={() => handleRemoverFotoBloqueada(f.indice)}
                         activeOpacity={0.85}
                       >
-                        <Icone name="trash-can" size={16} color="#FFFFFF" />
+                        <Icone name="trash-can" size={16} color={Colors.branco} />
                         <Text style={styles.btnRemoverFotoTexto}>Remover esta foto</Text>
                       </TouchableOpacity>
                     </View>
@@ -506,7 +507,7 @@ export default function ModalVerificacaoOCR({
 
               {/* Consequências */}
               <View style={styles.consequenciasBox}>
-                <Icone name="alert" size={14} color="#8B1A1A" />
+                <Icone name="alert" size={14} color={Colors.erroEscuro} />
                 <Text style={styles.consequenciasTexto}>
                   Se continuares a tentar publicar com contactos escondidos, a tua conta pode ser suspensa (DDR §42).
                 </Text>
@@ -535,7 +536,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   container: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     borderRadius: 24,
     width: '100%',
     maxWidth: 420,
@@ -563,14 +564,14 @@ const styles = StyleSheet.create({
   },
   processandoTitulo: {
     ...Typography.h2,
-    color: '#16202E',
+    color: Colors.carvao,
     fontFamily: Fonte.tituloSemi,
     textAlign: 'center',
     marginBottom: 6,
   },
   processandoSubtitulo: {
     ...Typography.body,
-    color: '#5B616B',
+    color: Colors.textoSecundario,
     textAlign: 'center',
     fontSize: 13,
     lineHeight: 19,
@@ -583,7 +584,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginBottom: 18,
     position: 'relative',
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
   },
   fotoActual: {
     width: '100%',
@@ -598,7 +599,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.6)',
   },
   fotoActualContador: {
-    color: '#FFFFFF',
+    color: Colors.branco,
     fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     textAlign: 'center',
@@ -609,7 +610,7 @@ const styles = StyleSheet.create({
   },
   etapaActualTexto: {
     ...Typography.bodyBold,
-    color: '#16202E',
+    color: Colors.carvao,
     fontFamily: Fonte.corpoSemi,
     fontSize: 13,
     textAlign: 'center',
@@ -617,13 +618,13 @@ const styles = StyleSheet.create({
   },
   progressoEtapaTrack: {
     height: 4,
-    backgroundColor: '#E6EDF5',
+    backgroundColor: Colors.fundoSuave,
     borderRadius: 2,
     overflow: 'hidden',
   },
   progressoEtapaFill: {
     height: '100%',
-    backgroundColor: '#E8760A',
+    backgroundColor: Colors.azul,
     borderRadius: 2,
   },
   progressoGlobal: {
@@ -638,25 +639,25 @@ const styles = StyleSheet.create({
   },
   progressoGlobalLabel: {
     ...Typography.caption,
-    color: '#5B616B',
-    fontSize: 11,
+    color: Colors.textoSecundario,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
   },
   progressoGlobalValor: {
     ...Typography.bodyBold,
-    color: '#E8760A',
+    color: Colors.azulTexto,
     fontFamily: Fonte.corpoSemi,
     fontSize: 13,
   },
   progressoGlobalTrack: {
     height: 6,
-    backgroundColor: '#F4F3EF',
+    backgroundColor: Colors.fundoSuave,
     borderRadius: 3,
     overflow: 'hidden',
   },
   progressoGlobalFill: {
     height: '100%',
-    backgroundColor: '#16202E',
+    backgroundColor: Colors.carvao,
     borderRadius: 3,
   },
 
@@ -682,9 +683,9 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 11,
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
     borderWidth: 2,
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
     borderStyle: 'dashed',
   },
 
@@ -697,25 +698,25 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#2F7A4F',
+    backgroundColor: Colors.verdeTexto,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 18,
-    shadowColor: '#2F7A4F',
+    shadowColor: Colors.verdeTexto,
     shadowOpacity: 0.3,
     shadowRadius: 20,
     elevation: 10,
   },
   sucessoTitulo: {
     ...Typography.displayMD,
-    color: '#2F7A4F',
+    color: Colors.verdeTexto,
     fontFamily: Fonte.tituloBold,
     textAlign: 'center',
     marginBottom: 6,
   },
   sucessoSubtitulo: {
     ...Typography.body,
-    color: '#5B616B',
+    color: Colors.textoSecundario,
     textAlign: 'center',
     marginBottom: 14,
     fontSize: 13,
@@ -729,20 +730,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: '#EAF3EC',
+    backgroundColor: Colors.verdeSuave,
     paddingHorizontal: 12,
     paddingVertical: 7,
     borderRadius: 20,
   },
   sucessoStatTexto: {
     ...Typography.caption,
-    color: '#22593A',
+    color: Colors.verdeTexto,
     fontFamily: Fonte.corpoSemi,
     fontSize: 12,
   },
   sucessoProximo: {
     ...Typography.caption,
-    color: '#5B616B',
+    color: Colors.textoSecundario,
     textAlign: 'center',
     fontSize: 12,
     fontStyle: 'italic',
@@ -753,13 +754,13 @@ const styles = StyleSheet.create({
     padding: 24,
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#F4F3EF',
+    borderBottomColor: Colors.fundoSuave,
   },
   bloqueadoCabecalho: {
     padding: 24,
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#F4F3EF',
+    borderBottomColor: Colors.fundoSuave,
   },
   estadoIcone: {
     width: 72,
@@ -771,7 +772,7 @@ const styles = StyleSheet.create({
   },
   estadoTitulo: {
     ...Typography.h2,
-    color: '#16202E',
+    color: Colors.carvao,
     fontFamily: Fonte.tituloSemi,
     textAlign: 'center',
     marginBottom: 6,
@@ -779,7 +780,7 @@ const styles = StyleSheet.create({
   },
   estadoSubtitulo: {
     ...Typography.body,
-    color: '#5B616B',
+    color: Colors.textoSecundario,
     textAlign: 'center',
     fontSize: 13,
     lineHeight: 19,
@@ -788,21 +789,21 @@ const styles = StyleSheet.create({
   // ============ Explicação ============
   explicacaoBox: {
     flexDirection: 'row',
-    backgroundColor: '#FFF4F4',
+    backgroundColor: Colors.erroFundo,
     padding: 13,
     borderRadius: 11,
     gap: 9,
     marginHorizontal: 20,
     marginTop: 16,
     borderLeftWidth: 3,
-    borderLeftColor: '#C2412D',
+    borderLeftColor: Colors.erro,
   },
   explicacaoTexto: {
     ...Typography.caption,
-    color: '#8B1A1A',
+    color: Colors.erroEscuro,
     flex: 1,
     lineHeight: 16,
-    fontSize: 11,
+    fontSize: 12,
   },
 
   // ============ Fotos com problema - lista comum ============
@@ -817,17 +818,17 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   fotoProblemaCard: {
-    backgroundColor: '#FFF8F1',
+    backgroundColor: Colors.azulSuave,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#FFD2A8',
+    borderColor: Colors.azul,
     overflow: 'hidden',
   },
   fotoProblemaWrap: {
     width: '100%',
     height: 160,
     position: 'relative',
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
   },
   fotoProblemaImg: {
     width: '100%',
@@ -841,15 +842,15 @@ const styles = StyleSheet.create({
   fotoProblemaBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E8760A',
+    backgroundColor: Colors.azul,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 20,
     gap: 5,
   },
   fotoProblemaBadgeTexto: {
-    color: '#FFFFFF',
-    fontSize: 11,
+    color: Colors.branco,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
   },
   fotoProblemaInfo: {
@@ -857,7 +858,7 @@ const styles = StyleSheet.create({
   },
   fotoProblemaMotivo: {
     ...Typography.body,
-    color: '#5D3317',
+    color: Colors.azulTexto,
     fontSize: 13,
     marginBottom: 10,
   },
@@ -875,23 +876,23 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   deteccaoChipTexto: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
   },
 
   // ============ Foto bloqueada (vermelho) ============
   fotoBloqueadaCard: {
-    backgroundColor: '#FBECE9',
+    backgroundColor: Colors.erroFundo,
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: '#F2C9C1',
+    borderColor: Colors.erroBorda,
     overflow: 'hidden',
   },
   fotoBloqueadaWrap: {
     width: '100%',
     height: 180,
     position: 'relative',
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
   },
   fotoBloqueadaImg: {
     width: '100%',
@@ -905,15 +906,15 @@ const styles = StyleSheet.create({
   fotoBloqueadaBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#C2412D',
+    backgroundColor: Colors.erro,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 20,
     gap: 5,
   },
   fotoBloqueadaBadgeTexto: {
-    color: '#FFFFFF',
-    fontSize: 11,
+    color: Colors.branco,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
   },
   fotoBloqueadaInfo: {
@@ -921,7 +922,7 @@ const styles = StyleSheet.create({
   },
   fotoBloqueadaLabel: {
     ...Typography.caption,
-    color: '#8B1A1A',
+    color: Colors.erroEscuro,
     fontSize: 11,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: 0.5,
@@ -929,19 +930,18 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   textoExtraidoBox: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     padding: 10,
     borderRadius: 8,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#F2C9C1',
+    borderColor: Colors.erroBorda,
   },
   textoExtraidoTexto: {
     ...Typography.body,
-    color: '#C2412D',
-    fontFamily: 'monospace',
+    color: Colors.erro,
+    fontFamily: Fonte.corpoSemi, fontVariant: ['tabular-nums'],
     fontSize: 13,
-    fontWeight: '700',
   },
   deteccaoDetalhe: {
     flexDirection: 'row',
@@ -958,28 +958,28 @@ const styles = StyleSheet.create({
   },
   deteccaoDetalheLabel: {
     ...Typography.bodyBold,
-    color: '#16202E',
+    color: Colors.carvao,
     fontFamily: Fonte.corpoSemi,
     fontSize: 12,
   },
   deteccaoDetalheMotivo: {
     ...Typography.caption,
-    color: '#5B616B',
-    fontSize: 11,
+    color: Colors.textoSecundario,
+    fontSize: 12,
     marginTop: 2,
   },
   btnRemoverFoto: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#C2412D',
+    backgroundColor: Colors.erro,
     paddingVertical: 11,
     borderRadius: 11,
     gap: 7,
     marginTop: 4,
   },
   btnRemoverFotoTexto: {
-    color: '#FFFFFF',
+    color: Colors.branco,
     fontSize: 13,
     fontFamily: Fonte.corpoSemi,
   },
@@ -987,7 +987,7 @@ const styles = StyleSheet.create({
   // ============ Consequências ============
   consequenciasBox: {
     flexDirection: 'row',
-    backgroundColor: '#FBECE9',
+    backgroundColor: Colors.erroFundo,
     padding: 12,
     borderRadius: 10,
     gap: 7,
@@ -997,10 +997,10 @@ const styles = StyleSheet.create({
   },
   consequenciasTexto: {
     ...Typography.caption,
-    color: '#8B1A1A',
+    color: Colors.erroEscuro,
     flex: 1,
     lineHeight: 15,
-    fontSize: 11,
+    fontSize: 12,
   },
 
   // ============ Botões ============
@@ -1017,14 +1017,14 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 16,
     borderRadius: 13,
-    backgroundColor: '#FBECE9',
+    backgroundColor: Colors.erroFundo,
     borderWidth: 1,
-    borderColor: '#F2C9C1',
+    borderColor: Colors.erroBorda,
     gap: 6,
     flex: 1,
   },
   btnSecundarioTexto: {
-    color: '#C2412D',
+    color: Colors.erro,
     fontSize: 13,
     fontFamily: Fonte.corpoSemi,
   },
@@ -1040,7 +1040,7 @@ const styles = StyleSheet.create({
     flex: 1.3,
   },
   btnPrincipalTexto: {
-    color: '#FFFFFF',
+    color: Colors.branco,
     fontSize: 13,
     fontFamily: Fonte.corpoSemi,
   },
@@ -1052,7 +1052,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   btnCancelarTexto: {
-    color: '#5B616B',
+    color: Colors.textoSecundario,
     fontSize: 13,
     fontFamily: Fonte.corpoSemi,
     textDecorationLine: 'underline',

@@ -1,20 +1,21 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import { useCores } from '../../src/store/themeStore';
 
 import { Fonte } from '../../src/theme/fonts';
+import { Colors } from '../../src/theme/colors';
 export default function ProcuradorLayout() {
   const cores = useCores();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: cores.principal,       // Azul GoHome #0A6BC0
+        tabBarActiveTintColor: cores.principal,       // Azul GoHome #1A73E8
         tabBarInactiveTintColor: cores.textoTerciario,
         tabBarShowLabel: true,
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 12,
           fontFamily: Fonte.corpoSemi,
           marginTop: -2,
         },
@@ -37,25 +38,16 @@ export default function ProcuradorLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Início',
+          title: 'Explorar',
           tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? 'home' : 'home-outline'} color={color} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="pesquisar"
-        options={{
-          title: 'Pesquisar',
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? 'search' : 'search-outline'} color={color} size={size} />
+            <Ionicons name={focused ? 'compass' : 'compass-outline'} color={color} size={size} />
           ),
         }}
       />
       <Tabs.Screen
         name="favoritos"
         options={{
-          title: 'Favoritos',
+          title: 'Salvos',
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons name={focused ? 'heart' : 'heart-outline'} color={color} size={size} />
           ),
@@ -75,7 +67,10 @@ export default function ProcuradorLayout() {
         options={{
           title: 'Mensagens',
           tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons name={focused ? 'chatbubble' : 'chatbubble-outline'} color={color} size={size} />
+            <View>
+              <Ionicons name={focused ? 'chatbubble' : 'chatbubble-outline'} color={color} size={size} />
+              <View style={{ position: 'absolute', top: -1, right: -3, width: 9, height: 9, borderRadius: 5, backgroundColor: Colors.erro }} />
+            </View>
           ),
         }}
       />
@@ -88,6 +83,8 @@ export default function ProcuradorLayout() {
           ),
         }}
       />
+      {/* Pesquisa abre a partir da pílula de pesquisa (Explorar); não é um separador. */}
+      <Tabs.Screen name="pesquisar" options={{ href: null }} />
     </Tabs>
   );
 }

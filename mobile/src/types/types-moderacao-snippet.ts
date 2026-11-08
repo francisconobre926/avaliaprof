@@ -1,4 +1,5 @@
-/**
+
+import { Colors } from '../theme/colors';/**
  * src/types/index.ts — SNIPPET para adicionar
  *
  * ⚠️ NÃO substituas o teu ficheiro inteiro.
@@ -110,9 +111,9 @@ export function labelEstadoDenuncia(estado: EstadoDenuncia): string {
 
 export function corEstadoDenuncia(estado: EstadoDenuncia): string {
   const map: Record<EstadoDenuncia, string> = {
-    pendente: '#F57C00',
-    aprovada: '#2E7D32',
-    rejeitada: '#D32F2F',
+    pendente: Colors.azul,
+    aprovada: Colors.verdeTexto,
+    rejeitada: Colors.erro,
   };
   return map[estado];
 }

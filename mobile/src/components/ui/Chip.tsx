@@ -19,6 +19,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
 
 import { Fonte } from '../../theme/fonts';
+import { Colors } from '../../theme/colors';
 interface ChipProps {
   label: string;
   seleccionado?: boolean;
@@ -54,7 +55,7 @@ export const Chip: React.FC<ChipProps> = ({
   };
 
   const corFundo = seleccionado ? cores.principal : cores.fundoSuave;
-  const corTexto = seleccionado ? '#FFFFFF' : cores.textoPrincipal;
+  const corTexto = seleccionado ? Colors.branco : cores.textoPrincipal;
   const corBorda = seleccionado ? cores.principal : cores.bordaSubtil;
 
   const Container: any = onPress ? TouchableOpacity : View;

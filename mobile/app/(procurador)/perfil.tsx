@@ -1,79 +1,91 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  Alert,
-} from 'react-native';
+/**
+ * Perfil do procurador (protótipo, página 8).
+ * Cabeçalho, alternador Cliente/Anfitrião, reservas ativas, salvos,
+ * convite para ser anfitrião e lista de definições.
+ */
+import { useCallback, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
+import TopBar from '../../src/components/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { Colors, Sombras } from '../../src/theme/colors';
-import { Spacing, Typography, Radius } from '../../src/theme/typography';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useUserStore } from '../../src/store/userStore';
 import { useCores } from '../../src/store/themeStore';
 import { useWalletStore } from '../../src/store/walletStore';
 import { useReferralStore } from '../../src/store/referralStore';
-
+import { useReservasStore } from '../../src/store/reservasStore';
+import { useFavoritosStore } from '../../src/store/favoritosStore';
+import { Anuncio } from '../../src/types';
+import { carregarCatalogo } from '../../src/data/catalogo';
+import { formatarIntervalo, formatarMT } from '../../src/utils/reservas';
 import { Fonte } from '../../src/theme/fonts';
-import Icone from '../../src/components/Icone';
-import TopBar, { TopBarBotao } from '../../src/components/TopBar';
-const formatarValor = (valor: number | null | undefined) =>
-  `${(Number(valor) || 0).toLocaleString('pt-MZ', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })} MT`;
+import { Typography } from '../../src/theme/typography';
+import { Colors } from '../../src/theme/colors';
+
 
 export default function PerfilProcurador() {
   const router = useRouter();
   const cores = useCores();
 
-  // Zustand - utilizador
-  const usuario = useUserStore(state => state.usuario);
-  // O userStore actual guarda apenas os campos declarados em UsuarioPerfil.
-  // Derivamos estes valores aqui para não chamar métodos inexistentes.
-  const inicialAvatar = (usuario?.nome?.trim()?.[0] || 'U').toLocaleUpperCase('pt-MZ');
-  const camposPerfil = [
-    usuario?.nome?.trim(),
-    usuario?.email?.trim(),
-    usuario?.telefone?.trim(),
-    usuario?.foto,
-  ];
-  const perfilCompleto = Math.round(
-    (camposPerfil.filter(valor => Boolean(valor)).length / camposPerfil.length) * 100,
+  const usuario = useUserStore(st => st.usuario);
+  const escolherPapel = useUserStore(st => st.escolherPapel);
+  const carteiraStore = useWalletStore(st => st.carteira);
+  const { reservas, carregado: reservasCarregadas, carregar: carregarReservas } = useReservasStore();
+  const { ids: salvosIds, carregar: carregarFavoritos } = useFavoritosStore();
+  const [catalogo, setCatalogo] = useState<Anuncio[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      let ativo = true;
+      carregarFavoritos();
+      if (!reservasCarregadas) carregarReservas();
+      carregarCatalogo().then(l => { if (ativo) setCatalogo(l); });
+      return () => { ativo = false; };
+    }, [carregarFavoritos, carregarReservas, reservasCarregadas]),
   );
 
-  // Zustand - carteira
-  const carteiraStore = useWalletStore(state => state.carteira);
-  // Evita erro enquanto a carteira ainda não foi inicializada no store.
-  const carteira = carteiraStore ?? {
-    saldoDisponivel: 0,
-    saldoCreditos: 0,
-    saldoPendente: 0,
-  };
+  const nome = usuario?.nome?.trim() || 'Convidado';
+  const iniciais = usuario?.nome?.trim()
+    ? usuario.nome.trim().split(/\s+/).slice(0, 2).map(p => p[0]).join('').toLocaleUpperCase('pt-MZ')
+    : '?';
 
-  // Zustand - referência
-  // Alguns estados de referência podem ainda não expor estes helpers.
-  // Leitura defensiva evita que o perfil falhe durante a renderização.
+  const camposPerfil = [usuario?.nome?.trim(), usuario?.email?.trim(), usuario?.telefone?.trim(), usuario?.foto];
+  const perfilCompleto = Math.round((camposPerfil.filter(Boolean).length / camposPerfil.length) * 100);
+
+  const carteira = carteiraStore ?? { saldoDisponivel: 0, saldoCreditos: 0, saldoPendente: 0 };
+  const saldoTotal = (Number(carteira.saldoDisponivel) || 0) + (Number(carteira.saldoCreditos) || 0);
+
   const referralState = useReferralStore() as any;
   const totalConvidados = typeof referralState.getTotalConvidados === 'function'
-    ? Number(referralState.getTotalConvidados()) || 0
-    : 0;
-  const totalGanhoReferencia = typeof referralState.getTotalGanho === 'function'
-    ? Number(referralState.getTotalGanho()) || 0
-    : 0;
+    ? Number(referralState.getTotalConvidados()) || 0 : 0;
 
-  const saldoTotal =
-    (Number(carteira.saldoDisponivel) || 0) +
-    (Number(carteira.saldoCreditos) || 0);
+  const hoje = new Date().toISOString().slice(0, 10);
+  const ativas = reservas
+    .filter(r => (r.estado === 'confirmada' || r.estado === 'pendente') && r.saida >= hoje)
+    .slice(0, 3);
 
-  // ========================================================
-  // DEV: Reset total da app (apaga tudo do AsyncStorage)
-  // Só aparece quando __DEV__ é true (desaparece em build de produção).
-  // ========================================================
+  const salvos = salvosIds.map(id => catalogo.find(a => a.id === id)).filter(Boolean) as Anuncio[];
+  const miniaturas = salvos.slice(0, 3);
+  const restantes = Math.max(0, salvosIds.length - miniaturas.length);
+
+  const passarParaAnfitriao = async () => {
+    if (!usuario) {
+      // Sem conta: criar conta/entrar já como anunciante.
+      router.push({ pathname: '/auth', params: { papel: 'anunciante' } } as any);
+      return;
+    }
+    await escolherPapel('anunciante');
+    router.replace('/(anunciante)' as any);
+  };
+
+  const sair = useUserStore(st => st.sair);
+  const terminarSessao = () => {
+    Alert.alert('Terminar sessão', 'Quer mesmo sair da sua conta?', [
+      { text: 'Cancelar', style: 'cancel' },
+      { text: 'Sair', style: 'destructive', onPress: async () => { await sair(); router.replace('/(procurador)' as any); } },
+    ]);
+  };
+
   const confirmarResetDev = () => {
     Alert.alert(
       '🧪 Reset total da app',
@@ -86,12 +98,8 @@ export default function PerfilProcurador() {
           onPress: async () => {
             try {
               await AsyncStorage.clear();
-              Alert.alert(
-                '✅ App limpa',
-                'Fecha e reabre a app (ou abana o telemóvel → Reload no menu Dev do Expo).',
-                [{ text: 'OK' }],
-              );
-            } catch (e) {
+              Alert.alert('✅ App limpa', 'Fecha e reabre a app (ou abana o telemóvel → Reload no menu Dev do Expo).', [{ text: 'OK' }]);
+            } catch {
               Alert.alert('Erro', 'Não foi possível limpar o storage.');
             }
           },
@@ -100,613 +108,183 @@ export default function PerfilProcurador() {
     );
   };
 
+  const estadoCor = (e: string) => (e === 'confirmada' ? cores.sucesso : cores.aviso);
+
+  const Linha = ({ titulo, descricao, onPress, ultimo, cor }: { titulo: string; descricao?: string; onPress?: () => void; ultimo?: boolean; cor?: string }) => (
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={onPress ? 0.7 : 1}
+      accessibilityRole="button"
+      style={[s.menuLinha, !ultimo && { borderBottomColor: cores.bordaSubtil, borderBottomWidth: 1 }]}
+    >
+      <View style={{ flex: 1 }}>
+        <Text style={[s.menuTitulo, { color: cor || cores.textoPrincipal }]}>{titulo}</Text>
+        {!!descricao && <Text style={{ color: cores.textoSecundario, fontFamily: Fonte.corpo, fontSize: 13, marginTop: 2 }}>{descricao}</Text>}
+      </View>
+      <Ionicons name="chevron-forward" size={18} color={cores.textoTerciario} />
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <TopBar
-        acoes={
-          <>
-            <TopBarBotao icone="settings-outline" rotulo="Definições" />
-            <TopBarBotao icone="notifications-outline" rotulo="Notificações" />
-          </>
-        }
-      />
-
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={[styles.titulo, { color: cores.textoPrincipal }]} accessibilityRole="header">
-          O meu perfil
-        </Text>
-
-        {/* ============ CARTÃO DO PERFIL ============ */}
-        <View style={[styles.perfilCard, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
-          <View style={styles.avatarWrapper}>
-            {usuario?.foto ? (
-              <Image source={{ uri: usuario.foto }} style={styles.avatarFoto} />
-            ) : (
-              <View style={[styles.avatarFoto, styles.avatarVazio, { backgroundColor: cores.fundoSuave }]}>
-                <Text style={[styles.avatarLetra, { color: cores.textoPrincipal }]}>{inicialAvatar}</Text>
-              </View>
-            )}
-            <TouchableOpacity
-              style={[styles.editarFotoBadge, { backgroundColor: cores.textoPrincipal, borderColor: cores.fundoElevado }]}
-              onPress={() => router.push('/editar-perfil')}
-              activeOpacity={0.85}
-              accessibilityLabel="Editar foto"
-            >
-              <Ionicons name="camera" size={12} color={cores.fundo} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.perfilInfo}>
-            <Text style={[styles.nome, { color: cores.textoPrincipal }]} numberOfLines={1}>
-              {usuario?.nome || 'Sem nome'}
-            </Text>
-            <Text style={[styles.email, { color: cores.textoSecundario }]} numberOfLines={1}>
-              {usuario?.email || 'sem email'}
-            </Text>
-            <View style={styles.perfilMeta}>
-              <View style={[styles.tipoChip, { backgroundColor: cores.fundoSuave }]}>
-                <Icone name="account-search" size={12} color={cores.textoSecundario} />
-                <Text style={[styles.tipoTexto, { color: cores.textoSecundario }]}>Procurador</Text>
-              </View>
-              <View style={styles.localizacaoRow}>
-                <Ionicons name="location-outline" size={12} color={cores.textoTerciario} />
-                <Text style={[styles.localizacaoTexto, { color: cores.textoTerciario }]}>Beira, Sofala</Text>
-              </View>
+    <View style={[s.flex, { backgroundColor: cores.fundo }]}>
+      <TopBar />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.conteudo}>
+        {/* ============ CABEÇALHO ============ */}
+        <View style={s.cabecalho}>
+          {usuario?.foto
+            ? <Image source={{ uri: usuario.foto }} style={s.avatar} />
+            : <View style={[s.avatar, { backgroundColor: cores.principal }]}><Text style={s.avatarTexto}>{iniciais}</Text></View>}
+          <TouchableOpacity style={{ flex: 1 }} onPress={() => router.push('/editar-perfil')} accessibilityLabel="Ver e editar perfil">
+            <Text style={[s.nome, { color: cores.textoPrincipal }]} numberOfLines={1}>{nome}</Text>
+            <Text style={{ color: cores.textoSecundario, fontFamily: Fonte.corpo, fontSize: 15 }}>Ver e editar perfil ›</Text>
+          </TouchableOpacity>
+          {usuario && (
+            <View style={[s.pilula, { backgroundColor: perfilCompleto === 100 ? cores.principalClara : cores.aviso + '24' }]}>
+              <Text style={[s.pilulaTexto, { color: perfilCompleto === 100 ? cores.principal : cores.aviso }]}>
+                {perfilCompleto === 100 ? <><Ionicons name="checkmark" size={13} color={cores.principalTexto} /> Verificada</> : `Perfil ${perfilCompleto}%`}
+              </Text>
             </View>
-          </View>
+          )}
         </View>
 
-        {/* ============ CARTEIRA DESTAQUE ============ */}
-        <TouchableOpacity
-          style={[styles.carteiraCard, { backgroundColor: cores.fundoElevado }]}
-          onPress={() => router.push('/carteira' as any)}
-          activeOpacity={0.9}
-        >
-          <View style={styles.carteiraTop}>
-            <View style={styles.carteiraLeft}>
-              <View style={[styles.carteiraIcone, { backgroundColor: cores.principalClara }]}>
-                <Ionicons name="wallet" size={20} color={cores.principal} />
-              </View>
-              <View>
-                <Text style={[styles.carteiraLabel, { color: cores.textoSecundario }]}>
-                  A MINHA CARTEIRA
-                </Text>
-                <Text style={[styles.carteiraSaldo, { color: cores.textoPrincipal }]}>
-                  {formatarValor(saldoTotal)}
-                </Text>
-              </View>
-            </View>
-            <Ionicons name="chevron-forward" size={22} color={cores.textoTerciario} />
+        {/* ============ CLIENTE / ANFITRIÃO ============ */}
+        <View style={[s.alternador, { backgroundColor: cores.fundoSuave }]} accessibilityRole="tablist">
+          <View style={[s.alternadorItem, { backgroundColor: cores.fundoElevado }]} accessibilityState={{ selected: true }}>
+            <Text style={[s.alternadorTexto, { color: cores.textoPrincipal, fontFamily: Fonte.corpoBold }]}>Cliente</Text>
           </View>
+          <TouchableOpacity style={s.alternadorItem} onPress={passarParaAnfitriao} accessibilityRole="tab" accessibilityState={{ selected: false }}>
+            <Text style={[s.alternadorTexto, { color: cores.textoSecundario }]}>Anfitrião</Text>
+          </TouchableOpacity>
+        </View>
 
-          <View style={[styles.carteiraDetalhes, { borderTopColor: cores.bordaSubtil }]}>
-            <View style={styles.carteiraDetalheItem}>
-              <Text style={[styles.carteiraDetalheLabel, { color: cores.textoSecundario }]}>
-                Disponível
-              </Text>
-              <Text style={[styles.carteiraDetalheValor, { color: cores.textoPrincipal }]}>
-                {formatarValor(carteira.saldoDisponivel)}
-              </Text>
-            </View>
-            <View style={[styles.carteiraDivisor, { backgroundColor: cores.bordaSubtil }]} />
-            <View style={styles.carteiraDetalheItem}>
-              <Text style={[styles.carteiraDetalheLabel, { color: cores.textoSecundario }]}>
-                Pendente
-              </Text>
-              <Text style={[styles.carteiraDetalheValor, { color: Colors.aviso }]}>
-                {formatarValor(carteira.saldoPendente)}
-              </Text>
-            </View>
-            <View style={[styles.carteiraDivisor, { backgroundColor: cores.bordaSubtil }]} />
-            <View style={styles.carteiraDetalheItem}>
-              <Text style={[styles.carteiraDetalheLabel, { color: cores.textoSecundario }]}>
-                Créditos
-              </Text>
-              <Text style={[styles.carteiraDetalheValor, { color: cores.principal }]}>
-                {formatarValor(carteira.saldoCreditos)}
-              </Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-
-        {/* ============ REFERÊNCIA CTA (NOVO) ============ */}
-        <TouchableOpacity
-          style={styles.referenciaCard}
-          onPress={() => router.push('/referencia' as any)}
-          activeOpacity={0.9}
-        >
-          <LinearGradient
-            colors={['#E8760A', '#F15A24']}
-            style={StyleSheet.absoluteFill}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          />
-          <View style={styles.referenciaConteudo}>
-            <View style={styles.referenciaIcone}>
-              <Icone name="gift-outline" size={28} color="#FFFFFF" />
-            </View>
+        {/* ============ RESERVAS ATIVAS ============ */}
+        <Text style={[s.secao, { color: cores.textoPrincipal }]}>Reservas ativas</Text>
+        {ativas.length > 0 ? ativas.map(r => (
+          <TouchableOpacity
+            key={r.id}
+            activeOpacity={0.85}
+            onPress={() => router.push('/(procurador)/reservas' as any)}
+            style={[s.reserva, { backgroundColor: cores.fundoSuave }]}
+          >
+            <View style={[s.reservaBarra, { backgroundColor: estadoCor(r.estado) }]} />
             <View style={{ flex: 1 }}>
-              <Text style={styles.referenciaTitulo}>Convida e ganha 10%</Text>
-              <Text style={styles.referenciaSubtitulo}>
-                {totalConvidados > 0
-                  ? `${totalConvidados} convidado${totalConvidados === 1 ? '' : 's'} • ${formatarValor(totalGanhoReferencia)} ganho`
-                  : 'Partilha o teu código e começa a ganhar'}
+              <Text style={[s.reservaTitulo, { color: cores.textoPrincipal }]} numberOfLines={1}>{r.titulo}</Text>
+              <Text style={{ color: cores.textoSecundario, fontFamily: Fonte.corpo, fontSize: 14 }}>
+                {formatarIntervalo(r.entrada, r.saida)} · {r.codigo}
               </Text>
             </View>
-            <Ionicons name="arrow-forward-circle" size={28} color="#FFFFFF" />
+            <View style={[s.pilula, { backgroundColor: estadoCor(r.estado) + '22' }]}>
+              <Text style={[s.pilulaTexto, { color: estadoCor(r.estado) }]}>{r.estado === 'confirmada' ? 'Confirmada' : 'Pendente'}</Text>
+            </View>
+          </TouchableOpacity>
+        )) : (
+          <View style={[s.reserva, { backgroundColor: cores.fundoSuave }]}>
+            <Text style={{ color: cores.textoSecundario, fontFamily: Fonte.corpo, fontSize: 15, flex: 1 }}>
+              Ainda não tem reservas ativas. Explore casas e salões para reservar.
+            </Text>
           </View>
-        </TouchableOpacity>
+        )}
 
-        {/* ============ PERFIL COMPLETO ============ */}
-        <View style={[styles.perfilCompletoCard, { backgroundColor: cores.fundoElevado }]}>
-          <View style={styles.perfilCompletoHeader}>
-            <View style={{ flex: 1 }}>
-              <Text style={[styles.perfilCompletoTitulo, { color: cores.textoPrincipal }]}>
-                {`Perfil ${perfilCompleto}% completo`}
-              </Text>
-              <Text style={[styles.perfilCompletoSubtitulo, { color: cores.textoSecundario }]}>
-                {perfilCompleto < 100
-                  ? 'Completa para receber selo de verificado'
-                  : 'Perfil completo! Recebe 5x mais contactos'}
-              </Text>
-            </View>
-            {perfilCompleto < 100 && (
-              <TouchableOpacity
-                onPress={() => router.push('/editar-perfil')}
-                activeOpacity={0.85}
-              >
-                <Ionicons name="arrow-forward-circle" size={32} color={cores.principal} />
+        {/* ============ SALVOS ============ */}
+        <View style={s.salvosCabecalho}>
+          <Text style={[s.secao, { color: cores.textoPrincipal, marginTop: 0 }]}>Salvos ({salvosIds.length})</Text>
+          {salvosIds.length > 0 && (
+            <TouchableOpacity onPress={() => router.push('/(procurador)/favoritos' as any)}>
+              <Text style={{ color: cores.principalTexto, fontFamily: Fonte.corpoBold, fontSize: 15 }}>Ver tudo</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        {salvosIds.length > 0 && (
+          <View style={s.salvosLinha}>
+            {miniaturas.map((a, i) => {
+              const foto = a.fotos?.[0] || a.imagem;
+              return (
+                <TouchableOpacity key={a.id} style={[s.salvo, { backgroundColor: [cores.principalClara, cores.fundoSuave, cores.aviso + '24'][i % 3] }]} onPress={() => router.push(`/anuncio/${a.id}` as any)} accessibilityLabel={a.titulo}>
+                  {foto ? <Image source={{ uri: foto }} style={StyleSheet.absoluteFill} resizeMode="cover" /> : null}
+                </TouchableOpacity>
+              );
+            })}
+            {restantes > 0 && (
+              <TouchableOpacity style={[s.salvo, { backgroundColor: cores.sucesso + '22', alignItems: 'center', justifyContent: 'center' }]} onPress={() => router.push('/(procurador)/favoritos' as any)}>
+                <Text style={{ color: cores.textoPrincipal, fontFamily: Fonte.corpoBold, fontSize: 18 }}>+{restantes}</Text>
               </TouchableOpacity>
             )}
           </View>
-          <View style={[styles.perfilCompletoBar, { backgroundColor: cores.fundoSuave }]}>
-            <View style={[styles.perfilCompletoFill, { width: `${perfilCompleto}%` }]}>
-              <LinearGradient
-                colors={['#E8760A', '#F15A24']}
-                style={StyleSheet.absoluteFill}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-              />
-            </View>
+        )}
+
+        {/* ============ SER ANFITRIÃO ============ */}
+        <View style={[s.convite, { backgroundColor: cores.textoPrincipal }]}>
+          <View style={{ flex: 1 }}>
+            <Text style={[s.conviteTitulo, { color: cores.fundo }]}>Tem uma casa ou salão?</Text>
+            <Text style={{ color: cores.fundo, opacity: 0.7, fontFamily: Fonte.corpo, fontSize: 14, marginTop: 2 }}>Anuncie e receba por M-Pesa ou e-Mola.</Text>
           </View>
-        </View>
-
-        {/* ============ STATS ============ */}
-        <View style={[styles.stats, { backgroundColor: cores.fundoElevado }]}>
-          <View style={styles.stat}>
-            <Text style={[styles.statValor, { color: cores.textoPrincipal }]}>12</Text>
-            <Text style={[styles.statLabel, { color: cores.textoSecundario }]}>Desbloqueados</Text>
-          </View>
-          <View style={[styles.statDivisor, { backgroundColor: cores.bordaSubtil }]} />
-          <View style={styles.stat}>
-            <Text style={[styles.statValor, { color: cores.textoPrincipal }]}>3</Text>
-            <Text style={[styles.statLabel, { color: cores.textoSecundario }]}>Favoritos</Text>
-          </View>
-          <View style={[styles.statDivisor, { backgroundColor: cores.bordaSubtil }]} />
-          <View style={styles.stat}>
-            <Text style={[styles.statValor, { color: cores.textoPrincipal }]}>4</Text>
-            <Text style={[styles.statLabel, { color: cores.textoSecundario }]}>Conversas</Text>
-          </View>
-        </View>
-
-        {/* ============ MENU ============ */}
-        <View style={styles.menu}>
-          <Text style={[styles.menuSeccaoTitulo, { color: cores.textoSecundario }]}>CONTA</Text>
-          <MenuItem
-            icone="person"
-            cor={cores.principal}
-            titulo="Informações pessoais"
-            descricao="Nome, email, telefone"
-            onPress={() => router.push('/editar-perfil')}
-            cores={cores}
-          />
-          <MenuItem
-            icone="wallet"
-            cor={Colors.verde}
-            titulo="Carteira e saques"
-            descricao={formatarValor(saldoTotal)}
-            badge={carteira.saldoPendente > 0 ? `+${formatarValor(carteira.saldoPendente)}` : undefined}
-            onPress={() => router.push('/carteira' as any)}
-            cores={cores}
-          />
-          <MenuItem
-            icone="notifications"
-            cor={Colors.aviso}
-            titulo="Notificações"
-            descricao="Preferências"
-            cores={cores}
-          />
-          <MenuItem
-            icone="color-palette"
-            cor={Colors.premium}
-            titulo="Aparência"
-            descricao="Tema e cores da app"
-            onPress={() => router.push('/aparencia')}
-            cores={cores}
-          />
-          <MenuItem
-            icone="lock-closed"
-            cor={cores.principal}
-            titulo="Privacidade e segurança"
-            descricao="Password, 2FA"
-            onPress={() => router.push('/auth/nova-password')}
-            cores={cores}
-          />
-
-          <Text style={[styles.menuSeccaoTitulo, { color: cores.textoSecundario }]}>ACTIVIDADE</Text>
-          <MenuItem
-            icone="time"
-            cor={cores.principal}
-            titulo="Histórico de desbloqueios"
-            descricao="12 imóveis"
-            cores={cores}
-          />
-          <MenuItem
-            icone="people"
-            cor={Colors.verde}
-            titulo="Programa de referência"
-            descricao={totalConvidados > 0 ? `${totalConvidados} convidado${totalConvidados === 1 ? '' : 's'}` : 'Ganha 10% com indicados'}
-            badge={totalGanhoReferencia > 0 ? formatarValor(totalGanhoReferencia) : undefined}
-            onPress={() => router.push('/referencia' as any)}
-            cores={cores}
-          />
-          <MenuItem
-            icone="search"
-            cor={Colors.premium}
-            titulo="Pesquisas guardadas"
-            descricao="3 alertas activos"
-            cores={cores}
-          />
-          <MenuItem
-            icone="star"
-            cor={Colors.destaque}
-            titulo="Minhas avaliações"
-            descricao="Avalia anunciantes"
-            cores={cores}
-          />
-
-          <Text style={[styles.menuSeccaoTitulo, { color: cores.textoSecundario }]}>SOBRE</Text>
-          <MenuItem
-            icone="help-circle"
-            cor={cores.textoSecundario}
-            titulo="Centro de ajuda"
-            descricao="FAQ e suporte"
-            cores={cores}
-          />
-          <MenuItem
-            icone="document-text"
-            cor={cores.textoSecundario}
-            titulo="Termos de uso"
-            descricao="Políticas"
-            cores={cores}
-          />
-          <MenuItem
-            icone="information-circle"
-            cor={cores.textoSecundario}
-            titulo="Sobre o GoHome"
-            descricao="v1.2"
-            cores={cores}
-          />
-
-          <TouchableOpacity
-            style={styles.logoutBotao}
-            onPress={() => router.replace('/onboarding/escolha-papel')}
-            activeOpacity={0.85}
-          >
-            <Ionicons name="log-out-outline" size={20} color={Colors.erro} />
-            <Text style={styles.logoutTexto}>Trocar de perfil</Text>
+          <TouchableOpacity onPress={passarParaAnfitriao} style={[s.conviteBotao, { backgroundColor: cores.fundo }]} accessibilityRole="button">
+            <Text style={{ color: cores.textoPrincipal, fontFamily: Fonte.corpoBold, fontSize: 15 }}>Ser anfitrião</Text>
           </TouchableOpacity>
-
-          {/* ⚠️ BOTÃO DEV — só visível em desenvolvimento (__DEV__ === true).
-              Desaparece automaticamente em builds de produção. */}
-          {__DEV__ && (
-            <TouchableOpacity
-              style={styles.devResetBotao}
-              onPress={confirmarResetDev}
-              activeOpacity={0.85}
-            >
-              <Ionicons name="refresh-circle" size={20} color="#FFFFFF" />
-              <Text style={styles.devResetTexto}>🧪 DEV — Reset total da app</Text>
-            </TouchableOpacity>
-          )}
-
-          <View style={styles.versao}>
-            <Text style={[styles.versaoTexto, { color: cores.textoTerciario }]}>
-              GoHome v1.2 · Let's Go Tech
-            </Text>
-          </View>
         </View>
+
+        {/* ============ DEFINIÇÕES ============ */}
+        <View style={[s.menu, { backgroundColor: cores.fundoSuave }]}>
+          <Linha titulo="Informações pessoais" descricao="Nome, email, telefone" onPress={() => router.push('/editar-perfil')} />
+          <Linha titulo="Pagamentos (M-Pesa / e-Mola)" descricao={`Carteira ${formatarMT(saldoTotal)}`} onPress={() => router.push('/carteira' as any)} />
+          <Linha titulo="Notificações" onPress={() => router.push('/avisos' as any)} />
+          <Linha titulo="Programa de referência" descricao={totalConvidados > 0 ? `${totalConvidados} convidado${totalConvidados === 1 ? '' : 's'}` : 'Ganha 10% com indicados'} onPress={() => router.push('/referencia' as any)} />
+          <Linha titulo="Aparência" descricao="Tema e cores da app" onPress={() => router.push('/aparencia')} />
+          <Linha titulo="Privacidade e segurança" descricao="Password" onPress={() => router.push('/auth/nova-password')} />
+          <Linha titulo="Ajuda e termos" ultimo />
+        </View>
+
+        {usuario ? (
+          <TouchableOpacity style={s.trocar} onPress={terminarSessao} accessibilityRole="button">
+            <Ionicons name="log-out-outline" size={20} color={cores.erro} />
+            <Text style={{ color: cores.erro, fontFamily: Fonte.corpoBold, fontSize: 16 }}>Terminar sessão</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={s.trocar} onPress={() => router.push('/auth' as any)} accessibilityRole="button">
+            <Ionicons name="log-in-outline" size={20} color={cores.principalTexto} />
+            <Text style={{ color: cores.principalTexto, fontFamily: Fonte.corpoBold, fontSize: 16 }}>Entrar ou criar conta</Text>
+          </TouchableOpacity>
+        )}
+
+        {/* Só visível em desenvolvimento */}
+        {__DEV__ && (
+          <TouchableOpacity style={[s.trocar, { backgroundColor: cores.erro, borderRadius: 14, marginTop: 4 }]} onPress={confirmarResetDev}>
+            <Ionicons name="refresh-circle" size={20} color={Colors.branco} />
+            <Text style={{ color: Colors.branco, fontFamily: Fonte.corpoBold, fontSize: 15 }}>🧪 DEV — Reset total da app</Text>
+          </TouchableOpacity>
+        )}
+
+        <Text style={[s.versao, { color: cores.textoTerciario }]}>GoHome v1.2 · Let's Go Tech</Text>
       </ScrollView>
     </View>
   );
 }
 
-function MenuItem({ icone, cor, titulo, descricao, badge, onPress, cores }: any) {
-  return (
-    <TouchableOpacity
-      style={[styles.menuItem, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}
-      activeOpacity={0.7}
-      onPress={onPress}
-    >
-      <View style={[styles.menuItemIcone, { backgroundColor: `${cor}15` }]}>
-        <Ionicons name={icone} size={20} color={cor} />
-      </View>
-      <View style={styles.menuItemInfo}>
-        <Text style={[styles.menuItemTitulo, { color: cores.textoPrincipal }]}>{titulo}</Text>
-        <Text style={[styles.menuItemDescricao, { color: cores.textoSecundario }]}>{descricao}</Text>
-      </View>
-      {badge && (
-        <View style={[styles.menuItemBadge, { backgroundColor: 'rgba(76, 175, 80, 0.15)' }]}>
-          <Text style={styles.menuItemBadgeTexto}>{badge}</Text>
-        </View>
-      )}
-      <Ionicons name="chevron-forward" size={18} color={cores.textoTerciario} />
-    </TouchableOpacity>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F7F8FA' },
-  titulo: { ...Typography.h1, paddingHorizontal: Spacing.lg, marginTop: 16 },
-
-  // ============ CARTÃO DO PERFIL ============
-  perfilCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
-    marginHorizontal: Spacing.lg,
-    marginTop: 12,
-    marginBottom: Spacing.md,
-    padding: Spacing.md,
-    borderRadius: 16,
-    borderWidth: 1,
-  },
-  avatarWrapper: { position: 'relative' },
-  avatarFoto: { width: 64, height: 64, borderRadius: 32 },
-  avatarVazio: { justifyContent: 'center', alignItems: 'center' },
-  avatarLetra: { fontSize: 26, fontFamily: Fonte.tituloSemi },
-  editarFotoBadge: {
-    position: 'absolute',
-    bottom: -2,
-    right: -2,
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-  },
-  perfilInfo: { flex: 1, minWidth: 0 },
-  nome: { ...Typography.h2 },
-  email: { fontFamily: Fonte.corpo, fontSize: 13, marginTop: 2 },
-  perfilMeta: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginTop: 8 },
-  tipoChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 999,
-  },
-  tipoTexto: { fontFamily: Fonte.corpoMedio, fontSize: 11 },
-  localizacaoRow: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  localizacaoTexto: { fontFamily: Fonte.corpoMedio, fontSize: 11 },
-
-  // ============ CARTEIRA CARD ============
-  carteiraCard: {
-    marginHorizontal: Spacing.lg,
-    padding: Spacing.md,
-    borderRadius: 22,
-    borderWidth: 1,
-    borderColor: 'rgba(11,46,89,0.06)',
-    ...Sombras.lg,
-    marginBottom: Spacing.md,
-  },
-  carteiraTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingBottom: Spacing.md,
-  },
-  carteiraLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
-    flex: 1,
-  },
-  carteiraIcone: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  carteiraLabel: {
-    ...Typography.captionBold,
-    letterSpacing: 0.5,
-    marginBottom: 2,
-  },
-  carteiraSaldo: {
-    ...Typography.h1,
-    fontFamily: Fonte.tituloSemi,
-  },
-  carteiraDetalhes: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: Spacing.md,
-    borderTopWidth: 1,
-  },
-  carteiraDetalheItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  carteiraDetalheLabel: {
-    ...Typography.caption,
-    fontSize: 10,
-    marginBottom: 2,
-  },
-  carteiraDetalheValor: {
-    ...Typography.bodyBold,
-    fontSize: 13,
-    fontFamily: Fonte.corpoSemi,
-  },
-  carteiraDivisor: {
-    width: 1,
-    height: 24,
-  },
-
-  // ============ REFERÊNCIA CARD (NOVO) ============
-  referenciaCard: {
-    marginHorizontal: Spacing.lg,
-    marginBottom: Spacing.md,
-    borderRadius: 22,
-    overflow: 'hidden',
-    ...Sombras.colorida('#E8760A'),
-  },
-  referenciaConteudo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: Spacing.md,
-    gap: Spacing.md,
-  },
-  referenciaIcone: {
-    width: 48,
-    height: 48,
-    borderRadius: 14,
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  referenciaTitulo: {
-    ...Typography.bodyBold,
-    color: '#FFFFFF',
-    fontSize: 15,
-    marginBottom: 2,
-  },
-  referenciaSubtitulo: {
-    ...Typography.caption,
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontSize: 12,
-  },
-
-  // Perfil completo
-  perfilCompletoCard: {
-    marginHorizontal: Spacing.lg,
-    padding: Spacing.md,
-    borderRadius: Radius.xl,
-    ...Sombras.md,
-    marginBottom: Spacing.md,
-  },
-  perfilCompletoHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: Spacing.sm,
-  },
-  perfilCompletoTitulo: {
-    ...Typography.bodyBold,
-    fontSize: 14,
-  },
-  perfilCompletoSubtitulo: {
-    ...Typography.caption,
-    marginTop: 2,
-  },
-  perfilCompletoBar: {
-    height: 6,
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  perfilCompletoFill: {
-    height: '100%',
-    borderRadius: 3,
-  },
-
-  // Stats
-  stats: {
-    flexDirection: 'row',
-    marginHorizontal: Spacing.lg,
-    padding: Spacing.md,
-    borderRadius: Radius.xl,
-    ...Sombras.md,
-    marginBottom: Spacing.md,
-  },
-  stat: { flex: 1, alignItems: 'center' },
-  statValor: { ...Typography.h1, fontFamily: Fonte.tituloSemi },
-  statLabel: { ...Typography.caption, marginTop: 2 },
-  statDivisor: { width: 1 },
-
-  // Menu
-  menu: { padding: Spacing.lg, gap: Spacing.xs },
-  menuSeccaoTitulo: {
-    ...Typography.captionBold,
-    letterSpacing: 1,
-    marginTop: Spacing.lg,
-    marginBottom: Spacing.sm,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: Spacing.md,
-    borderRadius: Radius.lg,
-    gap: Spacing.md,
-    borderWidth: 1,
-    marginBottom: Spacing.xs,
-  },
-  menuItemIcone: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  menuItemInfo: { flex: 1 },
-  menuItemTitulo: { ...Typography.bodyBold },
-  menuItemDescricao: { ...Typography.caption, marginTop: 2 },
-  menuItemBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: Radius.sm,
-  },
-  menuItemBadgeTexto: {
-    color: Colors.verde,
-    fontSize: 10,
-    fontFamily: Fonte.corpoSemi,
-  },
-  logoutBotao: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(244, 67, 54, 0.08)',
-    padding: Spacing.md,
-    borderRadius: Radius.lg,
-    marginTop: Spacing.xl,
-    gap: Spacing.sm,
-    borderWidth: 1,
-    borderColor: 'rgba(244, 67, 54, 0.2)',
-  },
-  logoutTexto: { ...Typography.button, color: Colors.erro },
-
-  // ============ DEV RESET (só em __DEV__) ============
-  devResetBotao: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#C2412D',
-    padding: Spacing.md,
-    borderRadius: Radius.lg,
-    marginTop: Spacing.md,
-    gap: Spacing.sm,
-    ...Sombras.sm,
-  },
-  devResetTexto: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontFamily: Fonte.corpoSemi,
-    letterSpacing: 0.3,
-  },
-
-  versao: { alignItems: 'center', paddingTop: Spacing.xl },
-  versaoTexto: { ...Typography.caption },
+const s = StyleSheet.create({
+  flex: { flex: 1 },
+  conteudo: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 32 },
+  cabecalho: { flexDirection: 'row', alignItems: 'center', gap: 14 },
+  avatar: { width: 66, height: 66, borderRadius: 33, alignItems: 'center', justifyContent: 'center' },
+  avatarTexto: { color: Colors.branco, fontFamily: Fonte.tituloBold, fontSize: 24 },
+  nome: { ...Typography.tituloSecao, fontFamily: Fonte.tituloBold, fontSize: 22 },
+  pilula: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 999 },
+  pilulaTexto: { fontFamily: Fonte.corpoSemi, fontSize: 12 },
+  alternador: { flexDirection: 'row', borderRadius: 18, padding: 5, marginTop: 20 },
+  alternadorItem: { flex: 1, height: 48, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  alternadorTexto: { fontFamily: Fonte.corpoSemi, fontSize: 16 },
+  secao: { ...Typography.tituloSecao, marginTop: 28, marginBottom: 12 },
+  reserva: { flexDirection: 'row', alignItems: 'center', gap: 14, borderRadius: 20, paddingVertical: 16, paddingRight: 16, paddingLeft: 14, marginBottom: 10 },
+  reservaBarra: { width: 4, alignSelf: 'stretch', borderRadius: 2 },
+  reservaTitulo: { fontFamily: Fonte.corpoBold, fontSize: 16 },
+  salvosCabecalho: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 28, marginBottom: 12 },
+  salvosLinha: { flexDirection: 'row', gap: 10 },
+  salvo: { flex: 1, aspectRatio: 1.15, borderRadius: 18, overflow: 'hidden' },
+  convite: { flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: 22, padding: 18, marginTop: 28 },
+  conviteTitulo: { fontFamily: Fonte.tituloSemi, fontSize: 18 },
+  conviteBotao: { paddingHorizontal: 18, height: 46, borderRadius: 999, alignItems: 'center', justifyContent: 'center' },
+  menu: { borderRadius: 22, marginTop: 20, paddingHorizontal: 18 },
+  menuLinha: { flexDirection: 'row', alignItems: 'center', paddingVertical: 18 },
+  menuTitulo: { fontFamily: Fonte.corpoSemi, fontSize: 16 },
+  trocar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 16, marginTop: 12 },
+  versao: { textAlign: 'center', fontFamily: Fonte.corpo, fontSize: 12, marginTop: 16 },
 });

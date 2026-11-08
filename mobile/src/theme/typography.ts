@@ -1,129 +1,68 @@
 import { Fonte } from './fonts';
 
-// Escala tipográfica GoHome.
-// Regra: só os títulos e preços usam a fonte de display; tudo o que é
-// lido em bloco ou interagido usa a fonte de texto. Pesos contidos —
-// a hierarquia vem do tamanho e da fonte, não de pôr tudo a negrito.
+// ============================================================
+// Escala tipográfica GoHome
+//
+// Hierarquia:
+//   • Sora (títulos)  — display, h1–h3 e preços. Letter-spacing apenas
+//     ligeiramente negativo: a Sora é ampla e fecha-se rápido demais.
+//   • Manrope (texto) — tudo o que se lê em bloco ou se toca.
+//
+// Regras:
+//   • Texto ≤ 13 px nunca passa de peso 600.
+//   • Tamanho mínimo de texto de leitura: 12 px (rótulos em maiúsculas: 11 px).
+//   • Altura de linha ≥ 1,4× no texto corrido para boa leitura em ecrãs pequenos.
+//   • Preços usam algarismos tabulares para alinhar em listas.
+//   • Tamanhos permitidos: 11 · 12 · 13 · 14 · 15 · 16 · 18 · 20 · 22 · 24 · 28 · 34
+//     (+ 44/48/56 só para números de destaque). Título de página = 28 (tituloPagina).
+// ============================================================
 export const Typography = {
-  // Display (headers grandes)
-  displayXL: {
-    fontSize: 38,
-    fontFamily: Fonte.tituloSemi,
-    lineHeight: 42,
-    letterSpacing: -1.2,
-  },
-  displayLG: {
-    fontSize: 30,
-    fontFamily: Fonte.tituloSemi,
-    lineHeight: 34,
-    letterSpacing: -0.9,
-  },
-  displayMD: {
-    fontSize: 26,
-    fontFamily: Fonte.tituloSemi,
-    lineHeight: 30,
-    letterSpacing: -0.6,
-  },
+  // ---- Escala de páginas e cards (referência: aba Reservas) ----
+  tituloPagina: { fontSize: 28, lineHeight: 34, fontFamily: Fonte.tituloBold, letterSpacing: -0.4 },
+  tituloSecao: { fontSize: 20, lineHeight: 26, fontFamily: Fonte.tituloSemi, letterSpacing: -0.2 },
+  tituloCard: { fontSize: 16, lineHeight: 22, fontFamily: Fonte.corpoBold },
+  meta: { fontSize: 13, lineHeight: 18, fontFamily: Fonte.corpo },
+  etiqueta: { fontSize: 12, lineHeight: 16, fontFamily: Fonte.corpoSemi },
 
-  // Títulos
-  h1: {
-    fontSize: 23,
-    fontFamily: Fonte.tituloSemi,
-    lineHeight: 28,
-    letterSpacing: -0.5,
-  },
-  h2: {
-    fontSize: 19,
-    fontFamily: Fonte.tituloSemi,
-    lineHeight: 24,
-    letterSpacing: -0.3,
-  },
-  h3: {
-    fontSize: 17,
-    fontFamily: Fonte.corpoSemi,
-    lineHeight: 22,
-    letterSpacing: -0.1,
-  },
-  h4: {
-    fontSize: 15,
-    fontFamily: Fonte.corpoSemi,
-    lineHeight: 20,
-  },
+  // ---- Display (cabeçalhos de página e destaque) ----
+  displayXL: { fontSize: 34, lineHeight: 40, fontFamily: Fonte.tituloBold, letterSpacing: -0.6 },
+  displayLG: { fontSize: 28, lineHeight: 34, fontFamily: Fonte.tituloBold, letterSpacing: -0.4 },
+  displayMD: { fontSize: 24, lineHeight: 30, fontFamily: Fonte.tituloBold, letterSpacing: -0.3 },
 
-  // Corpo
-  bodyLarge: {
-    fontSize: 16,
-    fontFamily: Fonte.corpo,
-    lineHeight: 24,
-  },
-  body: {
-    fontSize: 14,
-    fontFamily: Fonte.corpo,
-    lineHeight: 20,
-  },
-  bodyBold: {
-    fontSize: 14,
-    fontFamily: Fonte.corpoSemi,
-    lineHeight: 20,
-  },
-  bodySmall: {
-    fontSize: 13,
-    fontFamily: Fonte.corpo,
-    lineHeight: 18,
-  },
+  // ---- Títulos ----
+  h1: { fontSize: 22, lineHeight: 28, fontFamily: Fonte.tituloBold, letterSpacing: -0.3 },
+  h2: { fontSize: 18, lineHeight: 24, fontFamily: Fonte.tituloSemi, letterSpacing: -0.2 },
+  h3: { fontSize: 16, lineHeight: 22, fontFamily: Fonte.tituloSemi, letterSpacing: -0.1 },
+  h4: { fontSize: 15, lineHeight: 20, fontFamily: Fonte.corpoBold },
 
-  // Micro (labels, captions)
-  caption: {
-    fontSize: 12,
-    fontFamily: Fonte.corpoMedio,
-    lineHeight: 16,
-  },
+  // ---- Corpo ----
+  bodyLarge: { fontSize: 16, lineHeight: 24, fontFamily: Fonte.corpo },
+  body: { fontSize: 15, lineHeight: 22, fontFamily: Fonte.corpo },
+  bodyBold: { fontSize: 15, lineHeight: 22, fontFamily: Fonte.corpoSemi },
+  bodySmall: { fontSize: 13, lineHeight: 19, fontFamily: Fonte.corpo },
+
+  // ---- Micro (labels, legendas) ----
+  caption: { fontSize: 12, lineHeight: 17, fontFamily: Fonte.corpoMedio },
   captionBold: {
     fontSize: 11,
+    lineHeight: 15,
     fontFamily: Fonte.corpoSemi,
-    lineHeight: 14,
-    letterSpacing: 0.8,
+    letterSpacing: 0.6,
     textTransform: 'uppercase' as const,
   },
 
-  // Botões
-  buttonLarge: {
-    fontSize: 16,
-    fontFamily: Fonte.corpoSemi,
-    letterSpacing: -0.1,
-  },
-  button: {
-    fontSize: 15,
-    fontFamily: Fonte.corpoSemi,
-    letterSpacing: -0.1,
-  },
-  buttonSmall: {
-    fontSize: 13,
-    fontFamily: Fonte.corpoSemi,
-  },
+  // ---- Botões ----
+  buttonLarge: { fontSize: 16, lineHeight: 22, fontFamily: Fonte.corpoBold },
+  button: { fontSize: 15, lineHeight: 20, fontFamily: Fonte.corpoBold },
+  buttonSmall: { fontSize: 13, lineHeight: 18, fontFamily: Fonte.corpoSemi },
 
-  // Preços — display, com algarismos tabulares para alinhar listas
-  precoDisplay: {
-    fontSize: 28,
-    fontFamily: Fonte.tituloSemi,
-    letterSpacing: -0.8,
-    fontVariant: ['tabular-nums' as const],
-  },
-  precoGrande: {
-    fontSize: 22,
-    fontFamily: Fonte.tituloSemi,
-    letterSpacing: -0.5,
-    fontVariant: ['tabular-nums' as const],
-  },
-  preco: {
-    fontSize: 17,
-    fontFamily: Fonte.tituloSemi,
-    letterSpacing: -0.3,
-    fontVariant: ['tabular-nums' as const],
-  },
+  // ---- Preços (Sora, tabulares) ----
+  precoDisplay: { fontSize: 28, lineHeight: 34, fontFamily: Fonte.tituloBold, letterSpacing: -0.4, fontVariant: ['tabular-nums' as const] },
+  precoGrande: { fontSize: 22, lineHeight: 28, fontFamily: Fonte.tituloBold, letterSpacing: -0.3, fontVariant: ['tabular-nums' as const] },
+  preco: { fontSize: 17, lineHeight: 22, fontFamily: Fonte.tituloSemi, letterSpacing: -0.2, fontVariant: ['tabular-nums' as const] },
 };
 
-// Espaçamento base 4dp (mais preciso que 8dp)
+// Espaçamento base 4 dp
 export const Spacing = {
   xxs: 2,
   xs: 4,
@@ -137,7 +76,7 @@ export const Spacing = {
   huge: 64,
 };
 
-// Cantos arredondados — mais contidos; pílulas só onde fazem sentido
+// Cantos arredondados — pílulas (full) para botões e chips, xl/xxl para cards
 export const Radius = {
   xs: 4,
   sm: 6,
@@ -146,4 +85,12 @@ export const Radius = {
   xl: 18,
   xxl: 24,
   full: 999,
+};
+
+// Espessuras de contorno
+export const Borda = {
+  fina: 0.5,
+  normal: 1,
+  media: 1.5,
+  forte: 2,
 };

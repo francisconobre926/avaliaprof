@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  StatusBar,
   Modal,
   Pressable,
   TextInput,
@@ -13,7 +12,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import TopBar, { TopBarBotao } from '../src/components/TopBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -124,7 +123,11 @@ export default function CarteiraScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      <TopBar
+        titulo="A minha carteira"
+        onVoltar={() => router.back()}
+        acoes={<TopBarBotao icone="help-circle-outline" rotulo="Ajuda" onPress={() => setModalInfoVisivel(true)} />}
+      />
 
       {/* ============ HERO ============ */}
       <LinearGradient
@@ -133,24 +136,7 @@ export default function CarteiraScreen() {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
-        <SafeAreaView edges={['top']}>
-          <View style={styles.heroHeader}>
-            <TouchableOpacity
-              style={styles.heroBotao}
-              onPress={() => router.back()}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
-            </TouchableOpacity>
-            <Text style={styles.heroTitulo}>A minha carteira</Text>
-            <TouchableOpacity
-              style={styles.heroBotao}
-              onPress={() => setModalInfoVisivel(true)}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="help-circle-outline" size={22} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
+        <View>
 
           {/* Saldo principal (Disponível) */}
           <View style={styles.saldoPrincipal}>
@@ -184,7 +170,7 @@ export default function CarteiraScreen() {
               Sacar para M-Pesa
             </Text>
           </TouchableOpacity>
-        </SafeAreaView>
+        </View>
       </LinearGradient>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -192,7 +178,7 @@ export default function CarteiraScreen() {
         <View style={styles.saldosRow}>
           {/* Pendente */}
           <View style={[styles.saldoCard, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
-            <View style={[styles.saldoCardIcone, { backgroundColor: 'rgba(255, 152, 0, 0.15)' }]}>
+            <View style={[styles.saldoCardIcone, { backgroundColor: 'rgba(26, 115, 232, 0.15)' }]}>
               <Icone name="clock-outline" size={18} color={Colors.aviso} />
             </View>
             <Text style={[styles.saldoCardLabel, { color: cores.textoSecundario }]}>Pendente</Text>
@@ -351,7 +337,7 @@ export default function CarteiraScreen() {
                     style={[styles.valorRapidoBotao, { backgroundColor: cores.principalClara, borderColor: cores.principal }]}
                     onPress={() => setValorSaque(String(Math.floor(saldo)))}
                   >
-                    <Text style={[styles.valorRapidoTexto, { color: cores.principal, fontFamily: Fonte.corpoSemi }]}>
+                    <Text style={[styles.valorRapidoTexto, { color: cores.principalTexto, fontFamily: Fonte.corpoSemi }]}>
                       Tudo
                     </Text>
                   </TouchableOpacity>
@@ -403,7 +389,7 @@ export default function CarteiraScreen() {
                 <Text style={styles.confirmarBotaoTexto}>A processar...</Text>
               ) : (
                 <>
-                  <Icone name="send" size={18} color="#FFFFFF" />
+                  <Icone name="send" size={18} color={Colors.branco} />
                   <Text style={styles.confirmarBotaoTexto}>Confirmar pedido</Text>
                 </>
               )}
@@ -455,7 +441,7 @@ export default function CarteiraScreen() {
               />
               <InfoSaldoItem
                 cor={Colors.aviso}
-                corFundo="rgba(255, 152, 0, 0.15)"
+                corFundo="rgba(26, 115, 232, 0.15)"
                 icone="clock-outline"
                 titulo="Saldo Pendente"
                 descricao="Comissões aguardando confirmação da transacção original. Depois movem para Disponível."
@@ -502,7 +488,7 @@ function TabButton({ activa, label, count, onPress, cores }: any) {
     >
       <Text style={[
         styles.tabButtonTexto,
-        { color: activa ? '#FFFFFF' : cores.textoSecundario },
+        { color: activa ? Colors.branco : cores.textoSecundario },
       ]}>
         {`${label} (${count})`}
       </Text>
@@ -514,11 +500,11 @@ function ItemTransaccao({ transaccao, cores }: { transaccao: Transacao; cores: a
   const positivo = transaccao.valor > 0;
   const pendente = transaccao.estado === 'pending';
 
-  const cor = pendente ? Colors.aviso : positivo ? Colors.verde : cores.principal;
+  const cor = pendente ? Colors.aviso : positivo ? Colors.verdeTexto : cores.principal;
   const corFundo = pendente
-    ? 'rgba(255, 152, 0, 0.1)'
+    ? 'rgba(26, 115, 232, 0.1)'
     : positivo
-    ? 'rgba(76, 175, 80, 0.1)'
+    ? 'rgba(52, 168, 83, 0.1)'
     : cores.principalClara;
 
   return (
@@ -582,22 +568,6 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
 
   hero: { paddingBottom: Spacing.xl },
-  heroHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-  },
-  heroBotao: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  heroTitulo: { ...Typography.h2, color: '#FFFFFF' },
 
   saldoPrincipal: {
     alignItems: 'center',
@@ -611,7 +581,7 @@ const styles = StyleSheet.create({
   },
   saldoPrincipalValor: {
     ...Typography.displayLG,
-    color: '#FFFFFF',
+    color: Colors.branco,
     fontFamily: Fonte.tituloSemi,
     marginBottom: 4,
   },
@@ -625,7 +595,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     paddingVertical: Spacing.md,
     borderRadius: Radius.full,
     gap: Spacing.sm,
@@ -672,7 +642,7 @@ const styles = StyleSheet.create({
   },
   saldoCardSub: {
     ...Typography.caption,
-    fontSize: 10,
+    fontSize: 12,
   },
 
   // Histórico
@@ -735,12 +705,12 @@ const styles = StyleSheet.create({
   },
   transaccaoTempo: {
     ...Typography.caption,
-    fontSize: 11,
+    fontSize: 12,
   },
   pendenteBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 152, 0, 0.15)',
+    backgroundColor: 'rgba(26, 115, 232, 0.15)',
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
@@ -754,7 +724,7 @@ const styles = StyleSheet.create({
   },
   pendenteBadgeTexto: {
     color: Colors.aviso,
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
   },
   transaccaoValor: { alignItems: 'flex-end' },
@@ -892,11 +862,11 @@ const styles = StyleSheet.create({
     borderRadius: Radius.full,
     overflow: 'hidden',
     gap: Spacing.sm,
-    ...Sombras.colorida('#0A6BC0'),
+    ...Sombras.colorida(Colors.azul),
   },
   confirmarBotaoTexto: {
     ...Typography.button,
-    color: '#FFFFFF',
+    color: Colors.branco,
   },
 
   // Info saldos

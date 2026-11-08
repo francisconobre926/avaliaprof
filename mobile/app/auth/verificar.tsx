@@ -75,9 +75,9 @@ export default function VerificarScreen() {
 
   const isAnunciante = papel === 'anunciante';
 
-  const corPrincipal = isAnunciante ? '#E8760A' : '#16202E';
+  const corPrincipal = isAnunciante ? Colors.azul : Colors.carvao;
 
-  const gradiente = isAnunciante ? ['#E8760A', '#E96500'] as const : ['#16202E', '#174A7E'] as const;
+  const gradiente = isAnunciante ? [Colors.azul, Colors.azul] as const : [Colors.carvao, Colors.azulTexto] as const;
 
   useEffect(() => {
 
@@ -367,7 +367,7 @@ export default function VerificarScreen() {
 
                 {
 
-                  backgroundColor: Colors.verde,
+                  backgroundColor: Colors.verdeTexto,
 
                   transform: [{ scale: successAnim }],
 
@@ -727,7 +727,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 70,
 
-    backgroundColor: 'rgba(33, 150, 243, 0.05)',
+    backgroundColor: 'rgba(26, 115, 232, 0.05)',
 
     justifyContent: 'center',
 
@@ -981,7 +981,7 @@ const styles = StyleSheet.create({
 
     flexDirection: 'row',
 
-    backgroundColor: 'rgba(33, 150, 243, 0.05)',
+    backgroundColor: 'rgba(26, 115, 232, 0.05)',
 
     borderRadius: Radius.lg,
 

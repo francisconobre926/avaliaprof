@@ -4,12 +4,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import TopBar from '../../src/components/TopBar';
 import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../src/store/themeStore';
 import { Fonte } from '../../src/theme/fonts';
 import { Reserva, EstadoReserva, useReservasStore } from '../../src/store/reservasStore';
 import { cancelamentoGratis, formatarIntervalo, formatarMT } from '../../src/utils/reservas';
+import { Colors } from '../../src/theme/colors';
 
 type Filtro = 'ativas' | 'passadas';
 
@@ -49,7 +50,8 @@ export default function ReservasScreen() {
   };
 
   return (
-    <SafeAreaView edges={['top']} style={[s.flex, { backgroundColor: cores.fundo }]}>
+    <View style={[s.flex, { backgroundColor: cores.fundo }]}>
+      <TopBar />
       <Text style={[s.titulo, { color: cores.textoPrincipal }]}>Reservas</Text>
       <View style={s.abas}>
         {(['ativas', 'passadas'] as const).map(f => (
@@ -74,7 +76,7 @@ export default function ReservasScreen() {
             </Text>
             {filtro === 'ativas' && (
               <TouchableOpacity onPress={() => router.push('/(procurador)' as any)} style={[s.cta, { backgroundColor: cores.principal }]}>
-                <Text style={{ color: '#fff', fontFamily: Fonte.corpoBold }}>Explorar espaços</Text>
+                <Text style={{ color: Colors.branco, fontFamily: Fonte.corpoBold }}>Explorar espaços</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -87,7 +89,7 @@ export default function ReservasScreen() {
             <View style={{ flex: 1 }}>
               <View style={s.linha}>
                 <Text style={[s.nome, { color: cores.textoPrincipal }]} numberOfLines={1}>{r.titulo}</Text>
-                <Text style={{ color: cor(r.estado), fontFamily: Fonte.corpoBold, fontSize: 12 }}>{ROTULO[r.estado]}</Text>
+                <Text style={{ color: cor(r.estado), fontFamily: Fonte.corpoSemi, fontSize: 12 }}>{ROTULO[r.estado]}</Text>
               </View>
               <Text style={{ color: cores.textoSecundario, fontFamily: Fonte.corpo, fontSize: 13, marginTop: 2 }}>
                 {formatarIntervalo(r.entrada, r.saida)} · {r.codigo}
@@ -104,13 +106,13 @@ export default function ReservasScreen() {
           </TouchableOpacity>
         ))}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const s = StyleSheet.create({
   flex: { flex: 1 },
-  titulo: { fontFamily: Fonte.tituloBold, fontSize: 28, paddingHorizontal: 16, paddingTop: 8 },
+  titulo: { fontFamily: Fonte.tituloBold, fontSize: 28, paddingHorizontal: 16, paddingTop: 16 },
   abas: { flexDirection: 'row', gap: 8, paddingHorizontal: 16, paddingTop: 12 },
   aba: { paddingHorizontal: 18, paddingVertical: 9, borderRadius: 999 },
   cartao: { flexDirection: 'row', gap: 12, borderWidth: 1, borderRadius: 18, padding: 14 },

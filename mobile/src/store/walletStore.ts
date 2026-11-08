@@ -11,6 +11,7 @@
 
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Colors } from '../theme/colors';
 
 export type TipoTransacao =
   | 'credito'
@@ -295,10 +296,10 @@ export function iconeTipoTransacao(tipo: TipoTransacao): string {
 
 export function corTipoTransacao(tipo: TipoTransacao): string {
   const cores: Record<TipoTransacao, string> = {
-    credito: '#2E7D32', debito: '#D32F2F', compensacao: '#1976D2',
-    referencia: '#9C27B0', saque: '#F57C00', estorno: '#9E9E9E',
+    credito: Colors.verdeTexto, debito: Colors.erro, compensacao: Colors.azul,
+    referencia: Colors.azul, saque: Colors.azul, estorno: Colors.textoTerciario,
   };
-  return cores[tipo] ?? '#666666';
+  return cores[tipo] ?? Colors.textoSecundario;
 }
 
 export function tempoRelativo(dataISO: string): string {

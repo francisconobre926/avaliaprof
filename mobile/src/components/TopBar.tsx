@@ -11,6 +11,7 @@
 
  */
 import { ReactNode } from 'react';
+import { useRouter } from 'expo-router';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -41,7 +42,7 @@ export function TopBarBotao({ icone, onPress, rotulo, ponto }: TopBarBotaoProps)
       accessibilityLabel={rotulo}
       hitSlop={6}
     >
-      <Ionicons name={icone} size={20} color="#FFFFFF" />
+      <Ionicons name={icone} size={20} color={Colors.branco} />
       {ponto && <View style={styles.ponto} />}
     </TouchableOpacity>
   );
@@ -68,6 +69,7 @@ export default function TopBar({
   temNotificacoes,
   comLinha,
 }: TopBarProps) {
+  const router = useRouter();
   return (
     <SafeAreaView edges={['top']} style={[styles.safe, comLinha && styles.comLinha]}>
       <StatusBar barStyle="light-content" backgroundColor={TOPBAR_COR} />
@@ -81,7 +83,7 @@ export default function TopBar({
               accessibilityLabel="Voltar"
               hitSlop={8}
             >
-              <Ionicons name="chevron-back" size={22} color="#FFFFFF" />
+              <Ionicons name="chevron-back" size={22} color={Colors.branco} />
             </TouchableOpacity>
           )}
           {titulo ? (
@@ -98,7 +100,7 @@ export default function TopBar({
             <TopBarBotao
               icone="notifications-outline"
               rotulo="Notificações"
-              onPress={onNotificacoes}
+              onPress={onNotificacoes ?? (() => router.push('/avisos' as any))}
               ponto={temNotificacoes}
             />
           )}
@@ -121,10 +123,10 @@ const styles = StyleSheet.create({
   esquerda: { flexDirection: 'row', alignItems: 'center', flex: 1, gap: 4 },
   direita: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   voltar: { marginLeft: -6, width: 32, height: 36, justifyContent: 'center' },
-  logo: { fontSize: 22, fontFamily: Fonte.tituloBold, letterSpacing: -0.9 },
-  logoGo: { color: '#FFFFFF' },
-  logoHome: { color: Colors.laranja },
-  titulo: { color: '#FFFFFF', fontSize: 17, fontFamily: Fonte.tituloSemi, letterSpacing: -0.3, flex: 1 },
+  logo: { fontSize: 22, fontFamily: Fonte.tituloBold, letterSpacing: -0.4 },
+  logoGo: { color: Colors.branco },
+  logoHome: { color: Colors.azulSuave, fontFamily: Fonte.titulo },
+  titulo: { color: Colors.branco, fontSize: 16, fontFamily: Fonte.tituloSemi, letterSpacing: -0.3, flex: 1 },
   botao: {
     width: 36,
     height: 36,
@@ -140,7 +142,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: Colors.laranja,
+    backgroundColor: Colors.branco,
     borderWidth: 1.5,
     borderColor: TOPBAR_COR,
   },

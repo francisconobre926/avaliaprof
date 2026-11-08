@@ -14,7 +14,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  StatusBar,
   Animated,
   Easing,
   Share,
@@ -23,6 +22,7 @@ import {
   Clipboard,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import TopBar from '../src/components/TopBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -37,9 +37,9 @@ import Icone from '../src/components/Icone';
 // ============================================================
 // CORES GOHOME OFICIAIS (do logo)
 // ============================================================
-const AZUL_MARCA = '#0A6BC0';
-const LARANJA_MARCA = '#E8760A';
-const VERDE_SUCESSO = '#2F7A4F';
+const AZUL_MARCA = Colors.azul;
+const COR_ACENTO = Colors.azul;
+const VERDE_SUCESSO = Colors.verdeTexto;
 
 export default function ConfirmacaoPublicacao() {
   const router = useRouter();
@@ -174,7 +174,7 @@ export default function ConfirmacaoPublicacao() {
 
   return (
     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+      <TopBar titulo="Anúncio publicado" onVoltar={voltarPainel} acoes={<></>} />
 
       {/* ============ HERO ANIMADO (gradiente marca GoHome: azul→laranja) ============ */}
       <LinearGradient
@@ -183,17 +183,7 @@ export default function ConfirmacaoPublicacao() {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
-        <SafeAreaView edges={['top']}>
-          <View style={styles.heroHeader}>
-            <TouchableOpacity
-              style={styles.heroFecharBotao}
-              onPress={voltarPainel}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="close" size={22} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-
+        <View>
           <View style={styles.heroCenter}>
             <View style={styles.iconeContainer}>
               <Animated.View
@@ -216,7 +206,7 @@ export default function ConfirmacaoPublicacao() {
               </Text>
             </Animated.View>
           </View>
-        </SafeAreaView>
+        </View>
       </LinearGradient>
 
       <ScrollView
@@ -226,7 +216,7 @@ export default function ConfirmacaoPublicacao() {
         {/* PREVIEW DO ANÚNCIO */}
         <View style={[styles.previewCard, { backgroundColor: cores.fundoElevado }]}>
           <View style={styles.previewHeader}>
-            <View style={[styles.previewBadge, { backgroundColor: 'rgba(76, 175, 80, 0.12)' }]}>
+            <View style={[styles.previewBadge, { backgroundColor: 'rgba(52, 168, 83, 0.12)' }]}>
               <View style={styles.previewBadgeDot} />
               <Text style={[styles.previewBadgeTexto, { color: VERDE_SUCESSO }]}>
                 ACTIVO
@@ -265,7 +255,7 @@ export default function ConfirmacaoPublicacao() {
           </Text>
 
           <View style={styles.detalheItem}>
-            <View style={[styles.detalheIcone, { backgroundColor: 'rgba(76, 175, 80, 0.15)' }]}>
+            <View style={[styles.detalheIcone, { backgroundColor: 'rgba(52, 168, 83, 0.15)' }]}>
               <Icone name="cash" size={18} color={VERDE_SUCESSO} />
             </View>
             <View style={{ flex: 1 }}>
@@ -289,7 +279,7 @@ export default function ConfirmacaoPublicacao() {
           <View style={[styles.detalheDivisor, { backgroundColor: cores.bordaSubtil }]} />
 
           <View style={styles.detalheItem}>
-            <View style={[styles.detalheIcone, { backgroundColor: 'rgba(10, 107, 192, 0.12)' }]}>
+            <View style={[styles.detalheIcone, { backgroundColor: 'rgba(26, 115, 232, 0.12)' }]}>
               <Icone name="calendar-check" size={18} color={AZUL_MARCA} />
             </View>
             <View style={{ flex: 1 }}>
@@ -308,14 +298,14 @@ export default function ConfirmacaoPublicacao() {
           <View style={[styles.detalheDivisor, { backgroundColor: cores.bordaSubtil }]} />
 
           <View style={styles.detalheItem}>
-            <View style={[styles.detalheIcone, { backgroundColor: 'rgba(255, 193, 7, 0.15)' }]}>
+            <View style={[styles.detalheIcone, { backgroundColor: 'rgba(154, 84, 0, 0.15)' }]}>
               <Icone name="receipt" size={18} color={Colors.premium} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={[styles.detalheLabel, { color: cores.textoSecundario }]}>
                 Referência
               </Text>
-              <Text style={[styles.detalheValor, { color: cores.textoPrincipal, fontFamily: 'monospace' }]}>
+              <Text style={[styles.detalheValor, { color: cores.textoPrincipal, fontFamily: Fonte.corpoSemi, fontVariant: ['tabular-nums'] }]}>
                 {referencia}
               </Text>
             </View>
@@ -334,7 +324,7 @@ export default function ConfirmacaoPublicacao() {
           <View style={[styles.detalheDivisor, { backgroundColor: cores.bordaSubtil }]} />
 
           <View style={styles.detalheItem}>
-            <View style={[styles.detalheIcone, { backgroundColor: 'rgba(10, 107, 192, 0.12)' }]}>
+            <View style={[styles.detalheIcone, { backgroundColor: 'rgba(26, 115, 232, 0.12)' }]}>
               <Icone name="account-outline" size={18} color={AZUL_MARCA} />
             </View>
             <View style={{ flex: 1 }}>
@@ -354,7 +344,7 @@ export default function ConfirmacaoPublicacao() {
         {/* PARTILHA */}
         <View style={[styles.partilhaCard, { backgroundColor: cores.fundoElevado }]}>
           <View style={styles.partilhaHeader}>
-            <Icone name="share-variant" size={20} color={LARANJA_MARCA} />
+            <Icone name="share-variant" size={20} color={COR_ACENTO} />
             <View style={{ flex: 1 }}>
               <Text style={[styles.partilhaTitulo, { color: cores.textoPrincipal }]}>
                 Partilha para ser visto por mais pessoas
@@ -368,7 +358,7 @@ export default function ConfirmacaoPublicacao() {
           <View style={styles.partilhaGrid}>
             <TouchableOpacity style={styles.partilhaBotao} onPress={partilharWhatsApp} activeOpacity={0.8}>
               <View style={[styles.partilhaIcone, { backgroundColor: '#25D366' }]}>
-                <Icone name="whatsapp" size={22} color="#FFFFFF" />
+                <Icone name="whatsapp" size={22} color={Colors.branco} />
               </View>
               <Text style={[styles.partilhaLabel, { color: cores.textoPrincipal }]}>
                 WhatsApp
@@ -377,7 +367,7 @@ export default function ConfirmacaoPublicacao() {
 
             <TouchableOpacity style={styles.partilhaBotao} onPress={partilharFacebook} activeOpacity={0.8}>
               <View style={[styles.partilhaIcone, { backgroundColor: '#1877F2' }]}>
-                <Icone name="facebook" size={22} color="#FFFFFF" />
+                <Icone name="facebook" size={22} color={Colors.branco} />
               </View>
               <Text style={[styles.partilhaLabel, { color: cores.textoPrincipal }]}>
                 Facebook
@@ -386,7 +376,7 @@ export default function ConfirmacaoPublicacao() {
 
             <TouchableOpacity style={styles.partilhaBotao} onPress={partilharSMS} activeOpacity={0.8}>
               <View style={[styles.partilhaIcone, { backgroundColor: AZUL_MARCA }]}>
-                <Icone name="message-text" size={22} color="#FFFFFF" />
+                <Icone name="message-text" size={22} color={Colors.branco} />
               </View>
               <Text style={[styles.partilhaLabel, { color: cores.textoPrincipal }]}>
                 SMS
@@ -395,7 +385,7 @@ export default function ConfirmacaoPublicacao() {
 
             <TouchableOpacity style={styles.partilhaBotao} onPress={copiarLink} activeOpacity={0.8}>
               <View style={[styles.partilhaIcone, { backgroundColor: cores.textoSecundario }]}>
-                <Icone name="link-variant" size={22} color="#FFFFFF" />
+                <Icone name="link-variant" size={22} color={Colors.branco} />
               </View>
               <Text style={[styles.partilhaLabel, { color: cores.textoPrincipal }]}>
                 Copiar
@@ -424,7 +414,7 @@ export default function ConfirmacaoPublicacao() {
             end={{ x: 1, y: 1 }}
           />
           <View style={styles.dicaConteudo}>
-            <Icone name="lightbulb-on" size={24} color="#FFFFFF" />
+            <Icone name="lightbulb-on" size={24} color={Colors.branco} />
             <View style={{ flex: 1 }}>
               <Text style={styles.dicaTitulo}>Dica para mais contactos</Text>
               <Text style={styles.dicaTexto}>
@@ -463,7 +453,7 @@ export default function ConfirmacaoPublicacao() {
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
           />
-          <Ionicons name="eye" size={18} color="#FFFFFF" />
+          <Ionicons name="eye" size={18} color={Colors.branco} />
           <Text style={styles.ctaPrincipalTexto}>Ver meu anúncio</Text>
         </TouchableOpacity>
       </SafeAreaView>
@@ -475,16 +465,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
 
   hero: { paddingBottom: Spacing.xxl },
-  heroHeader: {
-    flexDirection: 'row', justifyContent: 'flex-end',
-    paddingHorizontal: Spacing.lg, paddingVertical: Spacing.md,
-  },
-  heroFecharBotao: {
-    width: 40, height: 40, borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center', alignItems: 'center',
-  },
-  heroCenter: { alignItems: 'center', paddingHorizontal: Spacing.lg, paddingTop: Spacing.md },
+  heroCenter: { alignItems: 'center', paddingHorizontal: Spacing.lg, paddingTop: Spacing.lg },
 
   iconeContainer: {
     width: 120, height: 120,
@@ -493,17 +474,17 @@ const styles = StyleSheet.create({
   },
   anelPulsante: {
     position: 'absolute', width: 120, height: 120, borderRadius: 60,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
   },
   iconeCirculo: {
     width: 100, height: 100, borderRadius: 50,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     justifyContent: 'center', alignItems: 'center',
     ...Sombras.lg,
   },
 
   heroTitulo: {
-    ...Typography.displayMD, color: '#FFFFFF',
+    ...Typography.displayMD, color: Colors.branco,
     textAlign: 'center', marginBottom: 6, fontFamily: Fonte.tituloSemi,
   },
   heroSubtitulo: {
@@ -528,8 +509,8 @@ const styles = StyleSheet.create({
     borderRadius: Radius.sm, gap: 5,
   },
   previewBadgeDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: VERDE_SUCESSO },
-  previewBadgeTexto: { fontSize: 10, fontFamily: Fonte.corpoSemi, letterSpacing: 0.5 },
-  previewTempo: { ...Typography.caption, fontSize: 11 },
+  previewBadgeTexto: { fontSize: 12, fontFamily: Fonte.corpoSemi, letterSpacing: 0.5 },
+  previewTempo: { ...Typography.caption, fontSize: 12 },
   previewTitulo: { ...Typography.bodyBold, fontSize: 16, marginBottom: Spacing.sm, lineHeight: 22 },
   previewMeta: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   previewMetaItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
@@ -547,13 +528,13 @@ const styles = StyleSheet.create({
     gap: Spacing.md, paddingVertical: Spacing.sm,
   },
   detalheIcone: { width: 40, height: 40, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
-  detalheLabel: { ...Typography.caption, fontSize: 11, marginBottom: 3 },
+  detalheLabel: { ...Typography.caption, fontSize: 12, marginBottom: 3 },
   detalheValor: { ...Typography.bodyBold, fontSize: 15 },
   detalheValoresLinha: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   detalheValorRiscado: { ...Typography.caption, fontSize: 12, textDecorationLine: 'line-through' },
   descontoBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
-  descontoBadgeTexto: { color: '#FFFFFF', fontSize: 10, fontFamily: Fonte.corpoSemi },
-  detalheSubtexto: { ...Typography.caption, fontSize: 11, marginTop: 2 },
+  descontoBadgeTexto: { color: Colors.branco, fontSize: 12, fontFamily: Fonte.corpoSemi },
+  detalheSubtexto: { ...Typography.caption, fontSize: 12, marginTop: 2 },
   detalheDivisor: { height: 1, marginVertical: Spacing.xs },
   copiarRefBotao: {
     width: 32, height: 32, borderRadius: 8,
@@ -570,7 +551,7 @@ const styles = StyleSheet.create({
     gap: Spacing.sm, marginBottom: Spacing.md,
   },
   partilhaTitulo: { ...Typography.bodyBold, fontSize: 14, marginBottom: 2 },
-  partilhaSubtitulo: { ...Typography.caption, fontSize: 11 },
+  partilhaSubtitulo: { ...Typography.caption, fontSize: 12 },
   partilhaGrid: { flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.sm },
   partilhaBotao: { flex: 1, alignItems: 'center', gap: 6 },
   partilhaIcone: {
@@ -578,7 +559,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center',
     ...Sombras.sm,
   },
-  partilhaLabel: { ...Typography.caption, fontSize: 11, fontFamily: Fonte.corpoSemi },
+  partilhaLabel: { ...Typography.caption, fontSize: 12, fontFamily: Fonte.corpoSemi },
   partilhaOutros: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     paddingVertical: Spacing.sm, borderRadius: Radius.md,
@@ -588,13 +569,13 @@ const styles = StyleSheet.create({
 
   dicaCard: {
     marginHorizontal: Spacing.lg, borderRadius: Radius.xl, overflow: 'hidden',
-    ...Sombras.colorida(LARANJA_MARCA),
+    ...Sombras.colorida(COR_ACENTO),
   },
   dicaConteudo: {
     flexDirection: 'row', alignItems: 'center',
     padding: Spacing.md, gap: Spacing.sm,
   },
-  dicaTitulo: { ...Typography.bodyBold, color: '#FFFFFF', fontSize: 14, marginBottom: 2 },
+  dicaTitulo: { ...Typography.bodyBold, color: Colors.branco, fontSize: 14, marginBottom: 2 },
   dicaTexto: { ...Typography.caption, color: 'rgba(255, 255, 255, 0.95)', fontSize: 12, lineHeight: 16 },
 
   footer: {
@@ -614,7 +595,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
     paddingVertical: Spacing.md, borderRadius: Radius.full,
     overflow: 'hidden', gap: 8,
-    ...Sombras.colorida(LARANJA_MARCA),
+    ...Sombras.colorida(COR_ACENTO),
   },
-  ctaPrincipalTexto: { ...Typography.button, color: '#FFFFFF' },
+  ctaPrincipalTexto: { ...Typography.button, color: Colors.branco },
 });

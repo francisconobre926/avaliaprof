@@ -17,15 +17,16 @@ import { Fonte } from '../../src/theme/fonts';
 import Icone from '../../src/components/Icone';
 import TopBar from '../../src/components/TopBar';
 import { Typography, Spacing } from '../../src/theme/typography';
+import { Colors } from '../../src/theme/colors';
 // ============================================================
 // CORES GOHOME OFICIAIS (do logo)
 // ============================================================
-const AZUL_MARCA = '#0A6BC0';
-const AZUL_ESCURO = '#08508F';
-const LARANJA_MARCA = '#E8760A';
-const LARANJA_ESCURO = '#B95A05';
-const LARANJA_PALE = 'rgba(232, 118, 10, 0.1)';
-const VERDE = '#168A50';
+const AZUL_MARCA = Colors.azul;
+const AZUL_ESCURO = Colors.azulTexto;
+const COR_ACENTO = Colors.azul;
+const COR_ACENTO_ESCURO = Colors.azulTexto;
+const LARANJA_PALE = 'rgba(26, 115, 232, 0.1)';
+const VERDE = Colors.verdeTexto;
 
 const PERIODOS = [
   { id: '7d', label: '7 dias', fullLabel: 'Últimos 7 dias' },
@@ -91,7 +92,7 @@ export default function DashboardAnunciante() {
         {/* Resumo principal */}
         <View style={[styles.revenueCard, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}>
           <View style={styles.revenueIcon}>
-            <Ionicons name="stats-chart-outline" size={22} color={LARANJA_MARCA} />
+            <Ionicons name="stats-chart-outline" size={22} color={COR_ACENTO} />
           </View>
           <View style={styles.revenueMain}>
             <Text style={[styles.revenueLabel, { color: cores.textoSecundario }]}>Receita este mês</Text>
@@ -147,20 +148,20 @@ export default function DashboardAnunciante() {
             </View>
             <TouchableOpacity style={styles.textLink} activeOpacity={0.8}>
               <Text style={styles.textLinkLabel}>Ver detalhes</Text>
-              <Ionicons name="chevron-forward" size={16} color={LARANJA_MARCA} />
+              <Ionicons name="chevron-forward" size={16} color={COR_ACENTO} />
             </TouchableOpacity>
           </View>
           <View style={styles.statsGrid}>
             <StatCard
-              icon="eye-outline" color={AZUL_MARCA} tint="rgba(10, 107, 192, 0.08)"
+              icon="eye-outline" color={AZUL_MARCA} tint="rgba(26, 115, 232, 0.08)"
               value="1.847" label="Visualizações" trend="+15%" cores={cores}
             />
             <StatCard
-              icon="bookmark-outline" color={LARANJA_MARCA} tint={LARANJA_PALE}
+              icon="bookmark-outline" color={COR_ACENTO} tint={LARANJA_PALE}
               value="234" label="Favoritos" trend="+8%" cores={cores}
             />
             <StatCard
-              icon="lock-open-outline" color={VERDE} tint="#E8F8F0"
+              icon="lock-open-outline" color={VERDE} tint={Colors.verdeSuave}
               value="34" label="Desbloqueios" trend="+23%" cores={cores}
             />
             <StatCard
@@ -204,7 +205,7 @@ export default function DashboardAnunciante() {
               activeOpacity={0.8}
             >
               <Text style={styles.textLinkLabel}>Ver todos</Text>
-              <Ionicons name="chevron-forward" size={16} color={LARANJA_MARCA} />
+              <Ionicons name="chevron-forward" size={16} color={COR_ACENTO} />
             </TouchableOpacity>
           </View>
           <View style={styles.listingsList}>
@@ -250,7 +251,7 @@ export default function DashboardAnunciante() {
                     style={[styles.modalPeriodOption, ativo && styles.modalPeriodOptionActive]}
                   >
                     <Text style={[styles.modalPeriodLabel, ativo && styles.modalPeriodLabelActive]}>{item.fullLabel}</Text>
-                    <Ionicons name={ativo ? 'radio-button-on' : 'radio-button-off'} size={19} color={ativo ? AZUL_MARCA : '#9AA8B8'} />
+                    <Ionicons name={ativo ? 'radio-button-on' : 'radio-button-off'} size={19} color={ativo ? AZUL_MARCA : Colors.textoTerciario} />
                   </TouchableOpacity>
                 );
               })}
@@ -264,14 +265,14 @@ export default function DashboardAnunciante() {
                 </View>
               </View>
               <View style={styles.daysEmptyState}>
-                <Ionicons name="time-outline" size={23} color="#8A9AAF" />
+                <Ionicons name="time-outline" size={23} color={Colors.textoTerciario} />
                 <Text style={styles.daysEmptyTitle}>Histórico por ligar</Text>
                 <Text style={styles.daysEmptyText}>Quando o histórico real da GoHome estiver ligado, os dias deste período aparecerão aqui. Só serão incluídos dias desde o início oficial da operação.</Text>
               </View>
             </View>
             <TouchableOpacity style={styles.modalDoneButton} onPress={() => setSeletorPeriodoVisivel(false)} activeOpacity={0.85}>
               <Text style={styles.modalDoneText}>Aplicar período</Text>
-              <Ionicons name="arrow-forward" size={18} color="#FFFFFF" />
+              <Ionicons name="arrow-forward" size={18} color={Colors.branco} />
             </TouchableOpacity>
           </View>
         </View>
@@ -293,11 +294,11 @@ function QuickAction({ title, icon, primary, onPress }: any) {
       style={[styles.actionCard, primary && styles.actionCardPrimary]}
     >
       <View style={[styles.actionIcon, primary && styles.actionIconPrimary]}>
-        <Ionicons name={icon} size={27} color={primary ? '#FFFFFF' : LARANJA_MARCA} />
+        <Ionicons name={icon} size={27} color={primary ? Colors.branco : COR_ACENTO} />
       </View>
       <View style={styles.actionBottom}>
         <Text style={[styles.actionTitle, primary && styles.actionTitlePrimary]}>{title}</Text>
-        <Ionicons name="chevron-forward" size={16} color={primary ? '#FFFFFF' : AZUL_ESCURO} />
+        <Ionicons name="chevron-forward" size={16} color={primary ? Colors.branco : AZUL_ESCURO} />
       </View>
     </TouchableOpacity>
   );
@@ -338,14 +339,14 @@ function ListingCard({ title, location, price, status, statusType, cores }: any)
       style={[styles.listingCard, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}
     >
       <View style={styles.listingThumb}>
-        <Icone name="home-city-outline" size={32} color={LARANJA_ESCURO} />
+        <Icone name="home-city-outline" size={32} color={COR_ACENTO_ESCURO} />
       </View>
       <View style={styles.listingInfo}>
         <Text style={[styles.listingTitle, { color: cores.textoPrincipal }]} numberOfLines={1}>
           {title}
         </Text>
         <View style={styles.listingLocationRow}>
-          <Ionicons name="location-outline" size={14} color={LARANJA_MARCA} />
+          <Ionicons name="location-outline" size={14} color={COR_ACENTO} />
           <Text style={[styles.listingLocation, { color: cores.textoSecundario }]} numberOfLines={1}>
             {location}
           </Text>
@@ -384,52 +385,52 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center', marginRight: 12,
   },
   revenueLabel: { fontSize: 12, fontFamily: Fonte.corpoMedio },
-  revenueValue: { fontSize: 26, fontFamily: Fonte.tituloSemi, letterSpacing: -0.7, marginTop: 2 },
+  revenueValue: { fontSize: 28, fontFamily: Fonte.tituloSemi, letterSpacing: -0.4, marginTop: 2 },
   revenueFooter: {
     flexDirection: 'row', alignItems: 'center', gap: 12, width: '100%',
     marginTop: 14, paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth,
   },
   revenueMetaText: { fontSize: 12, fontFamily: Fonte.corpoMedio },
   metaDivider: { width: 1, height: 16 },
-  container: { flex: 1, backgroundColor: '#F6F8FB' },
+  container: { flex: 1, backgroundColor: Colors.gelo },
   scrollContent: { paddingBottom: 28, width: '100%', maxWidth: 1100, alignSelf: 'center' },
 
-  inactiveBadge: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: '#EFF6FF', borderRadius: 10, paddingHorizontal: 9, paddingVertical: 6 },
-  inactiveBadgeText: { color: AZUL_ESCURO, fontSize: 10, fontFamily: Fonte.corpoSemi },
-  inactiveCard: { flexDirection: 'row', alignItems: 'flex-start', gap: 12, padding: 15, borderRadius: 18, borderWidth: 1, borderColor: '#E4EAF2', backgroundColor: '#FFFFFF' },
-  inactiveIcon: { width: 42, height: 42, borderRadius: 14, backgroundColor: '#EAF2FA', alignItems: 'center', justifyContent: 'center' },
+  inactiveBadge: { flexDirection: 'row', alignItems: 'center', gap: 5, backgroundColor: Colors.azulSuave, borderRadius: 10, paddingHorizontal: 9, paddingVertical: 6 },
+  inactiveBadgeText: { color: AZUL_ESCURO, fontSize: 12, fontFamily: Fonte.corpoSemi },
+  inactiveCard: { flexDirection: 'row', alignItems: 'flex-start', gap: 12, padding: 15, borderRadius: 18, borderWidth: 1, borderColor: Colors.borda, backgroundColor: Colors.branco },
+  inactiveIcon: { width: 42, height: 42, borderRadius: 14, backgroundColor: Colors.azulSuave, alignItems: 'center', justifyContent: 'center' },
   inactiveTitle: { color: AZUL_ESCURO, fontSize: 13, fontFamily: Fonte.corpoSemi, marginBottom: 5 },
-  inactiveDescription: { color: '#64748B', fontFamily: Fonte.corpo, fontSize: 11, lineHeight: 16 },
+  inactiveDescription: { color: Colors.textoSecundario, fontFamily: Fonte.corpo, fontSize: 12, lineHeight: 16 },
   modalRoot: { flex: 1, justifyContent: 'flex-end', alignItems: 'stretch' },
   modalBackdrop: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(13, 31, 51, 0.48)' },
-  periodModal: { backgroundColor: '#FFFFFF', paddingHorizontal: 20, paddingTop: 10, paddingBottom: 28, borderTopLeftRadius: 28, borderTopRightRadius: 28, shadowColor: '#102A43', shadowOpacity: 0.18, shadowRadius: 24, shadowOffset: { width: 0, height: -6 }, elevation: 20 },
-  modalHandle: { alignSelf: 'center', width: 38, height: 4, borderRadius: 3, backgroundColor: '#D8E0E9', marginBottom: 20 },
+  periodModal: { backgroundColor: Colors.branco, paddingHorizontal: 20, paddingTop: 10, paddingBottom: 28, borderTopLeftRadius: 28, borderTopRightRadius: 28, shadowColor: Colors.carvao, shadowOpacity: 0.18, shadowRadius: 24, shadowOffset: { width: 0, height: -6 }, elevation: 20 },
+  modalHandle: { alignSelf: 'center', width: 38, height: 4, borderRadius: 3, backgroundColor: Colors.borda, marginBottom: 20 },
   modalHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 18 },
   modalTitleGroup: { flex: 1, paddingRight: 12 },
-  modalEyebrow: { color: LARANJA_ESCURO, fontSize: 9, letterSpacing: 1.3, fontFamily: Fonte.corpoBold, marginBottom: 6 },
-  modalTitle: { color: AZUL_ESCURO, fontSize: 23, fontFamily: Fonte.tituloBold, letterSpacing: -0.5 },
-  modalSubtitle: { color: '#687A90', fontFamily: Fonte.corpo, fontSize: 12, lineHeight: 17, marginTop: 5 },
-  modalClose: { width: 38, height: 38, borderRadius: 13, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F3F6FA' },
+  modalEyebrow: { color: COR_ACENTO_ESCURO, fontSize: 12, letterSpacing: 1.3, fontFamily: Fonte.corpoSemi, marginBottom: 6 },
+  modalTitle: { color: AZUL_ESCURO, fontSize: 24, fontFamily: Fonte.tituloBold, letterSpacing: -0.5 },
+  modalSubtitle: { color: Colors.textoSecundario, fontFamily: Fonte.corpo, fontSize: 12, lineHeight: 17, marginTop: 5 },
+  modalClose: { width: 38, height: 38, borderRadius: 13, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.fundoSuave },
   modalPeriodGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 18 },
-  modalPeriodOption: { width: '48%', minHeight: 48, paddingHorizontal: 11, paddingVertical: 10, borderRadius: 14, borderWidth: 1, borderColor: '#E4EAF1', backgroundColor: '#FFFFFF', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6 },
-  modalPeriodOptionActive: { borderColor: AZUL_MARCA, backgroundColor: '#F0F8FF' },
-  modalPeriodLabel: { flex: 1, color: '#42556B', fontSize: 11, fontFamily: Fonte.corpoSemi },
+  modalPeriodOption: { width: '48%', minHeight: 48, paddingHorizontal: 11, paddingVertical: 10, borderRadius: 14, borderWidth: 1, borderColor: Colors.borda, backgroundColor: Colors.branco, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6 },
+  modalPeriodOptionActive: { borderColor: AZUL_MARCA, backgroundColor: Colors.azulSuave },
+  modalPeriodLabel: { flex: 1, color: Colors.textoSecundario, fontSize: 12, fontFamily: Fonte.corpoSemi },
   modalPeriodLabelActive: { color: AZUL_ESCURO },
-  daysPanel: { borderWidth: 1, borderColor: '#E5EBF2', backgroundColor: '#F8FAFD', borderRadius: 18, padding: 13, marginBottom: 16 },
+  daysPanel: { borderWidth: 1, borderColor: Colors.borda, backgroundColor: Colors.gelo, borderRadius: 18, padding: 13, marginBottom: 16 },
   daysPanelHeader: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  daysPanelIcon: { width: 38, height: 38, borderRadius: 12, backgroundColor: '#E8F4FE', alignItems: 'center', justifyContent: 'center' },
+  daysPanelIcon: { width: 38, height: 38, borderRadius: 12, backgroundColor: Colors.azulSuave, alignItems: 'center', justifyContent: 'center' },
   daysPanelTitle: { color: AZUL_ESCURO, fontSize: 13, fontFamily: Fonte.corpoSemi },
-  daysPanelSubtitle: { color: '#718197', fontFamily: Fonte.corpo, fontSize: 10, marginTop: 3 },
+  daysPanelSubtitle: { color: Colors.textoSecundario, fontFamily: Fonte.corpo, fontSize: 12, marginTop: 3 },
   daysEmptyState: { alignItems: 'center', paddingHorizontal: 12, paddingTop: 18, paddingBottom: 10 },
   daysEmptyTitle: { color: AZUL_ESCURO, fontSize: 12, fontFamily: Fonte.corpoSemi, marginTop: 8 },
-  daysEmptyText: { color: '#687A90', fontFamily: Fonte.corpo, fontSize: 11, lineHeight: 16, textAlign: 'center', marginTop: 5 },
+  daysEmptyText: { color: Colors.textoSecundario, fontFamily: Fonte.corpo, fontSize: 12, lineHeight: 16, textAlign: 'center', marginTop: 5 },
   modalDoneButton: { minHeight: 50, backgroundColor: AZUL_MARCA, borderRadius: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 9 },
-  modalDoneText: { color: '#FFFFFF', fontSize: 13, fontFamily: Fonte.corpoSemi },
+  modalDoneText: { color: Colors.branco, fontSize: 13, fontFamily: Fonte.corpoSemi },
 
   revenueMain: { flex: 1, paddingTop: 2 },
   growthPill: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
-    backgroundColor: '#E5F7EA',
+    backgroundColor: Colors.verdeSuave,
     paddingHorizontal: 9, paddingVertical: 7, borderRadius: 12,
   },
   growthText: { color: VERDE, fontSize: 12, fontFamily: Fonte.corpoSemi },
@@ -438,11 +439,11 @@ const styles = StyleSheet.create({
   quickActions: { flexDirection: 'row', paddingHorizontal: 18, gap: 10, marginTop: 18, marginBottom: 26 },
   actionCard: {
     flex: 1, minHeight: 112, padding: 12, borderRadius: 21,
-    backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E7ECF2',
+    backgroundColor: Colors.branco, borderWidth: 1, borderColor: Colors.borda,
     justifyContent: 'space-between',
     shadowColor: AZUL_ESCURO, shadowOpacity: 0.045, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 2,
   },
-  actionCardPrimary: { backgroundColor: LARANJA_MARCA, borderColor: LARANJA_MARCA },
+  actionCardPrimary: { backgroundColor: COR_ACENTO, borderColor: COR_ACENTO },
   actionIcon: {
     width: 42, height: 42, borderRadius: 15,
     backgroundColor: LARANJA_PALE,
@@ -451,14 +452,14 @@ const styles = StyleSheet.create({
   actionIconPrimary: { backgroundColor: 'rgba(255,255,255,0.2)' },
   actionBottom: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 2, marginTop: 10 },
   actionTitle: { flex: 1, color: AZUL_ESCURO, fontSize: 12, lineHeight: 16, fontFamily: Fonte.corpoSemi },
-  actionTitlePrimary: { color: '#FFFFFF' },
+  actionTitlePrimary: { color: Colors.branco },
 
   section: { paddingHorizontal: 18, marginBottom: 25 },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 13, gap: 8 },
   sectionTitle: { fontSize: 18, fontFamily: Fonte.corpoSemi, letterSpacing: -0.35 },
-  sectionSubtitle: { fontFamily: Fonte.corpo, fontSize: 11, marginTop: 4 },
+  sectionSubtitle: { fontFamily: Fonte.corpo, fontSize: 12, marginTop: 4 },
   textLink: { flexDirection: 'row', alignItems: 'center', gap: 1 },
-  textLinkLabel: { color: LARANJA_MARCA, fontSize: 12, fontFamily: Fonte.corpoSemi },
+  textLinkLabel: { color: COR_ACENTO, fontSize: 12, fontFamily: Fonte.corpoSemi },
 
   statsGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   statCard: {
@@ -470,14 +471,14 @@ const styles = StyleSheet.create({
   statIcon: { width: 42, height: 42, borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
   statContent: { flex: 1, minWidth: 0 },
   statValue: { fontSize: 20, fontFamily: Fonte.tituloSemi },
-  statLabel: { fontFamily: Fonte.corpo, fontSize: 10, lineHeight: 14, marginTop: 2 },
+  statLabel: { fontFamily: Fonte.corpo, fontSize: 12, lineHeight: 14, marginTop: 2 },
   statTrend: {
     position: 'absolute', top: 8, right: 8,
     flexDirection: 'row', alignItems: 'center', gap: 2,
-    backgroundColor: '#ECF8EF',
+    backgroundColor: Colors.verdeSuave,
     borderRadius: 8, paddingHorizontal: 5, paddingVertical: 3,
   },
-  statTrendText: { color: VERDE, fontSize: 9, fontFamily: Fonte.corpoSemi },
+  statTrendText: { color: VERDE, fontSize: 12, fontFamily: Fonte.corpoSemi },
 
   listingsSection: { marginBottom: 12 },
   listingsList: { gap: 10 },
@@ -488,22 +489,22 @@ const styles = StyleSheet.create({
   },
   listingThumb: {
     width: 72, height: 74, borderRadius: 16,
-    backgroundColor: '#FFF0E3',
+    backgroundColor: Colors.azulSuave,
     alignItems: 'center', justifyContent: 'center',
   },
   listingInfo: { flex: 1, minWidth: 0 },
   listingTitle: { fontSize: 13, fontFamily: Fonte.corpoSemi },
   listingLocationRow: { flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 5 },
-  listingLocation: { fontFamily: Fonte.corpo, fontSize: 10, flexShrink: 1 },
+  listingLocation: { fontFamily: Fonte.corpo, fontSize: 12, flexShrink: 1 },
   listingPrice: { fontSize: 12, fontFamily: Fonte.corpoSemi, marginTop: 6 },
   listingRight: { alignItems: 'flex-end', justifyContent: 'space-between', alignSelf: 'stretch', paddingVertical: 1 },
   moreButton: { padding: 2 },
   statusPill: { borderRadius: 10, paddingHorizontal: 8, paddingVertical: 5 },
-  statusActive: { backgroundColor: '#E4F7E9' },
-  statusPending: { backgroundColor: 'rgba(10, 107, 192, 0.1)' },
-  statusReview: { backgroundColor: 'rgba(232, 118, 10, 0.12)' },
-  statusText: { fontSize: 9, fontFamily: Fonte.corpoSemi },
+  statusActive: { backgroundColor: Colors.verdeSuave },
+  statusPending: { backgroundColor: 'rgba(26, 115, 232, 0.1)' },
+  statusReview: { backgroundColor: 'rgba(26, 115, 232, 0.12)' },
+  statusText: { fontSize: 12, fontFamily: Fonte.corpoSemi },
   statusTextActive: { color: VERDE },
   statusTextPending: { color: AZUL_MARCA },
-  statusTextReview: { color: LARANJA_ESCURO },
+  statusTextReview: { color: COR_ACENTO_ESCURO },
 });

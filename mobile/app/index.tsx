@@ -103,7 +103,7 @@ export default function SplashScreen() {
       {/* Glow effect atrás do logo */}
       <View style={styles.glowContainer}>
         <LinearGradient
-          colors={['rgba(33, 150, 243, 0.15)', 'rgba(76, 175, 80, 0.15)', 'transparent']}
+          colors={['rgba(26, 115, 232, 0.15)', 'rgba(52, 168, 83, 0.15)', 'transparent']}
           style={styles.glow}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     height: width * 1.4,
     borderRadius: width * 0.7,
     borderWidth: 1,
-    borderColor: 'rgba(33, 150, 243, 0.08)',
+    borderColor: 'rgba(26, 115, 232, 0.08)',
     top: -width * 0.4,
     left: -width * 0.2,
   },
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     height: width * 1.2,
     borderRadius: width * 0.6,
     borderWidth: 1,
-    borderColor: 'rgba(76, 175, 80, 0.08)',
+    borderColor: 'rgba(52, 168, 83, 0.08)',
     bottom: -width * 0.3,
     right: -width * 0.2,
   },

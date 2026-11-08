@@ -258,7 +258,7 @@ export default function CardAnuncio({
         <View style={styles.imagemHorizontalContainer}>
           <Image source={{ uri: anuncio.fotos[0] }} style={styles.imagemHorizontal} />
           <LinearGradient
-            colors={['transparent', 'rgba(15,16,18,0.45)']}
+            colors={['transparent', 'rgba(32, 33, 36,0.45)']}
             style={styles.gradienteImagem}
           />
           <View style={styles.badgeTipo}>
@@ -305,7 +305,7 @@ export default function CardAnuncio({
       <View style={styles.imagemVerticalContainer}>
         <Image source={{ uri: anuncio.fotos[0] }} style={styles.imagemVertical} />
         <LinearGradient
-          colors={['transparent', 'rgba(15,16,18,0.35)']}
+          colors={['transparent', 'rgba(32, 33, 36,0.35)']}
           style={styles.gradienteImagemVertical}
         />
 
@@ -318,7 +318,7 @@ export default function CardAnuncio({
         {/* Badge verificado */}
         {anuncio.anuncianteVerificado && (
           <View style={styles.badgeVerificado}>
-            <Ionicons name="checkmark-circle" size={12} color="#FFFFFF" />
+            <Ionicons name="checkmark-circle" size={12} color={Colors.branco} />
             <Text style={styles.badgeVerificadoTexto}>Verificado</Text>
           </View>
         )}
@@ -335,7 +335,7 @@ export default function CardAnuncio({
         {/* Contagem fotos */}
         {anuncio.fotos.length > 1 && (
           <View style={styles.contagemFotos}>
-            <Ionicons name="images" size={11} color="#FFFFFF" />
+            <Ionicons name="images" size={11} color={Colors.branco} />
             <Text style={styles.contagemFotosTexto}>{anuncio.fotos.length}</Text>
           </View>
         )}
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   imagemHorizontal: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
   },
   gradienteImagem: {
     position: 'absolute',
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
   badgeTipoText: {
     fontFamily: Fonte.corpoSemi,
     color: Colors.textoPrincipal,
-    fontSize: 11,
+    fontSize: 12,
   },
   botaoFavoritar: {
     position: 'absolute',
@@ -437,13 +437,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     left: 10,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     paddingHorizontal: 9,
     paddingVertical: 4,
     borderRadius: Radius.sm,
   },
   precoHorizontalTexto: {
-    fontFamily: Fonte.tituloSemi,
+    fontFamily: Fonte.corpoBold,
     color: Colors.textoPrincipal,
     fontSize: 14,
     letterSpacing: -0.2,
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
   imagemVertical: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
   },
   gradienteImagemVertical: {
     position: 'absolute',
@@ -532,12 +532,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: Radius.full,
-    backgroundColor: 'rgba(15,16,18,0.55)',
+    backgroundColor: 'rgba(32, 33, 36,0.55)',
   },
   badgeVerificadoTexto: {
     fontFamily: Fonte.corpoSemi,
-    color: '#FFFFFF',
-    fontSize: 11,
+    color: Colors.branco,
+    fontSize: 12,
   },
   botaoFavoritarVertical: {
     position: 'absolute',
@@ -556,15 +556,15 @@ const styles = StyleSheet.create({
     right: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(15,16,18,0.55)',
+    backgroundColor: 'rgba(32, 33, 36,0.55)',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: Radius.full,
     gap: 4,
   },
   contagemFotosTexto: {
-    color: '#FFFFFF',
-    fontSize: 11,
+    color: Colors.branco,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     fontVariant: ['tabular-nums'],
   },
@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
   },
   preco: {
     ...Typography.preco,
-    fontSize: 19,
+    fontSize: 20,
   },
   tempoContainer: {
     flexDirection: 'row',
@@ -598,6 +598,6 @@ const styles = StyleSheet.create({
   tempoTexto: {
     ...Typography.caption,
     fontFamily: Fonte.corpo,
-    fontSize: 11,
+    fontSize: 12,
   },
 });

@@ -12,6 +12,7 @@
  */
 
 import { create } from 'zustand';
+import { Colors } from '../theme/colors';
 
 // ============================================================
 // MOTIVOS
@@ -40,8 +41,8 @@ export interface ConfigMotivo {
 export const CONFIG_MOTIVOS: Record<MotivoGate, ConfigMotivo> = {
   ver_detalhes: {
     icone: 'eye',
-    corIcone: '#FF7900',
-    corFundoIcone: '#FFF4E6',
+    corIcone: Colors.azul,
+    corFundoIcone: Colors.azulSuave,
     titulo: 'Vê todos os detalhes',
     descricao: 'Cria conta grátis para ver fotos completas, características e falar com o anunciante.',
     beneficios: [
@@ -53,8 +54,8 @@ export const CONFIG_MOTIVOS: Record<MotivoGate, ConfigMotivo> = {
   },
   favoritar: {
     icone: 'heart',
-    corIcone: '#D32F2F',
-    corFundoIcone: '#FFEBEE',
+    corIcone: Colors.erro,
+    corFundoIcone: Colors.erroFundo,
     titulo: 'Guarda os teus favoritos',
     descricao: 'Com conta, guardas os anúncios que gostas e vês quando houver mudanças.',
     beneficios: [
@@ -66,8 +67,8 @@ export const CONFIG_MOTIVOS: Record<MotivoGate, ConfigMotivo> = {
   },
   mensagem: {
     icone: 'message-text',
-    corIcone: '#1976D2',
-    corFundoIcone: '#E3F2FD',
+    corIcone: Colors.azul,
+    corFundoIcone: Colors.azulSuave,
     titulo: 'Fala com o anunciante',
     descricao: 'Com conta, podes enviar mensagens directas aos donos dos anúncios.',
     beneficios: [
@@ -79,8 +80,8 @@ export const CONFIG_MOTIVOS: Record<MotivoGate, ConfigMotivo> = {
   },
   desbloquear_contacto: {
     icone: 'lock-open',
-    corIcone: '#1976D2',
-    corFundoIcone: '#E3F2FD',
+    corIcone: Colors.azul,
+    corFundoIcone: Colors.azulSuave,
     titulo: 'Desbloqueia o contacto',
     descricao: 'Precisas de conta para pagar e falar com o anunciante em segurança.',
     beneficios: [
@@ -92,8 +93,8 @@ export const CONFIG_MOTIVOS: Record<MotivoGate, ConfigMotivo> = {
   },
   perfil: {
     icone: 'account-circle',
-    corIcone: '#0B2E59',
-    corFundoIcone: '#E8EEF5',
+    corIcone: Colors.carvao,
+    corFundoIcone: Colors.fundoSuave,
     titulo: 'Gere o teu perfil',
     descricao: 'Com conta, personalizas a tua experiência e acompanhas as tuas interacções.',
     beneficios: [
@@ -105,8 +106,8 @@ export const CONFIG_MOTIVOS: Record<MotivoGate, ConfigMotivo> = {
   },
   alerta_pesquisa: {
     icone: 'bell',
-    corIcone: '#FF7900',
-    corFundoIcone: '#FFF4E6',
+    corIcone: Colors.azul,
+    corFundoIcone: Colors.azulSuave,
     titulo: 'Recebe alertas',
     descricao: 'Avisamos-te quando aparecerem anúncios novos que correspondem aos teus critérios.',
     beneficios: [
@@ -118,8 +119,8 @@ export const CONFIG_MOTIVOS: Record<MotivoGate, ConfigMotivo> = {
   },
   generico: {
     icone: 'star-four-points',
-    corIcone: '#FF7900',
-    corFundoIcone: '#FFF4E6',
+    corIcone: Colors.azul,
+    corFundoIcone: Colors.azulSuave,
     titulo: 'Cria conta para continuar',
     descricao: 'Para esta acção precisas de ter uma conta GoHome. É grátis.',
     beneficios: [

@@ -18,7 +18,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import TopBar from '../src/components/TopBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -249,7 +249,7 @@ export default function EditarPerfilScreen() {
       <View style={[styles.container, styles.sucessoWrapper]}>
         <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
         <LinearGradient
-          colors={['#16202E', '#123F70']}
+          colors={[Colors.carvao, Colors.azulTexto]}
           style={StyleSheet.absoluteFill}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -258,7 +258,7 @@ export default function EditarPerfilScreen() {
           <View style={styles.sucessoIconeExterno}>
             <View style={styles.sucessoIconeMedio}>
               <View style={styles.sucessoIcone}>
-                <Ionicons name="checkmark" size={60} color="#168C82" />
+                <Ionicons name="checkmark" size={60} color={Colors.verdeTexto} />
               </View>
             </View>
           </View>
@@ -274,25 +274,13 @@ export default function EditarPerfilScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <StatusBar barStyle="light-content" backgroundColor="#16202E" />
-      <SafeAreaView style={styles.safeAreaTop} edges={['top']}>
-        {/* Header */}
+      <TopBar titulo="Editar perfil" onVoltar={voltar} />
+      <View>
         <LinearGradient
-          colors={['#16202E', '#123F70']}
+          colors={[Colors.carvao, Colors.azulTexto]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.botaoVoltar}
-            onPress={voltar}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="arrow-back" size={22} color={Colors.textoPrincipal} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitulo}>Editar perfil</Text>
-          <View style={{ width: 40 }} />
-        </View>
 
         {/* Barra de perfil completo */}
         <View style={styles.perfilCompletoContainer}>
@@ -303,7 +291,7 @@ export default function EditarPerfilScreen() {
           <View style={styles.perfilCompletoBar}>
             <View style={[styles.perfilCompletoFill, { width: `${perfilCompleto}%` }]}>
               <LinearGradient
-                colors={['#E8760A', '#FF9A24']}
+                colors={[Colors.azul, Colors.azul]}
                 style={StyleSheet.absoluteFill}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
@@ -312,7 +300,7 @@ export default function EditarPerfilScreen() {
           </View>
         </View>
         </LinearGradient>
-      </SafeAreaView>
+      </View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -364,7 +352,7 @@ export default function EditarPerfilScreen() {
               <Text style={styles.campoLabel}>Nome completo</Text>
               <View style={[
                 styles.inputWrapper,
-                campoFocado === 'nome' && { borderColor: '#E8760A', borderWidth: 1.5 },
+                campoFocado === 'nome' && { borderColor: Colors.azul, borderWidth: 1.5 },
               ]}>
                 <Ionicons name="person-outline" size={20} color={Colors.textoSecundario} />
                 <TextInput
@@ -387,7 +375,7 @@ export default function EditarPerfilScreen() {
               </View>
               <View style={[
                 styles.inputWrapper,
-                campoFocado === 'email' && { borderColor: '#E8760A', borderWidth: 1.5 },
+                campoFocado === 'email' && { borderColor: Colors.azul, borderWidth: 1.5 },
               ]}>
                 <Ionicons name="mail-outline" size={20} color={Colors.textoSecundario} />
                 <TextInput
@@ -417,7 +405,7 @@ export default function EditarPerfilScreen() {
               <Text style={styles.campoLabel}>Telefone</Text>
               <View style={[
                 styles.telefoneWrapper,
-                campoFocado === 'telefone' && { borderColor: '#E8760A', borderWidth: 1.5 },
+                campoFocado === 'telefone' && { borderColor: Colors.azul, borderWidth: 1.5 },
               ]}>
                 <View style={styles.telefonePrefixo}>
                   <Text style={styles.telefonePrefixoBandeira}>🇲🇿</Text>
@@ -448,7 +436,7 @@ export default function EditarPerfilScreen() {
               <TouchableOpacity
                 style={[
                   styles.selectorWrapper,
-                  provincia && { borderColor: '#E8760A', borderWidth: 1.5 },
+                  provincia && { borderColor: Colors.azul, borderWidth: 1.5 },
                 ]}
                 onPress={() => setModalProvinciaVisivel(true)}
                 activeOpacity={0.8}
@@ -471,7 +459,7 @@ export default function EditarPerfilScreen() {
                 style={[
                   styles.selectorWrapper,
                   !provincia && { opacity: 0.5 },
-                  distrito && { borderColor: '#E8760A', borderWidth: 1.5 },
+                  distrito && { borderColor: Colors.azul, borderWidth: 1.5 },
                 ]}
                 onPress={() => provincia && setModalDistritoVisivel(true)}
                 disabled={!provincia}
@@ -558,7 +546,7 @@ export default function EditarPerfilScreen() {
           activeOpacity={0.9}
         >
           <LinearGradient
-            colors={['#E8760A', '#F05A00']}
+            colors={[Colors.azul, Colors.azul]}
             style={styles.botaoGuardarGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
@@ -593,7 +581,7 @@ export default function EditarPerfilScreen() {
             <Text style={styles.modalTitulo}>Foto de perfil</Text>
 
             <TouchableOpacity style={styles.modalOpcao} onPress={tirarFoto} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(255, 121, 0, 0.12)' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(26, 115, 232, 0.12)' }]}>
                 <Ionicons name="camera" size={22} color={Colors.azul} />
               </View>
               <View style={styles.modalOpcaoInfo}>
@@ -605,7 +593,7 @@ export default function EditarPerfilScreen() {
 
             <TouchableOpacity style={styles.modalOpcao} onPress={escolherGaleria} activeOpacity={0.7}>
               <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(22, 140, 130, 0.12)' }]}>
-                <Ionicons name="images" size={22} color={Colors.verde} />
+                <Ionicons name="images" size={22} color={Colors.verdeTexto} />
               </View>
               <View style={styles.modalOpcaoInfo}>
                 <Text style={styles.modalOpcaoTitulo}>Escolher da galeria</Text>
@@ -616,7 +604,7 @@ export default function EditarPerfilScreen() {
 
             {foto && (
               <TouchableOpacity style={styles.modalOpcao} onPress={removerFoto} activeOpacity={0.7}>
-                <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(244, 67, 54, 0.15)' }]}>
+                <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(179, 38, 30, 0.15)' }]}>
                   <Ionicons name="trash" size={22} color={Colors.erro} />
                 </View>
                 <View style={styles.modalOpcaoInfo}>
@@ -719,7 +707,7 @@ function ModalSelector({ visivel, titulo, subtitulo, opcoes, valorSeleccionado, 
                 <TouchableOpacity
                   style={[
                     styles.modalOpcaoLista,
-                    seleccionado && { backgroundColor: 'rgba(255, 121, 0, 0.10)', borderColor: Colors.azul },
+                    seleccionado && { backgroundColor: 'rgba(26, 115, 232, 0.10)', borderColor: Colors.azul },
                   ]}
                   onPress={() => onSeleccionar(item.value)}
                   activeOpacity={0.7}
@@ -727,7 +715,7 @@ function ModalSelector({ visivel, titulo, subtitulo, opcoes, valorSeleccionado, 
                   <View style={styles.modalOpcaoInfo}>
                     <Text style={[
                       styles.modalOpcaoTitulo,
-                      seleccionado && { color: '#16202E', fontFamily: Fonte.corpoSemi },
+                      seleccionado && { color: Colors.carvao, fontFamily: Fonte.corpoSemi },
                     ]}>
                       {item.label}
                     </Text>
@@ -752,29 +740,7 @@ function ModalSelector({ visivel, titulo, subtitulo, opcoes, valorSeleccionado, 
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F4F7FB' },
-  safeAreaTop: {
-    backgroundColor: '#16202E',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.sm,
-    paddingBottom: Spacing.md,
-  },
-  botaoVoltar: {
-    width: 42,
-    height: 42,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.14)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.18)',
-  },
-  headerTitulo: { ...Typography.h3, color: '#FFFFFF', fontFamily: Fonte.corpoSemi },
+  container: { flex: 1, backgroundColor: Colors.gelo },
 
   // Perfil completo
   perfilCompletoContainer: {
@@ -790,8 +756,8 @@ const styles = StyleSheet.create({
   },
   perfilCompletoTexto: {
     ...Typography.captionBold,
-    color: '#FFFFFF',
-    fontSize: 11,
+    color: Colors.branco,
+    fontSize: 12,
   },
   perfilCompletoBar: {
     height: 6,
@@ -810,13 +776,13 @@ const styles = StyleSheet.create({
   fotoSeccao: {
     alignItems: 'center',
     paddingVertical: Spacing.xl,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     marginHorizontal: Spacing.lg,
     marginTop: Spacing.md,
     marginBottom: Spacing.md,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: Colors.borda,
     paddingHorizontal: Spacing.lg,
     ...Sombras.sm,
   },
@@ -834,7 +800,7 @@ const styles = StyleSheet.create({
     height: 160,
     borderRadius: 80,
     borderWidth: 1,
-    borderColor: 'rgba(255, 121, 0, 0.20)',
+    borderColor: 'rgba(26, 115, 232, 0.20)',
   },
   fotoDecorativoMedio: {
     position: 'absolute',
@@ -877,7 +843,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#E8760A',
+    backgroundColor: Colors.azul,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
@@ -891,7 +857,7 @@ const styles = StyleSheet.create({
   },
   fotoLink: {
     ...Typography.bodyBold,
-    color: '#E8760A',
+    color: Colors.azulTexto,
   },
 
   // Secções
@@ -906,7 +872,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 10,
-    backgroundColor: 'rgba(255, 121, 0, 0.10)',
+    backgroundColor: 'rgba(26, 115, 232, 0.10)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -942,7 +908,7 @@ const styles = StyleSheet.create({
   verificadoTag: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    backgroundColor: 'rgba(52, 168, 83, 0.1)',
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: Radius.full,
@@ -950,8 +916,8 @@ const styles = StyleSheet.create({
   },
   verificadoTagTexto: {
     ...Typography.captionBold,
-    color: Colors.verde,
-    fontSize: 10,
+    color: Colors.verdeTexto,
+    fontSize: 12,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -1058,7 +1024,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: 'rgba(255, 121, 0, 0.10)',
+    backgroundColor: 'rgba(26, 115, 232, 0.10)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -1081,10 +1047,10 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.lg,
     marginTop: Spacing.md,
     padding: Spacing.md,
-    backgroundColor: '#EAF1F8',
+    backgroundColor: Colors.azulSuave,
     borderRadius: Radius.lg,
     borderLeftWidth: 4,
-    borderLeftColor: '#E8760A',
+    borderLeftColor: Colors.azul,
     gap: Spacing.sm,
   },
   infoIcone: {
@@ -1111,7 +1077,7 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     backgroundColor: 'rgba(255,255,255,0.98)',
     borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
+    borderTopColor: Colors.borda,
     ...Sombras.lg,
   },
   botaoGuardar: {
@@ -1219,7 +1185,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 14,
-    backgroundColor: 'rgba(255, 121, 0, 0.10)',
+    backgroundColor: 'rgba(26, 115, 232, 0.10)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -1279,7 +1245,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#E8760A',
+    backgroundColor: Colors.azul,
     justifyContent: 'center',
     alignItems: 'center',
   },

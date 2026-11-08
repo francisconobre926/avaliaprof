@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   rodape: { flexDirection: 'row', marginTop: 6, paddingHorizontal: 4 },
   erro: { fontSize: 12, fontFamily: Fonte.corpoSemi },
   hint: { fontFamily: Fonte.corpo, fontSize: 12 },
-  contador: { fontFamily: Fonte.corpo, fontSize: 11 },
+  contador: { fontFamily: Fonte.corpo, fontSize: 12 },
 });
 
 export default Input;

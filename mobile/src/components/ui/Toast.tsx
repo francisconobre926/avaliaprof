@@ -27,7 +27,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
-import { Sombras } from '../../theme/colors';
+import { Colors, Sombras } from '../../theme/colors';
 
 import { Fonte } from '../../theme/fonts';
 const { width: W } = Dimensions.get('window');
@@ -140,10 +140,10 @@ const ToastItem: React.FC<{
   }, []);
 
   const mapaTipo: Record<ToastTipo, { icon: keyof typeof Ionicons.glyphMap; cor: string }> = {
-    success: { icon: 'checkmark-circle', cor: '#2F7A4F' },
-    error: { icon: 'close-circle', cor: '#C2412D' },
-    warning: { icon: 'warning', cor: '#E8760A' },
-    info: { icon: 'information-circle', cor: '#0A6BC0' },
+    success: { icon: 'checkmark-circle', cor: Colors.verdeTexto },
+    error: { icon: 'close-circle', cor: Colors.erro },
+    warning: { icon: 'warning', cor: Colors.azul },
+    info: { icon: 'information-circle', cor: Colors.azul },
   };
   const info = mapaTipo[toast.tipo || 'info'];
 

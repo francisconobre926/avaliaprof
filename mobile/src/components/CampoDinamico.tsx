@@ -95,14 +95,14 @@ function CampoTexto({ campo, valor, onChange, erro }: {
           <Icone
             name={campo.icone as any}
             size={18}
-            color={erro ? '#C2412D' : '#5B616B'}
+            color={erro ? Colors.erro : Colors.textoSecundario}
             style={styles.inputIcone}
           />
         )}
         <TextInput
           style={styles.inputCampo}
           placeholder={campo.dica || ''}
-          placeholderTextColor="#9A9EA5"
+          placeholderTextColor={Colors.textoTerciario}
           value={valor?.toString() || ''}
           onChangeText={onChange}
           maxLength={campo.maxLength}
@@ -131,7 +131,7 @@ function CampoTextarea({ campo, valor, onChange, erro }: {
         <TextInput
           style={styles.textareaCampo}
           placeholder={campo.dica || ''}
-          placeholderTextColor="#9A9EA5"
+          placeholderTextColor={Colors.textoTerciario}
           value={texto}
           onChangeText={onChange}
           multiline
@@ -169,14 +169,14 @@ function CampoNumero({ campo, valor, onChange, erro }: {
           <Icone
             name={campo.icone as any}
             size={18}
-            color={erro ? '#C2412D' : '#5B616B'}
+            color={erro ? Colors.erro : Colors.textoSecundario}
             style={styles.inputIcone}
           />
         )}
         <TextInput
           style={styles.inputCampo}
           placeholder={campo.dica || '0'}
-          placeholderTextColor="#9A9EA5"
+          placeholderTextColor={Colors.textoTerciario}
           value={valor?.toString() || ''}
           onChangeText={(txt) => {
             // Permite dígitos (e vírgula/ponto se decimal)
@@ -235,7 +235,7 @@ function CampoChip({ campo, valor, onChange, erro }: {
                 <Icone
                   name={opcao.icone as any}
                   size={14}
-                  color={activo ? '#FFFFFF' : '#16202E'}
+                  color={activo ? Colors.branco : Colors.carvao}
                 />
               )}
               <Text style={[styles.chipTexto, activo && styles.chipTextoActivo]}>
@@ -288,13 +288,13 @@ function CampoChipMulti({ campo, valor, onChange, erro }: {
               activeOpacity={0.8}
             >
               {activo && (
-                <Ionicons name="checkmark" size={13} color="#FFFFFF" />
+                <Ionicons name="checkmark" size={13} color={Colors.branco} />
               )}
               {opcao.icone && !activo && (
                 <Icone
                   name={opcao.icone as any}
                   size={14}
-                  color="#16202E"
+                  color={Colors.carvao}
                 />
               )}
               <Text style={[styles.chipTexto, activo && styles.chipTextoActivo]}>
@@ -332,12 +332,12 @@ function CampoSelect({ campo, valor, onChange, erro }: {
         <View style={{ flex: 1, paddingVertical: 12 }}>
           <Text style={[
             styles.selectTexto,
-            !opcaoSelec && { color: '#9A9EA5' },
+            !opcaoSelec && { color: Colors.textoTerciario },
           ]}>
             {opcaoSelec?.label || campo.dica || 'Escolhe uma opção'}
           </Text>
         </View>
-        <Ionicons name="chevron-down" size={18} color="#5B616B" />
+        <Ionicons name="chevron-down" size={18} color={Colors.textoSecundario} />
       </TouchableOpacity>
       {erro && <ErroInline texto={erro} />}
 
@@ -364,10 +364,10 @@ function CampoSelect({ campo, valor, onChange, erro }: {
                       setModalVisivel(false);
                     }}
                   >
-                    <Text style={[styles.selectOpcaoTexto, activo && { color: '#E8760A', fontFamily: Fonte.corpoSemi }]}>
+                    <Text style={[styles.selectOpcaoTexto, activo && { color: Colors.azulTexto, fontFamily: Fonte.corpoSemi }]}>
                       {opcao.label}
                     </Text>
-                    {activo && <Ionicons name="checkmark" size={20} color="#E8760A" />}
+                    {activo && <Ionicons name="checkmark" size={20} color={Colors.azul} />}
                   </TouchableOpacity>
                 );
               })}
@@ -389,11 +389,11 @@ function CampoSwitch({ campo, valor, onChange }: {
 }) {
   return (
     <View style={[styles.switchContainer, valor && styles.switchContainerActivo]}>
-      <View style={[styles.switchIcone, valor && { backgroundColor: '#16202E' }]}>
+      <View style={[styles.switchIcone, valor && { backgroundColor: Colors.carvao }]}>
         <Icone
           name={(campo.icone || 'check') as any}
           size={18}
-          color={valor ? '#FFFFFF' : '#16202E'}
+          color={valor ? Colors.branco : Colors.carvao}
         />
       </View>
       <View style={{ flex: 1 }}>
@@ -405,8 +405,8 @@ function CampoSwitch({ campo, valor, onChange }: {
       <Switch
         value={valor}
         onValueChange={onChange}
-        trackColor={{ false: '#E7E5DF', true: '#16202E' }}
-        thumbColor="#FFFFFF"
+        trackColor={{ false: Colors.borda, true: Colors.carvao }}
+        thumbColor={Colors.branco}
       />
     </View>
   );
@@ -440,14 +440,14 @@ function CampoContador({ campo, valor, onChange }: {
           onPress={decrementar}
           disabled={num <= min}
         >
-          <Ionicons name="remove" size={20} color={num <= min ? '#C8D5E5' : '#16202E'} />
+          <Ionicons name="remove" size={20} color={num <= min ? Colors.borda : Colors.carvao} />
         </TouchableOpacity>
         <View style={styles.contadorValor}>
           {campo.icone && (
             <Icone
               name={campo.icone as any}
               size={16}
-              color="#16202E"
+              color={Colors.carvao}
             />
           )}
           <Text style={styles.contadorValorTexto}>{num}</Text>
@@ -460,7 +460,7 @@ function CampoContador({ campo, valor, onChange }: {
           onPress={incrementar}
           disabled={num >= max}
         >
-          <Ionicons name="add" size={20} color={num >= max ? '#C8D5E5' : '#16202E'} />
+          <Ionicons name="add" size={20} color={num >= max ? Colors.borda : Colors.carvao} />
         </TouchableOpacity>
       </View>
     </View>
@@ -500,7 +500,7 @@ function ConstructorCamposPersonalizados({ valor, onChange }: {
     <View style={styles.wrapper}>
       {valor.length === 0 ? (
         <View style={styles.vazioBox}>
-          <Icone name="tag-plus" size={32} color="#5B616B" />
+          <Icone name="tag-plus" size={32} color={Colors.textoSecundario} />
           <Text style={styles.vazioTitulo}>Sem características ainda</Text>
           <Text style={styles.vazioTexto}>
             Adiciona as características que fizerem sentido para o teu anúncio
@@ -518,7 +518,7 @@ function ConstructorCamposPersonalizados({ valor, onChange }: {
                 style={styles.itemCampoRemover}
                 onPress={() => remover(item.id)}
               >
-                <Ionicons name="close" size={16} color="#C2412D" />
+                <Ionicons name="close" size={16} color={Colors.erro} />
               </TouchableOpacity>
             </View>
           ))}
@@ -531,7 +531,7 @@ function ConstructorCamposPersonalizados({ valor, onChange }: {
           onPress={() => setModalVisivel(true)}
           activeOpacity={0.85}
         >
-          <Ionicons name="add-circle" size={20} color="#E8760A" />
+          <Ionicons name="add-circle" size={20} color={Colors.azul} />
           <Text style={styles.adicionarBotaoTexto}>
             {valor.length === 0 ? 'Adicionar primeira característica' : 'Adicionar característica'}
           </Text>
@@ -558,7 +558,7 @@ function ConstructorCamposPersonalizados({ valor, onChange }: {
                 <TextInput
                   style={styles.modalInput}
                   placeholder="Ex: Peso, Cor, Material"
-                  placeholderTextColor="#9A9EA5"
+                  placeholderTextColor={Colors.textoTerciario}
                   value={nomeNovo}
                   onChangeText={setNomeNovo}
                   maxLength={40}
@@ -572,7 +572,7 @@ function ConstructorCamposPersonalizados({ valor, onChange }: {
                 <TextInput
                   style={styles.modalInput}
                   placeholder="Ex: 5 kg, Vermelho, Alumínio"
-                  placeholderTextColor="#9A9EA5"
+                  placeholderTextColor={Colors.textoTerciario}
                   value={valorNovo}
                   onChangeText={setValorNovo}
                   maxLength={80}
@@ -628,7 +628,7 @@ function Label({ campo, semMargem }: { campo: DefinicaoCampo; semMargem?: boolea
 function ErroInline({ texto }: { texto: string }) {
   return (
     <View style={styles.erroContainer}>
-      <Ionicons name="warning" size={13} color="#C2412D" />
+      <Ionicons name="warning" size={13} color={Colors.erro} />
       <Text style={styles.erroTexto}>{texto}</Text>
     </View>
   );
@@ -654,26 +654,26 @@ const styles = StyleSheet.create({
   },
   label: {
     ...Typography.bodyBold,
-    color: '#1E2836',
+    color: Colors.carvao,
     fontFamily: Fonte.corpoSemi,
     fontSize: 14,
   },
   obrigatorio: {
-    color: '#C2412D',
+    color: Colors.erro,
     fontFamily: Fonte.corpoSemi,
   },
   contadorBadge: {
     minWidth: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: '#E8760A',
+    backgroundColor: Colors.azul,
     paddingHorizontal: 7,
     justifyContent: 'center',
     alignItems: 'center',
   },
   contadorBadgeTexto: {
-    color: '#FFFFFF',
-    fontSize: 11,
+    color: Colors.branco,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
   },
 
@@ -681,16 +681,16 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     borderRadius: 14,
     borderWidth: 1.2,
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
     overflow: 'hidden',
   },
   inputErro: {
-    borderColor: '#C2412D',
+    borderColor: Colors.erro,
     borderWidth: 2,
-    backgroundColor: '#FFF5F5',
+    backgroundColor: Colors.erroFundo,
   },
   inputIcone: {
     marginLeft: 14,
@@ -700,28 +700,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 14,
     ...Typography.body,
-    color: '#16202E',
+    color: Colors.carvao,
     fontSize: 15,
   },
   sufixo: {
     paddingHorizontal: 14,
     paddingVertical: 14,
-    backgroundColor: '#F1F5FA',
+    backgroundColor: Colors.fundoSuave,
     borderLeftWidth: 1,
-    borderLeftColor: '#E7E5DF',
+    borderLeftColor: Colors.borda,
   },
   sufixoTexto: {
     ...Typography.bodyBold,
-    color: '#506985',
+    color: Colors.textoSecundario,
     fontSize: 13,
   },
 
   // Textarea
   textareaWrapper: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     borderRadius: 14,
     borderWidth: 1.2,
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
     minHeight: 110,
   },
   textareaCampo: {
@@ -729,7 +729,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     ...Typography.body,
-    color: '#16202E',
+    color: Colors.carvao,
     fontSize: 15,
     minHeight: 110,
     textAlignVertical: 'top',
@@ -742,8 +742,8 @@ const styles = StyleSheet.create({
   },
   contadorTexto: {
     ...Typography.caption,
-    color: '#7D8FA7',
-    fontSize: 11,
+    color: Colors.textoTerciario,
+    fontSize: 12,
   },
 
   // Chips
@@ -758,28 +758,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 13,
     paddingVertical: 9,
     borderRadius: 20,
-    backgroundColor: '#F4F3EF',
+    backgroundColor: Colors.fundoSuave,
     borderWidth: 1,
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
     gap: 5,
   },
   chipActivo: {
-    backgroundColor: '#16202E',
-    borderColor: '#16202E',
+    backgroundColor: Colors.carvao,
+    borderColor: Colors.carvao,
   },
   chipTexto: {
     ...Typography.bodyBold,
-    color: '#16202E',
+    color: Colors.carvao,
     fontSize: 13,
   },
   chipTextoActivo: {
-    color: '#FFFFFF',
+    color: Colors.branco,
   },
 
   // Select
   selectTexto: {
     ...Typography.body,
-    color: '#16202E',
+    color: Colors.carvao,
     paddingHorizontal: 14,
     fontSize: 15,
   },
@@ -788,46 +788,46 @@ const styles = StyleSheet.create({
   switchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     padding: 14,
     borderRadius: 16,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
     gap: 12,
   },
   switchContainerActivo: {
-    borderColor: '#B7D0EB',
-    backgroundColor: '#F4F8FD',
+    borderColor: Colors.azulSuave,
+    backgroundColor: Colors.gelo,
   },
   switchIcone: {
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: '#EAF1FA',
+    backgroundColor: Colors.azulSuave,
     justifyContent: 'center',
     alignItems: 'center',
   },
   switchLabel: {
     ...Typography.bodyBold,
-    color: '#1E2836',
+    color: Colors.carvao,
     fontFamily: Fonte.corpoSemi,
     fontSize: 14,
   },
   switchDica: {
     ...Typography.caption,
-    color: '#71849C',
+    color: Colors.textoSecundario,
     marginTop: 2,
-    fontSize: 11,
+    fontSize: 12,
   },
 
   // Contador
   contador: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
     overflow: 'hidden',
   },
   contadorBotao: {
@@ -835,7 +835,7 @@ const styles = StyleSheet.create({
     padding: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F1F5FA',
+    backgroundColor: Colors.fundoSuave,
   },
   contadorBotaoDesabilitado: {
     opacity: 0.5,
@@ -850,14 +850,14 @@ const styles = StyleSheet.create({
   },
   contadorValorTexto: {
     ...Typography.h3,
-    color: '#16202E',
+    color: Colors.carvao,
     fontFamily: Fonte.tituloSemi,
     fontSize: 20,
   },
   contadorSufixo: {
     ...Typography.caption,
-    color: '#5B616B',
-    fontSize: 11,
+    color: Colors.textoSecundario,
+    fontSize: 12,
   },
 
   // Erro
@@ -870,8 +870,8 @@ const styles = StyleSheet.create({
   },
   erroTexto: {
     ...Typography.caption,
-    color: '#C2412D',
-    fontSize: 11,
+    color: Colors.erro,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
   },
 
@@ -882,7 +882,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingBottom: 24,
@@ -892,14 +892,14 @@ const styles = StyleSheet.create({
     width: 40,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
     alignSelf: 'center',
     marginTop: 10,
     marginBottom: 12,
   },
   modalTitulo: {
     ...Typography.h3,
-    color: '#16202E',
+    color: Colors.carvao,
     fontFamily: Fonte.corpoSemi,
     textAlign: 'center',
     marginBottom: 16,
@@ -907,24 +907,24 @@ const styles = StyleSheet.create({
   },
   modalLabel: {
     ...Typography.bodyBold,
-    color: '#1E2836',
+    color: Colors.carvao,
     marginBottom: 7,
     fontFamily: Fonte.corpoSemi,
     fontSize: 13,
     marginTop: 4,
   },
   modalInputWrapper: {
-    backgroundColor: '#F7F6F2',
+    backgroundColor: Colors.fundoSuave,
     borderRadius: 12,
     borderWidth: 1.2,
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
     marginBottom: 14,
   },
   modalInput: {
     paddingHorizontal: 14,
     paddingVertical: 12,
     ...Typography.body,
-    color: '#16202E',
+    color: Colors.carvao,
     fontSize: 15,
   },
   modalBotoes: {
@@ -936,11 +936,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 14,
     borderRadius: 14,
-    backgroundColor: '#F4F3EF',
+    backgroundColor: Colors.fundoSuave,
     alignItems: 'center',
   },
   modalBotaoCancelarTexto: {
-    color: '#16202E',
+    color: Colors.carvao,
     fontSize: 14,
     fontFamily: Fonte.corpoSemi,
   },
@@ -948,14 +948,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 14,
     borderRadius: 14,
-    backgroundColor: '#E8760A',
+    backgroundColor: Colors.azul,
     alignItems: 'center',
   },
   modalBotaoDesabilitado: {
     opacity: 0.4,
   },
   modalBotaoConfirmarTexto: {
-    color: '#FFFFFF',
+    color: Colors.branco,
     fontSize: 14,
     fontFamily: Fonte.corpoSemi,
   },
@@ -968,23 +968,23 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#F4F3EF',
+    borderBottomColor: Colors.fundoSuave,
   },
   selectOpcaoActiva: {
-    backgroundColor: '#FBF0E3',
+    backgroundColor: Colors.azulSuave,
   },
   selectOpcaoTexto: {
     ...Typography.body,
-    color: '#16202E',
+    color: Colors.carvao,
     fontSize: 15,
   },
 
   // Constructor
   vazioBox: {
-    backgroundColor: '#F7F6F2',
+    backgroundColor: Colors.fundoSuave,
     borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
     borderStyle: 'dashed',
     padding: 24,
     alignItems: 'center',
@@ -993,13 +993,13 @@ const styles = StyleSheet.create({
   },
   vazioTitulo: {
     ...Typography.bodyBold,
-    color: '#16202E',
+    color: Colors.carvao,
     fontFamily: Fonte.corpoSemi,
     fontSize: 14,
   },
   vazioTexto: {
     ...Typography.caption,
-    color: '#5B616B',
+    color: Colors.textoSecundario,
     textAlign: 'center',
     fontSize: 12,
     maxWidth: 240,
@@ -1012,23 +1012,23 @@ const styles = StyleSheet.create({
   itemCampo: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     padding: 12,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
     gap: 10,
   },
   itemCampoNome: {
     ...Typography.caption,
-    color: '#5B616B',
-    fontSize: 11,
+    color: Colors.textoSecundario,
+    fontSize: 12,
     marginBottom: 2,
     fontFamily: Fonte.corpoSemi,
   },
   itemCampoValor: {
     ...Typography.bodyBold,
-    color: '#16202E',
+    color: Colors.carvao,
     fontFamily: Fonte.corpoSemi,
     fontSize: 14,
   },
@@ -1036,7 +1036,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#FBECE9',
+    backgroundColor: Colors.erroFundo,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -1047,15 +1047,15 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 14,
     borderRadius: 14,
-    backgroundColor: '#FFF8F1',
+    backgroundColor: Colors.azulSuave,
     borderWidth: 1.5,
-    borderColor: '#E8760A',
+    borderColor: Colors.azul,
     borderStyle: 'dashed',
     gap: 7,
   },
   adicionarBotaoTexto: {
     ...Typography.button,
-    color: '#D95E00',
+    color: Colors.azulTexto,
     fontFamily: Fonte.corpoSemi,
     fontSize: 13,
     flex: 1,
@@ -1063,7 +1063,7 @@ const styles = StyleSheet.create({
   },
   adicionarBotaoContador: {
     ...Typography.caption,
-    color: '#71849C',
-    fontSize: 11,
+    color: Colors.textoSecundario,
+    fontSize: 12,
   },
 });

@@ -22,10 +22,11 @@ import { useAuthGateStore, CONFIG_MOTIVOS } from '../store/authGateStore';
 
 import { Fonte } from '../theme/fonts';
 import Icone from './Icone';
-const LARANJA = '#E8760A';
-const LARANJA_ESCURO = '#F45B00';
-const AZUL = '#16202E';
-const AZUL_SUAVE = '#647895';
+import { Colors } from '../theme/colors';
+const LARANJA = Colors.azul;
+const COR_ACENTO_ESCURO = Colors.azul;
+const AZUL = Colors.carvao;
+const AZUL_SUAVE = Colors.textoSecundario;
 
 export default function ModalAuthGate() {
   const router = useRouter();
@@ -96,7 +97,7 @@ export default function ModalAuthGate() {
           >
             <View style={styles.brandRow}>
               <View style={styles.brandIcon}>
-                <Icone name="home-city" size={27} color="#FFFFFF" />
+                <Icone name="home-city" size={27} color={Colors.branco} />
               </View>
               <View>
                 <Text style={styles.brandName}>Go<Text style={styles.brandAccent}>Home</Text></Text>
@@ -114,7 +115,7 @@ export default function ModalAuthGate() {
                 <View style={styles.heroCircle} />
                 <Icone name="home-heart" size={60} color={LARANJA} />
                 <View style={styles.heroBadge}>
-                  <Ionicons name="checkmark" size={15} color="#FFFFFF" />
+                  <Ionicons name="checkmark" size={15} color={Colors.branco} />
                 </View>
               </View>
             </View>
@@ -138,7 +139,7 @@ export default function ModalAuthGate() {
                       <Icone
                         name={icons[idx % icons.length]}
                         size={23}
-                        color={LARANJA_ESCURO}
+                        color={COR_ACENTO_ESCURO}
                       />
                     </View>
                     <Text style={styles.benefitText}>{beneficio}</Text>
@@ -154,14 +155,14 @@ export default function ModalAuthGate() {
               accessibilityRole="button"
             >
               <LinearGradient
-                colors={['#FF9A1F', '#E8760A', '#F45B00']}
+                colors={[Colors.azul, Colors.azul, Colors.azul]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={StyleSheet.absoluteFill}
               />
-              <Icone name="account-plus-outline" size={22} color="#FFFFFF" />
+              <Icone name="account-plus-outline" size={22} color={Colors.branco} />
               <Text style={styles.primaryButtonText}>Criar conta grátis</Text>
-              <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
+              <Ionicons name="arrow-forward" size={20} color={Colors.branco} />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -194,11 +195,11 @@ export default function ModalAuthGate() {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(4, 18, 36, 0.64)',
+    backgroundColor: 'rgba(32, 33, 36, 0.64)',
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     maxHeight: '91%',
@@ -219,7 +220,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 5,
     borderRadius: 10,
-    backgroundColor: '#CBD5E1',
+    backgroundColor: Colors.borda,
   },
   closeButton: {
     position: 'absolute',
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: Colors.fundoSuave,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -255,7 +256,7 @@ const styles = StyleSheet.create({
     color: AZUL,
     fontSize: 24,
     fontFamily: Fonte.tituloBold,
-    letterSpacing: -0.8,
+    letterSpacing: -0.4,
     lineHeight: 27,
   },
   brandAccent: {
@@ -263,7 +264,7 @@ const styles = StyleSheet.create({
   },
   brandTagline: {
     color: AZUL_SUAVE,
-    fontSize: 11,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     marginTop: 1,
     letterSpacing: 0.15,
@@ -278,18 +279,18 @@ const styles = StyleSheet.create({
     paddingRight: 3,
   },
   eyebrow: {
-    color: LARANJA_ESCURO,
-    fontSize: 9,
-    fontFamily: Fonte.corpoBold,
+    color: COR_ACENTO_ESCURO,
+    fontSize: 12,
+    fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.1,
     marginBottom: 8,
   },
   title: {
     color: AZUL,
-    fontSize: 26,
+    fontSize: 28,
     lineHeight: 30,
     fontFamily: Fonte.tituloBold,
-    letterSpacing: -0.7,
+    letterSpacing: -0.4,
     marginBottom: 9,
   },
   description: {
@@ -303,7 +304,7 @@ const styles = StyleSheet.create({
     height: 106,
     marginLeft: 6,
     borderRadius: 27,
-    backgroundColor: '#FFF0E2',
+    backgroundColor: Colors.azulSuave,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
@@ -313,7 +314,7 @@ const styles = StyleSheet.create({
     width: 110,
     height: 110,
     borderRadius: 55,
-    backgroundColor: '#FFE0C4',
+    backgroundColor: Colors.azulSuave,
     top: -54,
     right: -45,
   },
@@ -324,9 +325,9 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#25A55B',
+    backgroundColor: Colors.verdeTexto,
     borderWidth: 2,
-    borderColor: '#FFFFFF',
+    borderColor: Colors.branco,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -358,9 +359,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     minHeight: 82,
     borderRadius: 16,
-    backgroundColor: '#F7F9FC',
+    backgroundColor: Colors.gelo,
     borderWidth: 1,
-    borderColor: '#E9EEF5',
+    borderColor: Colors.fundoSuave,
     paddingHorizontal: 11,
     paddingVertical: 12,
     flexDirection: 'row',
@@ -371,14 +372,14 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 12,
-    backgroundColor: '#FFF0E2',
+    backgroundColor: Colors.azulSuave,
     alignItems: 'center',
     justifyContent: 'center',
   },
   benefitText: {
     flex: 1,
-    color: '#29415F',
-    fontSize: 11,
+    color: Colors.carvao,
+    fontSize: 12,
     lineHeight: 15,
     fontFamily: Fonte.corpoSemi,
   },
@@ -392,14 +393,14 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingHorizontal: 16,
     marginBottom: 10,
-    shadowColor: LARANJA_ESCURO,
+    shadowColor: COR_ACENTO_ESCURO,
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.24,
     shadowRadius: 9,
     elevation: 5,
   },
   primaryButtonText: {
-    color: '#FFFFFF',
+    color: Colors.branco,
     fontSize: 15,
     fontFamily: Fonte.corpoBold,
     flex: 1,
@@ -407,9 +408,9 @@ const styles = StyleSheet.create({
   secondaryButton: {
     minHeight: 53,
     borderRadius: 16,
-    backgroundColor: '#F3F6FA',
+    backgroundColor: Colors.fundoSuave,
     borderWidth: 1,
-    borderColor: '#DCE5F0',
+    borderColor: Colors.borda,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -428,15 +429,15 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   continueText: {
-    color: '#74839A',
+    color: Colors.textoSecundario,
     fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     textDecorationLine: 'underline',
-    textDecorationColor: '#C5CEDB',
+    textDecorationColor: Colors.borda,
   },
   footerNote: {
-    color: '#A0AABD',
-    fontFamily: Fonte.corpo, fontSize: 10,
+    color: Colors.textoTerciario,
+    fontFamily: Fonte.corpo, fontSize: 12,
     textAlign: 'center',
     marginTop: 5,
   },

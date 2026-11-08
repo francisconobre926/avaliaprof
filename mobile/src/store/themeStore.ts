@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Paleta } from '../theme/colors';
 
 // ============================================================
 // TIPOS
@@ -22,29 +23,31 @@ export interface DefinicaoCorDestaque {
 }
 
 export const CORES_DESTAQUE: Record<CorDestaque, DefinicaoCorDestaque> = {
+  // Identidade oficial GoHome (por omissão).
   azul: {
     id: 'azul',
     nome: 'Azul GoHome',
-    principal: '#0A6BC0',
-    claro: '#EAF2FA',
-    escuro: '#08508F',
-    gradiente: ['#0A6BC0', '#095FAA'], // Tonal — sem saltos de matiz
+    principal: Paleta.azul,
+    claro: Paleta.azulSuave,
+    escuro: Paleta.azulTexto,
+    gradiente: [Paleta.azul, Paleta.azulTexto],
   },
+  // Alternativas de personalização (opcionais, escolhidas pelo utilizador).
   laranja: {
     id: 'laranja',
-    nome: 'Laranja GoHome',
-    principal: '#D96D08',
-    claro: '#FBF0E3',
-    escuro: '#A85204',
-    gradiente: ['#D96D08', '#C86306'],
+    nome: 'Laranja',
+    principal: '#C5530A',
+    claro: '#FCEFE3',
+    escuro: '#9A4107',
+    gradiente: ['#C5530A', '#9A4107'],
   },
   verde: {
     id: 'verde',
     nome: 'Verde',
-    principal: '#2F7A4F',
-    claro: '#EAF3EC',
-    escuro: '#22593A',
-    gradiente: ['#2F7A4F', '#296D46'],
+    principal: Paleta.verdeTexto,
+    claro: Paleta.verdeSuave,
+    escuro: '#0D5C2E',
+    gradiente: [Paleta.verdeTexto, '#0D5C2E'],
   },
   rosa: {
     id: 'rosa',
@@ -52,7 +55,7 @@ export const CORES_DESTAQUE: Record<CorDestaque, DefinicaoCorDestaque> = {
     principal: '#B83A64',
     claro: '#F8EAEF',
     escuro: '#8E2A4B',
-    gradiente: ['#B83A64', '#A8335A'],
+    gradiente: ['#B83A64', '#8E2A4B'],
   },
   roxo: {
     id: 'roxo',
@@ -60,15 +63,15 @@ export const CORES_DESTAQUE: Record<CorDestaque, DefinicaoCorDestaque> = {
     principal: '#6B4BA8',
     claro: '#F0ECF7',
     escuro: '#513782',
-    gradiente: ['#6B4BA8', '#60439A'],
+    gradiente: ['#6B4BA8', '#513782'],
   },
   preto: {
     id: 'preto',
-    nome: 'Grafite',
-    principal: '#1F2226',
-    claro: '#EFEEE9',
-    escuro: '#0F1012',
-    gradiente: ['#2A2D32', '#1F2226'],
+    nome: 'Carvão',
+    principal: Paleta.carvao,
+    claro: Paleta.fundoSuave,
+    escuro: '#000000',
+    gradiente: [Paleta.carvao, Paleta.carvao],
   },
 };
 
@@ -102,43 +105,45 @@ export interface PaletaModo {
 }
 
 export const PALETA_CLARO: PaletaModo = {
-  fundo: '#FAFAF7',           // Papel quente, não branco clínico
-  fundoSuave: '#F2F1EC',
-  fundoElevado: '#FFFFFF',
-  branco: '#FFFFFF',
+  fundo: Paleta.gelo,
+  fundoSuave: Paleta.fundoSuave,
+  fundoElevado: Paleta.branco,
+  branco: Paleta.branco,
 
-  textoPrincipal: '#15181D',
-  textoSecundario: '#5B616B',
-  textoTerciario: '#8E939B',
+  textoPrincipal: Paleta.carvao,
+  textoSecundario: Paleta.textoSecundario,
+  textoTerciario: Paleta.textoTerciario,
 
-  bordaSubtil: '#E7E5DF',
-  bordaMedia: '#D6D3CB',
+  bordaSubtil: Paleta.borda,
+  bordaMedia: Paleta.bordaForte,
 
-  sucesso: '#2F7A4F',
-  aviso: '#B7791F',
-  erro: '#C2412D',
-  premium: '#B8862B',
-  destaque: '#E8760A',
+  sucesso: Paleta.verdeTexto,
+  aviso: Paleta.aviso,
+  erro: Paleta.erro,
+  premium: Paleta.aviso,
+  destaque: Paleta.azul,
 };
 
+// Modo escuro derivado da mesma paleta: carvão como base, azul e verde
+// aclarados para manter contraste ≥ 4,5:1 sobre #202124.
 export const PALETA_ESCURO: PaletaModo = {
-  fundo: '#0F1012',           // Quase-preto, evita o halo do #000 em OLED
-  fundoSuave: '#17181B',
-  fundoElevado: '#1B1D20',
-  branco: '#1B1D20',
+  fundo: Paleta.carvao,
+  fundoSuave: '#2D2E31',
+  fundoElevado: '#28292C',
+  branco: '#28292C',
 
-  textoPrincipal: '#F2F1EE',
-  textoSecundario: '#A6A9AE',
-  textoTerciario: '#6F7378',
+  textoPrincipal: '#E8EAED',
+  textoSecundario: '#9AA0A6',
+  textoTerciario: '#969CA2',
 
-  bordaSubtil: '#2A2C30',
-  bordaMedia: '#383B40',
+  bordaSubtil: '#3C4043',
+  bordaMedia: '#80868B',
 
-  sucesso: '#5FA77B',
-  aviso: '#D9A24A',
-  erro: '#E0705C',
-  premium: '#D4A84E',
-  destaque: '#F08A2C',
+  sucesso: Paleta.verdeClaro,
+  aviso: '#FDD663',
+  erro: '#F28B82',
+  premium: '#FDD663',
+  destaque: Paleta.azulClaro,
 };
 
 // ============================================================
@@ -232,8 +237,11 @@ export const useCores = () => {
   return {
     // Cor de destaque
     principal: definicao.principal,
-    principalClara: definicao.claro,
+    // Superfície suave da cor de destaque: tom claro no modo claro, translúcido no escuro.
+    principalClara: modo === 'claro' ? definicao.claro : `${definicao.principal}33`,
     principalEscura: definicao.escuro,
+    // Versão da cor de destaque segura para TEXTO pequeno (contraste AA).
+    principalTexto: modo === 'claro' ? definicao.escuro : (corDestaque === 'azul' ? Paleta.azulClaro : definicao.claro),
     gradiente: definicao.gradiente,
 
     // Paleta do modo

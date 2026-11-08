@@ -21,7 +21,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
-import { Sombras } from '../../theme/colors';
+import { Colors, Sombras } from '../../theme/colors';
 
 import { Fonte } from '../../theme/fonts';
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
@@ -74,10 +74,10 @@ export const Button: React.FC<ButtonProps> = ({
 
   // Cores por variante
   const corTexto = (() => {
-    if (variant === 'primary' || variant === 'danger') return '#FFFFFF';
+    if (variant === 'primary' || variant === 'danger') return Colors.branco;
     if (variant === 'secondary') return cores.textoPrincipal;
     if (variant === 'outline' || variant === 'ghost') return cores.principal;
-    return '#FFFFFF';
+    return Colors.branco;
   })();
 
   const corFundo = (() => {

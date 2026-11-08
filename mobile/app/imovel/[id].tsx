@@ -8,12 +8,12 @@ import {
   Image,
   Dimensions,
   Animated,
-  StatusBar,
   Linking,
   FlatList,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import TopBar, { TopBarBotao } from '../../src/components/TopBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
@@ -38,16 +38,10 @@ export default function DetalheImovel() {
   if (!imovel) {
     return (
       <View style={styles.container}>
-        <Text>Imóvel não encontrado</Text>
+        <Text style={{ fontFamily: Fonte.corpoSemi }}>Imóvel não encontrado</Text>
       </View>
     );
   }
-
-  const headerOpacity = scrollY.interpolate({
-    inputRange: [0, 200, 300],
-    outputRange: [0, 0, 1],
-    extrapolate: 'clamp',
-  });
 
   const abrirWhatsApp = () => {
     const numero = imovel.anuncianteTelefone1.replace(/\D/g, '');
@@ -62,48 +56,20 @@ export default function DetalheImovel() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
-
-      {/* Header sticky que aparece ao scrollar */}
-      <Animated.View style={[styles.headerFixo, { opacity: headerOpacity }]}>
-        <BlurView intensity={95} tint="light" style={StyleSheet.absoluteFill} />
-        <SafeAreaView edges={['top']} style={styles.headerFixoContent}>
-          <TouchableOpacity style={styles.botaoHeader} onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={22} color={Colors.textoPrincipal} />
-          </TouchableOpacity>
-          <Text style={styles.headerFixoTitulo} numberOfLines={1}>
-            {imovel.titulo}
-          </Text>
-          <View style={{ width: 40 }} />
-        </SafeAreaView>
-      </Animated.View>
-
-      {/* Botões flutuantes no topo (voltar + favoritar/partilhar) */}
-      <SafeAreaView edges={['top']} style={styles.botoesFlutantes}>
-        <TouchableOpacity
-          style={styles.botaoFlutante}
-          onPress={() => router.back()}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="arrow-back" size={22} color={Colors.textoPrincipal} />
-        </TouchableOpacity>
-        <View style={{ flexDirection: 'row', gap: 8 }}>
-          <TouchableOpacity style={styles.botaoFlutante} activeOpacity={0.7}>
-            <Ionicons name="share-outline" size={22} color={Colors.textoPrincipal} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.botaoFlutante}
-            onPress={() => setFavoritado(!favoritado)}
-            activeOpacity={0.7}
-          >
-            <Ionicons
-              name={favoritado ? 'heart' : 'heart-outline'}
-              size={22}
-              color={favoritado ? Colors.erro : Colors.textoPrincipal}
+      <TopBar
+        titulo="Detalhes do imóvel"
+        onVoltar={() => router.back()}
+        acoes={
+          <>
+            <TopBarBotao icone="share-outline" rotulo="Partilhar" />
+            <TopBarBotao
+              icone={favoritado ? 'heart' : 'heart-outline'}
+              rotulo={favoritado ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+              onPress={() => setFavoritado(!favoritado)}
             />
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+          </>
+        }
+      />
 
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
@@ -163,8 +129,8 @@ export default function DetalheImovel() {
             </View>
             {imovel.anuncianteVerificado && (
               <View style={[styles.badge, styles.badgeVerificado]}>
-                <Ionicons name="checkmark-circle" size={12} color={Colors.verde} />
-                <Text style={[styles.badgeText, { color: Colors.verde }]}>VERIFICADO</Text>
+                <Ionicons name="checkmark-circle" size={12} color={Colors.verdeTexto} />
+                <Text style={[styles.badgeText, { color: Colors.verdeTexto }]}>VERIFICADO</Text>
               </View>
             )}
           </View>
@@ -288,7 +254,7 @@ export default function DetalheImovel() {
                     {foiDesbloqueado ? imovel.anuncianteNome : imovel.anuncianteNome.split(' ')[0]}
                   </Text>
                   {imovel.anuncianteVerificado && (
-                    <Ionicons name="checkmark-circle" size={16} color={Colors.verde} />
+                    <Ionicons name="checkmark-circle" size={16} color={Colors.verdeTexto} />
                   )}
                 </View>
                 <View style={styles.anuncianteRating}>
@@ -307,7 +273,7 @@ export default function DetalheImovel() {
             <Text style={styles.seccaoTitulo}>Localização</Text>
             <View style={styles.mapaPlaceholder}>
               <LinearGradient
-                colors={['rgba(33, 150, 243, 0.1)', 'rgba(76, 175, 80, 0.1)']}
+                colors={['rgba(26, 115, 232, 0.1)', 'rgba(52, 168, 83, 0.1)']}
                 style={StyleSheet.absoluteFill}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -336,7 +302,7 @@ export default function DetalheImovel() {
           {foiDesbloqueado && (
             <View style={styles.seccao}>
               <View style={styles.contactosHeader}>
-                <Ionicons name="checkmark-circle" size={20} color={Colors.verde} />
+                <Ionicons name="checkmark-circle" size={20} color={Colors.verdeTexto} />
                 <Text style={styles.contactosHeaderText}>Contactos desbloqueados</Text>
               </View>
 
@@ -466,56 +432,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.branco,
   },
-  headerFixo: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.bordaSubtil,
-  },
-  headerFixoContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.base,
-    paddingVertical: Spacing.sm,
-  },
-  headerFixoTitulo: {
-    ...Typography.h4,
-    color: Colors.textoPrincipal,
-    flex: 1,
-    textAlign: 'center',
-    paddingHorizontal: Spacing.md,
-  },
-  botaoHeader: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  botoesFlutantes: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 5,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.base,
-  },
-  botaoFlutante: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...Sombras.md,
-  },
-
   // Galeria
   galeriaContainer: {
     position: 'relative',
@@ -527,7 +443,7 @@ const styles = StyleSheet.create({
   },
   contadorFotos: {
     position: 'absolute',
-    top: Spacing.xxl + 40,
+    top: Spacing.md,
     right: Spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
@@ -584,12 +500,12 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   badgeVerificado: {
-    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    backgroundColor: 'rgba(52, 168, 83, 0.1)',
   },
   badgeText: {
     ...Typography.captionBold,
     color: Colors.branco,
-    fontSize: 10,
+    fontSize: 12,
     letterSpacing: 0.5,
   },
   titulo: {
@@ -620,12 +536,12 @@ const styles = StyleSheet.create({
   precoLabel: {
     ...Typography.caption,
     color: Colors.textoTerciario,
-    fontSize: 10,
+    fontSize: 12,
     letterSpacing: 0.5,
   },
   preco: {
     ...Typography.precoDisplay,
-    color: Colors.azul,
+    color: Colors.azulTexto,
     marginTop: 2,
   },
   tempoContainer: {
@@ -635,7 +551,7 @@ const styles = StyleSheet.create({
   tempoBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    backgroundColor: 'rgba(52, 168, 83, 0.1)',
     paddingHorizontal: Spacing.sm,
     paddingVertical: 4,
     borderRadius: Radius.sm,
@@ -645,11 +561,11 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: Colors.verde,
+    backgroundColor: Colors.verdeTexto,
   },
   tempoBadgeText: {
     ...Typography.caption,
-    color: Colors.verde,
+    color: Colors.verdeTexto,
     fontFamily: Fonte.corpoSemi,
   },
   visualizacoes: {
@@ -738,7 +654,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.full,
     gap: 6,
     borderWidth: 1,
-    borderColor: 'rgba(33, 150, 243, 0.2)',
+    borderColor: 'rgba(26, 115, 232, 0.2)',
   },
   comodidadeInativa: {
     borderColor: Colors.bordaSubtil,
@@ -752,7 +668,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 8,
-    backgroundColor: Colors.verde,
+    backgroundColor: Colors.verdeTexto,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -804,7 +720,7 @@ const styles = StyleSheet.create({
   },
   tempoResposta: {
     ...Typography.caption,
-    color: Colors.verde,
+    color: Colors.verdeTexto,
     fontFamily: Fonte.corpoSemi,
     marginTop: 2,
   },
@@ -864,11 +780,11 @@ const styles = StyleSheet.create({
     color: Colors.textoPrincipal,
   },
   contactosCard: {
-    backgroundColor: 'rgba(76, 175, 80, 0.08)',
+    backgroundColor: 'rgba(52, 168, 83, 0.08)',
     borderRadius: Radius.lg,
     padding: Spacing.md,
     borderWidth: 1,
-    borderColor: 'rgba(76, 175, 80, 0.2)',
+    borderColor: 'rgba(52, 168, 83, 0.2)',
   },
   contactoItem: {
     flexDirection: 'row',
@@ -900,13 +816,13 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: Colors.verde,
+    backgroundColor: Colors.verdeTexto,
     justifyContent: 'center',
     alignItems: 'center',
   },
   contactoDivider: {
     height: 1,
-    backgroundColor: 'rgba(76, 175, 80, 0.15)',
+    backgroundColor: 'rgba(52, 168, 83, 0.15)',
     marginVertical: Spacing.md,
   },
 
@@ -944,7 +860,7 @@ const styles = StyleSheet.create({
   footerBadgePromoText: {
     ...Typography.captionBold,
     color: Colors.branco,
-    fontSize: 9,
+    fontSize: 12,
   },
   footerPrecoAntigo: {
     ...Typography.caption,
@@ -959,7 +875,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: Radius.full,
     overflow: 'hidden',
-    ...Sombras.colorida('#0A6BC0'),
+    ...Sombras.colorida(Colors.azul),
   },
   footerBotaoGradient: {
     flexDirection: 'row',
@@ -995,7 +911,7 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: 'rgba(33, 150, 243, 0.1)',
+    backgroundColor: 'rgba(26, 115, 232, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },

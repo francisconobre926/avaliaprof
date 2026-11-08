@@ -4,10 +4,9 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  StatusBar,
   Dimensions,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import TopBar from '../src/components/TopBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -21,6 +20,7 @@ import { Spacing, Typography, Radius } from '../src/theme/typography';
 
 import { Fonte } from '../src/theme/fonts';
 import Icone from '../src/components/Icone';
+import { Colors } from '../src/theme/colors';
 const { width } = Dimensions.get('window');
 
 export default function AparenciaScreen() {
@@ -37,38 +37,7 @@ export default function AparenciaScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <StatusBar
-        barStyle={cores.ehEscuro ? 'light-content' : 'dark-content'}
-        backgroundColor={cores.fundoElevado}
-        translucent={false}
-      />
-
-      {/* Header */}
-      <SafeAreaView
-        edges={['top']}
-        style={[
-          styles.headerSafeArea,
-          { backgroundColor: cores.fundoElevado, borderBottomColor: cores.bordaSubtil },
-        ]}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => router.back()}
-            style={[styles.botaoVoltar, { backgroundColor: cores.fundoSuave }]}
-          >
-            <Ionicons name="arrow-back" size={22} color={cores.textoPrincipal} />
-          </TouchableOpacity>
-          <View style={styles.headerCenter}>
-            <Text style={[styles.headerTitulo, { color: cores.textoPrincipal }]}>
-              Aparência
-            </Text>
-            <Text style={[styles.headerSubtitulo, { color: cores.textoSecundario }]}>
-              Personaliza a tua app
-            </Text>
-          </View>
-          <View style={{ width: 40 }} />
-        </View>
-      </SafeAreaView>
+      <TopBar titulo="Aparência" onVoltar={() => router.back()} />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -94,7 +63,7 @@ export default function AparenciaScreen() {
             />
             <View style={styles.previewCardConteudo}>
               <View style={styles.previewCardBadge}>
-                <Ionicons name="sparkles" size={12} color="#FFFFFF" />
+                <Ionicons name="sparkles" size={12} color={Colors.branco} />
                 <Text style={styles.previewCardBadgeText}>DESTAQUE</Text>
               </View>
               <Text style={styles.previewCardTitulo}>GoHome</Text>
@@ -120,7 +89,7 @@ export default function AparenciaScreen() {
               ]}
               activeOpacity={0.85}
             >
-              <Text style={[styles.previewBotaoTextoSec, { color: cores.principal }]}>
+              <Text style={[styles.previewBotaoTextoSec, { color: cores.principalTexto }]}>
                 Secundário
               </Text>
             </TouchableOpacity>
@@ -144,14 +113,14 @@ export default function AparenciaScreen() {
               onPress={() => mudarModo('claro')}
               activeOpacity={0.85}
             >
-              <View style={[styles.modoPreview, { backgroundColor: '#F8F9FA' }]}>
-                <View style={[styles.modoPreviewCirculo, { backgroundColor: '#C9952F' }]} />
+              <View style={[styles.modoPreview, { backgroundColor: Colors.gelo }]}>
+                <View style={[styles.modoPreviewCirculo, { backgroundColor: Colors.azul }]} />
                 <View style={styles.modoPreviewLinhas}>
-                  <View style={[styles.modoPreviewLinha, { backgroundColor: '#1A1A2E' }]} />
+                  <View style={[styles.modoPreviewLinha, { backgroundColor: Colors.carvao }]} />
                   <View
                     style={[
                       styles.modoPreviewLinha,
-                      { backgroundColor: '#666680', width: '60%' },
+                      { backgroundColor: Colors.textoSecundario, width: '60%' },
                     ]}
                   />
                 </View>
@@ -165,7 +134,7 @@ export default function AparenciaScreen() {
                 </View>
                 {modo === 'claro' && (
                   <View style={[styles.modoCheck, { backgroundColor: cores.principal }]}>
-                    <Ionicons name="checkmark" size={12} color="#FFFFFF" />
+                    <Ionicons name="checkmark" size={12} color={Colors.branco} />
                   </View>
                 )}
               </View>
@@ -183,14 +152,14 @@ export default function AparenciaScreen() {
               onPress={() => mudarModo('escuro')}
               activeOpacity={0.85}
             >
-              <View style={[styles.modoPreview, { backgroundColor: '#0F0F14' }]}>
-                <View style={[styles.modoPreviewCirculo, { backgroundColor: '#7A7A8C' }]} />
+              <View style={[styles.modoPreview, { backgroundColor: Colors.carvao }]}>
+                <View style={[styles.modoPreviewCirculo, { backgroundColor: Colors.textoSecundario }]} />
                 <View style={styles.modoPreviewLinhas}>
-                  <View style={[styles.modoPreviewLinha, { backgroundColor: '#F5F5F7' }]} />
+                  <View style={[styles.modoPreviewLinha, { backgroundColor: Colors.fundoSuave }]} />
                   <View
                     style={[
                       styles.modoPreviewLinha,
-                      { backgroundColor: '#B0B0C0', width: '60%' },
+                      { backgroundColor: Colors.textoTerciario, width: '60%' },
                     ]}
                   />
                 </View>
@@ -204,7 +173,7 @@ export default function AparenciaScreen() {
                 </View>
                 {modo === 'escuro' && (
                   <View style={[styles.modoCheck, { backgroundColor: cores.principal }]}>
-                    <Ionicons name="checkmark" size={12} color="#FFFFFF" />
+                    <Ionicons name="checkmark" size={12} color={Colors.branco} />
                   </View>
                 )}
               </View>
@@ -246,7 +215,7 @@ export default function AparenciaScreen() {
                       end={{ x: 1, y: 1 }}
                     >
                       {seleccionada && (
-                        <Ionicons name="checkmark" size={22} color="#FFFFFF" />
+                        <Ionicons name="checkmark" size={22} color={Colors.branco} />
                       )}
                     </LinearGradient>
                   </View>
@@ -277,10 +246,10 @@ export default function AparenciaScreen() {
           ]}
         >
           <View style={[styles.infoIcone, { backgroundColor: cores.principal }]}>
-            <Ionicons name="information" size={16} color="#FFFFFF" />
+            <Ionicons name="information" size={16} color={Colors.branco} />
           </View>
           <View style={styles.infoConteudo}>
-            <Text style={[styles.infoTitulo, { color: cores.principal }]}>
+            <Text style={[styles.infoTitulo, { color: cores.principalTexto }]}>
               Aplicação em tempo real
             </Text>
             <Text style={[styles.infoTexto, { color: cores.textoPrincipal }]}>
@@ -309,24 +278,6 @@ export default function AparenciaScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  headerSafeArea: { borderBottomWidth: 1 },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.base,
-    paddingVertical: Spacing.sm,
-  },
-  botaoVoltar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerCenter: { alignItems: 'center' },
-  headerTitulo: { ...Typography.h3 },
-  headerSubtitulo: { ...Typography.caption, marginTop: 2 },
   scrollContent: { padding: Spacing.lg },
 
   // Preview
@@ -365,18 +316,18 @@ const styles = StyleSheet.create({
   },
   previewCardBadgeText: {
     ...Typography.captionBold,
-    color: '#FFFFFF',
-    fontSize: 10,
+    color: Colors.branco,
+    fontSize: 12,
     letterSpacing: 0.5,
   },
   previewCardTitulo: {
     ...Typography.displayMD,
-    color: '#FFFFFF',
+    color: Colors.branco,
     fontFamily: Fonte.tituloSemi,
   },
   previewCardSubtitulo: {
     ...Typography.body,
-    color: '#FFFFFF',
+    color: Colors.branco,
     opacity: 0.95,
     marginTop: 2,
   },
@@ -392,7 +343,7 @@ const styles = StyleSheet.create({
   },
   previewBotaoTexto: {
     ...Typography.button,
-    color: '#FFFFFF',
+    color: Colors.branco,
   },
   previewBotaoTextoSec: {
     ...Typography.button,
@@ -498,7 +449,7 @@ const styles = StyleSheet.create({
   },
   corBadgeTexto: {
     ...Typography.captionBold,
-    fontSize: 9,
+    fontSize: 12,
   },
 
   // Info card

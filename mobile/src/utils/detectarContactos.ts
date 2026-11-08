@@ -1,4 +1,5 @@
-/**
+
+import { Colors } from '../theme/colors';/**
  * Motor de detecção de contactos — Camada 1 (Regex)
  * DDR 1.2 — Protecção do modelo de negócio GoHome
  *
@@ -431,12 +432,12 @@ export function iconeTipoDeteccao(tipo: TipoDeteccao): string {
 
 export function corTipoDeteccao(tipo: TipoDeteccao): string {
   const cores: Record<TipoDeteccao, string> = {
-    telefone: '#D32F2F',
-    email: '#D32F2F',
-    url: '#F57C00',
-    rede_social: '#F57C00',
-    palavra_chave: '#FBC02D',
-    ofuscacao: '#D32F2F',
+    telefone: Colors.erro,
+    email: Colors.erro,
+    url: Colors.azul,
+    rede_social: Colors.azul,
+    palavra_chave: Colors.aviso,
+    ofuscacao: Colors.erro,
   };
   return cores[tipo];
 }

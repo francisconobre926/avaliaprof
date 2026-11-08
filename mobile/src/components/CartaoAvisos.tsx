@@ -24,6 +24,7 @@ import { useModeracaoStore } from '../store/moderacaoStore';
 
 import { Fonte } from '../theme/fonts';
 import Icone from './Icone';
+import { Colors } from '../theme/colors';
 interface Props {
   variante?: 'completo' | 'linha';
 }
@@ -62,14 +63,14 @@ export default function CartaoAvisos({ variante = 'completo' }: Props) {
     return (
       <TouchableOpacity style={styles.cardSuspensao} onPress={ir} activeOpacity={0.9}>
         <LinearGradient
-          colors={['#C2412D', '#9A0007']}
+          colors={[Colors.erro, Colors.erro]}
           style={StyleSheet.absoluteFill}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         />
         <View style={styles.cardSuspensaoConteudo}>
           <View style={styles.cardSuspensaoIcone}>
-            <Icone name="cancel" size={24} color="#FFFFFF" />
+            <Icone name="cancel" size={24} color={Colors.branco} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.cardSuspensaoTitulo}>Conta suspensa</Text>
@@ -79,7 +80,7 @@ export default function CartaoAvisos({ variante = 'completo' }: Props) {
                 : 'Toca para ver detalhes'}
             </Text>
           </View>
-          <Ionicons name="chevron-forward" size={20} color="#FFFFFF" />
+          <Ionicons name="chevron-forward" size={20} color={Colors.branco} />
         </View>
       </TouchableOpacity>
     );
@@ -90,7 +91,7 @@ export default function CartaoAvisos({ variante = 'completo' }: Props) {
     return (
       <TouchableOpacity style={styles.cardAnalise} onPress={ir} activeOpacity={0.9}>
         <View style={styles.cardAnaliseIcone}>
-          <Icone name="clock-outline" size={22} color="#E8760A" />
+          <Icone name="clock-outline" size={22} color={Colors.azul} />
         </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.cardAnaliseTitulo}>Contestação em análise</Text>
@@ -98,7 +99,7 @@ export default function CartaoAvisos({ variante = 'completo' }: Props) {
             Decisão em até 24h
           </Text>
         </View>
-        <Ionicons name="chevron-forward" size={20} color="#E8760A" />
+        <Ionicons name="chevron-forward" size={20} color={Colors.azul} />
       </TouchableOpacity>
     );
   }
@@ -108,7 +109,7 @@ export default function CartaoAvisos({ variante = 'completo' }: Props) {
     return (
       <TouchableOpacity style={styles.cardAvisos} onPress={ir} activeOpacity={0.9}>
         <View style={styles.cardAvisosIcone}>
-          <Icone name="shield-alert" size={22} color="#E8760A" />
+          <Icone name="shield-alert" size={22} color={Colors.azul} />
           <View style={styles.cardAvisosDot} />
         </View>
         <View style={{ flex: 1 }}>
@@ -132,7 +133,7 @@ export default function CartaoAvisos({ variante = 'completo' }: Props) {
   return (
     <TouchableOpacity style={styles.linhaMenu} onPress={ir} activeOpacity={0.7}>
       <View style={styles.linhaMenuIcone}>
-        <Icone name="shield-check-outline" size={22} color="#16202E" />
+        <Icone name="shield-check-outline" size={22} color={Colors.carvao} />
       </View>
       <View style={{ flex: 1 }}>
         <Text style={styles.linhaMenuLabel}>Avisos e denúncias</Text>
@@ -142,7 +143,7 @@ export default function CartaoAvisos({ variante = 'completo' }: Props) {
             : `${avisos.length} ${avisos.length === 1 ? 'aviso' : 'avisos'}`}
         </Text>
       </View>
-      <Ionicons name="chevron-forward" size={18} color="#9A9EA5" />
+      <Ionicons name="chevron-forward" size={18} color={Colors.textoTerciario} />
     </TouchableOpacity>
   );
 }
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardSuspensaoTitulo: {
-    color: '#FFFFFF',
+    color: Colors.branco,
     fontSize: 15,
     fontFamily: Fonte.corpoSemi,
     marginBottom: 2,
@@ -188,31 +189,31 @@ const styles = StyleSheet.create({
   cardAnalise: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FBF0E3',
+    backgroundColor: Colors.azulSuave,
     marginHorizontal: 16,
     marginVertical: 8,
     padding: 14,
     borderRadius: 14,
     gap: 12,
     borderLeftWidth: 4,
-    borderLeftColor: '#E8760A',
+    borderLeftColor: Colors.azul,
   },
   cardAnaliseIcone: {
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     justifyContent: 'center',
     alignItems: 'center',
   },
   cardAnaliseTitulo: {
-    color: '#E65100',
+    color: Colors.azulTexto,
     fontSize: 14,
     fontFamily: Fonte.corpoSemi,
     marginBottom: 2,
   },
   cardAnaliseTexto: {
-    color: '#8B5A2B',
+    color: Colors.azulTexto,
     fontFamily: Fonte.corpo, fontSize: 12,
   },
 
@@ -220,20 +221,20 @@ const styles = StyleSheet.create({
   cardAvisos: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF8F1',
+    backgroundColor: Colors.azulSuave,
     marginHorizontal: 16,
     marginVertical: 8,
     padding: 14,
     borderRadius: 14,
     gap: 12,
     borderWidth: 1.5,
-    borderColor: '#FFD2A8',
+    borderColor: Colors.azul,
   },
   cardAvisosIcone: {
     width: 44,
     height: 44,
     borderRadius: 13,
-    backgroundColor: '#FFE4CC',
+    backgroundColor: Colors.azulSuave,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
@@ -245,18 +246,18 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#E8760A',
+    backgroundColor: Colors.azul,
     borderWidth: 2,
-    borderColor: '#FFE4CC',
+    borderColor: Colors.azulSuave,
   },
   cardAvisosTitulo: {
-    color: '#16202E',
+    color: Colors.carvao,
     fontSize: 14,
     fontFamily: Fonte.corpoSemi,
     marginBottom: 2,
   },
   cardAvisosTexto: {
-    color: '#5B616B',
+    color: Colors.textoSecundario,
     fontFamily: Fonte.corpo, fontSize: 12,
   },
   cardAvisosBadge: {
@@ -264,12 +265,12 @@ const styles = StyleSheet.create({
     height: 28,
     paddingHorizontal: 8,
     borderRadius: 14,
-    backgroundColor: '#E8760A',
+    backgroundColor: Colors.azul,
     justifyContent: 'center',
     alignItems: 'center',
   },
   cardAvisosBadgeTexto: {
-    color: '#FFFFFF',
+    color: Colors.branco,
     fontSize: 13,
     fontFamily: Fonte.corpoSemi,
   },
@@ -278,7 +279,7 @@ const styles = StyleSheet.create({
   linhaMenu: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     marginHorizontal: 16,
     marginVertical: 4,
     paddingHorizontal: 14,
@@ -286,24 +287,24 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     gap: 12,
     borderWidth: 1,
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
   },
   linhaMenuIcone: {
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: '#F4F3EF',
+    backgroundColor: Colors.fundoSuave,
     justifyContent: 'center',
     alignItems: 'center',
   },
   linhaMenuLabel: {
-    color: '#16202E',
+    color: Colors.carvao,
     fontSize: 14,
     fontFamily: Fonte.corpoSemi,
     marginBottom: 2,
   },
   linhaMenuDescricao: {
-    color: '#5B616B',
-    fontFamily: Fonte.corpo, fontSize: 11,
+    color: Colors.textoSecundario,
+    fontFamily: Fonte.corpo, fontSize: 12,
   },
 });

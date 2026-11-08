@@ -4,10 +4,11 @@ import { Platform } from 'react-native';
 import { useCores } from '../../src/store/themeStore';
 
 import { Fonte } from '../../src/theme/fonts';
+import { Colors } from '../../src/theme/colors';
 // ============================================================
 // CORES GOHOME OFICIAIS
 // ============================================================
-const LARANJA_MARCA = '#E8760A';
+const COR_ACENTO = Colors.azul;
 
 export default function AnuncianteLayout() {
   const cores = useCores();
@@ -16,11 +17,11 @@ export default function AnuncianteLayout() {
     <Tabs
       screenOptions={{
         // Anunciante: cor activa é laranja GoHome (identidade do papel)
-        tabBarActiveTintColor: LARANJA_MARCA,
+        tabBarActiveTintColor: COR_ACENTO,
         tabBarInactiveTintColor: cores.textoTerciario,
         tabBarShowLabel: true,
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 12,
           fontFamily: Fonte.corpoSemi,
           marginTop: -2,
         },

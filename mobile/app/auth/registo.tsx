@@ -53,8 +53,8 @@ export default function RegistoScreen() {
   const progressoAnim = useRef(new Animated.Value(0)).current;
 
   const isAnunciante = papel === 'anunciante';
-  const corPrincipal = isAnunciante ? '#E8760A' : '#16202E';
-  const gradiente = isAnunciante ? ['#E8760A', '#E96500'] as const : ['#E8760A', '#E96500']  as const;
+  const corPrincipal = isAnunciante ? Colors.azul : Colors.carvao;
+  const gradiente = isAnunciante ? [Colors.azul, Colors.azul] as const : [Colors.azul, Colors.azul]  as const;
 
   const calcularProgresso = () => {
     let preenchidos = 0;
@@ -91,7 +91,7 @@ export default function RegistoScreen() {
     if (password.length === 0) return { forca: 0, cor: Colors.bordaMedia, texto: '' };
     if (password.length < 6) return { forca: 1, cor: Colors.erro, texto: 'Fraca' };
     if (password.length < 10) return { forca: 2, cor: Colors.aviso, texto: 'Média' };
-    return { forca: 3, cor: Colors.verde, texto: 'Forte' };
+    return { forca: 3, cor: Colors.verdeTexto, texto: 'Forte' };
   };
 
   const validarEmail = (emailStr: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailStr.trim().toLowerCase());
@@ -325,7 +325,7 @@ export default function RegistoScreen() {
                     onBlur={() => setCampoFocado(null)}
                   />
                   {confirmarPassword.length > 0 && password === confirmarPassword ? (
-                    <Ionicons name="checkmark-circle" size={20} color={Colors.verde} />
+                    <Ionicons name="checkmark-circle" size={20} color={Colors.verdeTexto} />
                   ) : (
                     <TouchableOpacity onPress={() => setMostrarConfirmar(!mostrarConfirmar)}>
                       <Ionicons name={mostrarConfirmar ? 'eye-off-outline' : 'eye-outline'} size={20} color={Colors.textoSecundario} />
@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
   forcaContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 6, paddingHorizontal: 4 },
   forcaBars: { flexDirection: 'row', gap: 4, flex: 1, marginRight: 12 },
   forcaBar: { flex: 1, height: 4, borderRadius: 2 },
-  forcaTexto: { ...Typography.captionBold, fontSize: 11 },
+  forcaTexto: { ...Typography.captionBold, fontSize: 12 },
   termosContainer: { flexDirection: 'row', alignItems: 'flex-start', gap: 12, marginTop: 24, marginBottom: 24 },
   checkbox: {
     width: 20,
@@ -622,9 +622,9 @@ const styles = StyleSheet.create({
 
 //   const isAnunciante = papel === 'anunciante';
 
-//   const corPrincipal = isAnunciante ? '#E8760A' : '#16202E';
+//   const corPrincipal = isAnunciante ? Colors.azul : Colors.carvao;
 
-//   const gradiente = isAnunciante ? ['#E8760A', '#E96500'] as const : ['#16202E', '#174A7E'] as const;
+//   const gradiente = isAnunciante ? [Colors.azul, Colors.azul] as const : [Colors.carvao, Colors.azulTexto] as const;
 
 //   // Calcular progresso baseado nos campos preenchidos
 
@@ -716,7 +716,7 @@ const styles = StyleSheet.create({
 
 //     if (password.length < 10) return { forca: 2, cor: Colors.aviso, texto: 'Média' };
 
-//     return { forca: 3, cor: Colors.verde, texto: 'Forte' };
+//     return { forca: 3, cor: Colors.verdeTexto, texto: 'Forte' };
 
 //   };
 
@@ -1361,7 +1361,7 @@ const styles = StyleSheet.create({
 
 //                   {confirmarPassword.length > 0 && password === confirmarPassword ? (
 
-//                     <Ionicons name="checkmark-circle" size={20} color={Colors.verde} />
+//                     <Ionicons name="checkmark-circle" size={20} color={Colors.verdeTexto} />
 
 //                   ) : (
 
@@ -1829,7 +1829,7 @@ const styles = StyleSheet.create({
 
 //     letterSpacing: 0.5,
 
-//     fontSize: 10,
+//     fontSize: 12,
 
 //   },
 
@@ -2221,7 +2221,7 @@ const styles = StyleSheet.create({
 
 //     ...Typography.captionBold,
 
-//     fontSize: 11,
+//     fontSize: 12,
 
 //   },
 

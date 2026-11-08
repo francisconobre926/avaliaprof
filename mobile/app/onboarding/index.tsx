@@ -23,19 +23,20 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { Fonte } from '../../src/theme/fonts';
 import Icone from '../../src/components/Icone';
+import { Colors } from '../../src/theme/colors';
 const C = {
-  background: '#F5F9FF',
-  backgroundLight: '#EAF2FA',
-  surface: '#FFFFFF',
-  blue: '#0A6BC0',
-  blueLight: '#19B5FF',
-  blueDeep: '#034B9B',
-  orange: '#FF6A00',
-  orangeLight: '#FFAB19',
-  white: '#F5F8FF',
-  muted: '#647D99',
-  border: '#E7E5DF',
-  green: '#45E5B0',
+  background: Colors.azulSuave,
+  backgroundLight: Colors.azulSuave,
+  surface: Colors.branco,
+  blue: Colors.azul,
+  blueLight: Colors.azul,
+  blueDeep: Colors.azulTexto,
+  orange: Colors.azul,
+  orangeLight: Colors.azul,
+  white: Colors.azulSuave,
+  muted: Colors.textoSecundario,
+  border: Colors.borda,
+  green: Colors.verdeTexto,
 };
 
 const CHAVE_ONBOARDING_CONCLUIDO = '@gohome_onboarding_concluido';
@@ -54,7 +55,7 @@ const slides: Slide[] = [
   {
     id: '1',
     icone: 'home-city-outline',
-    gradiente: ['#0A6BC0', '#034B9B'],
+    gradiente: [Colors.azul, Colors.azulTexto],
     titulo: 'Tudo num só lugar',
     descricao:
       'Descobre imóveis, veículos, alojamentos, espaços comerciais, produtos e serviços numa única plataforma.',
@@ -64,7 +65,7 @@ const slides: Slide[] = [
   {
     id: '2',
     icone: 'map-search-outline',
-    gradiente: ['#0A6BC0', '#0878E8'],
+    gradiente: [Colors.azul, Colors.azul],
     titulo: 'Encontra o que procuras',
     descricao:
       'Explora categorias, pesquisa por localização e compara opções para encontrares a solução ideal para ti.',
@@ -74,7 +75,7 @@ const slides: Slide[] = [
   {
     id: '3',
     icone: 'handshake-outline',
-    gradiente: ['#0A6BC0', '#FF6A00'],
+    gradiente: [Colors.azul, Colors.azul],
     titulo: 'Encontra. Conecta-te. Negocia.',
     descricao:
       'Entra em contacto com anunciantes, descobre oportunidades e publica os teus próprios anúncios no GoHome.',
@@ -148,7 +149,7 @@ export default function OnboardingScreen() {
         }
 
         if (onboardingConcluido === 'true') {
-          router.replace('/onboarding/escolha-papel' as any);
+          router.replace('/(procurador)' as any);
           return;
         }
       } catch (erro) {
@@ -215,7 +216,7 @@ export default function OnboardingScreen() {
       );
     }
 
-    router.replace('/onboarding/escolha-papel' as any);
+    router.replace('/(procurador)' as any);
   };
 
   const proximo = () => {
@@ -274,7 +275,7 @@ export default function OnboardingScreen() {
       {/* Fundo futurista */}
       <View pointerEvents="none" style={StyleSheet.absoluteFill}>
         <LinearGradient
-          colors={['#EAF2FA', '#F8FBFF', '#FFFFFF']}
+          colors={[Colors.azulSuave, Colors.azulSuave, Colors.branco]}
           locations={[0, 0.5, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -293,7 +294,7 @@ export default function OnboardingScreen() {
           ]}
         >
           <LinearGradient
-            colors={[C.blue, 'rgba(8,124,240,0)']}
+            colors={[C.blue, 'rgba(26, 115, 232,0)']}
             style={StyleSheet.absoluteFill}
           />
         </Animated.View>
@@ -310,7 +311,7 @@ export default function OnboardingScreen() {
           ]}
         >
           <LinearGradient
-            colors={[C.orange, 'rgba(255,106,0,0)']}
+            colors={[C.orange, 'rgba(26, 115, 232,0)']}
             style={StyleSheet.absoluteFill}
           />
         </Animated.View>
@@ -642,7 +643,7 @@ const styles = StyleSheet.create({
   logoCarregamentoContainer: {
     width: 190,
     height: 100,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
@@ -661,7 +662,7 @@ const styles = StyleSheet.create({
   },
   carregamentoTexto: {
     color: C.muted,
-    fontSize: 9,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: 2,
     marginTop: 15,
@@ -694,7 +695,7 @@ const styles = StyleSheet.create({
     left: -100,
     borderRadius: 120,
     borderWidth: 1,
-    borderColor: 'rgba(25,181,255,0.17)',
+    borderColor: 'rgba(26, 115, 232,0.17)',
   },
   orbitaInferior: {
     position: 'absolute',
@@ -704,7 +705,7 @@ const styles = StyleSheet.create({
     right: -155,
     borderRadius: 140,
     borderWidth: 1,
-    borderColor: 'rgba(255,106,0,0.14)',
+    borderColor: 'rgba(26, 115, 232,0.14)',
   },
   linhaDecorativa: {
     position: 'absolute',
@@ -712,7 +713,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 1,
-    backgroundColor: 'rgba(25,181,255,0.045)',
+    backgroundColor: 'rgba(26, 115, 232,0.045)',
   },
 
   // Header
@@ -729,7 +730,7 @@ const styles = StyleSheet.create({
     width: 130,
     height: 55,
     borderRadius: 10,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     paddingHorizontal: 7,
     paddingVertical: 4,
     alignItems: 'center',
@@ -748,7 +749,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     borderWidth: 1,
     borderColor: C.border,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
   },
   saltarText: {
     color: C.white,
@@ -776,25 +777,25 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     borderRadius: 999,
-    backgroundColor: 'rgba(8,124,240,0.055)',
+    backgroundColor: 'rgba(26, 115, 232,0.055)',
     borderWidth: 1,
-    borderColor: 'rgba(25,181,255,0.1)',
+    borderColor: 'rgba(26, 115, 232,0.1)',
   },
   circuloMedio: {
     position: 'absolute',
     width: '80%',
     height: '80%',
     borderRadius: 999,
-    backgroundColor: 'rgba(255,106,0,0.055)',
+    backgroundColor: 'rgba(26, 115, 232,0.055)',
     borderWidth: 1,
-    borderColor: 'rgba(255,106,0,0.12)',
+    borderColor: 'rgba(26, 115, 232,0.12)',
   },
   circuloPequeno: {
     position: 'absolute',
     width: '61%',
     height: '61%',
     borderRadius: 999,
-    backgroundColor: 'rgba(8,124,240,0.08)',
+    backgroundColor: 'rgba(26, 115, 232,0.08)',
   },
   anelExterno: {
     position: 'absolute',
@@ -802,7 +803,7 @@ const styles = StyleSheet.create({
     height: '91%',
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: 'rgba(25,181,255,0.22)',
+    borderColor: 'rgba(26, 115, 232,0.22)',
     borderStyle: 'dashed',
   },
   anelInterno: {
@@ -811,7 +812,7 @@ const styles = StyleSheet.create({
     height: '72%',
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: 'rgba(255,106,0,0.16)',
+    borderColor: 'rgba(26, 115, 232,0.16)',
   },
   circuloIcone: {
     width: '54%',
@@ -844,7 +845,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 13,
-    backgroundColor: '#F0F7FF',
+    backgroundColor: Colors.azulSuave,
     borderWidth: 1,
     borderColor: 'rgba(255,171,25,0.35)',
     alignItems: 'center',
@@ -857,9 +858,9 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 12,
-    backgroundColor: '#EAF2FA',
+    backgroundColor: Colors.azulSuave,
     borderWidth: 1,
-    borderColor: 'rgba(69,229,176,0.3)',
+    borderColor: 'rgba(52, 168, 83,0.3)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -886,8 +887,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 9,
     borderWidth: 1,
-    borderColor: 'rgba(25,181,255,0.23)',
-    backgroundColor: 'rgba(8,124,240,0.1)',
+    borderColor: 'rgba(26, 115, 232,0.23)',
+    backgroundColor: 'rgba(26, 115, 232,0.1)',
     marginBottom: 19,
   },
   destaqueBadgeDot: {
@@ -898,7 +899,7 @@ const styles = StyleSheet.create({
   },
   destaqueBadgeText: {
     color: C.blueLight,
-    fontSize: 9,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.5,
   },
@@ -911,22 +912,22 @@ const styles = StyleSheet.create({
   },
   numeroSlide: {
     color: C.orangeLight,
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: 2.5,
     marginBottom: 10,
   },
   titulo: {
-    color: '#1E2836',
-    fontSize: 30,
+    color: Colors.carvao,
+    fontSize: 28,
     lineHeight: 37,
     fontFamily: Fonte.tituloBold,
     textAlign: 'center',
-    letterSpacing: -0.9,
+    letterSpacing: -0.4,
     marginBottom: 14,
   },
   descricao: {
-    color: '#5B616B',
+    color: Colors.textoSecundario,
     fontFamily: Fonte.corpo, fontSize: 14,
     lineHeight: 23,
     textAlign: 'center',
@@ -946,18 +947,18 @@ const styles = StyleSheet.create({
     marginBottom: 13,
   },
   progressoLabel: {
-    color: '#647D99',
-    fontSize: 8,
+    color: Colors.textoSecundario,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.25,
   },
   progressoNumero: {
     color: C.blueLight,
-    fontSize: 11,
-    fontFamily: Fonte.corpoBold,
+    fontSize: 12,
+    fontFamily: Fonte.corpoSemi,
   },
   progressoTotal: {
-    color: '#8E939B',
+    color: Colors.textoTerciario,
     fontFamily: Fonte.corpoSemi,
   },
   dots: {
@@ -971,7 +972,7 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 4,
     overflow: 'hidden',
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
   },
   botaoContainer: {
     borderRadius: 17,
@@ -1018,11 +1019,11 @@ const styles = StyleSheet.create({
   assinaturaLinha: {
     width: 22,
     height: 1,
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
   },
   assinaturaTexto: {
-    color: '#8E939B',
-    fontSize: 8,
+    color: Colors.textoTerciario,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.8,
   },

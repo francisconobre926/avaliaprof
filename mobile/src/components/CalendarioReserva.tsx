@@ -112,7 +112,7 @@ export default function CalendarioReserva({ entrada, saida, ocupadas, onChange, 
                     styles.diaTexto,
                     { color: passado ? cores.bordaMedia : cores.textoPrincipal },
                     ocupado && { color: cores.textoTerciario, textDecorationLine: 'line-through' },
-                    noPeriodo && { color: cores.principal },
+                    noPeriodo && { color: cores.principalTexto },
                     extremo && { color: cores.fundoElevado },
                   ]}
                 >

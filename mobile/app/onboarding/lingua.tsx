@@ -23,17 +23,18 @@ import {
 } from '../../src/store/linguaStore';
 
 import { Fonte } from '../../src/theme/fonts';
+import { Colors } from '../../src/theme/colors';
 const C = {
-  background: '#F5F9FF',
-  blue: '#0A6BC0',
-  blueLight: '#19B5FF',
-  blueDeep: '#034B9B',
-  orange: '#FF6A00',
-  orangeLight: '#FFAB19',
-  white: '#F5F8FF',
-  muted: '#647D99',
-  border: '#E7E5DF',
-  success: '#45E5B0',
+  background: Colors.azulSuave,
+  blue: Colors.azul,
+  blueLight: Colors.azul,
+  blueDeep: Colors.azulTexto,
+  orange: Colors.azul,
+  orangeLight: Colors.azul,
+  white: Colors.azulSuave,
+  muted: Colors.textoSecundario,
+  border: Colors.borda,
+  success: Colors.verdeTexto,
 };
 
 const LANGUAGES: Lingua[] = ['pt', 'en'];
@@ -146,7 +147,7 @@ export default function EcraEscolhaLingua() {
       {/* Fundo tecnológico */}
       <View pointerEvents="none" style={StyleSheet.absoluteFill}>
         <LinearGradient
-          colors={['#EAF2FA', '#F8FBFF', '#FFFFFF']}
+          colors={[Colors.azulSuave, Colors.azulSuave, Colors.branco]}
           locations={[0, 0.48, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -165,7 +166,7 @@ export default function EcraEscolhaLingua() {
           ]}
         >
           <LinearGradient
-            colors={['#0A6BC0', 'rgba(8,124,240,0)']}
+            colors={[Colors.azul, 'rgba(26, 115, 232,0)']}
             style={styles.luzGradiente}
           />
         </Animated.View>
@@ -182,7 +183,7 @@ export default function EcraEscolhaLingua() {
           ]}
         >
           <LinearGradient
-            colors={['#FF6A00', 'rgba(255,106,0,0)']}
+            colors={[Colors.azul, 'rgba(26, 115, 232,0)']}
             style={styles.luzGradiente}
           />
         </Animated.View>
@@ -490,7 +491,7 @@ const styles = StyleSheet.create({
     left: -110,
     borderRadius: 125,
     borderWidth: 1,
-    borderColor: 'rgba(25,181,255,0.13)',
+    borderColor: 'rgba(26, 115, 232,0.13)',
   },
   orbitaInferior: {
     position: 'absolute',
@@ -500,7 +501,7 @@ const styles = StyleSheet.create({
     right: -160,
     borderRadius: 150,
     borderWidth: 1,
-    borderColor: 'rgba(255,106,0,0.12)',
+    borderColor: 'rgba(26, 115, 232,0.12)',
   },
 
   // Topo e logo
@@ -532,7 +533,7 @@ const styles = StyleSheet.create({
     backgroundColor: C.success,
   },
   statusTexto: {
-    fontSize: 9,
+    fontSize: 12,
     color: C.muted,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.6,
@@ -543,7 +544,7 @@ const styles = StyleSheet.create({
     backgroundColor: C.border,
   },
   statusVersao: {
-    fontSize: 10,
+    fontSize: 12,
     color: C.blueLight,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: 1,
@@ -561,29 +562,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: 'rgba(25,181,255,0.24)',
-    backgroundColor: 'rgba(8,124,240,0.09)',
+    borderColor: 'rgba(26, 115, 232,0.24)',
+    backgroundColor: 'rgba(26, 115, 232,0.09)',
     borderRadius: 8,
     marginBottom: 20,
   },
   etiquetaTexto: {
     color: C.blueLight,
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.8,
   },
   titulo: {
-    color: '#1E2836',
-    fontSize: 37,
+    color: Colors.carvao,
+    fontSize: 34,
     lineHeight: 44,
     fontFamily: Fonte.tituloSemi,
-    letterSpacing: -1.5,
+    letterSpacing: -0.4,
   },
   tituloDestaque: {
     color: C.orange,
   },
   subtitulo: {
-    color: '#5B616B',
+    color: Colors.textoSecundario,
     fontFamily: Fonte.corpo, fontSize: 14,
     lineHeight: 22,
     marginTop: 15,
@@ -606,14 +607,14 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   seccaoTitulo: {
-    color: '#5B616B',
-    fontSize: 10,
+    color: Colors.textoSecundario,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.6,
   },
   seccaoNota: {
-    color: '#8E939B',
-    fontSize: 9,
+    color: Colors.textoTerciario,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: 1,
   },
@@ -622,7 +623,7 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     borderWidth: 1,
     borderColor: C.border,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
@@ -637,8 +638,8 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   cartaoActivo: {
-    borderColor: 'rgba(25,181,255,0.75)',
-    backgroundColor: '#EAF2FA',
+    borderColor: 'rgba(26, 115, 232,0.75)',
+    backgroundColor: Colors.azulSuave,
   },
   linhaActiva: {
     position: 'absolute',
@@ -654,7 +655,7 @@ const styles = StyleSheet.create({
     height: 39,
     borderRadius: 7,
     overflow: 'hidden',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.18)',
     alignItems: 'center',
@@ -678,8 +679,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   idiomaNome: {
-    color: '#5B616B',
-    fontSize: 17,
+    color: Colors.textoSecundario,
+    fontSize: 18,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: -0.3,
   },
@@ -688,7 +689,7 @@ const styles = StyleSheet.create({
   },
   idiomaDescricao: {
     color: C.muted,
-    fontFamily: Fonte.corpo, fontSize: 11,
+    fontFamily: Fonte.corpo, fontSize: 12,
     marginTop: 5,
   },
   cartaoDireita: {
@@ -697,8 +698,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   indice: {
-    color: '#8E939B',
-    fontSize: 9,
+    color: Colors.textoTerciario,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: 1,
   },
@@ -710,7 +711,7 @@ const styles = StyleSheet.create({
     height: 23,
     borderRadius: 12,
     borderWidth: 1.5,
-    borderColor: '#B8CBE0',
+    borderColor: Colors.textoTerciario,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -741,7 +742,7 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
   botaoTexto: {
-    color: '#FFFFFF',
+    color: Colors.branco,
     fontSize: 16,
     fontFamily: Fonte.corpoBold,
     letterSpacing: 0.3,
@@ -762,8 +763,8 @@ const styles = StyleSheet.create({
     marginTop: 17,
   },
   notaTexto: {
-    color: '#5B616B',
-    fontFamily: Fonte.corpo, fontSize: 11,
+    color: Colors.textoSecundario,
+    fontFamily: Fonte.corpo, fontSize: 12,
     textAlign: 'center',
   },
   assinatura: {
@@ -776,11 +777,11 @@ const styles = StyleSheet.create({
   assinaturaLinha: {
     width: 20,
     height: 1,
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
   },
   assinaturaTexto: {
-    color: '#8E939B',
-    fontSize: 8,
+    color: Colors.textoTerciario,
+    fontSize: 12,
     fontFamily: Fonte.corpoSemi,
     letterSpacing: 1.4,
   },

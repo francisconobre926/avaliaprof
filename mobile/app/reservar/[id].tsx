@@ -13,11 +13,13 @@ import { ANUNCIOS_MOCK } from '../../src/data/anuncios-mock';
 import { obterAnuncioLocal } from '../../src/store/anunciosLocal';
 import { useUserStore } from '../../src/store/userStore';
 import { useReservasStore } from '../../src/store/reservasStore';
+import TopBar from '../../src/components/TopBar';
 import CalendarioReserva from '../../src/components/CalendarioReserva';
 import {
   MetodoPagamento, calcularPreco, datasOcupadasMock, formatarDataCurta, formatarMT,
   noitesEntre, operadoraDoNumero, telefoneValido, TAXA_SERVICO,
 } from '../../src/utils/reservas';
+import { Colors } from '../../src/theme/colors';
 
 export default function ReservarScreen() {
   const { id, entrada: entradaParam, saida: saidaParam, hospedes: hospedesParam } =
@@ -59,7 +61,7 @@ export default function ReservarScreen() {
       <View style={[s.centro, { backgroundColor: cores.fundo }]}>
         <Text style={{ color: cores.textoPrincipal, fontFamily: Fonte.corpoSemi }}>Anúncio não encontrado</Text>
         <TouchableOpacity onPress={() => router.back()} style={{ marginTop: 16 }}>
-          <Text style={{ color: cores.principal }}>Voltar</Text>
+          <Text style={{ color: cores.principalTexto, fontFamily: Fonte.corpoSemi }}>Voltar</Text>
         </TouchableOpacity>
       </View>
     );
@@ -86,13 +88,8 @@ export default function ReservarScreen() {
   };
 
   return (
-    <SafeAreaView edges={['top']} style={[s.flex, { backgroundColor: cores.fundoElevado }]}>
-      <View style={[s.topo, { borderBottomColor: cores.bordaSubtil }]}>
-        <TouchableOpacity onPress={() => router.back()} style={[s.voltar, { backgroundColor: cores.fundoSuave }]} accessibilityLabel="Voltar">
-          <Ionicons name="chevron-back" size={20} color={cores.textoPrincipal} />
-        </TouchableOpacity>
-        <Text style={[s.topoTitulo, { color: cores.textoPrincipal }]}>Escolher datas e reservar</Text>
-      </View>
+    <View style={[s.flex, { backgroundColor: cores.fundoElevado }]}>
+      <TopBar titulo="Escolher datas e reservar" onVoltar={() => router.back()} />
 
       <ScrollView style={{ backgroundColor: cores.fundo }} contentContainerStyle={{ padding: 16, paddingBottom: 24 }} keyboardShouldPersistTaps="handled">
         <View style={s.resumoAnuncio}>
@@ -102,7 +99,7 @@ export default function ReservarScreen() {
           <View style={{ flex: 1 }}>
             <Text style={[s.titulo, { color: cores.textoPrincipal }]} numberOfLines={2}>{anuncio.titulo}</Text>
             <Text style={{ color: cores.textoSecundario, fontFamily: Fonte.corpo, fontSize: 13 }} numberOfLines={1}>
-              {local}{anuncio.anuncianteRating ? ` · ★ ${Number(anuncio.anuncianteRating).toFixed(1)}` : ''}
+              {local}{anuncio.anuncianteRating ? <> · <Ionicons name="star" size={12} color={cores.textoSecundario} /> {Number(anuncio.anuncianteRating).toFixed(1)}</> : null}
             </Text>
             <Text style={{ color: cores.textoPrincipal, fontFamily: Fonte.corpoBold, fontSize: 14, marginTop: 2 }}>
               {formatarMT(Number(anuncio.preco || 0))} <Text style={{ fontFamily: Fonte.corpo, color: cores.textoSecundario }}>/{unidade}</Text>
@@ -196,11 +193,11 @@ export default function ReservarScreen() {
         <TouchableOpacity disabled={!podePagar} onPress={confirmar} activeOpacity={0.85}
           style={[s.botao, { backgroundColor: cores.principal, opacity: podePagar ? 1 : 0.45 }]}>
           {aPagar
-            ? <><ActivityIndicator color="#fff" /><Text style={s.botaoTexto}>A aguardar confirmação no telemóvel…</Text></>
+            ? <><ActivityIndicator color={Colors.branco} /><Text style={s.botaoTexto}>A aguardar confirmação no telemóvel…</Text></>
             : <Text style={s.botaoTexto}>{noites > 0 ? `Confirmar e pagar ${formatarMT(preco.total)}` : 'Escolha as datas'}</Text>}
         </TouchableOpacity>
       </SafeAreaView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -234,7 +231,7 @@ const s = StyleSheet.create({
   datas: { flexDirection: 'row', borderWidth: 1, borderRadius: 16, marginTop: 16 },
   dataBox: { flex: 1, padding: 14 },
   dataSep: { width: 1, marginVertical: 10 },
-  dataRotulo: { fontFamily: Fonte.corpoSemi, fontSize: 11, letterSpacing: 0.6 },
+  dataRotulo: { fontFamily: Fonte.corpoSemi, fontSize: 12, letterSpacing: 0.6 },
   dataValor: { fontFamily: Fonte.corpoBold, fontSize: 16, marginTop: 2 },
   linhaHospedes: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 14, marginTop: 8, borderTopWidth: 1, borderBottomWidth: 1 },
   rotulo: { fontFamily: Fonte.corpoBold, fontSize: 15 },
@@ -253,5 +250,5 @@ const s = StyleSheet.create({
   aviso: { flexDirection: 'row', gap: 8, marginTop: 14, alignItems: 'flex-start' },
   rodape: { paddingHorizontal: 16, paddingTop: 10, borderTopWidth: 1 },
   botao: { flexDirection: 'row', gap: 10, borderRadius: 999, paddingVertical: 16, alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
-  botaoTexto: { color: '#fff', fontFamily: Fonte.corpoBold, fontSize: 16 },
+  botaoTexto: { color: Colors.branco, fontFamily: Fonte.corpoBold, fontSize: 16 },
 });

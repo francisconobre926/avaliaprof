@@ -18,6 +18,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import {
+  ScrollView,
   View,
   Text,
   StyleSheet,
@@ -50,10 +51,10 @@ import Icone from '../../src/components/Icone';
 // ============================================================
 // CORES GOHOME OFICIAIS
 // ============================================================
-const AZUL_HERO_INICIO = '#0A6BC0';   // Azul GoHome — o mesmo da "Promoção lançamento"
-const AZUL_HERO_FIM = '#095FAA';
-const LARANJA_MARCA = '#E8760A';
-const LARANJA_ESCURO = '#B95A05';
+const AZUL_HERO_INICIO = Colors.azul;   // Azul GoHome — o mesmo da "Promoção lançamento"
+const AZUL_HERO_FIM = Colors.azulTexto;
+const COR_ACENTO = Colors.azul;
+const COR_ACENTO_ESCURO = Colors.azulTexto;
 
 // ============================================================
 // DETECTOR REGEX ANTI-FRAUDE
@@ -135,7 +136,7 @@ const mensagensIniciaisMock: Record<string, Mensagem[]> = {
   '4': [
     { id: 'm1', texto: 'Bom dia, o quarto ainda está disponível?', autor: 'eu', hora: new Date(Date.now() - 86400000 * 3), tipo: 'texto', lida: true },
     { id: 'm2', texto: 'Sim! Podes visitar amanhã às 10h?', autor: 'outro', hora: new Date(Date.now() - 86400000 * 3 + 3600000), tipo: 'texto', lida: true },
-    { id: 'm3', texto: 'Perfeito, aguardo a tua visita amanhã às 10h ✓✓', autor: 'outro', hora: new Date(Date.now() - 86400000 * 2), tipo: 'texto', lida: true },
+    { id: 'm3', texto: 'Perfeito, aguardo a tua visita amanhã às 10h', autor: 'outro', hora: new Date(Date.now() - 86400000 * 2), tipo: 'texto', lida: true },
   ],
 };
 
@@ -156,10 +157,18 @@ export default function ChatScreen() {
   const router = useRouter();
   const cores = useCores();
   const insets = useSafeAreaInsets();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, anuncioId: anuncioIdParam, anunciante } = useLocalSearchParams<{ id: string; anuncioId?: string; titulo?: string; anunciante?: string }>();
 
-  const conversa = conversasMock[id || '1'] || conversasMock['1'];
-  const anuncio = ANUNCIOS_MOCK.find(a => a.id === conversa.anuncioId);
+  // Vindo de um anúncio ("Contactar"), o id da conversa é o do anúncio.
+  const conversaBase = conversasMock[id || '1'];
+  const conversa = conversaBase || {
+    nome: String(anunciante || conversasMock['1'].nome),
+    online: true,
+    verificado: false,
+    anuncioId: String(anuncioIdParam || id || ''),
+  };
+  const anuncio = ANUNCIOS_MOCK.find(a => a.id === String(anuncioIdParam || conversa.anuncioId));
+  const iniciaisConversa = conversa.nome.trim().split(/\s+/).slice(0, 2).map(p => p[0]).join('').toUpperCase();
 
   const [mensagens, setMensagens] = useState<Mensagem[]>(
     mensagensIniciaisMock[id || '1'] || []
@@ -349,7 +358,7 @@ export default function ChatScreen() {
               <Image source={{ uri: item.urlFoto }} style={styles.mensagemFoto} />
               <View style={styles.mensagemFotoInfo}>
                 <Text style={styles.mensagemHora}>{formatarHora(item.hora)}</Text>
-                {isMinha && <Ionicons name="checkmark-done" size={14} color={item.lida ? '#4FC3F7' : 'rgba(255,255,255,0.8)'} />}
+                {isMinha && <Ionicons name="checkmark-done" size={14} color={item.lida ? Colors.azulClaro : 'rgba(255,255,255,0.8)'} />}
               </View>
             </TouchableOpacity>
           ) : (
@@ -370,17 +379,10 @@ export default function ChatScreen() {
 
               <View style={[
                 styles.bolhaMensagem,
-                isMinha ? styles.bolhaMinha : [styles.bolhaOutro, { backgroundColor: cores.fundoElevado }],
+                isMinha ? [styles.bolhaMinha, { backgroundColor: cores.principal }] : [styles.bolhaOutro, { backgroundColor: cores.fundoElevado, borderWidth: 1, borderColor: cores.bordaSubtil }],
                 item.suspeita && !isMinha && { borderWidth: 1.5, borderColor: Colors.erro },
               ]}>
-                {isMinha ? (
-                  <LinearGradient
-                    colors={[AZUL_HERO_INICIO, AZUL_HERO_FIM]}
-                    style={StyleSheet.absoluteFill}
-                    start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-                  />
-                ) : null}
-                <Text style={[styles.mensagemTexto, { color: isMinha ? '#FFFFFF' : cores.textoPrincipal }]}>
+                <Text style={[styles.mensagemTexto, { color: isMinha ? Colors.branco : cores.textoPrincipal }]}>
                   {item.texto}
                 </Text>
                 <View style={styles.mensagemMeta}>
@@ -388,7 +390,7 @@ export default function ChatScreen() {
                     {formatarHora(item.hora)}
                   </Text>
                   {isMinha && (
-                    <Ionicons name="checkmark-done" size={14} color={item.lida ? '#4FC3F7' : 'rgba(255,255,255,0.7)'} />
+                    <Ionicons name="checkmark-done" size={14} color={item.lida ? Colors.azulClaro : 'rgba(255,255,255,0.7)'} />
                   )}
                 </View>
               </View>
@@ -428,13 +430,9 @@ export default function ChatScreen() {
 
             <TouchableOpacity style={styles.headerInfo} activeOpacity={0.7}>
               <View style={styles.headerAvatarContainer}>
-                <LinearGradient
-                  colors={[AZUL_HERO_INICIO, AZUL_HERO_FIM]}
-                  style={styles.headerAvatar}
-                  start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-                >
-                  <Text style={styles.headerAvatarLetra}>{conversa.nome.charAt(0)}</Text>
-                </LinearGradient>
+                <View style={[styles.headerAvatar, { backgroundColor: cores.principalClara }]}>
+                  <Text style={[styles.headerAvatarLetra, { color: cores.principalTexto }]}>{iniciaisConversa}</Text>
+                </View>
                 {conversa.online && <View style={styles.headerOnlineDot} />}
               </View>
               <View style={styles.headerTextos}>
@@ -444,24 +442,17 @@ export default function ChatScreen() {
                   </Text>
                   {conversa.verificado && (
                     <View style={[styles.verificadoBadge, { backgroundColor: cores.principal }]}>
-                      <Ionicons name="checkmark" size={9} color="#FFFFFF" />
+                      <Ionicons name="checkmark" size={9} color={Colors.branco} />
                     </View>
                   )}
                 </View>
-                <Text style={[styles.headerStatus, { color: cores.textoSecundario }]}>
-                  {conversa.online ? 'online' : 'há 5 min'}
+                <Text style={[styles.headerStatus, { color: conversa.online ? cores.sucesso : cores.textoSecundario }]}>
+                  {conversa.online ? '● Online · responde em ~1 h' : 'visto há 5 min'}
                 </Text>
               </View>
             </TouchableOpacity>
 
             <View style={styles.headerAcoes}>
-              <TouchableOpacity
-                style={[styles.headerAcaoBotao, { backgroundColor: cores.fundoSuave }]}
-                activeOpacity={0.7}
-                onPress={() => Alert.alert('Chamada', 'Funcionalidade em breve')}
-              >
-                <Ionicons name="call" size={18} color={cores.principal} />
-              </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.headerAcaoBotao, { backgroundColor: cores.fundoSuave }]}
                 onPress={() => setModalOpcoesVisivel(true)}
@@ -487,25 +478,21 @@ export default function ChatScreen() {
                 </View>
               )}
               <View style={styles.anuncioInfo}>
-                <View style={styles.anuncioBadge}>
-                  <Icone name="home" size={10} color={cores.principal} />
-                  <Text style={[styles.anuncioBadgeText, { color: cores.principal }]}>
-                    ANÚNCIO EM CONVERSA
-                  </Text>
-                </View>
                 <Text style={[styles.anuncioTitulo, { color: cores.textoPrincipal }]} numberOfLines={1}>
                   {anuncio.titulo}
                 </Text>
-                <Text style={[styles.anuncioPreco, { color: LARANJA_MARCA }]}>
+                <Text style={[styles.anuncioPreco, { color: cores.textoSecundario }]} numberOfLines={1}>
                   {formatarPrecoCompleto(anuncio)}
                 </Text>
               </View>
-              <Ionicons name="chevron-forward" size={20} color={cores.textoTerciario} />
+              <View style={[styles.estadoPilula, { backgroundColor: cores.aviso + '24' }]}>
+                <Text style={[styles.estadoPilulaTexto, { color: cores.aviso }]}>Pendente</Text>
+              </View>
             </TouchableOpacity>
           )}
 
           {/* Aviso de segurança */}
-          <View style={[styles.avisoSeguranca, { backgroundColor: 'rgba(10, 107, 192, 0.08)', borderColor: 'rgba(10, 107, 192, 0.2)' }]}>
+          <View style={[styles.avisoSeguranca, { backgroundColor: 'rgba(26, 115, 232, 0.08)', borderColor: 'rgba(26, 115, 232, 0.2)' }]}>
             <Ionicons name="shield-checkmark" size={14} color={cores.principal} />
             <Text style={[styles.avisoSegurancaTexto, { color: cores.textoSecundario }]}>
               Mantém a conversa aqui. <Text style={{ fontFamily: Fonte.corpoSemi, color: cores.textoPrincipal }}>Nunca pagues antes de visitar.</Text>
@@ -542,6 +529,39 @@ export default function ChatScreen() {
           }
         />
 
+        {/* AÇÕES RÁPIDAS */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          style={{ flexGrow: 0, backgroundColor: cores.fundoElevado }}
+          contentContainerStyle={styles.acoesRapidas}
+        >
+          {anuncio && anuncio.finalidade !== 'vender' && (
+            <TouchableOpacity
+              style={[styles.acaoRapida, { borderColor: cores.principal }]}
+              onPress={() => router.push({ pathname: '/reservar/[id]' as any, params: { id: anuncio.id } })}
+              accessibilityRole="button"
+            >
+              <Text style={[styles.acaoRapidaTexto, { color: cores.principalTexto, fontFamily: Fonte.corpoBold }]}>Pedir reserva</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            style={[styles.acaoRapida, { borderColor: cores.bordaMedia }]}
+            onPress={() => setTexto('Olá! Gostaria de agendar uma visita. Que dias tem disponíveis?')}
+            accessibilityRole="button"
+          >
+            <Text style={[styles.acaoRapidaTexto, { color: cores.textoPrincipal }]}>Agendar visita</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.acaoRapida, { borderColor: cores.bordaMedia }]}
+            onPress={() => setTexto('Qual é o preço mensal?')}
+            accessibilityRole="button"
+          >
+            <Text style={[styles.acaoRapidaTexto, { color: cores.textoPrincipal }]}>Preço mensal?</Text>
+          </TouchableOpacity>
+        </ScrollView>
+
         {/* BARRA DE INPUT — fica colada ao bottom, sobe com o teclado */}
         <View
           style={[
@@ -555,11 +575,11 @@ export default function ChatScreen() {
         >
           <View style={styles.inputContainer}>
             <TouchableOpacity
-              style={[styles.inputBotaoAnexo, { backgroundColor: 'rgba(232, 118, 10, 0.12)' }]}
+              style={[styles.inputBotaoAnexo, { backgroundColor: cores.fundoSuave }]}
               onPress={() => setModalAnexoVisivel(true)}
               activeOpacity={0.7}
             >
-              <Ionicons name="add" size={24} color={LARANJA_MARCA} />
+              <Ionicons name="add" size={24} color={cores.textoPrincipal} />
             </TouchableOpacity>
 
             <View style={[styles.inputCampo, { backgroundColor: cores.fundoSuave, borderColor: cores.bordaSubtil }]}>
@@ -590,16 +610,11 @@ export default function ChatScreen() {
 
             {texto.trim() ? (
               <TouchableOpacity
-                style={styles.inputBotaoEnviar}
+                style={[styles.inputBotaoEnviar, { backgroundColor: cores.principal }]}
                 onPress={enviarMensagem}
                 activeOpacity={0.85}
               >
-                <LinearGradient
-                  colors={[AZUL_HERO_INICIO, AZUL_HERO_FIM]}
-                  style={StyleSheet.absoluteFill}
-                  start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
-                />
-                <Ionicons name="send" size={18} color="#FFFFFF" />
+                <Ionicons name="send" size={18} color={Colors.branco} />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -607,7 +622,7 @@ export default function ChatScreen() {
                 activeOpacity={0.7}
                 onPress={() => Alert.alert('Áudio', 'Funcionalidade em breve')}
               >
-                <Ionicons name="mic" size={20} color="#FFFFFF" />
+                <Ionicons name="mic" size={20} color={Colors.branco} />
               </TouchableOpacity>
             )}
           </View>
@@ -637,7 +652,7 @@ export default function ChatScreen() {
             <Text style={[styles.modalTitulo, { color: cores.textoPrincipal }]}>Enviar anexo</Text>
 
             <TouchableOpacity style={[styles.modalOpcao, { backgroundColor: cores.fundoSuave }]} onPress={tirarFoto} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(10, 107, 192, 0.15)' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(26, 115, 232, 0.15)' }]}>
                 <Ionicons name="camera" size={22} color={cores.principal} />
               </View>
               <View style={styles.modalOpcaoInfo}>
@@ -648,8 +663,8 @@ export default function ChatScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity style={[styles.modalOpcao, { backgroundColor: cores.fundoSuave }]} onPress={escolherGaleria} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(76, 175, 80, 0.15)' }]}>
-                <Ionicons name="images" size={22} color={Colors.verde} />
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(52, 168, 83, 0.15)' }]}>
+                <Ionicons name="images" size={22} color={Colors.verdeTexto} />
               </View>
               <View style={styles.modalOpcaoInfo}>
                 <Text style={[styles.modalOpcaoTitulo, { color: cores.textoPrincipal }]}>Galeria</Text>
@@ -663,8 +678,8 @@ export default function ChatScreen() {
               onPress={() => { setModalAnexoVisivel(false); Alert.alert('Localização', 'Funcionalidade em breve'); }}
               activeOpacity={0.7}
             >
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(232, 118, 10, 0.15)' }]}>
-                <Ionicons name="location" size={22} color={LARANJA_MARCA} />
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(26, 115, 232, 0.15)' }]}>
+                <Ionicons name="location" size={22} color={COR_ACENTO} />
               </View>
               <View style={styles.modalOpcaoInfo}>
                 <Text style={[styles.modalOpcaoTitulo, { color: cores.textoPrincipal }]}>Localização</Text>
@@ -688,15 +703,15 @@ export default function ChatScreen() {
             <Text style={[styles.modalTitulo, { color: cores.textoPrincipal }]}>Opções</Text>
 
             <TouchableOpacity style={[styles.modalOpcao, { backgroundColor: cores.fundoSuave }]} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(10, 107, 192, 0.15)' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(26, 115, 232, 0.15)' }]}>
                 <Ionicons name="person" size={22} color={cores.principal} />
               </View>
               <Text style={[styles.modalOpcaoTitulo, { color: cores.textoPrincipal }]}>Ver perfil</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={[styles.modalOpcao, { backgroundColor: cores.fundoSuave }]} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(232, 118, 10, 0.15)' }]}>
-                <Ionicons name="notifications-off" size={22} color={LARANJA_MARCA} />
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(26, 115, 232, 0.15)' }]}>
+                <Ionicons name="notifications-off" size={22} color={COR_ACENTO} />
               </View>
               <Text style={[styles.modalOpcaoTitulo, { color: cores.textoPrincipal }]}>Silenciar notificações</Text>
             </TouchableOpacity>
@@ -716,14 +731,14 @@ export default function ChatScreen() {
                 reportarMensagem();
               }}
             >
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(244, 67, 54, 0.15)' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(179, 38, 30, 0.15)' }]}>
                 <Ionicons name="flag" size={22} color={Colors.erro} />
               </View>
               <Text style={[styles.modalOpcaoTitulo, { color: Colors.erro }]}>Denunciar</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={[styles.modalOpcao, { backgroundColor: cores.fundoSuave }]} activeOpacity={0.7}>
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(244, 67, 54, 0.15)' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: 'rgba(179, 38, 30, 0.15)' }]}>
                 <Ionicons name="trash" size={22} color={Colors.erro} />
               </View>
               <Text style={[styles.modalOpcaoTitulo, { color: Colors.erro }]}>Apagar conversa</Text>
@@ -743,6 +758,11 @@ export default function ChatScreen() {
 // STYLES
 // ============================================================
 const styles = StyleSheet.create({
+  acoesRapidas: { gap: 10, paddingHorizontal: 16, paddingVertical: 10 },
+  acaoRapida: { paddingHorizontal: 18, height: 42, borderRadius: 999, borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
+  acaoRapidaTexto: { fontFamily: Fonte.corpoMedio, fontSize: 15 },
+  estadoPilula: { paddingHorizontal: 12, paddingVertical: 5, borderRadius: 999 },
+  estadoPilulaTexto: { fontFamily: Fonte.corpoSemi, fontSize: 13 },
   container: { flex: 1 },
   safeAreaTop: {
     borderBottomWidth: 1,
@@ -757,11 +777,11 @@ const styles = StyleSheet.create({
   headerInfo: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   headerAvatarContainer: { position: 'relative' },
   headerAvatar: { width: 42, height: 42, borderRadius: 21, justifyContent: 'center', alignItems: 'center' },
-  headerAvatarLetra: { ...Typography.h3, color: '#FFFFFF', fontFamily: Fonte.corpoSemi },
+  headerAvatarLetra: { ...Typography.h3, color: Colors.branco, fontFamily: Fonte.corpoSemi },
   headerOnlineDot: {
     position: 'absolute', bottom: 0, right: 0,
     width: 12, height: 12, borderRadius: 6,
-    backgroundColor: Colors.verde, borderWidth: 2, borderColor: '#FFFFFF',
+    backgroundColor: Colors.verde, borderWidth: 2, borderColor: Colors.branco,
   },
   headerTextos: { flex: 1 },
   headerNomeContainer: { flexDirection: 'row', alignItems: 'center', gap: 4 },
@@ -776,12 +796,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center',
     marginHorizontal: Spacing.md, marginBottom: Spacing.sm,
     padding: Spacing.sm, borderRadius: Radius.md, gap: Spacing.sm,
-    borderLeftWidth: 3, borderLeftColor: LARANJA_MARCA,
+    borderLeftWidth: 3, borderLeftColor: COR_ACENTO,
   },
   anuncioFoto: { width: 48, height: 48, borderRadius: Radius.sm },
   anuncioInfo: { flex: 1 },
   anuncioBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, marginBottom: 2 },
-  anuncioBadgeText: { ...Typography.captionBold, fontSize: 9, letterSpacing: 0.5 },
+  anuncioBadgeText: { ...Typography.captionBold, fontSize: 12, letterSpacing: 0.5 },
   anuncioTitulo: { ...Typography.bodyBold, fontSize: 13 },
   anuncioPreco: { ...Typography.captionBold, fontSize: 12, marginTop: 2 },
 
@@ -792,7 +812,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8, paddingHorizontal: 12,
     borderRadius: 10, borderWidth: 1,
   },
-  avisoSegurancaTexto: { flex: 1, fontFamily: Fonte.corpo, fontSize: 11, lineHeight: 15 },
+  avisoSegurancaTexto: { flex: 1, fontFamily: Fonte.corpo, fontSize: 12, lineHeight: 15 },
 
   mensagensLista: { padding: Spacing.md, paddingBottom: Spacing.lg },
 
@@ -802,7 +822,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md, paddingVertical: 4,
     borderRadius: Radius.full, borderWidth: 1,
   },
-  separadorTexto: { ...Typography.captionBold, fontSize: 11, letterSpacing: 0.5 },
+  separadorTexto: { ...Typography.captionBold, fontSize: 12, letterSpacing: 0.5 },
 
   mensagemContainer: { marginBottom: Spacing.xs, maxWidth: '82%' },
   mensagemMinha: { alignSelf: 'flex-end' },
@@ -812,22 +832,22 @@ const styles = StyleSheet.create({
   bolhaOutro: { borderBottomLeftRadius: 4, ...Sombras.sm },
   mensagemTexto: { ...Typography.body, lineHeight: 20 },
   mensagemMeta: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 4, marginTop: 2 },
-  mensagemHora: { fontSize: 10, fontFamily: Fonte.corpoMedio },
+  mensagemHora: { fontSize: 12, fontFamily: Fonte.corpoMedio },
 
   alertaSuspeita: {
-    backgroundColor: 'rgba(244, 67, 54, 0.08)',
-    borderWidth: 1, borderColor: 'rgba(244, 67, 54, 0.3)',
+    backgroundColor: 'rgba(179, 38, 30, 0.08)',
+    borderWidth: 1, borderColor: 'rgba(179, 38, 30, 0.3)',
     borderRadius: 12, padding: 10, marginBottom: 6, maxWidth: 300,
   },
   alertaSuspeitaHeader: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 3 },
-  alertaSuspeitaTitulo: { color: Colors.erro, fontSize: 11, fontFamily: Fonte.corpoSemi },
-  alertaSuspeitaDesc: { color: '#8B1A1A', fontFamily: Fonte.corpo, fontSize: 11, lineHeight: 15, marginBottom: 6 },
+  alertaSuspeitaTitulo: { color: Colors.erro, fontSize: 12, fontFamily: Fonte.corpoSemi },
+  alertaSuspeitaDesc: { color: Colors.erroEscuro, fontFamily: Fonte.corpo, fontSize: 12, lineHeight: 15, marginBottom: 6 },
   alertaSuspeitaBotao: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
     paddingHorizontal: 10, paddingVertical: 5, borderRadius: 100,
-    backgroundColor: 'rgba(244, 67, 54, 0.15)', alignSelf: 'flex-start',
+    backgroundColor: 'rgba(179, 38, 30, 0.15)', alignSelf: 'flex-start',
   },
-  alertaSuspeitaBotaoTexto: { color: Colors.erro, fontSize: 10, fontFamily: Fonte.corpoSemi },
+  alertaSuspeitaBotaoTexto: { color: Colors.erro, fontSize: 12, fontFamily: Fonte.corpoSemi },
 
   mensagemFoto: { width: 220, height: 220, borderRadius: 16, borderBottomRightRadius: 4 },
   mensagemFotoInfo: {
@@ -881,7 +901,7 @@ const styles = StyleSheet.create({
   inputBotaoMic: {
     width: 44, height: 44, borderRadius: 22,
     justifyContent: 'center', alignItems: 'center',
-    ...Sombras.colorida('#0A6BC0'),
+    ...Sombras.colorida(Colors.azul),
   },
 
   // Modal

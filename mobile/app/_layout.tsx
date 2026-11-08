@@ -54,13 +54,13 @@ export default function RootLayout() {
         <Stack.Screen name="index" />
         <Stack.Screen name="onboarding/lingua" />
         <Stack.Screen name="onboarding/index" />
-        <Stack.Screen name="onboarding/escolha-papel" />
         <Stack.Screen name="auth" />
         <Stack.Screen name="(procurador)" />
         <Stack.Screen name="(anunciante)" />
         <Stack.Screen name="anuncio/[id]" />
         <Stack.Screen name="imovel/[id]" />
         <Stack.Screen name="reservar/[id]" />
+        <Stack.Screen name="mapa" />
         <Stack.Screen name="pagamento" />
         <Stack.Screen name="chat/[id]" />
         <Stack.Screen name="editar-perfil" />

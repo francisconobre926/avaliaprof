@@ -20,14 +20,13 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  StatusBar,
   Animated,
   Easing,
   BackHandler,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import TopBar from '../src/components/TopBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -36,21 +35,22 @@ import { useUserStore } from '../src/store/userStore';
 
 import { Fonte } from '../src/theme/fonts';
 import Icone from '../src/components/Icone';
+import { Colors } from '../src/theme/colors';
 // ============================================================
 // CORES GOHOME OFICIAIS
 // ============================================================
-const AZUL_HERO_INICIO = '#0A6BC0';   // Azul GoHome — o mesmo da "Promoção lançamento"
-const AZUL_HERO_FIM = '#095FAA';
-const AZUL_MARCA = '#0A6BC0';
-const AZUL_PALE = 'rgba(10, 107, 192, 0.08)';
-const AZUL_PALE_BORDA = 'rgba(10, 107, 192, 0.2)';
-const LARANJA_MARCA = '#E8760A';
-const LARANJA_ESCURO = '#B95A05';
-const LARANJA_PALE = 'rgba(232, 118, 10, 0.1)';
-const LARANJA_PALE_BORDA = 'rgba(232, 118, 10, 0.25)';
-const VERDE_SUCESSO = '#2F7A4F';
-const VERMELHO_ERRO = '#C2412D';
-const AMARELO_AVISO = '#E8760A';
+const AZUL_HERO_INICIO = Colors.azul;   // Azul GoHome — o mesmo da "Promoção lançamento"
+const AZUL_HERO_FIM = Colors.azulTexto;
+const AZUL_MARCA = Colors.azul;
+const AZUL_PALE = 'rgba(26, 115, 232, 0.08)';
+const AZUL_PALE_BORDA = 'rgba(26, 115, 232, 0.2)';
+const COR_ACENTO = Colors.azul;
+const COR_ACENTO_ESCURO = Colors.azulTexto;
+const LARANJA_PALE = 'rgba(26, 115, 232, 0.1)';
+const LARANJA_PALE_BORDA = 'rgba(26, 115, 232, 0.25)';
+const VERDE_SUCESSO = Colors.verdeTexto;
+const VERMELHO_ERRO = Colors.erro;
+const AMARELO_AVISO = Colors.azul;
 
 type EstadoPagamento =
   | 'formulario'
@@ -217,33 +217,22 @@ export default function PagamentoPublicacao() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={AZUL_HERO_INICIO} />
+      <TopBar
+        titulo="Pagar publicação"
+        onVoltar={() => {
+          if (estado === 'formulario' || estado === 'sucesso') router.back();
+          else setModalCancelarVisivel(true);
+        }}
+        acoes={<></>}
+      />
 
       {/* HEADER */}
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
-        <LinearGradient
-          colors={[AZUL_HERO_INICIO, AZUL_HERO_FIM]}
-          style={styles.header}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <View style={styles.headerTop}>
-            <TouchableOpacity
-              style={styles.headerBotao}
-              onPress={() => {
-                if (estado === 'formulario' || estado === 'sucesso') router.back();
-                else setModalCancelarVisivel(true);
-              }}
-            >
-              <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
-            </TouchableOpacity>
-            <View style={styles.headerCenter}>
-              <Text style={styles.headerLabel}>PUBLICAR ANÚNCIO</Text>
-              <Text style={styles.headerTitulo}>M-Pesa</Text>
-            </View>
-            <View style={styles.headerBotao} />
-          </View>
-
+      <LinearGradient
+        colors={[AZUL_HERO_INICIO, AZUL_HERO_FIM]}
+        style={styles.header}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
           {/* Montante */}
           <View style={styles.montanteContainer}>
             <Text style={styles.montanteLabel}>Taxa de publicação</Text>
@@ -252,14 +241,13 @@ export default function PagamentoPublicacao() {
               <Text style={styles.montanteMoeda}>MT</Text>
             </View>
             <View style={styles.descontoBadge}>
-              <Icone name="tag" size={12} color="#FFFFFF" />
+              <Icone name="tag" size={12} color={Colors.branco} />
               <Text style={styles.descontoBadgeTexto}>
                 {`50% OFF — Antes ${valorNormal} MT`}
               </Text>
             </View>
           </View>
-        </LinearGradient>
-      </SafeAreaView>
+      </LinearGradient>
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -283,12 +271,12 @@ export default function PagamentoPublicacao() {
                 <Text style={styles.resumoAnuncioTitulo} numberOfLines={2}>{titulo}</Text>
                 <View style={styles.resumoMetaLinha}>
                   <View style={styles.resumoMetaItem}>
-                    <Icone name="shape" size={14} color="#5B616B" />
+                    <Icone name="shape" size={14} color={Colors.textoSecundario} />
                     <Text style={styles.resumoMetaTexto}>{categoria}</Text>
                   </View>
                   <View style={styles.resumoMetaDivisor} />
                   <View style={styles.resumoMetaItem}>
-                    <Ionicons name="location" size={14} color="#5B616B" />
+                    <Ionicons name="location" size={14} color={Colors.textoSecundario} />
                     <Text style={styles.resumoMetaTexto}>{zona}</Text>
                   </View>
                 </View>
@@ -307,7 +295,7 @@ export default function PagamentoPublicacao() {
                 </View>
                 <View style={styles.resumoLinhaInfo}>
                   <Text style={styles.resumoLabel}>Taxa total</Text>
-                  <Text style={[styles.resumoValor, { color: LARANJA_MARCA, fontFamily: Fonte.corpoBold }]}>
+                  <Text style={[styles.resumoValor, { color: COR_ACENTO, fontFamily: Fonte.corpoBold }]}>
                     {`${valorPago} MT`}
                   </Text>
                 </View>
@@ -323,7 +311,7 @@ export default function PagamentoPublicacao() {
                   <TextInput
                     style={styles.inputCampo}
                     placeholder="841234567"
-                    placeholderTextColor="#9A9EA5"
+                    placeholderTextColor={Colors.textoTerciario}
                     keyboardType="numeric"
                     maxLength={9}
                     value={numeroMPesa}
@@ -368,12 +356,12 @@ export default function PagamentoPublicacao() {
                 activeOpacity={0.85}
               >
                 <LinearGradient
-                  colors={[LARANJA_MARCA, LARANJA_ESCURO]}
+                  colors={[COR_ACENTO, COR_ACENTO_ESCURO]}
                   style={StyleSheet.absoluteFill}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                 />
-                <Icone name="credit-card-check" size={22} color="#FFFFFF" />
+                <Icone name="credit-card-check" size={22} color={Colors.branco} />
                 <Text style={styles.botaoPagarTexto}>
                   {`Pagar ${valorPago} MT via M-Pesa`}
                 </Text>
@@ -393,7 +381,7 @@ export default function PagamentoPublicacao() {
             <View style={styles.conteudoProcessando}>
               <Animated.View style={[styles.loadingCirculo, { transform: [{ scale: pulseValue }] }]}>
                 <Animated.View style={[styles.loadingSpinner, { transform: [{ rotate: spin }] }]}>
-                  <Icone name="loading" size={48} color={LARANJA_MARCA} />
+                  <Icone name="loading" size={48} color={COR_ACENTO} />
                 </Animated.View>
               </Animated.View>
 
@@ -404,13 +392,13 @@ export default function PagamentoPublicacao() {
 
               <View style={styles.processandoStep}>
                 <View style={styles.processandoStepIcone}>
-                  <Ionicons name="checkmark" size={14} color="#FFFFFF" />
+                  <Ionicons name="checkmark" size={14} color={Colors.branco} />
                 </View>
                 <Text style={styles.processandoStepTexto}>Validação do número</Text>
               </View>
               <View style={styles.processandoStep}>
                 <Animated.View style={[styles.processandoStepIconeLoading, { transform: [{ rotate: spin }] }]}>
-                  <Icone name="loading" size={14} color="#FFFFFF" />
+                  <Icone name="loading" size={14} color={Colors.branco} />
                 </Animated.View>
                 <Text style={styles.processandoStepTexto}>A enviar pedido ao M-Pesa...</Text>
               </View>
@@ -427,7 +415,7 @@ export default function PagamentoPublicacao() {
           {estado === 'aguardando_pin' && (
             <View style={styles.conteudoProcessando}>
               <Animated.View style={[styles.loadingCirculo, { transform: [{ scale: pulseValue }] }]}>
-                <Icone name="cellphone-key" size={48} color={LARANJA_MARCA} />
+                <Icone name="cellphone-key" size={48} color={COR_ACENTO} />
               </Animated.View>
 
               <Text style={styles.processandoTitulo}>Verifica o teu telefone</Text>
@@ -437,8 +425,8 @@ export default function PagamentoPublicacao() {
               </Text>
 
               <View style={[styles.timerBox, tempoCritico && styles.timerBoxCritico]}>
-                <Ionicons name="time" size={18} color={tempoCritico ? VERMELHO_ERRO : LARANJA_MARCA} />
-                <Text style={[styles.timerTexto, { color: tempoCritico ? VERMELHO_ERRO : LARANJA_MARCA }]}>
+                <Ionicons name="time" size={18} color={tempoCritico ? VERMELHO_ERRO : COR_ACENTO} />
+                <Text style={[styles.timerTexto, { color: tempoCritico ? VERMELHO_ERRO : COR_ACENTO }]}>
                   {`Tempo restante: ${formatarTempo(tempoRestante)}`}
                 </Text>
               </View>
@@ -462,20 +450,20 @@ export default function PagamentoPublicacao() {
               {/* Botões DEMO */}
               <View style={styles.demoContainer}>
                 <View style={styles.demoHeader}>
-                  <Icone name="flask-outline" size={16} color="#5B616B" />
+                  <Icone name="flask-outline" size={16} color={Colors.textoSecundario} />
                   <Text style={styles.demoLabel}>MODO TESTE (simular resposta)</Text>
                 </View>
                 <View style={styles.demoBotoes}>
                   <TouchableOpacity style={[styles.demoBotao, { backgroundColor: VERDE_SUCESSO }]} onPress={simularSucesso}>
-                    <Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
+                    <Ionicons name="checkmark-circle" size={16} color={Colors.branco} />
                     <Text style={styles.demoBotaoTexto}>Sucesso</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.demoBotao, { backgroundColor: VERMELHO_ERRO }]} onPress={simularFalha}>
-                    <Ionicons name="close-circle" size={16} color="#FFFFFF" />
+                    <Ionicons name="close-circle" size={16} color={Colors.branco} />
                     <Text style={styles.demoBotaoTexto}>Falha</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.demoBotao, { backgroundColor: AMARELO_AVISO }]} onPress={simularTimeout}>
-                    <Ionicons name="time" size={16} color="#FFFFFF" />
+                    <Ionicons name="time" size={16} color={Colors.branco} />
                     <Text style={styles.demoBotaoTexto}>Timeout</Text>
                   </TouchableOpacity>
                 </View>
@@ -494,7 +482,7 @@ export default function PagamentoPublicacao() {
           {estado === 'sucesso' && (
             <View style={styles.conteudoProcessando}>
               <View style={styles.sucessoCirculo}>
-                <Ionicons name="checkmark" size={60} color="#FFFFFF" />
+                <Ionicons name="checkmark" size={60} color={Colors.branco} />
               </View>
               <Text style={styles.sucessoTitulo}>Pagamento confirmado!</Text>
               <Text style={styles.processandoSubtitulo}>A redireccionar...</Text>
@@ -505,7 +493,7 @@ export default function PagamentoPublicacao() {
           {estado === 'falha' && (
             <View style={styles.conteudoProcessando}>
               <View style={styles.erroCirculo}>
-                <Ionicons name="close" size={60} color="#FFFFFF" />
+                <Ionicons name="close" size={60} color={Colors.branco} />
               </View>
               <Text style={styles.erroTitulo}>Pagamento recusado</Text>
               <Text style={styles.processandoSubtitulo}>
@@ -516,15 +504,15 @@ export default function PagamentoPublicacao() {
                 <Text style={styles.motivosTitulo}>Possíveis causas:</Text>
                 {['Saldo M-Pesa insuficiente', 'PIN introduzido incorrecto', 'Limite diário atingido'].map((motivo, i) => (
                   <View key={i} style={styles.motivoItem}>
-                    <Ionicons name="ellipse" size={6} color="#5B616B" />
+                    <Ionicons name="ellipse" size={6} color={Colors.textoSecundario} />
                     <Text style={styles.motivoTexto}>{motivo}</Text>
                   </View>
                 ))}
               </View>
 
               <TouchableOpacity style={styles.botaoPagar} onPress={tentarNovamente} activeOpacity={0.85}>
-                <LinearGradient colors={[LARANJA_MARCA, LARANJA_ESCURO]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
-                <Icone name="refresh" size={20} color="#FFFFFF" />
+                <LinearGradient colors={[COR_ACENTO, COR_ACENTO_ESCURO]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
+                <Icone name="refresh" size={20} color={Colors.branco} />
                 <Text style={styles.botaoPagarTexto}>Tentar novamente</Text>
               </TouchableOpacity>
 
@@ -538,7 +526,7 @@ export default function PagamentoPublicacao() {
           {estado === 'timeout' && (
             <View style={styles.conteudoProcessando}>
               <View style={styles.timeoutCirculo}>
-                <Ionicons name="time" size={60} color="#FFFFFF" />
+                <Ionicons name="time" size={60} color={Colors.branco} />
               </View>
               <Text style={styles.timeoutTitulo}>Tempo esgotado</Text>
               <Text style={styles.processandoSubtitulo}>
@@ -547,8 +535,8 @@ export default function PagamentoPublicacao() {
               </Text>
 
               <TouchableOpacity style={styles.botaoPagar} onPress={tentarNovamente} activeOpacity={0.85}>
-                <LinearGradient colors={[LARANJA_MARCA, LARANJA_ESCURO]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
-                <Icone name="refresh" size={20} color="#FFFFFF" />
+                <LinearGradient colors={[COR_ACENTO, COR_ACENTO_ESCURO]} style={StyleSheet.absoluteFill} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} />
+                <Icone name="refresh" size={20} color={Colors.branco} />
                 <Text style={styles.botaoPagarTexto}>Tentar novamente</Text>
               </TouchableOpacity>
 
@@ -604,39 +592,29 @@ function PassoInfo({ numero, texto }: { numero: string; texto: string }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F2F6FB' },
-  safeArea: { backgroundColor: AZUL_HERO_INICIO },
+  container: { flex: 1, backgroundColor: Colors.azulSuave },
 
-  header: { paddingHorizontal: Spacing.lg, paddingBottom: Spacing.xl },
-  headerTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: Spacing.md },
-  headerBotao: {
-    width: 40, height: 40, borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    justifyContent: 'center', alignItems: 'center',
-  },
-  headerCenter: { alignItems: 'center' },
-  headerLabel: { color: 'rgba(255,255,255,0.75)', fontSize: 10, letterSpacing: 1.5, fontFamily: Fonte.corpoSemi, marginBottom: 2 },
-  headerTitulo: { color: '#FFFFFF', fontSize: 18, fontFamily: Fonte.corpoSemi },
+  header: { paddingHorizontal: Spacing.lg, paddingTop: Spacing.sm, paddingBottom: Spacing.xl },
 
   montanteContainer: { alignItems: 'center', paddingVertical: Spacing.lg },
   montanteLabel: { color: 'rgba(255,255,255,0.85)', fontFamily: Fonte.corpo, fontSize: 13, marginBottom: 8 },
   montanteLinha: { flexDirection: 'row', alignItems: 'baseline', gap: 8, marginBottom: 12 },
-  montanteValor: { color: '#FFFFFF', fontSize: 56, fontFamily: Fonte.tituloBold, lineHeight: 60 },
-  montanteMoeda: { color: '#FFFFFF', fontSize: 24, fontFamily: Fonte.tituloSemi },
+  montanteValor: { color: Colors.branco, fontSize: 56, fontFamily: Fonte.tituloBold, lineHeight: 60 },
+  montanteMoeda: { color: Colors.branco, fontSize: 24, fontFamily: Fonte.tituloSemi },
   descontoBadge: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: LARANJA_MARCA,
+    backgroundColor: COR_ACENTO,
     paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, gap: 5,
   },
-  descontoBadgeTexto: { color: '#FFFFFF', fontSize: 11, fontFamily: Fonte.corpoSemi, letterSpacing: 0.3 },
+  descontoBadgeTexto: { color: Colors.branco, fontSize: 12, fontFamily: Fonte.corpoSemi, letterSpacing: 0.3 },
 
   scrollContent: { paddingBottom: Spacing.xxxl },
 
   conteudoFormulario: { padding: Spacing.lg, gap: Spacing.md },
 
   resumoCard: {
-    backgroundColor: '#FFFFFF', borderRadius: 18, padding: 16,
-    borderWidth: 1, borderColor: '#E7E5DF',
+    backgroundColor: Colors.branco, borderRadius: 18, padding: 16,
+    borderWidth: 1, borderColor: Colors.borda,
   },
   resumoHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
   resumoTitulo: {
@@ -646,22 +624,22 @@ const styles = StyleSheet.create({
   resumoAnuncioTitulo: { ...Typography.h4, color: AZUL_HERO_INICIO, marginBottom: 6, fontFamily: Fonte.corpoSemi },
   resumoMetaLinha: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 },
   resumoMetaItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  resumoMetaTexto: { ...Typography.caption, color: '#5B616B' },
-  resumoMetaDivisor: { width: 1, height: 12, backgroundColor: '#E7E5DF' },
-  resumoDivisor: { height: 1, backgroundColor: '#E7E5DF', marginVertical: 8 },
+  resumoMetaTexto: { ...Typography.caption, color: Colors.textoSecundario },
+  resumoMetaDivisor: { width: 1, height: 12, backgroundColor: Colors.borda },
+  resumoDivisor: { height: 1, backgroundColor: Colors.borda, marginVertical: 8 },
   resumoLinhaInfo: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     paddingVertical: 7,
   },
-  resumoLabel: { ...Typography.caption, color: '#5B616B', fontSize: 13 },
+  resumoLabel: { ...Typography.caption, color: Colors.textoSecundario, fontSize: 13 },
   resumoValor: {
     ...Typography.bodyBold, color: AZUL_HERO_INICIO,
     fontSize: 14, textTransform: 'capitalize',
   },
 
   inputCard: {
-    backgroundColor: '#FFFFFF', borderRadius: 18, padding: 16,
-    borderWidth: 1, borderColor: '#E7E5DF',
+    backgroundColor: Colors.branco, borderRadius: 18, padding: 16,
+    borderWidth: 1, borderColor: Colors.borda,
   },
   inputLabel: {
     ...Typography.bodyBold, color: AZUL_HERO_INICIO,
@@ -669,14 +647,14 @@ const styles = StyleSheet.create({
   },
   inputWrapper: {
     flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#F7F6F2', borderRadius: 14,
-    borderWidth: 1.5, borderColor: '#E7E5DF', overflow: 'hidden',
+    backgroundColor: Colors.fundoSuave, borderRadius: 14,
+    borderWidth: 1.5, borderColor: Colors.borda, overflow: 'hidden',
   },
-  inputWrapperErro: { borderColor: VERMELHO_ERRO, backgroundColor: '#FFF5F5' },
+  inputWrapperErro: { borderColor: VERMELHO_ERRO, backgroundColor: Colors.erroFundo },
   inputPrefixo: {
     paddingHorizontal: 14, paddingVertical: 14,
     backgroundColor: AZUL_PALE,
-    borderRightWidth: 1, borderRightColor: '#E7E5DF',
+    borderRightWidth: 1, borderRightColor: Colors.borda,
   },
   inputPrefixoTexto: {
     ...Typography.bodyBold, color: AZUL_HERO_INICIO,
@@ -688,12 +666,12 @@ const styles = StyleSheet.create({
   },
   inputCheck: {
     width: 28, height: 28, borderRadius: 14,
-    backgroundColor: '#EAF3EC',
+    backgroundColor: Colors.verdeSuave,
     justifyContent: 'center', alignItems: 'center', marginRight: 12,
   },
   inputErro: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 8 },
   inputErroTexto: { ...Typography.caption, color: VERMELHO_ERRO, fontFamily: Fonte.corpoSemi },
-  inputDica: { ...Typography.caption, color: '#5B616B', marginTop: 8, fontSize: 11 },
+  inputDica: { ...Typography.caption, color: Colors.textoSecundario, marginTop: 8, fontSize: 12 },
 
   comoFuncionaBox: {
     backgroundColor: AZUL_PALE,
@@ -707,22 +685,22 @@ const styles = StyleSheet.create({
     backgroundColor: AZUL_HERO_INICIO,
     justifyContent: 'center', alignItems: 'center',
   },
-  passoInfoNumeroTexto: { color: '#FFFFFF', fontSize: 11, fontFamily: Fonte.corpoSemi },
-  passoInfoTexto: { ...Typography.caption, color: '#1E2836', flex: 1 },
+  passoInfoNumeroTexto: { color: Colors.branco, fontSize: 12, fontFamily: Fonte.corpoSemi },
+  passoInfoTexto: { ...Typography.caption, color: Colors.carvao, flex: 1 },
 
   botaoPagar: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     paddingVertical: 16, borderRadius: 16, overflow: 'hidden', gap: 10,
-    shadowColor: LARANJA_MARCA, shadowOpacity: 0.3, shadowRadius: 10, elevation: 5,
+    shadowColor: COR_ACENTO, shadowOpacity: 0.3, shadowRadius: 10, elevation: 5,
     marginTop: 4,
   },
-  botaoPagarTexto: { color: '#FFFFFF', fontSize: 16, fontFamily: Fonte.corpoSemi },
+  botaoPagarTexto: { color: Colors.branco, fontSize: 16, fontFamily: Fonte.corpoSemi },
 
   seguroInfo: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     gap: 6, marginTop: 8, paddingVertical: 8,
   },
-  seguroInfoTexto: { ...Typography.caption, color: VERDE_SUCESSO, fontSize: 11, fontFamily: Fonte.corpoSemi },
+  seguroInfoTexto: { ...Typography.caption, color: VERDE_SUCESSO, fontSize: 12, fontFamily: Fonte.corpoSemi },
 
   conteudoProcessando: { padding: Spacing.lg, alignItems: 'center', paddingTop: 40 },
   loadingCirculo: {
@@ -737,15 +715,15 @@ const styles = StyleSheet.create({
     textAlign: 'center', marginBottom: 8, fontFamily: Fonte.tituloSemi,
   },
   processandoSubtitulo: {
-    ...Typography.body, color: '#5B616B',
+    ...Typography.body, color: Colors.textoSecundario,
     textAlign: 'center', marginBottom: 24, lineHeight: 20,
   },
   processandoStep: {
     flexDirection: 'row', alignItems: 'center',
     gap: 12, paddingVertical: 10, paddingHorizontal: 16,
-    backgroundColor: '#FFFFFF', borderRadius: 12,
+    backgroundColor: Colors.branco, borderRadius: 12,
     marginBottom: 8, width: '100%',
-    borderWidth: 1, borderColor: '#E7E5DF',
+    borderWidth: 1, borderColor: Colors.borda,
   },
   processandoStepIcone: {
     width: 22, height: 22, borderRadius: 11,
@@ -754,16 +732,16 @@ const styles = StyleSheet.create({
   },
   processandoStepIconeLoading: {
     width: 22, height: 22, borderRadius: 11,
-    backgroundColor: LARANJA_MARCA,
+    backgroundColor: COR_ACENTO,
     justifyContent: 'center', alignItems: 'center',
   },
   processandoStepIconePendente: {
     width: 22, height: 22, borderRadius: 11,
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
     justifyContent: 'center', alignItems: 'center',
   },
-  processandoStepIconeTexto: { color: '#5B616B', fontSize: 11, fontFamily: Fonte.corpoSemi },
-  processandoStepTexto: { ...Typography.body, color: '#1E2836', fontSize: 14 },
+  processandoStepIconeTexto: { color: Colors.textoSecundario, fontSize: 12, fontFamily: Fonte.corpoSemi },
+  processandoStepTexto: { ...Typography.body, color: Colors.carvao, fontSize: 14 },
 
   timerBox: {
     flexDirection: 'row', alignItems: 'center',
@@ -772,14 +750,14 @@ const styles = StyleSheet.create({
     marginBottom: 20, borderWidth: 1.5, borderColor: LARANJA_PALE_BORDA,
   },
   timerBoxCritico: {
-    backgroundColor: '#FBECE9',
-    borderColor: '#F2C9C1',
+    backgroundColor: Colors.erroFundo,
+    borderColor: Colors.erroBorda,
   },
   timerTexto: { fontSize: 15, fontFamily: Fonte.tituloSemi, fontVariant: ['tabular-nums'] },
 
   instrucoesBox: {
-    backgroundColor: '#FFFFFF', borderRadius: 16, padding: 16,
-    borderWidth: 1, borderColor: '#E7E5DF',
+    backgroundColor: Colors.branco, borderRadius: 16, padding: 16,
+    borderWidth: 1, borderColor: Colors.borda,
     marginBottom: 16, width: '100%',
   },
   instrucoesTitulo: {
@@ -789,29 +767,29 @@ const styles = StyleSheet.create({
   instrucaoItem: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 6 },
   instrucaoNumero: {
     width: 24, height: 24, borderRadius: 12,
-    backgroundColor: LARANJA_MARCA,
+    backgroundColor: COR_ACENTO,
     justifyContent: 'center', alignItems: 'center',
   },
-  instrucaoNumeroTexto: { color: '#FFFFFF', fontSize: 12, fontFamily: Fonte.corpoSemi },
-  instrucaoTexto: { ...Typography.body, color: '#1E2836', flex: 1, fontSize: 13 },
+  instrucaoNumeroTexto: { color: Colors.branco, fontSize: 12, fontFamily: Fonte.corpoSemi },
+  instrucaoTexto: { ...Typography.body, color: Colors.carvao, flex: 1, fontSize: 13 },
 
   demoContainer: {
     width: '100%', marginTop: 10, marginBottom: 10, padding: 14,
-    backgroundColor: '#F4F3EF', borderRadius: 14,
-    borderWidth: 1, borderColor: '#E7E5DF', borderStyle: 'dashed',
+    backgroundColor: Colors.fundoSuave, borderRadius: 14,
+    borderWidth: 1, borderColor: Colors.borda, borderStyle: 'dashed',
   },
   demoHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 },
-  demoLabel: { ...Typography.caption, color: '#5B616B', fontSize: 10, fontFamily: Fonte.corpoSemi, letterSpacing: 0.8 },
+  demoLabel: { ...Typography.caption, color: Colors.textoSecundario, fontSize: 12, fontFamily: Fonte.corpoSemi, letterSpacing: 0.8 },
   demoBotoes: { flexDirection: 'row', gap: 8 },
   demoBotao: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     paddingVertical: 9, borderRadius: 10, gap: 5,
   },
-  demoBotaoTexto: { color: '#FFFFFF', fontSize: 12, fontFamily: Fonte.corpoSemi },
+  demoBotaoTexto: { color: Colors.branco, fontSize: 12, fontFamily: Fonte.corpoSemi },
 
   cancelarBotao: { paddingVertical: 12, marginTop: 6 },
   cancelarBotaoTexto: {
-    color: '#5B616B', fontSize: 14, fontFamily: Fonte.corpoSemi,
+    color: Colors.textoSecundario, fontSize: 14, fontFamily: Fonte.corpoSemi,
     textAlign: 'center', textDecorationLine: 'underline',
   },
 
@@ -840,16 +818,16 @@ const styles = StyleSheet.create({
   },
 
   motivosBox: {
-    backgroundColor: '#FFFFFF', borderRadius: 14, padding: 14,
-    borderWidth: 1, borderColor: '#F2C9C1',
+    backgroundColor: Colors.branco, borderRadius: 14, padding: 14,
+    borderWidth: 1, borderColor: Colors.erroBorda,
     marginBottom: 20, width: '100%',
   },
   motivosTitulo: {
-    ...Typography.bodyBold, color: '#8B1A1A',
+    ...Typography.bodyBold, color: Colors.erroEscuro,
     marginBottom: 10, fontFamily: Fonte.corpoSemi,
   },
   motivoItem: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 4 },
-  motivoTexto: { ...Typography.body, color: '#5A1414', fontSize: 13 },
+  motivoTexto: { ...Typography.body, color: Colors.erroEscuro, fontSize: 13 },
 
   timeoutCirculo: {
     width: 120, height: 120, borderRadius: 60,
@@ -870,7 +848,7 @@ const styles = StyleSheet.create({
     padding: 20, zIndex: 100,
   },
   modalCancelarBox: {
-    backgroundColor: '#FFFFFF', borderRadius: 20, padding: 24,
+    backgroundColor: Colors.branco, borderRadius: 20, padding: 24,
     width: '100%', maxWidth: 380, alignItems: 'center',
   },
   modalCancelarIcone: {
@@ -884,18 +862,18 @@ const styles = StyleSheet.create({
     textAlign: 'center', marginBottom: 10, fontFamily: Fonte.corpoSemi,
   },
   modalCancelarTexto: {
-    ...Typography.body, color: '#5B616B',
+    ...Typography.body, color: Colors.textoSecundario,
     textAlign: 'center', marginBottom: 20, lineHeight: 20, fontSize: 14,
   },
   modalCancelarBotoes: { width: '100%', gap: 10 },
   modalCancelarBotaoVoltar: {
     paddingVertical: 14, borderRadius: 14,
-    backgroundColor: LARANJA_MARCA, alignItems: 'center',
+    backgroundColor: COR_ACENTO, alignItems: 'center',
   },
-  modalCancelarBotaoVoltarTexto: { color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi },
+  modalCancelarBotaoVoltarTexto: { color: Colors.branco, fontSize: 15, fontFamily: Fonte.corpoSemi },
   modalCancelarBotaoCancelar: {
     paddingVertical: 14, borderRadius: 14,
-    backgroundColor: '#F4F3EF', alignItems: 'center',
+    backgroundColor: Colors.fundoSuave, alignItems: 'center',
   },
   modalCancelarBotaoCancelarTexto: { color: VERMELHO_ERRO, fontSize: 14, fontFamily: Fonte.corpoSemi },
 });

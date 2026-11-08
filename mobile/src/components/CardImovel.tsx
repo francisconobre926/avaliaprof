@@ -261,13 +261,13 @@ const styles = StyleSheet.create({
   badgeText: {
     ...Typography.captionBold,
     color: Colors.branco,
-    fontSize: 10,
+    fontSize: 12,
     letterSpacing: 0.5,
   },
   badgeVerificado: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.verde,
+    backgroundColor: Colors.verdeTexto,
     paddingHorizontal: Spacing.sm,
     paddingVertical: 4,
     borderRadius: Radius.sm,
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
   badgeVerificadoText: {
     ...Typography.captionBold,
     color: Colors.branco,
-    fontSize: 10,
+    fontSize: 12,
   },
   favoritoBotao: {
     width: 36,
@@ -366,13 +366,13 @@ const styles = StyleSheet.create({
   precoLabel: {
     ...Typography.caption,
     color: Colors.textoTerciario,
-    fontSize: 10,
+    fontSize: 12,
     letterSpacing: 0.5,
     marginBottom: 2,
   },
   preco: {
     ...Typography.preco,
-    color: Colors.azul,
+    color: Colors.azulTexto,
   },
   ratingContainer: {
     alignItems: 'flex-end',
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
   badgeTipoText: {
     ...Typography.captionBold,
     color: Colors.branco,
-    fontSize: 9,
+    fontSize: 12,
     letterSpacing: 0.5,
   },
   botaoFavoritar: {

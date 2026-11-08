@@ -13,10 +13,10 @@
  */
 
 // Cores estáticas (modo claro base)
-export { Colors, Sombras } from './colors';
+export { Colors, Paleta, Sombras } from './colors';
 
 // Tipografia + espaçamento + raio
-export { Typography, Spacing, Radius } from './typography';
+export { Typography, Spacing, Radius, Borda } from './typography';
 export { Fonte, FONTES_A_CARREGAR } from './fonts';
 
 // Theme dinâmico (dark mode, cores de destaque)

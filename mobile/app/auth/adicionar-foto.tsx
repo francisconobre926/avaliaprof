@@ -61,9 +61,9 @@ export default function AdicionarFotoScreen() {
 
   const isAnunciante = papel === 'anunciante';
 
-  const corPrincipal = isAnunciante ? '#E8760A' : '#16202E';
+  const corPrincipal = isAnunciante ? Colors.azul : Colors.carvao;
 
-  const gradiente = isAnunciante ? ['#E8760A', '#E96500'] as const : ['#16202E', '#174A7E'] as const;
+  const gradiente = isAnunciante ? [Colors.azul, Colors.azul] as const : [Colors.carvao, Colors.azulTexto] as const;
 
   useEffect(() => {
 
@@ -299,7 +299,7 @@ export default function AdicionarFotoScreen() {
 
               <View style={styles.sucessoBadgeIcone}>
 
-                <Ionicons name="checkmark-circle" size={16} color={Colors.verde} />
+                <Ionicons name="checkmark-circle" size={16} color={Colors.verdeTexto} />
 
               </View>
 
@@ -451,7 +451,7 @@ export default function AdicionarFotoScreen() {
 
                 icone="shield-checkmark"
 
-                cor={Colors.verde}
+                cor={Colors.verdeTexto}
 
                 titulo="Aumenta confiança"
 
@@ -773,7 +773,7 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
 
-    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    backgroundColor: 'rgba(52, 168, 83, 0.1)',
 
     paddingHorizontal: Spacing.md,
 
@@ -787,7 +787,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: 'rgba(76, 175, 80, 0.25)',
+    borderColor: 'rgba(52, 168, 83, 0.25)',
 
   },
 
@@ -807,7 +807,7 @@ const styles = StyleSheet.create({
 
     ...Typography.captionBold,
 
-    color: Colors.verde,
+    color: Colors.verdeTexto,
 
     letterSpacing: 0.3,
 
@@ -975,7 +975,7 @@ const styles = StyleSheet.create({
 
     borderStyle: 'dashed',
 
-    borderColor: 'rgba(33, 150, 243, 0.3)',
+    borderColor: 'rgba(26, 115, 232, 0.3)',
 
     gap: Spacing.sm,
 

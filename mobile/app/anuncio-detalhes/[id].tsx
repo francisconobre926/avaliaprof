@@ -16,7 +16,6 @@ import {
 
   Dimensions,
 
-  StatusBar,
 
   Modal,
 
@@ -31,6 +30,7 @@ import {
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
+import TopBar, { TopBarBotao } from '../../src/components/TopBar';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -44,6 +44,7 @@ import { obterAnuncioLocal, guardarAnuncioLocal, eliminarAnuncioLocal, type Anun
 
 import { Fonte } from '../../src/theme/fonts';
 import Icone from '../../src/components/Icone';
+import { Colors } from '../../src/theme/colors';
 const { width: screenWidth } = Dimensions.get('window');
 
 type EstadoAnuncio = 'activo' | 'pausado' | 'expirado' | 'pendente';
@@ -186,9 +187,9 @@ function configEstado(estado: EstadoAnuncio) {
 
       label: 'Activo',
 
-      cor: '#2F7A4F',
+      cor: Colors.verdeTexto,
 
-      corFundo: '#EAF3EC',
+      corFundo: Colors.verdeSuave,
 
       icone: 'check-circle',
 
@@ -198,9 +199,9 @@ function configEstado(estado: EstadoAnuncio) {
 
       label: 'Pausado',
 
-      cor: '#E8760A',
+      cor: Colors.azul,
 
-      corFundo: '#FBF0E3',
+      corFundo: Colors.azulSuave,
 
       icone: 'pause-circle',
 
@@ -210,9 +211,9 @@ function configEstado(estado: EstadoAnuncio) {
 
       label: 'Expirado',
 
-      cor: '#C2412D',
+      cor: Colors.erro,
 
-      corFundo: '#FBECE9',
+      corFundo: Colors.erroFundo,
 
       icone: 'close-circle',
 
@@ -222,9 +223,9 @@ function configEstado(estado: EstadoAnuncio) {
 
       label: 'Pendente',
 
-      cor: '#0A6BC0',
+      cor: Colors.azul,
 
-      corFundo: '#EAF2FA',
+      corFundo: Colors.azulSuave,
 
       icone: 'clock-outline',
 
@@ -494,7 +495,16 @@ export default function AnuncioDetalhesScreen() {
 
     <View style={styles.container}>
 
-      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+      <TopBar
+        titulo="Detalhes do anúncio"
+        onVoltar={() => router.back()}
+        acoes={
+          <>
+            <TopBarBotao icone="share-social" rotulo="Partilhar" onPress={handlePartilhar} />
+            <TopBarBotao icone="ellipsis-horizontal" rotulo="Mais opções" onPress={() => setModalMaisVisivel(true)} />
+          </>
+        }
+      />
 
       <ScrollView
 
@@ -542,62 +552,6 @@ export default function AnuncioDetalhesScreen() {
 
           </ScrollView>
 
-          {/* Overlay com gradiente escuro no topo */}
-
-          <LinearGradient
-
-            colors={['rgba(0,0,0,0.5)', 'transparent']}
-
-            style={styles.fotoGradientTopo}
-
-          />
-
-          {/* Botões flutuantes */}
-
-          <SafeAreaView edges={['top']} style={styles.fotoHeaderOverlay}>
-
-            <TouchableOpacity
-
-              style={styles.fotoBotaoCircular}
-
-              onPress={() => router.back()}
-
-            >
-
-              <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
-
-            </TouchableOpacity>
-
-            <View style={styles.fotoBotoesDireita}>
-
-              <TouchableOpacity
-
-                style={styles.fotoBotaoCircular}
-
-                onPress={handlePartilhar}
-
-              >
-
-                <Ionicons name="share-social" size={20} color="#FFFFFF" />
-
-              </TouchableOpacity>
-
-              <TouchableOpacity
-
-                style={styles.fotoBotaoCircular}
-
-                onPress={() => setModalMaisVisivel(true)}
-
-              >
-
-                <Ionicons name="ellipsis-horizontal" size={20} color="#FFFFFF" />
-
-              </TouchableOpacity>
-
-            </View>
-
-          </SafeAreaView>
-
           {/* Indicador de fotos */}
 
           <View style={styles.fotoIndicadorContainer}>
@@ -626,7 +580,7 @@ export default function AnuncioDetalhesScreen() {
 
           <View style={styles.fotoContador}>
 
-            <Ionicons name="images" size={13} color="#FFFFFF" />
+            <Ionicons name="images" size={13} color={Colors.branco} />
 
             <Text style={styles.fotoContadorTexto}>
 
@@ -678,7 +632,7 @@ export default function AnuncioDetalhesScreen() {
 
             <View style={styles.metaItem}>
 
-              <Ionicons name="location" size={14} color="#5B616B" />
+              <Ionicons name="location" size={14} color={Colors.textoSecundario} />
 
               <Text style={styles.metaTexto}>{anuncio.zona}</Text>
 
@@ -688,7 +642,7 @@ export default function AnuncioDetalhesScreen() {
 
             <View style={styles.metaItem}>
 
-              <Icone name="shape" size={14} color="#5B616B" />
+              <Icone name="shape" size={14} color={Colors.textoSecundario} />
 
               <Text style={styles.metaTexto}>{anuncio.categoria}</Text>
 
@@ -713,23 +667,23 @@ export default function AnuncioDetalhesScreen() {
         {anuncioLocal && (
           <View style={styles.seccao}>
             <View style={styles.seccaoHeader}>
-              <Icone name="information-outline" size={20} color="#16202E" />
+              <Icone name="information-outline" size={20} color={Colors.carvao} />
               <Text style={styles.seccaoTitulo}>Informações do anúncio</Text>
             </View>
             {!!anuncioLocal.descricao && (
-              <Text style={{ color: '#34445A', fontFamily: Fonte.corpo, fontSize: 14, lineHeight: 21, marginBottom: 14 }}>
+              <Text style={{ color: Colors.carvao, fontFamily: Fonte.corpo, fontSize: 14, lineHeight: 21, marginBottom: 14 }}>
                 {anuncioLocal.descricao}
               </Text>
             )}
             {Object.entries(anuncioLocal.caracteristicas || {})
               .filter(([_, valor]) => valor !== null && valor !== undefined && String(valor).trim() !== '')
               .map(([chave, valor]) => (
-                <View key={chave} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#E7E5DF' }}>
-                  <Text style={{ color: '#5B616B', flex: 1 }}>{chave.replace(/([A-Z])/g, ' $1')}</Text>
-                  <Text style={{ color: '#16202E', fontFamily: Fonte.corpoSemi, flex: 1, textAlign: 'right' }}>{String(valor)}</Text>
+                <View key={chave} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: Colors.borda }}>
+                  <Text style={{ color: Colors.textoSecundario, flex: 1, fontFamily: Fonte.corpo }}>{chave.replace(/([A-Z])/g, ' $1')}</Text>
+                  <Text style={{ color: Colors.carvao, fontFamily: Fonte.corpoSemi, flex: 1, textAlign: 'right' }}>{String(valor)}</Text>
                 </View>
               ))}
-            <Text style={{ color: '#5B616B', fontFamily: Fonte.corpo, fontSize: 11, marginTop: 12 }}>
+            <Text style={{ color: Colors.textoSecundario, fontFamily: Fonte.corpo, fontSize: 12, marginTop: 12 }}>
               As estatísticas reais serão apresentadas quando existir integração com o backend.
             </Text>
           </View>
@@ -737,11 +691,11 @@ export default function AnuncioDetalhesScreen() {
 
         {anuncioLocal && estadoActual === 'pendente' && (
           <View style={styles.seccao}>
-            <View style={[styles.estadoVazioCard, { borderColor: '#BBDEFB' }]}>
-              <View style={[styles.estadoVazioIcone, { backgroundColor: '#EAF2FA' }]}>
-                <Icone name="clock-outline" size={36} color="#0A6BC0" />
+            <View style={[styles.estadoVazioCard, { borderColor: Colors.azulSuave }]}>
+              <View style={[styles.estadoVazioIcone, { backgroundColor: Colors.azulSuave }]}>
+                <Icone name="clock-outline" size={36} color={Colors.azul} />
               </View>
-              <Text style={[styles.estadoVazioTitulo, { color: '#0A6BC0' }]}>Pagamento pendente</Text>
+              <Text style={[styles.estadoVazioTitulo, { color: Colors.azulTexto }]}>Pagamento pendente</Text>
               <Text style={styles.estadoVazioTexto}>Este anúncio ainda não foi confirmado como pago e não deve aparecer no catálogo público.</Text>
             </View>
           </View>
@@ -752,7 +706,7 @@ export default function AnuncioDetalhesScreen() {
           <>
             <View style={styles.seccao}>
               <View style={styles.seccaoHeader}>
-                <Icone name="text-box-outline" size={20} color="#16202E" />
+                <Icone name="text-box-outline" size={20} color={Colors.carvao} />
                 <Text style={styles.seccaoTitulo}>Descrição do imóvel</Text>
               </View>
               <Text style={styles.detalheDescricao}>
@@ -766,7 +720,7 @@ export default function AnuncioDetalhesScreen() {
             ).length > 0 && (
               <View style={styles.seccao}>
                 <View style={styles.seccaoHeader}>
-                  <Icone name="format-list-bulleted" size={20} color="#16202E" />
+                  <Icone name="format-list-bulleted" size={20} color={Colors.carvao} />
                   <Text style={styles.seccaoTitulo}>Características</Text>
                 </View>
                 <View style={styles.detalheCaracteristicas}>
@@ -797,7 +751,7 @@ export default function AnuncioDetalhesScreen() {
 
           <View style={styles.seccaoHeader}>
 
-            <Icone name="chart-line" size={20} color="#16202E" />
+            <Icone name="chart-line" size={20} color={Colors.carvao} />
 
             <Text style={styles.seccaoTitulo}>Desempenho</Text>
 
@@ -817,9 +771,9 @@ export default function AnuncioDetalhesScreen() {
 
               label="Visitas"
 
-              corIcone="#16202E"
+              corIcone={Colors.carvao}
 
-              corFundo="#EAF1FA"
+              corFundo={Colors.azulSuave}
 
             />
 
@@ -831,9 +785,9 @@ export default function AnuncioDetalhesScreen() {
 
               label="Desbloqueios"
 
-              corIcone="#F06C00"
+              corIcone={Colors.azul}
 
-              corFundo="#FBF0E3"
+              corFundo={Colors.azulSuave}
 
             />
 
@@ -845,9 +799,9 @@ export default function AnuncioDetalhesScreen() {
 
               label="Favoritos"
 
-              corIcone="#C2412D"
+              corIcone={Colors.erro}
 
-              corFundo="#FBECE9"
+              corFundo={Colors.erroFundo}
 
             />
 
@@ -859,9 +813,9 @@ export default function AnuncioDetalhesScreen() {
 
               label="Partilhas"
 
-              corIcone="#2F7A4F"
+              corIcone={Colors.verdeTexto}
 
-              corFundo="#EAF3EC"
+              corFundo={Colors.verdeSuave}
 
             />
 
@@ -913,7 +867,7 @@ export default function AnuncioDetalhesScreen() {
 
                             height: `${Math.max(altura, 8)}%`,
 
-                            backgroundColor: ehMaximo ? '#E8760A' : '#C8D5E5',
+                            backgroundColor: ehMaximo ? Colors.azul : Colors.borda,
 
                           },
 
@@ -947,7 +901,7 @@ export default function AnuncioDetalhesScreen() {
 
           <View style={styles.seccaoHeader}>
 
-            <Icone name="cash-multiple" size={20} color="#2F7A4F" />
+            <Icone name="cash-multiple" size={20} color={Colors.verdeTexto} />
 
             <Text style={styles.seccaoTitulo}>Receita gerada</Text>
 
@@ -957,7 +911,7 @@ export default function AnuncioDetalhesScreen() {
 
             <LinearGradient
 
-              colors={['#2F7A4F', '#22593A']}
+              colors={[Colors.verdeTexto, Colors.verdeTexto]}
 
               style={StyleSheet.absoluteFill}
 
@@ -1022,7 +976,7 @@ export default function AnuncioDetalhesScreen() {
 
           <View style={styles.seccaoHeader}>
 
-            <Icone name="calendar-clock" size={20} color="#16202E" />
+            <Icone name="calendar-clock" size={20} color={Colors.carvao} />
 
             <Text style={styles.seccaoTitulo}>Validade do anúncio</Text>
 
@@ -1040,7 +994,7 @@ export default function AnuncioDetalhesScreen() {
 
               </View>
 
-              <Ionicons name="arrow-forward" size={16} color="#5B616B" />
+              <Ionicons name="arrow-forward" size={16} color={Colors.textoSecundario} />
 
               <View style={styles.validadeDataBox}>
 
@@ -1054,7 +1008,7 @@ export default function AnuncioDetalhesScreen() {
 
                   styles.validadeDataValor,
 
-                  estadoActual === 'expirado' && { color: '#C2412D' },
+                  estadoActual === 'expirado' && { color: Colors.erro },
 
                 ]}>
 
@@ -1078,13 +1032,13 @@ export default function AnuncioDetalhesScreen() {
 
                     progressoValidade >= 80
 
-                      ? ['#C2412D', '#B71C1C']
+                      ? [Colors.erro, Colors.erro]
 
                       : progressoValidade >= 60
 
-                      ? ['#E8760A', '#E65100']
+                      ? [Colors.azul, Colors.azul]
 
-                      : ['#2F7A4F', '#22593A']
+                      : [Colors.verdeTexto, Colors.verdeTexto]
 
                   }
 
@@ -1116,7 +1070,7 @@ export default function AnuncioDetalhesScreen() {
 
                   <View style={styles.validadeAviso}>
 
-                    <Ionicons name="warning" size={12} color="#C2412D" />
+                    <Ionicons name="warning" size={12} color={Colors.erro} />
 
                     <Text style={styles.validadeAvisoTexto}>Perto de expirar</Text>
 
@@ -1142,7 +1096,7 @@ export default function AnuncioDetalhesScreen() {
 
               >
 
-                <Icone name="refresh" size={16} color="#FFFFFF" />
+                <Icone name="refresh" size={16} color={Colors.branco} />
 
                 <Text style={styles.validadeProlongarTexto}>
 
@@ -1166,7 +1120,7 @@ export default function AnuncioDetalhesScreen() {
 
             <View style={styles.seccaoHeader}>
 
-              <Icone name="rocket-launch" size={20} color="#E8760A" />
+              <Icone name="rocket-launch" size={20} color={Colors.azul} />
 
               <Text style={styles.seccaoTitulo}>Aumenta os teus contactos</Text>
 
@@ -1174,9 +1128,9 @@ export default function AnuncioDetalhesScreen() {
 
             <TouchableOpacity style={styles.upsellCard} activeOpacity={0.85}>
 
-              <View style={[styles.upsellIcone, { backgroundColor: '#FBF0E3' }]}>
+              <View style={[styles.upsellIcone, { backgroundColor: Colors.azulSuave }]}>
 
-                <Icone name="video" size={24} color="#E8760A" />
+                <Icone name="video" size={24} color={Colors.azul} />
 
               </View>
 
@@ -1202,9 +1156,9 @@ export default function AnuncioDetalhesScreen() {
 
             <TouchableOpacity style={styles.upsellCard} activeOpacity={0.85}>
 
-              <View style={[styles.upsellIcone, { backgroundColor: '#FBECE9' }]}>
+              <View style={[styles.upsellIcone, { backgroundColor: Colors.erroFundo }]}>
 
-                <Icone name="star" size={24} color="#C2412D" />
+                <Icone name="star" size={24} color={Colors.erro} />
 
               </View>
 
@@ -1230,9 +1184,9 @@ export default function AnuncioDetalhesScreen() {
 
             <TouchableOpacity style={styles.upsellCard} activeOpacity={0.85}>
 
-              <View style={[styles.upsellIcone, { backgroundColor: '#EAF2FA' }]}>
+              <View style={[styles.upsellIcone, { backgroundColor: Colors.azulSuave }]}>
 
-                <Icone name="bullhorn" size={24} color="#0A6BC0" />
+                <Icone name="bullhorn" size={24} color={Colors.azul} />
 
               </View>
 
@@ -1270,7 +1224,7 @@ export default function AnuncioDetalhesScreen() {
 
               <View style={styles.estadoVazioIcone}>
 
-                <Icone name="archive" size={40} color="#C2412D" />
+                <Icone name="archive" size={40} color={Colors.erro} />
 
               </View>
 
@@ -1294,7 +1248,7 @@ export default function AnuncioDetalhesScreen() {
 
                 <LinearGradient
 
-                  colors={['#FF9A00', '#FF5A00']}
+                  colors={[Colors.azul, Colors.azul]}
 
                   style={StyleSheet.absoluteFill}
 
@@ -1304,7 +1258,7 @@ export default function AnuncioDetalhesScreen() {
 
                 />
 
-                <Icone name="refresh" size={18} color="#FFFFFF" />
+                <Icone name="refresh" size={18} color={Colors.branco} />
 
                 <Text style={styles.estadoVazioBtnTexto}>
 
@@ -1326,15 +1280,15 @@ export default function AnuncioDetalhesScreen() {
 
           <View style={styles.seccao}>
 
-            <View style={[styles.estadoVazioCard, { borderColor: '#FFE0B2' }]}>
+            <View style={[styles.estadoVazioCard, { borderColor: Colors.azul }]}>
 
-              <View style={[styles.estadoVazioIcone, { backgroundColor: '#FBF0E3' }]}>
+              <View style={[styles.estadoVazioIcone, { backgroundColor: Colors.azulSuave }]}>
 
-                <Icone name="pause-circle" size={40} color="#E8760A" />
+                <Icone name="pause-circle" size={40} color={Colors.azul} />
 
               </View>
 
-              <Text style={[styles.estadoVazioTitulo, { color: '#E8760A' }]}>
+              <Text style={[styles.estadoVazioTitulo, { color: Colors.azulTexto }]}>
 
                 Anúncio pausado
 
@@ -1358,7 +1312,7 @@ export default function AnuncioDetalhesScreen() {
 
                 <LinearGradient
 
-                  colors={['#2F7A4F', '#22593A']}
+                  colors={[Colors.verdeTexto, Colors.verdeTexto]}
 
                   style={StyleSheet.absoluteFill}
 
@@ -1368,7 +1322,7 @@ export default function AnuncioDetalhesScreen() {
 
                 />
 
-                <Icone name="play-circle" size={18} color="#FFFFFF" />
+                <Icone name="play-circle" size={18} color={Colors.branco} />
 
                 <Text style={styles.estadoVazioBtnTexto}>Retomar anúncio</Text>
 
@@ -1401,7 +1355,7 @@ export default function AnuncioDetalhesScreen() {
 
             >
 
-              <Icone name="pencil" size={18} color="#16202E" />
+              <Icone name="pencil" size={18} color={Colors.carvao} />
 
               <Text style={styles.footerBotaoSecundarioTexto}>Editar</Text>
 
@@ -1419,7 +1373,7 @@ export default function AnuncioDetalhesScreen() {
 
               <LinearGradient
 
-                colors={['#FF9A00', '#FF5A00']}
+                colors={[Colors.azul, Colors.azul]}
 
                 style={StyleSheet.absoluteFill}
 
@@ -1429,7 +1383,7 @@ export default function AnuncioDetalhesScreen() {
 
               />
 
-              <Icone name="refresh" size={18} color="#FFFFFF" />
+              <Icone name="refresh" size={18} color={Colors.branco} />
 
               <Text style={styles.footerBotaoPrincipalTexto}>Prolongar</Text>
 
@@ -1445,7 +1399,7 @@ export default function AnuncioDetalhesScreen() {
 
             >
 
-              <Ionicons name="ellipsis-vertical" size={20} color="#16202E" />
+              <Ionicons name="ellipsis-vertical" size={20} color={Colors.carvao} />
 
             </TouchableOpacity>
 
@@ -1481,9 +1435,9 @@ export default function AnuncioDetalhesScreen() {
 
             <TouchableOpacity style={styles.modalOpcao} onPress={handlePartilhar}>
 
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#EAF2FA' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: Colors.azulSuave }]}>
 
-                <Icone name="share-variant" size={22} color="#0A6BC0" />
+                <Icone name="share-variant" size={22} color={Colors.azul} />
 
               </View>
 
@@ -1495,15 +1449,15 @@ export default function AnuncioDetalhesScreen() {
 
               </View>
 
-              <Ionicons name="chevron-forward" size={18} color="#9A9EA5" />
+              <Ionicons name="chevron-forward" size={18} color={Colors.textoTerciario} />
 
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.modalOpcao} onPress={handleEstatisticasDetalhadas}>
 
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#F3E5F5' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: Colors.azulSuave }]}>
 
-                <Icone name="chart-box" size={22} color="#7B1FA2" />
+                <Icone name="chart-box" size={22} color={Colors.azul} />
 
               </View>
 
@@ -1515,13 +1469,13 @@ export default function AnuncioDetalhesScreen() {
 
               </View>
 
-              <Ionicons name="chevron-forward" size={18} color="#9A9EA5" />
+              <Ionicons name="chevron-forward" size={18} color={Colors.textoTerciario} />
 
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.modalOpcao} onPress={handlePausar}>
 
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FBF0E3' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: Colors.azulSuave }]}>
 
                 <Icone
 
@@ -1529,7 +1483,7 @@ export default function AnuncioDetalhesScreen() {
 
                   size={22}
 
-                  color="#E8760A"
+                  color={Colors.azul}
 
                 />
 
@@ -1555,21 +1509,21 @@ export default function AnuncioDetalhesScreen() {
 
               </View>
 
-              <Ionicons name="chevron-forward" size={18} color="#9A9EA5" />
+              <Ionicons name="chevron-forward" size={18} color={Colors.textoTerciario} />
 
             </TouchableOpacity>
 
             <TouchableOpacity style={[styles.modalOpcao, styles.modalOpcaoPerigo]} onPress={handleEliminar}>
 
-              <View style={[styles.modalOpcaoIcone, { backgroundColor: '#FBECE9' }]}>
+              <View style={[styles.modalOpcaoIcone, { backgroundColor: Colors.erroFundo }]}>
 
-                <Icone name="trash-can" size={22} color="#C2412D" />
+                <Icone name="trash-can" size={22} color={Colors.erro} />
 
               </View>
 
               <View style={{ flex: 1 }}>
 
-                <Text style={[styles.modalOpcaoTitulo, { color: '#C2412D' }]}>
+                <Text style={[styles.modalOpcaoTitulo, { color: Colors.erro }]}>
 
                   Eliminar anúncio
 
@@ -1579,7 +1533,7 @@ export default function AnuncioDetalhesScreen() {
 
               </View>
 
-              <Ionicons name="chevron-forward" size={18} color="#F2C9C1" />
+              <Ionicons name="chevron-forward" size={18} color={Colors.erroBorda} />
 
             </TouchableOpacity>
 
@@ -1619,7 +1573,7 @@ export default function AnuncioDetalhesScreen() {
 
           <View style={styles.modalCentroBox}>
 
-            <View style={[styles.modalCentroIcone, { backgroundColor: '#FBF0E3' }]}>
+            <View style={[styles.modalCentroIcone, { backgroundColor: Colors.azulSuave }]}>
 
               <Icone
 
@@ -1627,7 +1581,7 @@ export default function AnuncioDetalhesScreen() {
 
                 size={36}
 
-                color="#E8760A"
+                color={Colors.azul}
 
               />
 
@@ -1705,9 +1659,9 @@ export default function AnuncioDetalhesScreen() {
 
           <View style={styles.modalCentroBox}>
 
-            <View style={[styles.modalCentroIcone, { backgroundColor: '#FBECE9' }]}>
+            <View style={[styles.modalCentroIcone, { backgroundColor: Colors.erroFundo }]}>
 
-              <Icone name="alert" size={36} color="#C2412D" />
+              <Icone name="alert" size={36} color={Colors.erro} />
 
             </View>
 
@@ -1735,7 +1689,7 @@ export default function AnuncioDetalhesScreen() {
 
               <TouchableOpacity
 
-                style={[styles.modalCentroBtnConfirmar, { backgroundColor: '#C2412D' }]}
+                style={[styles.modalCentroBtnConfirmar, { backgroundColor: Colors.erro }]}
 
                 onPress={confirmarEliminar}
 
@@ -1807,13 +1761,13 @@ function StatCard({ icone, valor, label, corIcone, corFundo }: {
 
 const styles = StyleSheet.create({
 
-  container: { flex: 1, backgroundColor: '#F2F6FB' },
+  container: { flex: 1, backgroundColor: Colors.azulSuave },
 
-  detalheDescricao: { color: '#425873', fontFamily: Fonte.corpo, fontSize: 14, lineHeight: 22 },
+  detalheDescricao: { color: Colors.textoSecundario, fontFamily: Fonte.corpo, fontSize: 14, lineHeight: 22 },
   detalheCaracteristicas: { gap: 0 },
-  detalheCaracteristicaLinha: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#E7E5DF' },
-  detalheCaracteristicaChave: { flex: 1, color: '#5B616B', fontFamily: Fonte.corpo, fontSize: 13, textTransform: 'capitalize' },
-  detalheCaracteristicaValor: { flex: 1, color: '#16202E', fontSize: 13, fontFamily: Fonte.corpoSemi, textAlign: 'right' },
+  detalheCaracteristicaLinha: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: Colors.borda },
+  detalheCaracteristicaChave: { flex: 1, color: Colors.textoSecundario, fontFamily: Fonte.corpo, fontSize: 13, textTransform: 'capitalize' },
+  detalheCaracteristicaValor: { flex: 1, color: Colors.carvao, fontSize: 13, fontFamily: Fonte.corpoSemi, textAlign: 'right' },
 
   // ============ Fotos ============
 
@@ -1823,7 +1777,7 @@ const styles = StyleSheet.create({
 
     height: 280,
 
-    backgroundColor: '#16202E',
+    backgroundColor: Colors.carvao,
 
     position: 'relative',
 
@@ -1834,70 +1788,6 @@ const styles = StyleSheet.create({
     width: screenWidth,
 
     height: 280,
-
-  },
-
-  fotoGradientTopo: {
-
-    position: 'absolute',
-
-    top: 0,
-
-    left: 0,
-
-    right: 0,
-
-    height: 100,
-
-  },
-
-  fotoHeaderOverlay: {
-
-    position: 'absolute',
-
-    top: 0,
-
-    left: 0,
-
-    right: 0,
-
-    paddingHorizontal: 16,
-
-    paddingTop: 8,
-
-    flexDirection: 'row',
-
-    justifyContent: 'space-between',
-
-    alignItems: 'flex-start',
-
-  },
-
-  fotoBotoesDireita: {
-
-    flexDirection: 'row',
-
-    gap: 10,
-
-  },
-
-  fotoBotaoCircular: {
-
-    width: 40,
-
-    height: 40,
-
-    borderRadius: 20,
-
-    backgroundColor: 'rgba(0,0,0,0.4)',
-
-    justifyContent: 'center',
-
-    alignItems: 'center',
-
-    borderWidth: 1,
-
-    borderColor: 'rgba(255,255,255,0.2)',
 
   },
 
@@ -1935,7 +1825,7 @@ const styles = StyleSheet.create({
 
     width: 24,
 
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
 
   },
 
@@ -1965,9 +1855,9 @@ const styles = StyleSheet.create({
 
   fotoContadorTexto: {
 
-    color: '#FFFFFF',
+    color: Colors.branco,
 
-    fontSize: 11,
+    fontSize: 12,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -1977,7 +1867,7 @@ const styles = StyleSheet.create({
 
   cabecalho: {
 
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
 
     paddingHorizontal: 20,
 
@@ -1987,7 +1877,7 @@ const styles = StyleSheet.create({
 
     borderBottomWidth: 1,
 
-    borderBottomColor: '#E7E5DF',
+    borderBottomColor: Colors.borda,
 
   },
 
@@ -2021,11 +1911,11 @@ const styles = StyleSheet.create({
 
   estadoBadgeExtra: {
 
-    fontSize: 11,
+    fontSize: 12,
 
     fontFamily: Fonte.corpoSemi,
 
-    color: '#5B616B',
+    color: Colors.textoSecundario,
 
   },
 
@@ -2033,7 +1923,7 @@ const styles = StyleSheet.create({
 
     ...Typography.h2,
 
-    color: '#16202E',
+    color: Colors.carvao,
 
     fontFamily: Fonte.tituloSemi,
 
@@ -2069,7 +1959,7 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#5B616B',
+    color: Colors.textoSecundario,
 
     fontSize: 13,
 
@@ -2081,7 +1971,7 @@ const styles = StyleSheet.create({
 
     height: 12,
 
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
 
   },
 
@@ -2099,7 +1989,7 @@ const styles = StyleSheet.create({
 
     ...Typography.h2,
 
-    color: '#F06C00',
+    color: Colors.azulTexto,
 
     fontFamily: Fonte.tituloBold,
 
@@ -2109,7 +1999,7 @@ const styles = StyleSheet.create({
 
     ...Typography.body,
 
-    color: '#5B616B',
+    color: Colors.textoSecundario,
 
   },
 
@@ -2117,7 +2007,7 @@ const styles = StyleSheet.create({
 
   seccao: {
 
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
 
     marginTop: 10,
 
@@ -2143,7 +2033,7 @@ const styles = StyleSheet.create({
 
     ...Typography.h4,
 
-    color: '#16202E',
+    color: Colors.carvao,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -2155,9 +2045,9 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#5B616B',
+    color: Colors.textoSecundario,
 
-    fontSize: 11,
+    fontSize: 12,
 
   },
 
@@ -2177,7 +2067,7 @@ const styles = StyleSheet.create({
 
     flex: 1,
 
-    backgroundColor: '#F7F6F2',
+    backgroundColor: Colors.fundoSuave,
 
     borderRadius: 14,
 
@@ -2187,7 +2077,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
 
   },
 
@@ -2211,7 +2101,7 @@ const styles = StyleSheet.create({
 
     ...Typography.h3,
 
-    color: '#16202E',
+    color: Colors.carvao,
 
     fontFamily: Fonte.corpoBold,
 
@@ -2223,9 +2113,9 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#5B616B',
+    color: Colors.textoSecundario,
 
-    fontSize: 10,
+    fontSize: 12,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -2235,7 +2125,7 @@ const styles = StyleSheet.create({
 
   graficoCard: {
 
-    backgroundColor: '#F7F6F2',
+    backgroundColor: Colors.fundoSuave,
 
     borderRadius: 16,
 
@@ -2243,7 +2133,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
 
   },
 
@@ -2263,7 +2153,7 @@ const styles = StyleSheet.create({
 
     ...Typography.bodyBold,
 
-    color: '#16202E',
+    color: Colors.carvao,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -2273,7 +2163,7 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#F06C00',
+    color: Colors.azulTexto,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -2319,11 +2209,11 @@ const styles = StyleSheet.create({
 
   graficoBarraValor: {
 
-    fontSize: 10,
+    fontSize: 12,
 
     fontFamily: Fonte.corpoSemi,
 
-    color: '#E8760A',
+    color: Colors.azulTexto,
 
     marginBottom: 2,
 
@@ -2343,11 +2233,11 @@ const styles = StyleSheet.create({
 
   graficoBarraDia: {
 
-    fontSize: 11,
+    fontSize: 12,
 
     fontFamily: Fonte.corpoSemi,
 
-    color: '#5B616B',
+    color: Colors.textoSecundario,
 
   },
 
@@ -2361,7 +2251,7 @@ const styles = StyleSheet.create({
 
     marginBottom: 10,
 
-    shadowColor: '#2F7A4F',
+    shadowColor: Colors.verdeTexto,
 
     shadowOpacity: 0.25,
 
@@ -2405,7 +2295,7 @@ const styles = StyleSheet.create({
 
   receitaValor: {
 
-    color: '#FFFFFF',
+    color: Colors.branco,
 
     fontSize: 44,
 
@@ -2417,7 +2307,7 @@ const styles = StyleSheet.create({
 
   receitaMoeda: {
 
-    color: '#FFFFFF',
+    color: Colors.branco,
 
     fontSize: 20,
 
@@ -2451,7 +2341,7 @@ const styles = StyleSheet.create({
 
   receitaCalculoValor: {
 
-    color: '#FFFFFF',
+    color: Colors.branco,
 
     fontSize: 18,
 
@@ -2463,7 +2353,7 @@ const styles = StyleSheet.create({
 
     color: 'rgba(255,255,255,0.85)',
 
-    fontSize: 10,
+    fontSize: 12,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -2471,7 +2361,7 @@ const styles = StyleSheet.create({
 
   receitaCalculoSinal: {
 
-    color: '#FFFFFF',
+    color: Colors.branco,
 
     fontSize: 20,
 
@@ -2483,9 +2373,9 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#5B616B',
+    color: Colors.textoSecundario,
 
-    fontSize: 10,
+    fontSize: 12,
 
     fontStyle: 'italic',
 
@@ -2497,7 +2387,7 @@ const styles = StyleSheet.create({
 
   validadeCard: {
 
-    backgroundColor: '#F7F6F2',
+    backgroundColor: Colors.fundoSuave,
 
     borderRadius: 16,
 
@@ -2505,7 +2395,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
 
   },
 
@@ -2533,9 +2423,9 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#5B616B',
+    color: Colors.textoSecundario,
 
-    fontSize: 11,
+    fontSize: 12,
 
     marginBottom: 3,
 
@@ -2545,7 +2435,7 @@ const styles = StyleSheet.create({
 
     ...Typography.bodyBold,
 
-    color: '#16202E',
+    color: Colors.carvao,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -2561,7 +2451,7 @@ const styles = StyleSheet.create({
 
     height: 8,
 
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
 
     borderRadius: 4,
 
@@ -2593,9 +2483,9 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#5B616B',
+    color: Colors.textoSecundario,
 
-    fontSize: 11,
+    fontSize: 12,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -2609,7 +2499,7 @@ const styles = StyleSheet.create({
 
     gap: 4,
 
-    backgroundColor: '#FBECE9',
+    backgroundColor: Colors.erroFundo,
 
     paddingHorizontal: 8,
 
@@ -2621,9 +2511,9 @@ const styles = StyleSheet.create({
 
   validadeAvisoTexto: {
 
-    color: '#C2412D',
+    color: Colors.erro,
 
-    fontSize: 10,
+    fontSize: 12,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -2639,7 +2529,7 @@ const styles = StyleSheet.create({
 
     gap: 7,
 
-    backgroundColor: '#E8760A',
+    backgroundColor: Colors.azul,
 
     paddingVertical: 11,
 
@@ -2651,7 +2541,7 @@ const styles = StyleSheet.create({
 
   validadeProlongarTexto: {
 
-    color: '#FFFFFF',
+    color: Colors.branco,
 
     fontSize: 13,
 
@@ -2669,7 +2559,7 @@ const styles = StyleSheet.create({
 
     gap: 12,
 
-    backgroundColor: '#F7F6F2',
+    backgroundColor: Colors.fundoSuave,
 
     padding: 14,
 
@@ -2679,7 +2569,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
 
   },
 
@@ -2701,7 +2591,7 @@ const styles = StyleSheet.create({
 
     ...Typography.bodyBold,
 
-    color: '#16202E',
+    color: Colors.carvao,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -2713,9 +2603,9 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#5B616B',
+    color: Colors.textoSecundario,
 
-    fontSize: 11,
+    fontSize: 12,
 
     lineHeight: 15,
 
@@ -2723,7 +2613,7 @@ const styles = StyleSheet.create({
 
   upsellBadge: {
 
-    backgroundColor: '#FBF0E3',
+    backgroundColor: Colors.azulSuave,
 
     paddingHorizontal: 10,
 
@@ -2735,9 +2625,9 @@ const styles = StyleSheet.create({
 
   upsellBadgeTexto: {
 
-    color: '#F06C00',
+    color: Colors.azulTexto,
 
-    fontSize: 11,
+    fontSize: 12,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -2747,7 +2637,7 @@ const styles = StyleSheet.create({
 
   estadoVazioCard: {
 
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
 
     padding: 20,
 
@@ -2757,7 +2647,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
 
-    borderColor: '#F2C9C1',
+    borderColor: Colors.erroBorda,
 
   },
 
@@ -2769,7 +2659,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 20,
 
-    backgroundColor: '#FBECE9',
+    backgroundColor: Colors.erroFundo,
 
     justifyContent: 'center',
 
@@ -2783,7 +2673,7 @@ const styles = StyleSheet.create({
 
     ...Typography.h3,
 
-    color: '#C2412D',
+    color: Colors.erro,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -2797,7 +2687,7 @@ const styles = StyleSheet.create({
 
     ...Typography.body,
 
-    color: '#5B616B',
+    color: Colors.textoSecundario,
 
     textAlign: 'center',
 
@@ -2831,7 +2721,7 @@ const styles = StyleSheet.create({
 
   estadoVazioBtnTexto: {
 
-    color: '#FFFFFF',
+    color: Colors.branco,
 
     fontSize: 14,
 
@@ -2855,9 +2745,9 @@ const styles = StyleSheet.create({
 
     borderTopWidth: 1,
 
-    borderTopColor: '#E7E5DF',
+    borderTopColor: Colors.borda,
 
-    shadowColor: '#16202E',
+    shadowColor: Colors.carvao,
 
     shadowOpacity: 0.08,
 
@@ -2895,11 +2785,11 @@ const styles = StyleSheet.create({
 
     borderRadius: 14,
 
-    backgroundColor: '#F4F3EF',
+    backgroundColor: Colors.fundoSuave,
 
     borderWidth: 1,
 
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
 
     gap: 6,
 
@@ -2907,7 +2797,7 @@ const styles = StyleSheet.create({
 
   footerBotaoSecundarioTexto: {
 
-    color: '#16202E',
+    color: Colors.carvao,
 
     fontSize: 14,
 
@@ -2937,7 +2827,7 @@ const styles = StyleSheet.create({
 
   footerBotaoPrincipalTexto: {
 
-    color: '#FFFFFF',
+    color: Colors.branco,
 
     fontSize: 14,
 
@@ -2953,11 +2843,11 @@ const styles = StyleSheet.create({
 
     borderRadius: 14,
 
-    backgroundColor: '#F4F3EF',
+    backgroundColor: Colors.fundoSuave,
 
     borderWidth: 1,
 
-    borderColor: '#E7E5DF',
+    borderColor: Colors.borda,
 
     justifyContent: 'center',
 
@@ -2979,7 +2869,7 @@ const styles = StyleSheet.create({
 
   modalContent: {
 
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
 
     borderTopLeftRadius: 24,
 
@@ -2999,7 +2889,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 2,
 
-    backgroundColor: '#E7E5DF',
+    backgroundColor: Colors.borda,
 
     alignSelf: 'center',
 
@@ -3013,7 +2903,7 @@ const styles = StyleSheet.create({
 
     ...Typography.h3,
 
-    color: '#16202E',
+    color: Colors.carvao,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -3037,7 +2927,7 @@ const styles = StyleSheet.create({
 
     borderBottomWidth: 1,
 
-    borderBottomColor: '#F4F3EF',
+    borderBottomColor: Colors.fundoSuave,
 
   },
 
@@ -3065,7 +2955,7 @@ const styles = StyleSheet.create({
 
     ...Typography.bodyBold,
 
-    color: '#16202E',
+    color: Colors.carvao,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -3077,9 +2967,9 @@ const styles = StyleSheet.create({
 
     ...Typography.caption,
 
-    color: '#5B616B',
+    color: Colors.textoSecundario,
 
-    fontSize: 11,
+    fontSize: 12,
 
   },
 
@@ -3091,7 +2981,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 14,
 
-    backgroundColor: '#F4F3EF',
+    backgroundColor: Colors.fundoSuave,
 
     alignItems: 'center',
 
@@ -3099,7 +2989,7 @@ const styles = StyleSheet.create({
 
   modalFecharTexto: {
 
-    color: '#16202E',
+    color: Colors.carvao,
 
     fontSize: 15,
 
@@ -3125,7 +3015,7 @@ const styles = StyleSheet.create({
 
   modalCentroBox: {
 
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.branco,
 
     borderRadius: 20,
 
@@ -3159,7 +3049,7 @@ const styles = StyleSheet.create({
 
     ...Typography.h3,
 
-    color: '#16202E',
+    color: Colors.carvao,
 
     fontFamily: Fonte.corpoSemi,
 
@@ -3173,7 +3063,7 @@ const styles = StyleSheet.create({
 
     ...Typography.body,
 
-    color: '#5B616B',
+    color: Colors.textoSecundario,
 
     textAlign: 'center',
 
@@ -3203,7 +3093,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 14,
 
-    backgroundColor: '#F4F3EF',
+    backgroundColor: Colors.fundoSuave,
 
     alignItems: 'center',
 
@@ -3211,7 +3101,7 @@ const styles = StyleSheet.create({
 
   modalCentroBtnCancelarTexto: {
 
-    color: '#16202E',
+    color: Colors.carvao,
 
     fontSize: 14,
 
@@ -3227,7 +3117,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 14,
 
-    backgroundColor: '#E8760A',
+    backgroundColor: Colors.azul,
 
     alignItems: 'center',
 
@@ -3235,7 +3125,7 @@ const styles = StyleSheet.create({
 
   modalCentroBtnConfirmarTexto: {
 
-    color: '#FFFFFF',
+    color: Colors.branco,
 
     fontSize: 14,
 

@@ -27,11 +27,12 @@ import {
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import TopBar from '../../src/components/TopBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Typography, Spacing, Radius } from '../../src/theme/typography';
-import { Sombras } from '../../src/theme/colors';
+import { Colors, Sombras } from '../../src/theme/colors';
 import { useCores } from '../../src/store/themeStore';
 
 import { Fonte } from '../../src/theme/fonts';
@@ -39,12 +40,12 @@ import Icone from '../../src/components/Icone';
 // ============================================================
 // CORES GOHOME
 // ============================================================
-const AZUL_HERO_INICIO = '#0A6BC0';   // Azul GoHome — o mesmo da "Promoção lançamento"
-const AZUL_HERO_FIM = '#095FAA';
-const LARANJA_MARCA = '#E8760A';
-const LARANJA_ESCURO = '#B95A05';
-const VERDE_SUCESSO = '#2F7A4F';
-const VERMELHO_ERRO = '#C2412D';
+const AZUL_HERO_INICIO = Colors.azul;   // Azul GoHome — o mesmo da "Promoção lançamento"
+const AZUL_HERO_FIM = Colors.azulTexto;
+const COR_ACENTO = Colors.azul;
+const COR_ACENTO_ESCURO = Colors.azulTexto;
+const VERDE_SUCESSO = Colors.verdeTexto;
+const VERMELHO_ERRO = Colors.erro;
 
 type MotivoReporte =
   | 'ja_arrendado'
@@ -72,7 +73,7 @@ const MOTIVOS: Motivo[] = [
     titulo: 'Imóvel já estava arrendado/vendido',
     descricao: 'Desbloqueei o contacto e descobri que já não está disponível.',
     icone: 'home-remove-outline',
-    cor: LARANJA_MARCA,
+    cor: COR_ACENTO,
     compensacao: 25,
     gravidade: 'media',
   },
@@ -129,7 +130,7 @@ const MOTIVOS: Motivo[] = [
     titulo: 'Outro motivo',
     descricao: 'Explica abaixo o que aconteceu.',
     icone: 'help-circle',
-    cor: '#8A96A6',
+    cor: Colors.textoTerciario,
     gravidade: 'baixa',
   },
 ];
@@ -167,7 +168,7 @@ export default function ReportarAnuncio() {
         <SafeAreaView edges={['top', 'bottom']} style={{ flex: 1 }}>
           <View style={styles.confirmContainer}>
             <View style={styles.confirmCirculo}>
-              <Ionicons name="checkmark" size={60} color="#FFFFFF" />
+              <Ionicons name="checkmark" size={60} color={Colors.branco} />
             </View>
             <Text style={[styles.confirmTitulo, { color: cores.textoPrincipal }]}>
               Reporte enviado
@@ -178,15 +179,15 @@ export default function ReportarAnuncio() {
             </Text>
 
             {motivo.compensacao && (
-              <View style={[styles.confirmBonus, { backgroundColor: 'rgba(232, 118, 10, 0.08)', borderColor: LARANJA_MARCA }]}>
-                <Icone name="gift-outline" size={28} color={LARANJA_MARCA} />
+              <View style={[styles.confirmBonus, { backgroundColor: 'rgba(26, 115, 232, 0.08)', borderColor: COR_ACENTO }]}>
+                <Icone name="gift-outline" size={28} color={COR_ACENTO} />
                 <View style={{ flex: 1 }}>
                   <Text style={[styles.confirmBonusTitulo, { color: cores.textoPrincipal }]}>
                     Compensação pendente
                   </Text>
                   <Text style={[styles.confirmBonusTexto, { color: cores.textoSecundario }]}>
                     Se o anunciante confirmar que o imóvel já estava arrendado, recebes{' '}
-                    <Text style={{ fontFamily: Fonte.corpoSemi, color: LARANJA_MARCA }}>
+                    <Text style={{ fontFamily: Fonte.corpoSemi, color: COR_ACENTO }}>
                       {motivo.compensacao} MT em crédito interno
                     </Text>
                     .
@@ -208,7 +209,7 @@ export default function ReportarAnuncio() {
               activeOpacity={0.85}
             >
               <LinearGradient
-                colors={[LARANJA_MARCA, LARANJA_ESCURO]}
+                colors={[COR_ACENTO, COR_ACENTO_ESCURO]}
                 style={StyleSheet.absoluteFill}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
@@ -224,33 +225,18 @@ export default function ReportarAnuncio() {
   // ============ ECRÃ PRINCIPAL ============
   return (
     <View style={[styles.container, { backgroundColor: cores.fundo }]}>
-      <StatusBar barStyle="light-content" backgroundColor={AZUL_HERO_INICIO} />
+      <TopBar titulo="Reportar anúncio" onVoltar={() => router.back()} acoes={<></>} />
 
       {/* HEADER */}
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
-        <LinearGradient
-          colors={[AZUL_HERO_INICIO, AZUL_HERO_FIM]}
-          style={styles.header}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <View style={styles.headerTop}>
-            <TouchableOpacity
-              style={styles.headerBotao}
-              onPress={() => router.back()}
-            >
-              <Ionicons name="arrow-back" size={22} color="#FFFFFF" />
-            </TouchableOpacity>
-            <View style={styles.headerCenter}>
-              <Text style={styles.headerLabel}>SEGURANÇA</Text>
-              <Text style={styles.headerTitulo}>Reportar anúncio</Text>
-            </View>
-            <View style={styles.headerBotao} />
-          </View>
-
+      <LinearGradient
+        colors={[AZUL_HERO_INICIO, AZUL_HERO_FIM]}
+        style={styles.header}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
           <View style={styles.heroInfo}>
             <View style={styles.heroIconeBg}>
-              <Icone name="shield-alert" size={34} color="#FFFFFF" />
+              <Icone name="shield-alert" size={34} color={Colors.branco} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.heroTitulo}>Ajuda-nos a proteger a comunidade</Text>
@@ -259,8 +245,7 @@ export default function ReportarAnuncio() {
               </Text>
             </View>
           </View>
-        </LinearGradient>
-      </SafeAreaView>
+      </LinearGradient>
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
@@ -320,9 +305,9 @@ export default function ReportarAnuncio() {
                         {m.titulo}
                       </Text>
                       {m.compensacao && (
-                        <View style={[styles.compensacaoBadge, { backgroundColor: `${LARANJA_MARCA}20` }]}>
-                          <Icone name="gift-outline" size={11} color={LARANJA_MARCA} />
-                          <Text style={[styles.compensacaoTexto, { color: LARANJA_MARCA }]}>
+                        <View style={[styles.compensacaoBadge, { backgroundColor: `${COR_ACENTO}20` }]}>
+                          <Icone name="gift-outline" size={11} color={COR_ACENTO} />
+                          <Text style={[styles.compensacaoTexto, { color: COR_ACENTO }]}>
                             +{m.compensacao} MT crédito
                           </Text>
                         </View>
@@ -375,7 +360,7 @@ export default function ReportarAnuncio() {
           )}
 
           {/* Aviso privacidade */}
-          <View style={[styles.privacidadeBox, { backgroundColor: 'rgba(10, 107, 192, 0.06)', borderColor: 'rgba(10, 107, 192, 0.2)' }]}>
+          <View style={[styles.privacidadeBox, { backgroundColor: 'rgba(26, 115, 232, 0.06)', borderColor: 'rgba(26, 115, 232, 0.2)' }]}>
             <Ionicons name="lock-closed" size={16} color={cores.principal} />
             <Text style={[styles.privacidadeTexto, { color: cores.textoSecundario }]}>
               O teu reporte é confidencial. O anunciante não vê quem o reportou.
@@ -390,19 +375,19 @@ export default function ReportarAnuncio() {
             activeOpacity={0.85}
           >
             <LinearGradient
-              colors={[LARANJA_MARCA, LARANJA_ESCURO]}
+              colors={[COR_ACENTO, COR_ACENTO_ESCURO]}
               style={StyleSheet.absoluteFill}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
             />
             {enviando ? (
               <>
-                <Icone name="loading" size={20} color="#FFFFFF" />
+                <Icone name="loading" size={20} color={Colors.branco} />
                 <Text style={styles.botaoEnviarTexto}>A enviar...</Text>
               </>
             ) : (
               <>
-                <Ionicons name="paper-plane" size={18} color="#FFFFFF" />
+                <Ionicons name="paper-plane" size={18} color={Colors.branco} />
                 <Text style={styles.botaoEnviarTexto}>Enviar reporte</Text>
               </>
             )}
@@ -420,25 +405,9 @@ export default function ReportarAnuncio() {
 // ============================================================
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  safeArea: { backgroundColor: AZUL_HERO_INICIO },
 
   // Header
-  header: { paddingHorizontal: Spacing.lg, paddingBottom: Spacing.lg },
-  headerTop: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingVertical: Spacing.md,
-  },
-  headerBotao: {
-    width: 40, height: 40, borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    justifyContent: 'center', alignItems: 'center',
-  },
-  headerCenter: { alignItems: 'center' },
-  headerLabel: {
-    color: 'rgba(255,255,255,0.75)', fontSize: 10, letterSpacing: 1.5,
-    fontFamily: Fonte.corpoSemi, marginBottom: 2,
-  },
-  headerTitulo: { color: '#FFFFFF', fontSize: 18, fontFamily: Fonte.corpoSemi },
+  header: { paddingHorizontal: Spacing.lg, paddingTop: Spacing.sm, paddingBottom: Spacing.lg },
 
   heroInfo: {
     flexDirection: 'row', alignItems: 'center', gap: 14,
@@ -448,10 +417,10 @@ const styles = StyleSheet.create({
   },
   heroIconeBg: {
     width: 54, height: 54, borderRadius: 16,
-    backgroundColor: 'rgba(232, 118, 10, 0.3)',
+    backgroundColor: 'rgba(26, 115, 232, 0.3)',
     alignItems: 'center', justifyContent: 'center',
   },
-  heroTitulo: { color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi, marginBottom: 3 },
+  heroTitulo: { color: Colors.branco, fontSize: 15, fontFamily: Fonte.corpoSemi, marginBottom: 3 },
   heroSubtitulo: { color: 'rgba(255,255,255,0.85)', fontFamily: Fonte.corpo, fontSize: 12 },
 
   scrollContent: { padding: Spacing.lg, paddingBottom: Spacing.xxxl },
@@ -466,7 +435,7 @@ const styles = StyleSheet.create({
     width: 40, height: 40, borderRadius: 12,
     alignItems: 'center', justifyContent: 'center',
   },
-  anuncioInfoLabel: { fontSize: 10, fontFamily: Fonte.corpoSemi, letterSpacing: 0.8, marginBottom: 3 },
+  anuncioInfoLabel: { fontSize: 12, fontFamily: Fonte.corpoSemi, letterSpacing: 0.8, marginBottom: 3 },
   anuncioInfoTitulo: { fontSize: 14, fontFamily: Fonte.corpoSemi },
 
   // Secção
@@ -492,7 +461,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 3,
     paddingHorizontal: 7, paddingVertical: 3, borderRadius: 10,
   },
-  compensacaoTexto: { fontSize: 10, fontFamily: Fonte.corpoSemi },
+  compensacaoTexto: { fontSize: 12, fontFamily: Fonte.corpoSemi },
 
   // Descrição
   descCard: {
@@ -506,7 +475,7 @@ const styles = StyleSheet.create({
     fontFamily: Fonte.corpo, fontSize: 14, lineHeight: 20,
   },
   descContador: {
-    fontFamily: Fonte.corpo, fontSize: 11, textAlign: 'right', marginTop: 6,
+    fontFamily: Fonte.corpo, fontSize: 12, textAlign: 'right', marginTop: 6,
   },
 
   // Privacidade
@@ -521,9 +490,9 @@ const styles = StyleSheet.create({
   botaoEnviar: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     paddingVertical: 16, borderRadius: 16, overflow: 'hidden', gap: 10,
-    ...Sombras.colorida(LARANJA_MARCA),
+    ...Sombras.colorida(COR_ACENTO),
   },
-  botaoEnviarTexto: { color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi },
+  botaoEnviarTexto: { color: Colors.branco, fontSize: 15, fontFamily: Fonte.corpoSemi },
 
   // ============ Confirmação ============
   confirmContainer: {
@@ -539,7 +508,7 @@ const styles = StyleSheet.create({
   },
   confirmTitulo: {
     ...Typography.h1, textAlign: 'center',
-    marginBottom: 12, fontFamily: Fonte.tituloBold, fontSize: 26,
+    marginBottom: 12, fontFamily: Fonte.tituloBold, fontSize: 28,
   },
   confirmSubtitulo: {
     ...Typography.body, textAlign: 'center',
@@ -556,12 +525,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'flex-start', gap: 8,
     padding: 12, borderRadius: 12, marginBottom: 24, width: '100%',
   },
-  confirmNotaTexto: { flex: 1, fontFamily: Fonte.corpo, fontSize: 11, lineHeight: 16 },
+  confirmNotaTexto: { flex: 1, fontFamily: Fonte.corpo, fontSize: 12, lineHeight: 16 },
   confirmBotao: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
     paddingVertical: 16, paddingHorizontal: 40, borderRadius: 16,
     overflow: 'hidden',
-    ...Sombras.colorida(LARANJA_MARCA),
+    ...Sombras.colorida(COR_ACENTO),
   },
-  confirmBotaoTexto: { color: '#FFFFFF', fontSize: 15, fontFamily: Fonte.corpoSemi },
+  confirmBotaoTexto: { color: Colors.branco, fontSize: 15, fontFamily: Fonte.corpoSemi },
 });

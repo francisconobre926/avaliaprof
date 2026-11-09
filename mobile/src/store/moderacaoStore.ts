@@ -2,7 +2,7 @@
  * src/store/moderacaoStore.ts
  *
  * Store de moderação — denúncias, avisos e suspensões.
- * Persistência em AsyncStorage.
+ * Persistência e sincronização via moderacaoService (API + fallback local).
  *
  * Keys:
  * - @gohome_moderacao_denuncias
@@ -14,7 +14,7 @@
  */
 
 import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { moderacaoService } from '../../service/moderacaoService';
 import {
   Denuncia,
   Aviso,
@@ -27,9 +27,6 @@ import { useWalletStore } from './walletStore';
 // ============================================================
 // CONSTANTES
 // ============================================================
-const KEY_DENUNCIAS = '@gohome_moderacao_denuncias';
-const KEY_AVISOS = '@gohome_moderacao_avisos';
-const KEY_SUSPENSAO = '@gohome_moderacao_suspensao';
 
 const COMPENSACAO_DENUNCIA = 25;         // MT ao denunciante
 const AVISOS_PARA_SUSPENSAO = 3;         // 3 avisos → suspensão automática
@@ -90,7 +87,7 @@ function gerarId(prefixo: string): string {
 
 async function persistirDenuncias(denuncias: Denuncia[]) {
   try {
-    await AsyncStorage.setItem(KEY_DENUNCIAS, JSON.stringify(denuncias));
+    await moderacaoService.guardarDenuncias(denuncias);
   } catch (err) {
     console.warn('[moderacaoStore] erro ao persistir denúncias', err);
   }
@@ -98,7 +95,7 @@ async function persistirDenuncias(denuncias: Denuncia[]) {
 
 async function persistirAvisos(avisos: Aviso[]) {
   try {
-    await AsyncStorage.setItem(KEY_AVISOS, JSON.stringify(avisos));
+    await moderacaoService.guardarAvisos(avisos);
   } catch (err) {
     console.warn('[moderacaoStore] erro ao persistir avisos', err);
   }
@@ -106,11 +103,7 @@ async function persistirAvisos(avisos: Aviso[]) {
 
 async function persistirSuspensao(suspensao: Suspensao | null) {
   try {
-    if (suspensao) {
-      await AsyncStorage.setItem(KEY_SUSPENSAO, JSON.stringify(suspensao));
-    } else {
-      await AsyncStorage.removeItem(KEY_SUSPENSAO);
-    }
+    await moderacaoService.guardarSuspensao(suspensao);
   } catch (err) {
     console.warn('[moderacaoStore] erro ao persistir suspensão', err);
   }
@@ -128,14 +121,10 @@ export const useModeracaoStore = create<ModeracaoState>((set, get) => ({
   // ============ CARREGAR DO ASYNCSTORAGE ============
   carregarModeracao: async () => {
     try {
-      const [denunciasRaw, avisosRaw, suspensaoRaw] = await Promise.all([
-        AsyncStorage.getItem(KEY_DENUNCIAS),
-        AsyncStorage.getItem(KEY_AVISOS),
-        AsyncStorage.getItem(KEY_SUSPENSAO),
-      ]);
-      const denuncias: Denuncia[] = denunciasRaw ? JSON.parse(denunciasRaw) : [];
-      const avisos: Aviso[] = avisosRaw ? JSON.parse(avisosRaw) : [];
-      let suspensao: Suspensao | null = suspensaoRaw ? JSON.parse(suspensaoRaw) : null;
+      const dados = await moderacaoService.carregar();
+      const denuncias: Denuncia[] = dados.denuncias;
+      const avisos: Aviso[] = dados.avisos;
+      let suspensao: Suspensao | null = dados.suspensao;
 
       // Verifica expiração automática de suspensão
       if (suspensao && suspensao.estado === 'activa') {
@@ -234,11 +223,7 @@ export const useModeracaoStore = create<ModeracaoState>((set, get) => ({
 
   limpar: async () => {
     set({ denuncias: [], avisos: [], suspensao: null });
-    await Promise.all([
-      AsyncStorage.removeItem(KEY_DENUNCIAS),
-      AsyncStorage.removeItem(KEY_AVISOS),
-      AsyncStorage.removeItem(KEY_SUSPENSAO),
-    ]);
+    await moderacaoService.limpar();
   },
 }));
 

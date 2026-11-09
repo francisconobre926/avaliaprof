@@ -1,26 +1,25 @@
 /**
  * src/components/TopBar.tsx
  *
- * Barra de topo única da app. Todos os ecrãs principais (tabs do
- * procurador e do anunciante) usam este componente, para que o topo
- * seja sempre igual: azul GoHome, 52px, logo à esquerda, acções à direita.
+ * Barra de topo única da app: clara, baixa (48 dp) e discreta.
  *
  *   <TopBar />                                  → logo + sino
  *   <TopBar acoes={<TopBarBotao icone="add" … />} />
  *   <TopBar titulo="Editar perfil" onVoltar={router.back} />
-
+ *
+ * Fundo da própria app, linha fina por baixo, ícones em carvão. O azul fica
+ * reservado ao logo e aos elementos interativos. Segue o tema claro/escuro.
  */
 import { ReactNode } from 'react';
 import { useRouter } from 'expo-router';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../theme/colors';
+import { useCores } from '../store/themeStore';
 import { Spacing } from '../theme/typography';
 import { Fonte } from '../theme/fonts';
 
-export const TOPBAR_COR = Colors.azul;
-export const TOPBAR_ALTURA = 52;
+export const TOPBAR_ALTURA = 48;
 
 type NomeIcone = keyof typeof Ionicons.glyphMap;
 
@@ -28,22 +27,23 @@ interface TopBarBotaoProps {
   icone: NomeIcone;
   onPress?: () => void;
   rotulo: string;
-  /** Mostra um ponto laranja (ex.: há notificações por ler). */
+  /** Mostra um ponto indicador (ex.: há notificações por ler). */
   ponto?: boolean;
 }
 
+/** Botão de ação só com ícone, área de toque de 40 dp. */
 export function TopBarBotao({ icone, onPress, rotulo, ponto }: TopBarBotaoProps) {
+  const cores = useCores();
   return (
     <TouchableOpacity
       style={styles.botao}
       onPress={onPress}
-      activeOpacity={0.7}
+      activeOpacity={0.6}
       accessibilityRole="button"
       accessibilityLabel={rotulo}
-      hitSlop={6}
     >
-      <Ionicons name={icone} size={20} color={Colors.branco} />
-      {ponto && <View style={styles.ponto} />}
+      <Ionicons name={icone} size={22} color={cores.textoPrincipal} />
+      {ponto && <View style={[styles.ponto, { backgroundColor: cores.erro, borderColor: cores.fundo }]} />}
     </TouchableOpacity>
   );
 }
@@ -53,26 +53,24 @@ interface TopBarProps {
   titulo?: string;
   /** Mostra a seta de voltar à esquerda. */
   onVoltar?: () => void;
-  /** Acções à direita. Por omissão, o sino de notificações. */
+  /** Ações à direita. Por omissão, o sino de notificações. */
   acoes?: ReactNode;
   onNotificacoes?: () => void;
   temNotificacoes?: boolean;
-  /** Linha fina por baixo — útil quando o conteúdo já rolou. */
+  /** Mantido por compatibilidade: a linha inferior é sempre apresentada. */
   comLinha?: boolean;
 }
 
-export default function TopBar({
-  titulo,
-  onVoltar,
-  acoes,
-  onNotificacoes,
-  temNotificacoes,
-  comLinha,
-}: TopBarProps) {
+export default function TopBar({ titulo, onVoltar, acoes, onNotificacoes, temNotificacoes }: TopBarProps) {
   const router = useRouter();
+  const cores = useCores();
+
   return (
-    <SafeAreaView edges={['top']} style={[styles.safe, comLinha && styles.comLinha]}>
-      <StatusBar barStyle="light-content" backgroundColor={TOPBAR_COR} />
+    <SafeAreaView
+      edges={['top']}
+      style={[styles.safe, { backgroundColor: cores.fundo, borderBottomColor: cores.bordaSubtil }]}
+    >
+      <StatusBar barStyle={cores.ehEscuro ? 'light-content' : 'dark-content'} backgroundColor={cores.fundo} />
       <View style={styles.barra}>
         <View style={styles.esquerda}>
           {onVoltar && (
@@ -81,17 +79,18 @@ export default function TopBar({
               style={styles.voltar}
               accessibilityRole="button"
               accessibilityLabel="Voltar"
-              hitSlop={8}
             >
-              <Ionicons name="chevron-back" size={22} color={Colors.branco} />
+              <Ionicons name="chevron-back" size={24} color={cores.textoPrincipal} />
             </TouchableOpacity>
           )}
           {titulo ? (
-            <Text style={styles.titulo} numberOfLines={1}>{titulo}</Text>
+            <Text style={[styles.titulo, { color: cores.textoPrincipal }]} numberOfLines={1} accessibilityRole="header">
+              {titulo}
+            </Text>
           ) : (
             <Text style={styles.logo} accessibilityRole="header" accessibilityLabel="GoHome">
-              <Text style={styles.logoGo}>Go</Text>
-              <Text style={styles.logoHome}>Home</Text>
+              <Text style={{ color: cores.textoPrincipal }}>Go</Text>
+              <Text style={{ color: cores.principal }}>Home</Text>
             </Text>
           )}
         </View>
@@ -111,39 +110,19 @@ export default function TopBar({
 }
 
 const styles = StyleSheet.create({
-  safe: { backgroundColor: TOPBAR_COR, zIndex: 10 },
-  comLinha: { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: 'rgba(255,255,255,0.18)' },
+  safe: { zIndex: 10, borderBottomWidth: StyleSheet.hairlineWidth },
   barra: {
     height: TOPBAR_ALTURA,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg,
+    paddingHorizontal: Spacing.base,
   },
-  esquerda: { flexDirection: 'row', alignItems: 'center', flex: 1, gap: 4 },
-  direita: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  voltar: { marginLeft: -6, width: 32, height: 36, justifyContent: 'center' },
-  logo: { fontSize: 22, fontFamily: Fonte.tituloBold, letterSpacing: -0.4 },
-  logoGo: { color: Colors.branco },
-  logoHome: { color: Colors.azulSuave, fontFamily: Fonte.titulo },
-  titulo: { color: Colors.branco, fontSize: 16, fontFamily: Fonte.tituloSemi, letterSpacing: -0.3, flex: 1 },
-  botao: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  ponto: {
-    position: 'absolute',
-    top: 7,
-    right: 8,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: Colors.branco,
-    borderWidth: 1.5,
-    borderColor: TOPBAR_COR,
-  },
+  esquerda: { flexDirection: 'row', alignItems: 'center', flex: 1, gap: 2 },
+  direita: { flexDirection: 'row', alignItems: 'center' },
+  voltar: { marginLeft: -8, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  logo: { fontSize: 20, fontFamily: Fonte.tituloBold, letterSpacing: -0.3 },
+  titulo: { fontSize: 16, fontFamily: Fonte.tituloSemi, flex: 1 },
+  botao: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  ponto: { position: 'absolute', top: 8, right: 9, width: 9, height: 9, borderRadius: 5, borderWidth: 1.5 },
 });

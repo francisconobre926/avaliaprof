@@ -13,6 +13,8 @@ import {
   Animated,
   Alert,
   Image,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -31,9 +33,8 @@ import { PROVINCIAS_MOCAMBIQUE } from '../../src/data/mocambique';
 import { useUserStore } from '../../src/store/userStore';
 import { useCores } from '../../src/store/themeStore';
 import { useReferralStore } from '../../src/store/referralStore';
-import { useAuthGateStore } from '../../src/store/authGateStore';
 import { GrupoCategoria, CategoriaAnuncio, Anuncio } from '../../src/types';
-import { carregarCatalogo } from '../../src/data/catalogo';
+import { anunciosService } from '../../service/anunciosService';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFiltrosStore, aplicarFiltros, contarFiltros, PRECO_MIN, PRECO_MAX, Comodidade } from '../../src/store/filtrosStore';
 import { formatarDataCurta, formatarMT, noitesEntre } from '../../src/utils/reservas';
@@ -134,17 +135,6 @@ export default function HomeProcurador() {
   const modoConvidado = useUserStore(state => state.modoConvidado);
   const autenticado = usuario !== null && !modoConvidado;
 
-  const getInicialAvatar = usuario?.nome?.trim()
-    ? usuario.nome.trim().charAt(0).toUpperCase()
-    : '?';
-  const getPrimeiroNome = usuario?.nome?.trim().split(/\s+/)[0] || '';
-  const getSaudacao = () => {
-    const hora = new Date().getHours();
-    if (hora < 12) return 'Bom dia';
-    if (hora < 18) return 'Boa tarde';
-    return 'Boa noite';
-  };
-
   // Referral
   const meuCodigo = useReferralStore(state => state.meuCodigo);
 
@@ -175,7 +165,7 @@ export default function HomeProcurador() {
     useCallback(() => {
       let activo = true;
       carregarFavoritos();
-      carregarCatalogo().then(lista => { if (activo) setAnunciosCatalogo(lista); });
+      anunciosService.listar().then(r => r.dados).then(lista => { if (activo) setAnunciosCatalogo(lista); });
       return () => { activo = false; };
     }, [])
   );
@@ -260,26 +250,14 @@ export default function HomeProcurador() {
 
   const irParaFiltrosAvancados = () => setModalPrecosVisivel(true);
 
-  const abrirAuthGate = useAuthGateStore(state => state.abrir);
-
-  const abrirAnuncio = (id: string) => {
-    if (!autenticado) {
-      abrirAuthGate('ver_detalhes', () => {
-        router.push(`/anuncio/${id}` as any);
-      });
-      return;
-    }
-    router.push(`/anuncio/${id}` as any);
-  };
+  // Qualquer visitante pode ver os detalhes; a conta só é exigida para reservar.
+  const abrirAnuncio = (id: string) => router.push(`/anuncio/${id}` as any);
 
   const faixaActiva = FAIXAS_PRECO.find(f => f.id !== 'todos' && f.min === filtros.precoMin && (f.max ?? PRECO_MAX) === filtros.precoMax)?.id ?? (filtros.precoMin > PRECO_MIN || filtros.precoMax < PRECO_MAX ? 'personalizado' : 'todos');
   const quartosMin = filtros.quartos;
   const piscina = filtros.comodidades.includes('piscina');
   const nNoites = filtros.entrada && filtros.saida ? noitesEntre(filtros.entrada, filtros.saida) : 0;
   const periodo = nNoites > 0 ? `${formatarDataCurta(filtros.entrada!)}–${formatarDataCurta(filtros.saida!)}` : undefined;
-  const iniciais = usuario?.nome?.trim()
-    ? usuario.nome.trim().split(/\s+/).slice(0, 2).map(p => p[0]).join('').toUpperCase()
-    : '?';
   const filtrosAtivos = contarFiltros(filtros);
   const ciclarQuartos = () => definirFiltros({ quartos: quartosMin >= 4 ? 0 : quartosMin + 1 });
   const alternarPiscina = () => definirFiltros({
@@ -291,7 +269,6 @@ export default function HomeProcurador() {
   };
   const abrirPesquisa = () => router.push('/(procurador)/pesquisar' as any);
   const abrirMapa = () => router.push('/mapa' as any);
-  const irParaPerfil = () => router.push('/(procurador)/perfil' as any);
 
   const tituloLista = grupoActivo === 'imoveis' ? 'Casas em destaque'
     : grupoActivo === 'espacos' ? 'Salões em destaque'
@@ -308,44 +285,56 @@ export default function HomeProcurador() {
         contentContainerStyle={styles.scrollContent}
         stickyHeaderIndices={[]}
       >
-        {/* ============ CABEÇALHO ============ */}
-        <View style={styles.cabecalho}>
-          <View style={{ flex: 1 }}>
-            <TouchableOpacity onPress={() => setModalLocalizacaoVisivel(true)} activeOpacity={0.6} accessibilityLabel="Mudar localização" style={styles.localizacaoLinha}>
-              <Text style={[styles.localizacaoValor, { color: cores.textoSecundario }]} numberOfLines={1}>
-                {detectandoGPS ? 'a detectar…' : localizacaoActual.cidade}
-              </Text>
-              <Ionicons name="chevron-down" size={13} color={cores.textoSecundario} />
-            </TouchableOpacity>
-            <Text style={[styles.saudacao, { color: cores.textoPrincipal }]} numberOfLines={1}>
-              {getPrimeiroNome ? `Olá, ${getPrimeiroNome}` : 'Olá'}
-            </Text>
-          </View>
-          <TouchableOpacity onPress={irParaPerfil} style={[styles.avatar, { backgroundColor: cores.principal }]} accessibilityLabel="Perfil">
-            <Text style={styles.avatarTexto}>{iniciais}</Text>
-          </TouchableOpacity>
-        </View>
-
         {/* ============ PESQUISA ============ */}
-        <TouchableOpacity
-          activeOpacity={0.85}
-          onPress={abrirPesquisa}
-          style={[styles.pesquisa, Sombras.md, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}
+        <View
+          style={[styles.pesquisa, { backgroundColor: cores.fundoElevado, borderColor: cores.bordaSubtil }]}
           accessibilityRole="search"
-          accessibilityLabel="Pesquisar: onde, datas, pessoas"
         >
-          <Ionicons name="search" size={20} color={cores.textoPrincipal} />
-          <Text style={[styles.pesquisaTexto, { color: cores.textoTerciario }]} numberOfLines={1}>
-            Onde? · Datas · Pessoas
-          </Text>
+          <TouchableOpacity
+            onPress={() => setModalLocalizacaoVisivel(true)}
+            activeOpacity={0.6}
+            style={styles.pesquisaLocal}
+            accessibilityRole="button"
+            accessibilityLabel={`Localização: ${localizacaoActual.cidade}. Alterar`}
+          >
+            <Ionicons name={detectandoGPS ? 'locate-outline' : 'location-outline'} size={18} color={cores.principal} />
+            <Text style={[styles.pesquisaCidade, { color: cores.textoPrincipal }]} numberOfLines={1}>
+              {detectandoGPS ? 'A detetar…' : localizacaoActual.cidade}
+            </Text>
+            <Ionicons name="chevron-down" size={14} color={cores.textoSecundario} />
+          </TouchableOpacity>
+
+          <View style={[styles.pesquisaDivisor, { backgroundColor: cores.bordaSubtil }]} />
+
+          <View style={styles.pesquisaCampo}>
+            <Ionicons name="search" size={18} color={cores.textoSecundario} />
+            <TextInput
+              value={filtros.termo}
+              onChangeText={v => definirFiltros({ termo: v })}
+              placeholder="Pesquisar zona ou bairro"
+              placeholderTextColor={cores.textoSecundario}
+              style={[styles.pesquisaTexto, { color: cores.textoPrincipal, paddingVertical: 0 }]}
+              autoCapitalize="words"
+              autoCorrect={false}
+              returnKeyType="search"
+              accessibilityLabel="Pesquisar por zona"
+            />
+            {!!filtros.termo && (
+              <TouchableOpacity onPress={() => definirFiltros({ termo: '' })} hitSlop={8} accessibilityLabel="Limpar pesquisa">
+                <Ionicons name="close-circle" size={18} color={cores.textoTerciario} />
+              </TouchableOpacity>
+            )}
+          </View>
+
           <TouchableOpacity
             onPress={irParaFiltrosAvancados}
             style={[styles.pesquisaFiltro, { backgroundColor: cores.textoPrincipal }]}
+            accessibilityRole="button"
             accessibilityLabel="Filtros"
           >
-            <Ionicons name="options" size={18} color={cores.fundo} />
+            <Ionicons name="options" size={16} color={cores.fundo} />
           </TouchableOpacity>
-        </TouchableOpacity>
+        </View>
 
         {/* ============ SEPARADORES: CASAS / SALÕES / … ============ */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.abas} style={[styles.abasLinha, { borderBottomColor: cores.bordaSubtil }]}>
@@ -466,7 +455,8 @@ export default function HomeProcurador() {
       <Modal visible={modalPrecosVisivel} transparent animationType="slide" onRequestClose={() => setModalPrecosVisivel(false)}>
         <View style={styles.modalOverlay}>
           <Pressable style={StyleSheet.absoluteFill} onPress={() => setModalPrecosVisivel(false)} />
-          <View style={[styles.modalContent, { backgroundColor: cores.fundoElevado, maxHeight: '78%' }]}>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <View style={[styles.modalContent, styles.modalFiltros, { backgroundColor: cores.fundoElevado, maxHeight: '86%' }]}>
             <View style={[styles.modalHandle, { backgroundColor: cores.bordaMedia }]} />
             <View style={styles.faixasCabecalho}>
               <View style={{ flex: 1 }}>
@@ -483,6 +473,8 @@ export default function HomeProcurador() {
             </View>
             <FlatList
               data={FAIXAS_PRECO}
+              keyboardShouldPersistTaps="handled"
+              style={{ flexShrink: 1 }}
               keyExtractor={item => item.id}
               showsVerticalScrollIndicator={false}
               ItemSeparatorComponent={() => (
@@ -520,6 +512,7 @@ export default function HomeProcurador() {
               contentContainerStyle={{ paddingBottom: Spacing.xl }}
             />
           </View>
+          </KeyboardAvoidingView>
         </View>
       </Modal>
 
@@ -637,17 +630,16 @@ export default function HomeProcurador() {
 
 const styles = StyleSheet.create({
   scrollContent: { paddingBottom: 24 },
-  cabecalho: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 20, paddingTop: 16 },
-  saudacao: { ...Typography.tituloPagina },
-  cabecalhoBotao: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
-  avatar: { width: 46, height: 46, borderRadius: 23, alignItems: 'center', justifyContent: 'center' },
-  avatarTexto: { color: Colors.branco, fontFamily: Fonte.corpoBold, fontSize: 16 },
   pesquisa: {
-    flexDirection: 'row', alignItems: 'center', gap: 12, marginHorizontal: 20, marginTop: 16,
-    borderRadius: 999, borderWidth: 1, paddingLeft: 20, paddingRight: 8, height: 60,
+    flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 6, marginTop: 12,
+    borderRadius: 999, borderWidth: 1, paddingLeft: 14, paddingRight: 6, height: 48,
   },
-  pesquisaTexto: { flex: 1, fontFamily: Fonte.corpo, fontSize: 16 },
-  pesquisaFiltro: { width: 46, height: 46, borderRadius: 23, alignItems: 'center', justifyContent: 'center' },
+  pesquisaLocal: { flexDirection: 'row', alignItems: 'center', gap: 5, maxWidth: '30%' },
+  pesquisaCidade: { fontFamily: Fonte.corpoBold, fontSize: 14, flexShrink: 1 },
+  pesquisaDivisor: { width: 1, height: 20 },
+  pesquisaCampo: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, height: '100%' },
+  pesquisaTexto: { flex: 1, fontFamily: Fonte.corpo, fontSize: 14 },
+  pesquisaFiltro: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   abasLinha: { marginTop: 20, marginHorizontal: 20, borderBottomWidth: 1, flexGrow: 0 },
   abas: { gap: 22 },
   aba: { paddingBottom: 10, borderBottomWidth: 2.5, borderBottomColor: 'transparent', marginBottom: -1 },
@@ -659,14 +651,12 @@ const styles = StyleSheet.create({
   chipContadorTexto: { color: Colors.branco, fontFamily: Fonte.corpoSemi, fontSize: 12 },
   listaCabecalho: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', paddingHorizontal: 20, marginTop: 24, marginBottom: 14 },
   listaTitulo: { ...Typography.tituloSecao },
-  lista: { paddingHorizontal: 20 },
+  lista: { paddingHorizontal: 10 },
   flutuante: {
     position: 'absolute', alignSelf: 'center', bottom: 18, flexDirection: 'row', alignItems: 'center', gap: 9,
     paddingHorizontal: 26, height: 52, borderRadius: 999,
   },
   flutuanteTexto: { fontFamily: Fonte.corpoBold, fontSize: 16 },
-  localizacaoLinha: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 4 },
-  localizacaoValor: { fontFamily: Fonte.corpoSemi, fontSize: 13, flexShrink: 1 },
   faixasCabecalho: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -674,6 +664,10 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   faixasTitulo: { ...Typography.h2 },
+  modalFiltros: { paddingHorizontal: 28 },
+  filtroRotulo: { fontFamily: Fonte.corpoSemi, fontSize: 13, marginTop: 12, marginBottom: 8 },
+  zonaCampo: { flexDirection: 'row', alignItems: 'center', gap: 10, height: 52, borderRadius: 16, borderWidth: 1, paddingHorizontal: 14 },
+  zonaInput: { flex: 1, fontFamily: Fonte.corpo, fontSize: 16, paddingVertical: 0 },
   faixaRow: {
     flexDirection: 'row',
     alignItems: 'center',

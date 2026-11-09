@@ -4,7 +4,9 @@
  * convite para ser anfitrião e lista de definições.
  */
 import { useCallback, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, LayoutAnimation, Platform, UIManager } from 'react-native';
+
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) UIManager.setLayoutAnimationEnabledExperimental(true);
 import TopBar from '../../src/components/TopBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,7 +18,7 @@ import { useReferralStore } from '../../src/store/referralStore';
 import { useReservasStore } from '../../src/store/reservasStore';
 import { useFavoritosStore } from '../../src/store/favoritosStore';
 import { Anuncio } from '../../src/types';
-import { carregarCatalogo } from '../../src/data/catalogo';
+import { anunciosService } from '../../service/anunciosService';
 import { formatarIntervalo, formatarMT } from '../../src/utils/reservas';
 import { Fonte } from '../../src/theme/fonts';
 import { Typography } from '../../src/theme/typography';
@@ -39,7 +41,7 @@ export default function PerfilProcurador() {
       let ativo = true;
       carregarFavoritos();
       if (!reservasCarregadas) carregarReservas();
-      carregarCatalogo().then(l => { if (ativo) setCatalogo(l); });
+      anunciosService.listar().then(r => r.dados).then(l => { if (ativo) setCatalogo(l); });
       return () => { ativo = false; };
     }, [carregarFavoritos, carregarReservas, reservasCarregadas]),
   );
@@ -110,20 +112,54 @@ export default function PerfilProcurador() {
 
   const estadoCor = (e: string) => (e === 'confirmada' ? cores.sucesso : cores.aviso);
 
-  const Linha = ({ titulo, descricao, onPress, ultimo, cor }: { titulo: string; descricao?: string; onPress?: () => void; ultimo?: boolean; cor?: string }) => (
-    <TouchableOpacity
-      onPress={onPress}
-      activeOpacity={onPress ? 0.7 : 1}
-      accessibilityRole="button"
-      style={[s.menuLinha, !ultimo && { borderBottomColor: cores.bordaSubtil, borderBottomWidth: 1 }]}
-    >
-      <View style={{ flex: 1 }}>
-        <Text style={[s.menuTitulo, { color: cor || cores.textoPrincipal }]}>{titulo}</Text>
-        {!!descricao && <Text style={{ color: cores.textoSecundario, fontFamily: Fonte.corpo, fontSize: 13, marginTop: 2 }}>{descricao}</Text>}
+  const [aberto, setAberto] = useState<string | null>(null);
+  const alternar = (id: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.create(200, 'easeInEaseOut', 'opacity'));
+    setAberto(a => (a === id ? null : id));
+  };
+
+  const Linha = ({ id, icone, titulo, resumo, detalhe, acao, onPress, ultimo }: {
+    id: string; icone: keyof typeof Ionicons.glyphMap; titulo: string; resumo?: string;
+    detalhe: string; acao?: string; onPress?: () => void; ultimo?: boolean;
+  }) => {
+    const aberta = aberto === id;
+    return (
+      <View style={!ultimo && { borderBottomColor: cores.bordaSubtil, borderBottomWidth: StyleSheet.hairlineWidth }}>
+        <TouchableOpacity
+          onPress={() => alternar(id)}
+          activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityState={{ expanded: aberta }}
+          style={s.menuLinha}
+        >
+          <View style={[s.menuIcone, { backgroundColor: aberta ? cores.textoPrincipal : cores.fundoSuave }]}>
+            <Ionicons name={icone} size={20} color={aberta ? cores.fundo : cores.textoPrincipal} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={[s.menuTitulo, { color: cores.textoPrincipal }]}>{titulo}</Text>
+            {!!resumo && !aberta && <Text style={{ color: cores.textoSecundario, fontFamily: Fonte.corpo, fontSize: 13, marginTop: 2 }}>{resumo}</Text>}
+          </View>
+          <Ionicons name={aberta ? 'chevron-up' : 'chevron-down'} size={18} color={cores.textoTerciario} />
+        </TouchableOpacity>
+        {aberta && (
+          <View style={s.menuCorpo}>
+            <Text style={{ color: cores.textoSecundario, fontFamily: Fonte.corpo, fontSize: 14, lineHeight: 20 }}>{detalhe}</Text>
+            {!!onPress && (
+              <TouchableOpacity
+                onPress={onPress}
+                activeOpacity={0.8}
+                accessibilityRole="button"
+                style={[s.menuAcao, { backgroundColor: cores.textoPrincipal }]}
+              >
+                <Text style={{ color: cores.fundo, fontFamily: Fonte.corpoBold, fontSize: 14 }}>{acao || 'Abrir'}</Text>
+                <Ionicons name="arrow-forward" size={16} color={cores.fundo} />
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
       </View>
-      <Ionicons name="chevron-forward" size={18} color={cores.textoTerciario} />
-    </TouchableOpacity>
-  );
+    );
+  };
 
   return (
     <View style={[s.flex, { backgroundColor: cores.fundo }]}>
@@ -224,14 +260,22 @@ export default function PerfilProcurador() {
         </View>
 
         {/* ============ DEFINIÇÕES ============ */}
-        <View style={[s.menu, { backgroundColor: cores.fundoSuave }]}>
-          <Linha titulo="Informações pessoais" descricao="Nome, email, telefone" onPress={() => router.push('/editar-perfil')} />
-          <Linha titulo="Pagamentos (M-Pesa / e-Mola)" descricao={`Carteira ${formatarMT(saldoTotal)}`} onPress={() => router.push('/carteira' as any)} />
-          <Linha titulo="Notificações" onPress={() => router.push('/avisos' as any)} />
-          <Linha titulo="Programa de referência" descricao={totalConvidados > 0 ? `${totalConvidados} convidado${totalConvidados === 1 ? '' : 's'}` : 'Ganha 10% com indicados'} onPress={() => router.push('/referencia' as any)} />
-          <Linha titulo="Aparência" descricao="Tema e cores da app" onPress={() => router.push('/aparencia')} />
-          <Linha titulo="Privacidade e segurança" descricao="Password" onPress={() => router.push('/auth/nova-password')} />
-          <Linha titulo="Ajuda e termos" ultimo />
+        <View style={s.menu}>
+          <Linha id="perfil" icone="person-outline" titulo="Informações pessoais" resumo="Nome, email, telefone"
+            detalhe="Atualize o seu nome, email, telefone e fotografia de perfil." acao="Editar perfil" onPress={() => router.push('/editar-perfil')} />
+          <Linha id="pagamentos" icone="wallet-outline" titulo="Pagamentos (M-Pesa / e-Mola)" resumo={`Carteira ${formatarMT(saldoTotal)}`}
+            detalhe={`Saldo atual: ${formatarMT(saldoTotal)}. Gira os seus métodos de pagamento e consulte movimentos.`} acao="Abrir carteira" onPress={() => router.push('/carteira' as any)} />
+          <Linha id="notificacoes" icone="notifications-outline" titulo="Notificações"
+            detalhe="Veja os avisos sobre reservas, mensagens e pagamentos." acao="Ver avisos" onPress={() => router.push('/avisos' as any)} />
+          <Linha id="referencia" icone="gift-outline" titulo="Programa de referência"
+            resumo={totalConvidados > 0 ? `${totalConvidados} convidado${totalConvidados === 1 ? '' : 's'}` : 'Ganha 10% com indicados'}
+            detalhe="Convide amigos para a GoHome e ganhe 10% com cada indicado." acao="Convidar amigos" onPress={() => router.push('/referencia' as any)} />
+          <Linha id="aparencia" icone="color-palette-outline" titulo="Aparência" resumo="Tema e cores da app"
+            detalhe="Escolha o tema claro ou escuro e as cores da aplicação." acao="Personalizar" onPress={() => router.push('/aparencia')} />
+          <Linha id="seguranca" icone="shield-checkmark-outline" titulo="Privacidade e segurança" resumo="Password"
+            detalhe="Altere a sua palavra-passe para manter a conta protegida." acao="Alterar password" onPress={() => router.push('/auth/nova-password')} />
+          <Linha id="ajuda" icone="help-circle-outline" titulo="Ajuda e termos" ultimo
+            detalhe="Precisa de ajuda? Contacte a equipa Let's Go Tech. Os termos de uso e a política de privacidade estarão disponíveis aqui." />
         </View>
 
         {usuario ? (
@@ -262,7 +306,7 @@ export default function PerfilProcurador() {
 
 const s = StyleSheet.create({
   flex: { flex: 1 },
-  conteudo: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 32 },
+  conteudo: { paddingHorizontal: 12, paddingTop: 12, paddingBottom: 32 },
   cabecalho: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   avatar: { width: 66, height: 66, borderRadius: 33, alignItems: 'center', justifyContent: 'center' },
   avatarTexto: { color: Colors.branco, fontFamily: Fonte.tituloBold, fontSize: 24 },
@@ -282,8 +326,11 @@ const s = StyleSheet.create({
   convite: { flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: 22, padding: 18, marginTop: 28 },
   conviteTitulo: { fontFamily: Fonte.tituloSemi, fontSize: 18 },
   conviteBotao: { paddingHorizontal: 18, height: 46, borderRadius: 999, alignItems: 'center', justifyContent: 'center' },
-  menu: { borderRadius: 22, marginTop: 20, paddingHorizontal: 18 },
-  menuLinha: { flexDirection: 'row', alignItems: 'center', paddingVertical: 18 },
+  menu: { borderRadius: 22, marginTop: 20 },
+  menuLinha: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 14 },
+  menuIcone: { width: 40, height: 40, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+  menuCorpo: { paddingLeft: 54, paddingBottom: 16, gap: 12 },
+  menuAcao: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', gap: 8, paddingHorizontal: 16, height: 40, borderRadius: 999 },
   menuTitulo: { fontFamily: Fonte.corpoSemi, fontSize: 16 },
   trocar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 16, marginTop: 12 },
   versao: { textAlign: 'center', fontFamily: Fonte.corpo, fontSize: 12, marginTop: 16 },

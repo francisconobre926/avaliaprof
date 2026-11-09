@@ -56,6 +56,7 @@ export default function LoginScreen() {
   const passwordInputRef = useRef<TextInput>(null);
   const loginStore = useUserStore((state) => state.login);
   const escolherPapel = useUserStore((state) => state.escolherPapel);
+  const entrarComoDemo = useUserStore((state) => state.entrarComoDemo);
   const fade = useRef(new Animated.Value(0)).current;
   const rise = useRef(new Animated.Value(16)).current;
 
@@ -118,6 +119,11 @@ export default function LoginScreen() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const entrarDemo = async () => {
+    await entrarComoDemo(isAnunciante ? 'anunciante' : 'procurador');
+    router.replace((isAnunciante ? '/(anunciante)' : '/(procurador)') as never);
   };
 
   const loginGoogle = () => {
@@ -326,6 +332,14 @@ export default function LoginScreen() {
               <Text style={styles.googleButtonText}>Continuar com Google</Text>
               <Ionicons name="arrow-forward" size={17} color={BRAND.muted} />
             </TouchableOpacity>
+
+            {__DEV__ ? (
+              <TouchableOpacity style={styles.googleButton} onPress={entrarDemo} activeOpacity={0.82} accessibilityRole="button">
+                <Ionicons name="flask-outline" size={20} color={corPrincipal} />
+                <Text style={styles.googleButtonText}>Entrar com conta demo ({isAnunciante ? 'anunciante' : 'procurador'})</Text>
+                <Ionicons name="arrow-forward" size={17} color={BRAND.muted} />
+              </TouchableOpacity>
+            ) : null}
 
             <View style={styles.signupRow}>
               <Text style={styles.signupPrompt}>Ainda não tens conta?</Text>

@@ -20,6 +20,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
 
 import { Fonte } from '../../theme/fonts';
+import { Controlo } from '../../theme/typography';
 export type InputType = 'text' | 'password' | 'phone' | 'number' | 'email' | 'textarea';
 
 interface InputProps extends Omit<TextInputProps, 'style'> {
@@ -101,7 +102,7 @@ export const Input: React.FC<InputProps> = ({
           {
             backgroundColor: disabled ? cores.fundoSuave : cores.fundoElevado,
             borderColor,
-            minHeight: multiline ? 100 : 52,
+            minHeight: multiline ? 96 : Controlo.input,
           },
         ]}
       >

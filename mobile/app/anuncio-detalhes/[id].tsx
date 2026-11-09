@@ -40,7 +40,8 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { Typography, Spacing, Radius } from '../../src/theme/typography';
 import { useUserStore } from '../../src/store/userStore';
-import { obterAnuncioLocal, guardarAnuncioLocal, eliminarAnuncioLocal, type AnuncioLocal } from '../../src/store/anunciosLocal';
+import type { AnuncioLocal } from '../../src/store/anunciosLocal';
+import { anunciosService } from '../../service/anunciosService';
 
 import { Fonte } from '../../src/theme/fonts';
 import Icone from '../../src/components/Icone';
@@ -269,7 +270,7 @@ export default function AnuncioDetalhesScreen() {
   useEffect(() => {
     let activo = true;
     setCarregandoAnuncio(true);
-    obterAnuncioLocal(String(id || ''))
+    anunciosService.obterLocal(String(id || ''))
       .then((registo) => { if (activo) setAnuncioLocal(registo); })
       .catch(() => { if (activo) setAnuncioLocal(null); })
       .finally(() => { if (activo) setCarregandoAnuncio(false); });
@@ -422,7 +423,7 @@ export default function AnuncioDetalhesScreen() {
     if (anuncioLocal) {
       try {
         const actualizado: AnuncioLocal = { ...anuncioLocal, estadoAnuncio: novoEstado };
-        await guardarAnuncioLocal(actualizado);
+        await anunciosService.guardar(actualizado);
         setAnuncioLocal(actualizado);
       } catch {
         Alert.alert('Não foi possível actualizar', 'O estado do anúncio não foi guardado. Tenta novamente.');
@@ -442,7 +443,7 @@ export default function AnuncioDetalhesScreen() {
     setModalEliminarVisivel(false);
     try {
       if (anuncioLocal) {
-        await eliminarAnuncioLocal(anuncioLocal.id);
+        await anunciosService.eliminar(anuncioLocal.id);
       }
       Alert.alert(
         'Anúncio eliminado',

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { referenciaService } from '../../service/referenciaService';
 
 // ============================================================
 // TIPOS
@@ -53,7 +53,6 @@ export interface ReferralState {
   getTaxaConversao: () => number;
 }
 
-const CHAVE_REFERENCIA = '@gohome_referencia_v2';
 
 // ============================================================
 // HELPERS
@@ -89,7 +88,7 @@ export function calcularComissao(valorPago: number, tipoReferido: 'procurador' |
 
 const persistir = async (estado: Partial<ReferralState>) => {
   try {
-    await AsyncStorage.setItem(CHAVE_REFERENCIA, JSON.stringify(estado));
+    await referenciaService.guardar(estado as Record<string, any>);
   } catch (e) {
     console.warn('Erro ao persistir referência:', e);
   }
@@ -263,10 +262,9 @@ export const useReferralStore = create<ReferralState>((set, get) => ({
 
   carregarReferencia: async () => {
     try {
-      const guardado = await AsyncStorage.getItem(CHAVE_REFERENCIA);
+      const estado = await referenciaService.carregar();
 
-      if (guardado) {
-        const estado = JSON.parse(guardado);
+      if (estado) {
         set({
           meuCodigo: estado.meuCodigo || '',
           meuLink: estado.meuLink || '',
@@ -290,7 +288,7 @@ export const useReferralStore = create<ReferralState>((set, get) => ({
       convidadoPor: null,
       convidados: convidadosMock,
     });
-    await AsyncStorage.removeItem(CHAVE_REFERENCIA);
+    await referenciaService.limpar();
   },
 
   // ============ GETTERS ============

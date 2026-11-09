@@ -3,7 +3,8 @@
  *
  * Variantes: bottom-sheet | center
  * Com backdrop opcional (blur efeito vidro)
- * Suporta: título, subtítulo, swipe to close (apenas bottom-sheet)
+ * Suporta: título, subtítulo, swipe to close (apenas bottom-sheet),
+ * corpo com scroll interno e rodapé de ação fixo (`rodape`).
  */
 
 import React, { useEffect, useRef } from 'react';
@@ -16,13 +17,15 @@ import {
   Animated,
   Dimensions,
   PanResponder,
-  Platform,
+  ScrollView,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
 
 import { Fonte } from '../../theme/fonts';
+import { Folha } from '../../theme/typography';
 const { height: H } = Dimensions.get('window');
 
 export type ModalVariant = 'bottom-sheet' | 'center';
@@ -36,6 +39,8 @@ interface ModalProps {
   swipeToClose?: boolean;
   showCloseButton?: boolean;
   backdropBlur?: boolean;
+  /** Ação principal fixa no fundo da folha (ex.: <Button …/>); não desliza com o conteúdo. */
+  rodape?: React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -48,9 +53,11 @@ export const Modal: React.FC<ModalProps> = ({
   swipeToClose = true,
   showCloseButton = true,
   backdropBlur = true,
+  rodape,
   children,
 }) => {
   const cores = useCores();
+  const insets = useSafeAreaInsets();
   const translateY = useRef(new Animated.Value(H)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
@@ -106,9 +113,9 @@ export const Modal: React.FC<ModalProps> = ({
         </Animated.View>
 
         <Animated.View
-          {...(variant === 'bottom-sheet' ? panResponder.panHandlers : {})}
           style={[
             variant === 'bottom-sheet' ? styles.bottomSheet : styles.centerModal,
+            variant === 'bottom-sheet' && { paddingBottom: Math.max(insets.bottom, 12) },
             {
               backgroundColor: cores.fundoElevado,
               transform: [{ translateY: variant === 'bottom-sheet' ? translateY : 0 }],
@@ -116,6 +123,8 @@ export const Modal: React.FC<ModalProps> = ({
             },
           ]}
         >
+          {/* Zona de arrasto: só handle + cabeçalho, para não competir com o scroll do corpo */}
+          <View {...(variant === 'bottom-sheet' ? panResponder.panHandlers : {})}>
           {variant === 'bottom-sheet' && (
             <View style={[styles.handle, { backgroundColor: cores.bordaMedia }]} />
           )}
@@ -145,8 +154,21 @@ export const Modal: React.FC<ModalProps> = ({
               )}
             </View>
           )}
+          </View>
 
-          <View style={styles.body}>{children}</View>
+          <ScrollView
+            style={styles.corpoScroll}
+            contentContainerStyle={styles.body}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+          >
+            {children}
+          </ScrollView>
+
+          {rodape ? (
+            <View style={[styles.rodape, { borderTopColor: cores.bordaSubtil }]}>{rodape}</View>
+          ) : null}
         </Animated.View>
       </View>
     </RNModal>
@@ -156,11 +178,10 @@ export const Modal: React.FC<ModalProps> = ({
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'flex-end' },
   bottomSheet: {
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    paddingTop: 10,
-    paddingBottom: Platform.OS === 'ios' ? 34 : 20,
-    maxHeight: H * 0.9,
+    borderTopLeftRadius: Folha.raio,
+    borderTopRightRadius: Folha.raio,
+    paddingTop: 8,
+    maxHeight: H * Folha.alturaMaxima,
   },
   centerModal: {
     margin: 20,
@@ -172,20 +193,20 @@ const styles = StyleSheet.create({
     maxWidth: 420,
   },
   handle: {
-    width: 40,
-    height: 4,
+    width: Folha.handle.largura,
+    height: Folha.handle.altura,
     borderRadius: 2,
     alignSelf: 'center',
-    marginBottom: 12,
+    marginBottom: 10,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     paddingHorizontal: 20,
-    paddingBottom: 16,
+    paddingBottom: 12,
     gap: 12,
   },
-  titulo: { fontSize: 20, fontFamily: Fonte.tituloSemi },
+  titulo: { fontSize: 18, fontFamily: Fonte.tituloSemi },
   subtitulo: { fontFamily: Fonte.corpo, fontSize: 13, marginTop: 4 },
   closeBtn: {
     width: 32,
@@ -194,7 +215,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  body: { paddingHorizontal: 20 },
+  corpoScroll: { flexGrow: 0, flexShrink: 1 },
+  body: { paddingHorizontal: 20, paddingBottom: 8 },
+  rodape: { paddingHorizontal: 20, paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth },
 });
 
 export default Modal;

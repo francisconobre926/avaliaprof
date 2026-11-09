@@ -20,6 +20,7 @@ import { useCores } from '../../store/themeStore';
 
 import { Fonte } from '../../theme/fonts';
 import { Colors } from '../../theme/colors';
+import { Controlo } from '../../theme/typography';
 interface ChipProps {
   label: string;
   seleccionado?: boolean;
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
-    paddingVertical: 7,
+    minHeight: Controlo.chip,
     borderRadius: 100,
     borderWidth: 1,
     gap: 6,

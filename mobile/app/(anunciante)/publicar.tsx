@@ -39,7 +39,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { useRouter, useNavigation, useLocalSearchParams } from 'expo-router';
-import { guardarAnuncioLocal } from '../../src/store/anunciosLocal';
+import { anunciosService } from '../../service/anunciosService';
 import { Colors } from '../../src/theme/colors';
 import { Spacing, Typography, Radius } from '../../src/theme/typography';
 import {
@@ -700,7 +700,7 @@ export default function PublicarScreen() {
       const zonaCompleta = `${bairro.trim()}, ${cidade.trim()}, ${provincia || 'Moçambique'}`;
 
       try {
-        await guardarAnuncioLocal({
+        await anunciosService.guardar({
           id: anuncioId, titulo: titulo.trim(), categoria: categoriaFinal, finalidade,
           descricao: descricao.trim(), bairro: bairro.trim(), cidade: cidade.trim(),
           moradaCompleta: zonaCompleta, latitude: latitudeAnuncio, longitude: longitudeAnuncio,
@@ -859,7 +859,7 @@ export default function PublicarScreen() {
         acoes={
           modo === 'editar' ? (
             <View style={styles.badgeModoEditar} accessibilityLabel="Modo edição">
-              <Icone name="pencil" size={13} color={Colors.branco} />
+              <Icone name="pencil" size={13} color={Colors.azulTexto} />
               <Text style={styles.badgeModoEditarTexto}>Edição</Text>
             </View>
           ) : (
@@ -1751,9 +1751,9 @@ const styles = StyleSheet.create({
   badgeModoEditar: {
     flexDirection: 'row', alignItems: 'center', gap: 5,
     paddingHorizontal: 10, height: 30, borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: Colors.azulSuave,
   },
-  badgeModoEditarTexto: { color: Colors.branco, fontSize: 12, fontFamily: Fonte.corpoSemi },
+  badgeModoEditarTexto: { color: Colors.azulTexto, fontSize: 12, fontFamily: Fonte.corpoSemi },
   progressoLegenda: { fontSize: 12, fontFamily: Fonte.corpoMedio, color: TEXTO_MEDIO, marginBottom: 8 },
   progressoWrap: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 12 },
   segmentos: { flexDirection: 'row', gap: 6 },

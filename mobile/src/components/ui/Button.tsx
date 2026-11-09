@@ -22,6 +22,7 @@ import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../store/themeStore';
 import { Colors, Sombras } from '../../theme/colors';
+import { Controlo } from '../../theme/typography';
 
 import { Fonte } from '../../theme/fonts';
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
@@ -66,9 +67,9 @@ export const Button: React.FC<ButtonProps> = ({
 
   // Tamanhos
   const sizeStyles: Record<ButtonSize, { padV: number; padH: number; font: number; icon: number; height: number }> = {
-    sm: { padV: 8, padH: 14, font: 13, icon: 16, height: 36 },
-    md: { padV: 12, padH: 20, font: 15, icon: 18, height: 48 },
-    lg: { padV: 16, padH: 24, font: 16, icon: 20, height: 56 },
+    sm: { padV: 6, padH: 14, font: 13, icon: 16, height: Controlo.botaoPequeno },
+    md: { padV: 10, padH: 18, font: 15, icon: 18, height: Controlo.botao },
+    lg: { padV: 12, padH: 22, font: 16, icon: 20, height: Controlo.botaoGrande },
   };
   const sz = sizeStyles[size];
 

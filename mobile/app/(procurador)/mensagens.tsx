@@ -3,7 +3,7 @@
  * Avatar com miniatura do anúncio, estado da conversa (pílula), pré-visualização
  * e contador de não lidas.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,28 +12,11 @@ import { useCores } from '../../src/store/themeStore';
 import { Fonte } from '../../src/theme/fonts';
 import { Typography } from '../../src/theme/typography';
 import { Colors } from '../../src/theme/colors';
+import { conversasService } from '../../service/conversasService';
+import type { Conversa, EstadoConversa } from '../../src/data/conversas-mock';
 
-type Estado = 'confirmada' | 'visita' | 'pedido' | 'consulta' | 'concluida';
+type Estado = EstadoConversa;
 type Filtro = 'todas' | 'naoLidas' | 'anfitriao';
-
-interface Conversa {
-  id: string;
-  nome: string;
-  anuncio: string;
-  contexto?: string;
-  estado: Estado;
-  ultimaMensagem: string;
-  hora: string;
-  naoLidas: number;
-  verificado: boolean;
-}
-
-const conversas: Conversa[] = [
-  { id: '1', nome: 'Maria Chissano', anuncio: 'Quarto individual perto da UZ', estado: 'confirmada', ultimaMensagem: 'Sim, ainda está disponível. Quando queres visitar?', hora: '14:30', naoLidas: 2, verificado: true },
-  { id: '2', nome: 'Imobiliária Costa Sol', anuncio: 'Apartamento T2 Ponta-Gêa', estado: 'visita', ultimaMensagem: 'Podemos marcar visita esta semana.', hora: '11:45', naoLidas: 1, verificado: true },
-  { id: '3', nome: 'João Nhamirre', anuncio: 'Casa T3 com quintal', estado: 'pedido', ultimaMensagem: 'Você: A casa tem 3 quartos e 2 casas de banho?', hora: 'Ontem', naoLidas: 0, verificado: false },
-  { id: '4', nome: 'Ana Muchanga', anuncio: 'Quarto partilhado Manga', estado: 'concluida', ultimaMensagem: 'Perfeito, aguardo a tua visita amanhã às 10h', hora: 'Segunda', naoLidas: 0, verificado: false },
-];
 
 const ESTADOS: Record<Estado, { rotulo: string; cor: 'sucesso' | 'aviso' | 'principal' | 'neutro' }> = {
   confirmada: { rotulo: 'Confirmada', cor: 'sucesso' },
@@ -51,6 +34,13 @@ export default function MensagensScreen() {
   const [pesquisa, setPesquisa] = useState('');
   const [procurar, setProcurar] = useState(false);
   const [filtro, setFiltro] = useState<Filtro>('todas');
+  const [conversas, setConversas] = useState<Conversa[]>([]);
+
+  useEffect(() => {
+    let activo = true;
+    conversasService.listar().then(l => { if (activo) setConversas(l); });
+    return () => { activo = false; };
+  }, []);
 
   const lista = useMemo(() => {
     const termo = pesquisa.trim().toLocaleLowerCase('pt-PT');
@@ -59,7 +49,7 @@ export default function MensagensScreen() {
       const f = filtro === 'todas' || (filtro === 'naoLidas' && c.naoLidas > 0) || (filtro === 'anfitriao' && c.verificado);
       return texto && f;
     });
-  }, [pesquisa, filtro]);
+  }, [conversas, pesquisa, filtro]);
 
   const cor = (k: 'sucesso' | 'aviso' | 'principal' | 'neutro') => {
     switch (k) {

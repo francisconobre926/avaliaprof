@@ -10,7 +10,7 @@ import { useCores } from '../../src/store/themeStore';
 import { Fonte } from '../../src/theme/fonts';
 import { Typography } from '../../src/theme/typography';
 import { Anuncio } from '../../src/types';
-import { carregarCatalogo } from '../../src/data/catalogo';
+import { anunciosService } from '../../service/anunciosService';
 import { useFavoritosStore } from '../../src/store/favoritosStore';
 import CartaoEspaco from '../../src/components/CartaoEspaco';
 import { Colors } from '../../src/theme/colors';
@@ -25,7 +25,7 @@ export default function FavoritosScreen() {
     useCallback(() => {
       let ativo = true;
       carregar();
-      carregarCatalogo().then(l => { if (ativo) setCatalogo(l); });
+      anunciosService.listar().then(r => r.dados).then(l => { if (ativo) setCatalogo(l); });
       return () => { ativo = false; };
     }, [carregar]),
   );

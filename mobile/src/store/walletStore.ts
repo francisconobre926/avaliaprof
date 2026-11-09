@@ -1,6 +1,6 @@
 /**
  * src/store/walletStore.ts
- * Carteira GoHome com persistência em AsyncStorage.
+ * Carteira GoHome — persistência e sincronização via carteiraService (API + fallback local).
  * O saldo começa em zero. O saque mínimo é de 100 MT.
  *
  * Compatibilidade: mantém o estado principal (saldo/transacoes) e uma
@@ -10,7 +10,7 @@
  */
 
 import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { carteiraService } from '../../service/carteiraService';
 import { Colors } from '../theme/colors';
 
 export type TipoTransacao =
@@ -68,8 +68,6 @@ interface WalletState {
   confirmarComissao: (id: string) => Promise<void>;
 }
 
-const KEY_SALDO = '@gohome_carteira_v2_saldo';
-const KEY_TRANSACOES = '@gohome_carteira_v2_transacoes';
 const SAQUE_MINIMO = 100;
 const SALDO_INICIAL = 0;
 
@@ -95,20 +93,20 @@ function criarCarteira(saldo: number, transacoes: Transacao[]): CarteiraCompatib
   };
 }
 
+// persistirSaldo só regista o saldo; persistirTransacoes grava o par (saldo + transacções).
+// Todas as operações chamam os dois (ou só as transacções, quando o saldo não muda).
+const ultimo: { saldo: number; transacoes: Transacao[] } = { saldo: SALDO_INICIAL, transacoes: [] };
+
 async function persistirSaldo(saldo: number): Promise<void> {
-  try {
-    await AsyncStorage.setItem(KEY_SALDO, String(saldo));
-  } catch (err) {
-    console.warn('[walletStore] Erro ao guardar saldo:', err);
-    throw err;
-  }
+  ultimo.saldo = saldo;
 }
 
 async function persistirTransacoes(transacoes: Transacao[]): Promise<void> {
+  ultimo.transacoes = transacoes;
   try {
-    await AsyncStorage.setItem(KEY_TRANSACOES, JSON.stringify(transacoes));
+    await carteiraService.guardar({ saldo: ultimo.saldo, transacoes });
   } catch (err) {
-    console.warn('[walletStore] Erro ao guardar transacções:', err);
+    console.warn('[walletStore] Erro ao guardar carteira:', err);
     throw err;
   }
 }
@@ -130,18 +128,9 @@ export const useWalletStore = create<WalletState>((set, get) => ({
 
   carregarCarteira: async () => {
     try {
-      const [saldoRaw, transacoesRaw] = await Promise.all([
-        AsyncStorage.getItem(KEY_SALDO),
-        AsyncStorage.getItem(KEY_TRANSACOES),
-      ]);
-      const saldoLido = saldoRaw === null ? SALDO_INICIAL : Number(saldoRaw);
-      const saldo = Number.isFinite(saldoLido) && saldoLido >= 0 ? saldoLido : SALDO_INICIAL;
-      let transacoes: Transacao[] = [];
-      try {
-        transacoes = normalizarTransacoes(transacoesRaw ? JSON.parse(transacoesRaw) : []);
-      } catch {
-        transacoes = [];
-      }
+      const { saldo, transacoes } = await carteiraService.carregar();
+      ultimo.saldo = saldo;
+      ultimo.transacoes = transacoes;
       actualizarEstado(set, saldo, transacoes, { carregado: true });
     } catch (err) {
       console.warn('[walletStore] Erro ao carregar carteira:', err);
@@ -263,7 +252,9 @@ export const useWalletStore = create<WalletState>((set, get) => ({
   podeSacar: () => get().saldo >= SAQUE_MINIMO,
 
   limpar: async () => {
-    await Promise.all([AsyncStorage.removeItem(KEY_SALDO), AsyncStorage.removeItem(KEY_TRANSACOES)]);
+    await carteiraService.limpar();
+    ultimo.saldo = SALDO_INICIAL;
+    ultimo.transacoes = [];
     actualizarEstado(set, SALDO_INICIAL, [], { carregado: true });
   },
 }));

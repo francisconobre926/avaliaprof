@@ -33,6 +33,17 @@ interface Props {
 
 const SUFIXO: Record<string, string> = { mensal: '/mês', diaria: '/dia', horaria: '/hora', unico: '' };
 const MAX_FOTOS = 6;
+const MESES_ABREV = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+function textoPublicacao(anuncio: Anuncio): string | null {
+  const iso = anuncio.dataPublicacao || anuncio.publicadoEm || anuncio.dataCriacao;
+  const d = iso ? new Date(iso) : null;
+  if (!d || isNaN(d.getTime())) return null;
+  const dias = Math.floor((Date.now() - d.getTime()) / 86400000);
+  if (dias <= 0) return 'Publicado hoje';
+  if (dias === 1) return 'Publicado ontem';
+  return `Publicado a ${d.getDate()} ${MESES_ABREV[d.getMonth()]}`;
+}
 
 type Especificacao = { icone: keyof typeof Ionicons.glyphMap; texto: string };
 
@@ -57,6 +68,7 @@ export default function CartaoEspaco({ anuncio, onPress, onFavoritar, favoritado
 
   const local = [anuncio.bairro, anuncio.cidade].filter(Boolean).join(', ') || anuncio.zona;
   const specs = especificacoes(anuncio);
+  const publicado = textoPublicacao(anuncio);
   const rating = anuncio.anuncianteRating;
   const sufixo = SUFIXO[String(anuncio.periodicidade || 'unico')] ?? '';
   const verificado = !!(anuncio.anuncianteVerificado || anuncio.donoVerificado);
@@ -162,6 +174,12 @@ export default function CartaoEspaco({ anuncio, onPress, onFavoritar, favoritado
           <Ionicons name="location-outline" size={14} color={cores.textoSecundario} />
           <Text style={[s.local, { color: cores.textoSecundario }]} numberOfLines={1}>{local}</Text>
         </View>
+        {!!publicado && (
+          <View style={s.linhaLocal}>
+            <Ionicons name="time-outline" size={14} color={cores.textoTerciario} />
+            <Text style={[s.local, { color: cores.textoTerciario }]} numberOfLines={1}>{publicado}</Text>
+          </View>
+        )}
 
         <View style={s.specs}>
           {specs.length > 0 ? specs.map(e => (

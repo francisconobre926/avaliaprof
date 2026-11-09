@@ -87,6 +87,26 @@ export const Radius = {
   full: 999,
 };
 
+// Alturas dos controlos — escala única para botões, campos, chips e barras.
+// Área de toque mínima de 40 dp (hitSlop onde o elemento visual for menor).
+export const Controlo = {
+  botaoPequeno: 36,
+  botao: 44,
+  botaoGrande: 48,
+  input: 44,
+  chip: 34,
+  topBar: 48,
+  tabBar: 56,
+  icone: 22,
+};
+
+// Folhas inferiores (bottom sheets)
+export const Folha = {
+  raio: 24,
+  alturaMaxima: 0.85, // fração da altura do ecrã
+  handle: { largura: 36, altura: 4 },
+};
+
 // Espessuras de contorno
 export const Borda = {
   fina: 0.5,

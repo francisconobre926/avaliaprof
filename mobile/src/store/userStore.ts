@@ -1,7 +1,7 @@
 /**
  * src/store/userStore.ts
  *
- * Store do utilizador com persistência em AsyncStorage.
+ * Store do utilizador com persistência via perfilService (API + fallback local).
  *
  * Keys:
  * - @gohome_user_v2_usuario       → dados do perfil
@@ -10,7 +10,7 @@
  */
 
 import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { perfilService } from '../../service/perfilService';
 
 // ============================================================
 // TIPOS
@@ -49,6 +49,8 @@ interface UserState {
   // Fluxo de registo/login
   registar: (dados: DadosRegisto) => Promise<void>;
   login: (email: string, password: string) => Promise<{ sucesso: boolean; erro?: string }>;
+  /** Só para testes: inicia sessão com uma conta fictícia já preenchida. */
+  entrarComoDemo: (papel: 'procurador' | 'anunciante') => Promise<void>;
   completarRegisto: () => Promise<void>;
 
   // Edição de perfil
@@ -68,9 +70,6 @@ interface UserState {
 // ============================================================
 // CONSTANTES
 // ============================================================
-const KEY_USUARIO = '@gohome_user_v2_usuario';
-const KEY_PAPEL = '@gohome_user_v2_papel';
-const KEY_MODO_CONVIDADO = '@gohome_user_v2_modo_conv';
 
 // ============================================================
 // HELPERS
@@ -81,34 +80,18 @@ function gerarId(): string {
 
 async function persistirUsuario(usuario: UsuarioPerfil | null) {
   try {
-    if (usuario) {
-      await AsyncStorage.setItem(KEY_USUARIO, JSON.stringify(usuario));
-    } else {
-      await AsyncStorage.removeItem(KEY_USUARIO);
-    }
+    await perfilService.guardarUsuario(usuario);
   } catch (err) {
     console.warn('[userStore] erro ao persistir usuario', err);
   }
 }
 
 async function persistirPapel(papel: PapelUtilizador) {
-  try {
-    if (papel) {
-      await AsyncStorage.setItem(KEY_PAPEL, papel);
-    } else {
-      await AsyncStorage.removeItem(KEY_PAPEL);
-    }
-  } catch (err) {
-    console.warn('[userStore] erro ao persistir papel', err);
-  }
+  await perfilService.guardarPapel(papel);
 }
 
 async function persistirModoConvidado(valor: boolean) {
-  try {
-    await AsyncStorage.setItem(KEY_MODO_CONVIDADO, String(valor));
-  } catch (err) {
-    console.warn('[userStore] erro ao persistir modo convidado', err);
-  }
+  await perfilService.guardarModoConvidado(valor);
 }
 
 // ============================================================
@@ -123,15 +106,7 @@ export const useUserStore = create<UserState>((set, get) => ({
   // ============ CARREGAR DO ASYNCSTORAGE ============
   carregarUsuario: async () => {
     try {
-      const [usuarioRaw, papelRaw, modoConvidadoRaw] = await Promise.all([
-        AsyncStorage.getItem(KEY_USUARIO),
-        AsyncStorage.getItem(KEY_PAPEL),
-        AsyncStorage.getItem(KEY_MODO_CONVIDADO),
-      ]);
-
-      const usuario: UsuarioPerfil | null = usuarioRaw ? JSON.parse(usuarioRaw) : null;
-      const papel = (papelRaw as PapelUtilizador) || null;
-      const modoConvidado = modoConvidadoRaw === 'true';
+      const { usuario, papel, modoConvidado } = await perfilService.carregar();
 
       set({ usuario, papel, modoConvidado, carregado: true });
     } catch (err) {
@@ -198,6 +173,15 @@ export const useUserStore = create<UserState>((set, get) => ({
     return { sucesso: true };
   },
 
+  // ============ CONTA DEMO (testes) ============
+  entrarComoDemo: async (papel) => {
+    const usuario: UsuarioPerfil = papel === 'anunciante'
+      ? { id: 'demo-anunciante', nome: 'Carlos Mondlane', email: 'anunciante@gohome.mz', telefone: '+258841234567', foto: null, dataCriacao: '2026-01-15T09:00:00Z' }
+      : { id: 'demo-procurador', nome: 'Ana Machava', email: 'procurador@gohome.mz', telefone: '+258827654321', foto: null, dataCriacao: '2026-01-15T09:00:00Z' };
+    set({ usuario, papel, modoConvidado: false });
+    await Promise.all([persistirUsuario(usuario), persistirPapel(papel), persistirModoConvidado(false)]);
+  },
+
   // ============ COMPLETAR REGISTO (desactivar modo convidado) ============
   completarRegisto: async () => {
     set({ modoConvidado: false });
@@ -258,10 +242,6 @@ export const useUserStore = create<UserState>((set, get) => ({
   // ============ RESET TOTAL (debug) ============
   limpar: async () => {
     set({ usuario: null, papel: null, modoConvidado: false });
-    await Promise.all([
-      AsyncStorage.removeItem(KEY_USUARIO),
-      AsyncStorage.removeItem(KEY_PAPEL),
-      AsyncStorage.removeItem(KEY_MODO_CONVIDADO),
-    ]);
+    await perfilService.limpar();
   },
 }));

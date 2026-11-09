@@ -11,7 +11,7 @@ import { useRouter } from 'expo-router';
 import { useCores } from '../../src/store/themeStore';
 import { Fonte } from '../../src/theme/fonts';
 import { apenasDisponiveis } from '../../src/data/anuncios-mock';
-import { carregarCatalogo } from '../../src/data/catalogo';
+import { anunciosService } from '../../service/anunciosService';
 import { Anuncio } from '../../src/types';
 import {
   useFiltrosStore, aplicarFiltros, PRECO_MIN, PRECO_MAX,
@@ -53,7 +53,7 @@ export default function PesquisarScreen() {
   const [rascEntrada, setRascEntrada] = useState<string | null>(filtros.entrada);
   const [rascSaida, setRascSaida] = useState<string | null>(filtros.saida);
 
-  useEffect(() => { carregarCatalogo().then(l => setCatalogo(apenasDisponiveis(l))); }, []);
+  useEffect(() => { anunciosService.listar().then(r => r.dados).then(l => setCatalogo(apenasDisponiveis(l))); }, []);
 
   const total = useMemo(() => aplicarFiltros(catalogo, filtros).length, [catalogo, filtros]);
   const noites = filtros.entrada && filtros.saida ? noitesEntre(filtros.entrada, filtros.saida) : 0;
@@ -88,7 +88,7 @@ export default function PesquisarScreen() {
         onVoltar={() => router.back()}
         acoes={
           <TouchableOpacity onPress={limpar} hitSlop={8} accessibilityRole="button" accessibilityLabel="Limpar filtros">
-            <Text style={s.limparTopo}>Limpar</Text>
+            <Text style={[s.limparTopo, { color: cores.principalTexto }]}>Limpar</Text>
           </TouchableOpacity>
         }
       />
@@ -277,7 +277,7 @@ const s = StyleSheet.create({
   topo: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingVertical: 10, borderBottomWidth: 1 },
   fechar: { width: 44, height: 44, borderRadius: 22, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   topoTitulo: { fontFamily: Fonte.tituloBold, fontSize: 20 },
-  limparTopo: { color: Colors.branco, fontFamily: Fonte.corpoSemi, fontSize: 14 },
+  limparTopo: { fontFamily: Fonte.corpoSemi, fontSize: 14 },
   conteudo: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 28 },
   campo: { flexDirection: 'row', alignItems: 'center', gap: 12, borderWidth: 1.5, borderRadius: 18, paddingHorizontal: 18, height: 58 },
   campoInput: { flex: 1, fontFamily: Fonte.corpoMedio, fontSize: 18 },

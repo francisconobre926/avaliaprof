@@ -9,8 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useCores } from '../../src/store/themeStore';
 import { Fonte } from '../../src/theme/fonts';
-import { ANUNCIOS_MOCK } from '../../src/data/anuncios-mock';
-import { obterAnuncioLocal } from '../../src/store/anunciosLocal';
+import { anunciosService } from '../../service/anunciosService';
 import { useUserStore } from '../../src/store/userStore';
 import { useReservasStore } from '../../src/store/reservasStore';
 import TopBar from '../../src/components/TopBar';
@@ -40,8 +39,8 @@ export default function ReservarScreen() {
 
   useEffect(() => {
     (async () => {
-      const local = await obterAnuncioLocal(anuncioId);
-      setAnuncio(local ?? ANUNCIOS_MOCK.find(a => a.id === anuncioId) ?? null);
+      const { dados } = await anunciosService.obter(anuncioId);
+      setAnuncio(dados);
     })();
   }, [anuncioId]);
 

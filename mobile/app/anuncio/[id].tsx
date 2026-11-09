@@ -19,9 +19,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors, Sombras } from '../../src/theme/colors';
 import { Spacing, Typography, Radius } from '../../src/theme/typography';
 import { useCores } from '../../src/store/themeStore';
-import { ANUNCIOS_MOCK, formatarPrecoCompleto, tempoDesde } from '../../src/data/anuncios-mock';
+import { formatarPrecoCompleto, tempoDesde } from '../../src/data/anuncios-mock';
 import { Anuncio } from '../../src/types';
-import { obterAnuncioLocal } from '../../src/store/anunciosLocal';
+import { anunciosService } from '../../service/anunciosService';
 import { useAuthGate } from '../../src/hooks/useAuthGate';
 import MapView, { Circle, Marker } from 'react-native-maps';
 import TopBar, { TopBarBotao } from '../../src/components/TopBar';
@@ -121,15 +121,9 @@ export default function DetalheAnuncio() {
       const idActual = Array.isArray(id) ? id[0] : String(id || '');
       if (!idActual) { if (activo) setAnuncio(null); return; }
 
-      const local = await obterAnuncioLocal(idActual);
+      const { dados } = await anunciosService.obter(idActual);
       if (!activo) return;
-      if (local) {
-        setAnuncio(local as unknown as Anuncio);
-        return;
-      }
-
-      const encontrado = ANUNCIOS_MOCK.find(a => a.id === idActual);
-      if (encontrado) { setAnuncio(encontrado); return; }
+      if (dados) { setAnuncio(dados); return; }
 
       // Fallback para links de demonstração que tragam dados nos parâmetros.
       const titulo = Array.isArray(tituloParam) ? tituloParam[0] : tituloParam;

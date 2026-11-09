@@ -30,7 +30,7 @@ import { Colors, Sombras } from '../src/theme/colors';
 import { Spacing, Typography, Radius } from '../src/theme/typography';
 import { useCores } from '../src/store/themeStore';
 import { useUserStore } from '../src/store/userStore';
-import { obterAnuncioLocal, guardarAnuncioLocal } from '../src/store/anunciosLocal';
+import { anunciosService } from '../service/anunciosService';
 
 import { Fonte } from '../src/theme/fonts';
 import Icone from '../src/components/Icone';
@@ -62,9 +62,9 @@ export default function ConfirmacaoPublicacao() {
     const activarRegistoLocal = async () => {
       const id = Array.isArray(params.anuncioId) ? params.anuncioId[0] : params.anuncioId;
       if (!id) return;
-      const existente = await obterAnuncioLocal(String(id));
+      const existente = await anunciosService.obterLocal(String(id));
       if (!existente || !activo) return;
-      await guardarAnuncioLocal({
+      await anunciosService.guardar({
         ...existente,
         estadoPagamento: 'confirmado',
         publicadoEm: new Date().toISOString(),

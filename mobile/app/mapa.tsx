@@ -13,11 +13,9 @@ import { useCores } from '../src/store/themeStore';
 import { Fonte } from '../src/theme/fonts';
 import { Sombras } from '../src/theme/colors';
 import { Anuncio } from '../src/types';
-import { carregarCatalogo } from '../src/data/catalogo';
+import { anunciosService } from '../service/anunciosService';
 import { apenasDisponiveis } from '../src/data/anuncios-mock';
 import { formatarMT } from '../src/utils/reservas';
-import { useUserStore } from '../src/store/userStore';
-import { useAuthGateStore } from '../src/store/authGateStore';
 
 const MAPUTO = { latitude: -25.9692, longitude: 32.5732, latitudeDelta: 0.08, longitudeDelta: 0.08 };
 
@@ -34,12 +32,9 @@ export default function MapaScreen() {
   const mapa = useRef<MapView>(null);
   const [anuncios, setAnuncios] = useState<Anuncio[]>([]);
   const [selecionado, setSelecionado] = useState<string | null>(null);
-  const usuario = useUserStore(s => s.usuario);
-  const modoConvidado = useUserStore(s => s.modoConvidado);
-  const abrirAuthGate = useAuthGateStore(s => s.abrir);
 
   useEffect(() => {
-    carregarCatalogo().then(l => setAnuncios(apenasDisponiveis(l)));
+    anunciosService.listar().then(r => r.dados).then(l => setAnuncios(apenasDisponiveis(l)));
   }, []);
 
   const comCoordenadas = useMemo(
@@ -59,14 +54,8 @@ export default function MapaScreen() {
     return () => clearTimeout(t);
   }, [comCoordenadas]);
 
-  const abrir = (id: string) => {
-    const autenticado = usuario !== null && !modoConvidado;
-    if (!autenticado) {
-      abrirAuthGate('ver_detalhes', () => router.push(`/anuncio/${id}` as any));
-      return;
-    }
-    router.push(`/anuncio/${id}` as any);
-  };
+  // Qualquer visitante pode ver os detalhes; a conta só é exigida para reservar.
+  const abrir = (id: string) => router.push(`/anuncio/${id}` as any);
 
   return (
     <View style={[s.flex, { backgroundColor: cores.fundo }]}>

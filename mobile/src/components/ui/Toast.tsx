@@ -1,5 +1,5 @@
 /**
- * Toast — Sistema de notificações flutuantes profissional GoHome
+ * Toast — Sistema de notificações flutuantes profissional AvaliaProf
  *
  * Imperativo: toast.show({ tipo, titulo, descricao, duracao })
  * Suporta: success, error, warning, info
@@ -180,7 +180,7 @@ const ToastItem: React.FC<{
             </Text>
           )}
         </View>
-        <TouchableOpacity onPress={onDismiss} hitSlop={10}>
+        <TouchableOpacity onPress={onDismiss} hitSlop={14} accessibilityRole="button" accessibilityLabel="Fechar aviso">
           <Ionicons name="close" size={18} color={cores.textoTerciario} />
         </TouchableOpacity>
       </Animated.View>

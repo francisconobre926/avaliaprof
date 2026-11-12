@@ -1,14 +1,7 @@
 import { Module } from '@nestjs/common';
-import { PassportModule } from '@nestjs/passport';
-import { UsersService } from './users.service';
+import { AuthModule } from '../auth/auth.module';
 import { UsersController } from './users.controller';
-import { PrismaModule } from '../prisma/prisma.module';
-import { StorageModule } from '../media/storage/storage.module';
+import { UsersService } from './users.service';
 
-@Module({
-  imports: [PrismaModule, StorageModule, PassportModule.register({ defaultStrategy: 'jwt' })],
-  controllers: [UsersController],
-  providers: [UsersService],
-  exports: [UsersService],
-})
+@Module({ imports: [AuthModule], controllers: [UsersController], providers: [UsersService] })
 export class UsersModule {}

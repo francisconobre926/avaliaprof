@@ -1,5 +1,5 @@
 // ============================================================
-// Famílias tipográficas GoHome
+// Famílias tipográficas AvaliaProf
 //
 //   Sora    → títulos de página, cabeçalhos de secção, preços e destaques.
 //             Geométrica, ampla e com personalidade; só em tamanhos ≥ 15.

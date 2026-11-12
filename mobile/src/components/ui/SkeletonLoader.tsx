@@ -1,5 +1,5 @@
 /**
- * SkeletonLoader — Placeholder animado profissional GoHome
+ * SkeletonLoader — Placeholder animado profissional AvaliaProf
  *
  * Variantes: text | avatar | card | image | custom
  * Shimmer animation suave
@@ -115,7 +115,7 @@ export const SkeletonLinha: React.FC<{ style?: StyleProp<ViewStyle> }> = ({ styl
 );
 
 // Combinador: card de anúncio
-export const SkeletonCardAnuncio: React.FC = () => (
+export const SkeletonCardProfessor: React.FC = () => (
   <View style={{ gap: 10, marginBottom: 16 }}>
     <SkeletonLoader variant="image" height={180} />
     <SkeletonLoader variant="text" width="80%" height={16} />

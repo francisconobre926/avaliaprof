@@ -1,5 +1,5 @@
 /**
- * Card — Container profissional GoHome
+ * Card — Container profissional AvaliaProf
  *
  * Variantes: elevated (sombra) | outlined (borda) | flat (nenhum)
  * Pressable opcional (vira TouchableOpacity se onPress for passado)
@@ -61,6 +61,7 @@ export const Card: React.FC<CardProps> = ({
         onPress={handlePress}
         activeOpacity={0.85}
         style={[containerStyle, style]}
+        accessibilityRole="button"
       >
         {children}
       </TouchableOpacity>

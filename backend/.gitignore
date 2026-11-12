@@ -32,3 +32,4 @@ npm-debug.log*
 # TypeScript build info
 *.tsbuildinfo
 firebase-credentials.json
+uploads/

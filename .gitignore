@@ -159,3 +159,7 @@ credentials/
 *.pem
 *.p12
 *.mobileprovision
+
+# Ficheiros com credenciais (nunca no repositório)
+docs/credenciais-*
+*credenciais*

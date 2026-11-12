@@ -10,7 +10,7 @@ export type ModoTema = 'claro' | 'escuro';
 
 // ============================================================
 // DEFINIÇÕES DE COR DE DESTAQUE
-// Azul GoHome #0082DE e Laranja GoHome #FE8A00 são as cores oficiais.
+// Azul AvaliaProf #0082DE e Laranja AvaliaProf #FE8A00 são as cores oficiais.
 // Outras ficam disponíveis para personalização pelo utilizador.
 // ============================================================
 export interface DefinicaoCorDestaque {
@@ -23,14 +23,14 @@ export interface DefinicaoCorDestaque {
 }
 
 export const CORES_DESTAQUE: Record<CorDestaque, DefinicaoCorDestaque> = {
-  // Identidade oficial GoHome (por omissão).
+  // Identidade oficial AvaliaProf (por omissão).
   azul: {
     id: 'azul',
-    nome: 'Azul GoHome',
+    nome: 'Azul AvaliaProf',
     principal: Paleta.azul,
     claro: Paleta.azulSuave,
     escuro: Paleta.azulTexto,
-    gradiente: [Paleta.azul, Paleta.azulTexto],
+    gradiente: [Paleta.azul, Paleta.azul],
   },
   // Alternativas de personalização (opcionais, escolhidas pelo utilizador).
   laranja: {
@@ -78,7 +78,7 @@ export const CORES_DESTAQUE: Record<CorDestaque, DefinicaoCorDestaque> = {
 // ============================================================
 // PALETAS DE MODO (Claro / Escuro)
 // Modo claro = default (fundo branco)
-// Modo escuro = fundo preto do logo GoHome
+// Modo escuro = fundo preto do logo AvaliaProf
 // ============================================================
 export interface PaletaModo {
   // Fundos
@@ -101,7 +101,7 @@ export interface PaletaModo {
   aviso: string;
   erro: string;
   premium: string;
-  destaque: string;           // Laranja GoHome em ambos os modos
+  destaque: string;           // Laranja AvaliaProf em ambos os modos
 }
 
 export const PALETA_CLARO: PaletaModo = {
@@ -125,24 +125,24 @@ export const PALETA_CLARO: PaletaModo = {
 };
 
 // Modo escuro derivado da mesma paleta: carvão como base, azul e verde
-// aclarados para manter contraste ≥ 4,5:1 sobre #202124.
+// aclarados para manter contraste ≥ 4,5:1 sobre #14171A.
 export const PALETA_ESCURO: PaletaModo = {
-  fundo: Paleta.carvao,
-  fundoSuave: '#2D2E31',
-  fundoElevado: '#28292C',
-  branco: '#28292C',
+  fundo: '#14171A',
+  fundoSuave: '#262B30',
+  fundoElevado: '#1C2024',
+  branco: '#1C2024',
 
-  textoPrincipal: '#E8EAED',
-  textoSecundario: '#9AA0A6',
-  textoTerciario: '#969CA2',
+  textoPrincipal: '#F2F4F5',
+  textoSecundario: '#A3ADB6',
+  textoTerciario: '#9AA5AE',
 
-  bordaSubtil: '#3C4043',
-  bordaMedia: '#80868B',
+  bordaSubtil: '#333A41',
+  bordaMedia: '#7C8B98',
 
   sucesso: Paleta.verdeClaro,
-  aviso: '#FDD663',
+  aviso: Paleta.verdeSuave,
   erro: '#F28B82',
-  premium: '#FDD663',
+  premium: Paleta.verdeSuave,
   destaque: Paleta.azulClaro,
 };
 
@@ -169,10 +169,10 @@ interface ThemeState {
   getPaleta: () => PaletaModo;
 }
 
-const CHAVE_STORAGE = '@gohome_tema';
+const CHAVE_STORAGE = '@avaliaprof_tema';
 
 export const useThemeStore = create<ThemeState>((set, get) => ({
-  corDestaque: 'azul',  // Azul GoHome como default
+  corDestaque: 'azul',  // Azul AvaliaProf como default
   modo: 'claro',        // Modo claro como default (fundo branco)
   carregado: false,
 
@@ -243,6 +243,8 @@ export const useCores = () => {
     // Versão da cor de destaque segura para TEXTO pequeno (contraste AA).
     principalTexto: modo === 'claro' ? definicao.escuro : (corDestaque === 'azul' ? Paleta.azulClaro : definicao.claro),
     gradiente: definicao.gradiente,
+    // Texto/ícones SOBRE a cor de destaque: preto no Cornflower (claro), branco nas restantes.
+    textoSobrePrincipal: corDestaque === 'azul' ? Paleta.carvao : Paleta.branco,
 
     // Paleta do modo
     ...paleta,

@@ -1,5 +1,4 @@
-// IMPORTANTE: i18n tem que ser importado ANTES de qualquer outra coisa
-// que dependa dele (hooks, componentes, ecrãs).
+// i18n tem de ser importado antes de qualquer ecrã que o use.
 import '../src/i18n';
 
 import { Stack } from 'expo-router';
@@ -9,76 +8,57 @@ import { useFonts } from 'expo-font';
 import { FONTES_A_CARREGAR } from '../src/theme/fonts';
 import { useThemeStore } from '../src/store/themeStore';
 import { useUserStore } from '../src/store/userStore';
-import { useWalletStore } from '../src/store/walletStore';
-import { useReferralStore } from '../src/store/referralStore';
-import { useModeracaoStore } from '../src/store/moderacaoStore';
 import { useLinguaStore } from '../src/store/linguaStore';
-import ModalAuthGate from '../src/components/ModalAuthGate';
+import { iniciarMotor } from '../src/offline/rede';
+import { useSinoNotificacoes } from '../src/hooks/useSinoNotificacoes';
+import { ToastProvider } from '../src/components/ui';
 
 export default function RootLayout() {
-  const carregarTema = useThemeStore(state => state.carregarTema);
-  const carregarUsuario = useUserStore(state => state.carregarUsuario);
-  const carregarCarteira = useWalletStore(state => state.carregarCarteira);
-  const carregarReferencia = useReferralStore(state => state.carregarReferencia);
-  const carregarModeracao = useModeracaoStore(state => state.carregarModeracao);
-  const carregarLingua = useLinguaStore(state => state.carregarLingua);
-  const gerarMeuCodigo = useReferralStore(state => state.gerarMeuCodigo);
-  const meuCodigo = useReferralStore(state => state.meuCodigo);
-  const usuario = useUserStore(state => state.usuario);
-  const modo = useThemeStore(state => state.modo);
+  const carregarTema = useThemeStore(s => s.carregarTema);
+  const carregarSessao = useUserStore(s => s.carregarSessao);
+  const carregarLingua = useLinguaStore(s => s.carregarLingua);
+  const estudanteId = useUserStore(s => (s.utilizador?.papel === 'estudante' ? s.utilizador.id : null));
+  const comSessao = useUserStore(s => !!s.utilizador);
+  const modo = useThemeStore(s => s.modo);
   const [fontesCarregadas, erroFontes] = useFonts(FONTES_A_CARREGAR);
 
   useEffect(() => {
     carregarTema();
-    carregarUsuario();
-    carregarCarteira();
-    carregarReferencia();
-    carregarModeracao();
+    carregarSessao();
     carregarLingua();
   }, []);
 
-  useEffect(() => {
-    if (usuario?.nome && !meuCodigo) {
-      gerarMeuCodigo(usuario.nome);
-    }
-  }, [usuario?.nome, meuCodigo]);
+  // Modo offline (só estudantes): fila de avaliações e sincronização, ligados à sessão.
+  useEffect(() => (estudanteId ? iniciarMotor(estudanteId) : undefined), [estudanteId]);
 
-  // Sem as fontes o primeiro frame aparece em fonte de sistema e "salta".
-  // Em caso de erro seguimos com a fonte de sistema em vez de bloquear.
+  // Sino de notificações: contador actualizado enquanto houver sessão.
+  useSinoNotificacoes(comSessao);
+
+  // Sem as fontes o primeiro frame "salta"; em caso de erro seguimos com a fonte de sistema.
   if (!fontesCarregadas && !erroFontes) return null;
 
   return (
-    <>
+    <ToastProvider>
       <StatusBar style={modo === 'escuro' ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
-        <Stack.Screen name="onboarding/lingua" />
-        <Stack.Screen name="onboarding/index" />
-        <Stack.Screen name="auth" />
-        <Stack.Screen name="(procurador)" />
-        <Stack.Screen name="(anunciante)" />
-        <Stack.Screen name="anuncio/[id]" />
-        <Stack.Screen name="imovel/[id]" />
-        <Stack.Screen name="reservar/[id]" />
-        <Stack.Screen name="mapa" />
-        <Stack.Screen name="pagamento" />
-        <Stack.Screen name="chat/[id]" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(estudante)" />
+        <Stack.Screen name="(admin)" />
+        <Stack.Screen name="gestao/estudante" />
+        <Stack.Screen name="gestao/turma" />
+        <Stack.Screen name="gestao/turma-detalhe" />
+        <Stack.Screen name="gestao/turma-adicionar" />
+        <Stack.Screen name="gestao/importar" />
+        <Stack.Screen name="professor/[id]" />
         <Stack.Screen name="editar-perfil" />
+        <Stack.Screen name="minhas-cadeiras" />
+        <Stack.Screen name="avaliar" />
+        <Stack.Screen name="minhas-avaliacoes" />
         <Stack.Screen name="aparencia" />
-        <Stack.Screen name="carteira" />
-        <Stack.Screen name="referencia" />
-        <Stack.Screen name="avisos" />
-        <Stack.Screen name="denunciar/[id]" />
-        <Stack.Screen name="anuncio-detalhes/[id]" options={{ headerShown: false }} />
-        <Stack.Screen name="pagamento-publicacao" options={{ gestureEnabled: false }} />
-        <Stack.Screen
-          name="confirmacao-publicacao"
-          options={{ gestureEnabled: false }}
-        />
+        <Stack.Screen name="notificacoes" />
+        <Stack.Screen name="alterar-senha" />
       </Stack>
-
-      {/* Modal global do Auth Gate — tem de estar fora do Stack */}
-      <ModalAuthGate />
-    </>
+    </ToastProvider>
   );
 }

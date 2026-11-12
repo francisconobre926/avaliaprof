@@ -1,187 +1,92 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
-import { ContactChannel } from '@prisma/client';
+import { BadRequestException, ForbiddenException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { AuthService } from '../auth/auth.service';
 import { randomUUID } from 'crypto';
+import { promises as fs } from 'fs';
+import { join } from 'path';
+import { UPLOADS_DIR } from '../config/env';
 import { PrismaService } from '../prisma/prisma.service';
-import type { StorageProvider } from '../media/storage/storage-provider.interface';
-import { STORAGE_PROVIDER } from '../media/storage/storage-provider.interface';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangePasswordDto, UpdateMeDto } from './dto/update-me.dto';
+import { toUserDto } from './user.mapper';
 
-interface CreateUserData {
-  name: string;
-  email: string;
-  password: string;
-  phone?: string;
-  isProcurador?: boolean;
-  isAnunciante?: boolean;
-  termsAcceptedAt?: Date;
+/** Valida o tipo real do ficheiro pelos primeiros bytes (o mimetype do cliente é falsificável). */
+function detectarExtensao(b: Buffer): 'jpg' | 'png' | 'webp' | null {
+  if (b.length >= 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'jpg';
+  if (b.length >= 8 && b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return 'png';
+  if (b.length >= 12 && b.subarray(0, 4).toString() === 'RIFF' && b.subarray(8, 12).toString() === 'WEBP') return 'webp';
+  return null;
 }
-
-const MAX_PHOTO_SIZE = 2 * 1024 * 1024; // 2 MB
-const PHOTO_EXTENSIONS: Record<string, string> = {
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'image/webp': 'webp',
-};
 
 @Injectable()
 export class UsersService {
-  private logger = new Logger('UsersService');
+  constructor(private prisma: PrismaService, private auth: AuthService) {}
 
-  constructor(
-    private prisma: PrismaService,
-    @Inject(STORAGE_PROVIDER) private storage: StorageProvider,
-  ) {}
-
-  // Perfil PRIVADO: só o próprio utilizador o vê (/users/me)
-  private readonly publicSelect = {
-    id: true,
-    name: true,
-    email: true,
-    phone: true,
-    alternatePhone: true,
-    advertiserType: true,
-    contactChannels: true,
-    photoUrl: true,
-    isProcurador: true,
-    isAnunciante: true,
-    emailVerified: true,
-    createdAt: true,
-    updatedAt: true,
-  };
-
-  // Perfil PÚBLICO: sem email nem telefones, que só se revelam depois do desbloqueio
-  private readonly publicProfileSelect = {
-    id: true,
-    name: true,
-    isAnunciante: true,
-    advertiserType: true,
-    contactChannels: true,
-    photoUrl: true,
-    createdAt: true,
-  };
-
-  async findByEmail(email: string) {
-    // Usado só pelo auth (login) — aqui PRECISAMOS da password para comparar
-    return this.prisma.user.findUnique({ where: { email } });
+  async me(userId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId }, include: { course: true } });
+    if (!user) throw new NotFoundException();
+    return toUserDto(user);
   }
 
-  async findById(id: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-      select: this.publicSelect,
-    });
-    if (!user) {
-      throw new NotFoundException('Utilizador não encontrado.');
+  async update(userId: string, dto: UpdateMeDto) {
+    const atual = await this.prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+    // O nome público do docente é o da sua ficha, gerida pela administração.
+    if (dto.name !== undefined && atual?.role === 'TEACHER') {
+      throw new ForbiddenException({ code: 'NOME_DO_DOCENTE', message: 'O nome do docente é definido pela administração.' });
     }
-    return user;
+    const user = await this.prisma.user.update({ where: { id: userId }, data: { name: dto.name }, include: { course: true } });
+    return toUserDto(user);
   }
 
-  async findPublicById(id: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id },
-      select: this.publicProfileSelect,
-    });
-    if (!user) {
-      throw new NotFoundException('Utilizador não encontrado.');
+  /** Muda a senha (exige a actual), termina as outras sessões e devolve um novo par de tokens para este dispositivo. */
+  async changePassword(userId: string, dto: ChangePasswordDto) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user?.password) throw new NotFoundException();
+    if (!(await bcrypt.compare(dto.currentPassword, user.password))) {
+      throw new HttpException({ code: 'SENHA_ACTUAL', message: 'A senha actual não está correcta.' }, 400);
     }
-    return user;
+    if (dto.currentPassword === dto.newPassword) {
+      throw new HttpException({ code: 'SENHA_IGUAL', message: 'A nova senha tem de ser diferente da actual.' }, 400);
+    }
+    await this.prisma.user.update({ where: { id: userId }, data: { password: await bcrypt.hash(dto.newPassword, 12) } });
+    await this.auth.revokeAll(userId);
+    return this.auth.issueFor(userId);
   }
 
-  async create(data: CreateUserData) {
-    return this.prisma.user.create({ data });
+  /** A fotografia do docente é a que os estudantes veem: mantém a ficha em sintonia com a conta. */
+  private async syncTeacherPhoto(userId: string, photoUrl: string | null) {
+    await this.prisma.teacher.updateMany({ where: { userId }, data: { photoUrl } });
   }
 
-  async update(id: string, dto: UpdateUserDto) {
-    const current = await this.findById(id); // lança 404 se não existir
+  async setPhoto(userId: string, file: Express.Multer.File | undefined) {
+    if (!file) throw new BadRequestException('Ficheiro em falta.');
+    const ext = detectarExtensao(file.buffer);
+    if (!ext) throw new BadRequestException('Formato inválido. Usa JPEG, PNG ou WebP.');
 
-    // Telefone e WhatsApp como canais exigem um número no perfil
-    const phone = dto.phone ?? current.phone;
-    const channels = dto.contactChannels ?? current.contactChannels;
-    const needsPhone = channels.some(
-      (c) => c === ContactChannel.TELEFONE || c === ContactChannel.WHATSAPP,
-    );
-    if (needsPhone && !phone) {
-      throw new BadRequestException(
-        'Para aceitar contacto por telefone ou WhatsApp, indica o teu número.',
-      );
-    }
+    const dir = join(UPLOADS_DIR, 'avatars');
+    await fs.mkdir(dir, { recursive: true });
+    const nome = `${randomUUID()}.${ext}`;
+    await fs.writeFile(join(dir, nome), file.buffer);
 
-    return this.prisma.user.update({
-      where: { id },
-      data: dto,
-      select: this.publicSelect,
-    });
-  }
-
-  async setPhoto(userId: string, file?: Express.Multer.File) {
-    if (!file) {
-      throw new BadRequestException('Envia uma imagem no campo "file".');
-    }
-    const extension = PHOTO_EXTENSIONS[file.mimetype];
-    if (!extension) {
-      throw new BadRequestException('A foto deve ser JPG, PNG ou WebP.');
-    }
-    if (file.size > MAX_PHOTO_SIZE) {
-      throw new BadRequestException('A foto excede o limite de 2 MB.');
-    }
-
-    const user = await this.prisma.user.findUnique({
+    const anterior = await this.prisma.user.findUnique({ where: { id: userId }, select: { photoUrl: true } });
+    const user = await this.prisma.user.update({
       where: { id: userId },
-      select: { photoKey: true },
+      data: { photoUrl: `/uploads/avatars/${nome}` },
+      include: { course: true },
     });
-    if (!user) {
-      throw new NotFoundException('Utilizador não encontrado.');
+    await this.syncTeacherPhoto(userId, user.photoUrl);
+    if (anterior?.photoUrl?.startsWith('/uploads/avatars/')) {
+      await fs.rm(join(UPLOADS_DIR, 'avatars', anterior.photoUrl.split('/').pop()!), { force: true });
     }
-
-    // A chave não usa o nome do ficheiro enviado, só um UUID
-    const key = `users/${userId}/photo/${randomUUID()}.${extension}`;
-    const { url } = await this.storage.upload(file.buffer, key, file.mimetype);
-
-    const updated = await this.prisma.user.update({
-      where: { id: userId },
-      data: { photoUrl: url, photoKey: key },
-      select: this.publicSelect,
-    });
-
-    // A foto antiga só se apaga depois de a nova estar guardada
-    if (user.photoKey) {
-      await this.deleteFromStorage(user.photoKey);
-    }
-    return updated;
+    return toUserDto(user);
   }
 
   async removePhoto(userId: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { photoKey: true },
-    });
-    if (!user) {
-      throw new NotFoundException('Utilizador não encontrado.');
+    const anterior = await this.prisma.user.findUnique({ where: { id: userId }, select: { photoUrl: true } });
+    const user = await this.prisma.user.update({ where: { id: userId }, data: { photoUrl: null }, include: { course: true } });
+    await this.syncTeacherPhoto(userId, null);
+    if (anterior?.photoUrl?.startsWith('/uploads/avatars/')) {
+      await fs.rm(join(UPLOADS_DIR, 'avatars', anterior.photoUrl.split('/').pop()!), { force: true });
     }
-
-    const updated = await this.prisma.user.update({
-      where: { id: userId },
-      data: { photoUrl: null, photoKey: null },
-      select: this.publicSelect,
-    });
-    if (user.photoKey) {
-      await this.deleteFromStorage(user.photoKey);
-    }
-    return updated;
-  }
-
-  // Um ficheiro órfão no R2 não deve estragar o pedido do utilizador
-  private async deleteFromStorage(key: string) {
-    try {
-      await this.storage.delete(key);
-    } catch (e) {
-      this.logger.warn(`Não foi possível apagar ${key} do R2: ${(e as Error).message}`);
-    }
+    return toUserDto(user);
   }
 }

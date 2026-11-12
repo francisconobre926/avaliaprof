@@ -1,38 +1,28 @@
-# Identidade visual GoHome
+# Identidade visual — AvaliaProf
 
-Tokens centralizados em `src/theme/` (ponto único de importação: `src/theme/index.ts`).
-Nunca definir cores, famílias ou pesos manualmente num ecrã.
+Fonte única dos valores: `src/theme/colors.ts` (objeto `Paleta`) e `src/store/themeStore.ts` (modos claro/escuro).
+Verificação de acessibilidade: `npm run contraste` (falha se algum par ficar abaixo de WCAG AA).
 
-## Tipografia — `src/theme/fonts.ts` · `src/theme/typography.ts`
+## Paleta
 
-| Família | Uso | Constantes `Fonte.*` |
-|---|---|---|
-| **Sora** | títulos de página, cabeçalhos de secção, preços, destaques (≥ 15 px) | `titulo` 500 · `tituloSemi` 600 · `tituloBold` 700 · `tituloExtra` 800 |
-| **Manrope** | texto corrido, formulários, botões, navegação, labels, cards | `corpo` 400 · `corpoMedio` 500 · `corpoSemi` 600 · `corpoBold` 700 · `corpoExtra` 800 |
+| Token | Hex | Papel | Uso |
+|---|---|---|---|
+| Canvas (`gelo`) | `#FBFBF8` | Fundo | Fundo da app |
+| Mist (`fundoSuave`, `borda`) | `#DBE3E9` | Superfície | Cartões, bordas, inputs, chips |
+| Cornflower (`azul`) | `#6AA6DA` | Primária | Botões, destaques, selecção; texto sobre ele é **preto** |
+| Pear (`verdeSuave`, `avisoFundo`) | `#E1E5AC` | Acento | Badges, tags, alertas leves |
+| Black (`carvao`) | `#000000` | Texto | Texto e títulos |
 
-Regras: texto ≤ 13 px não passa de peso 600; tamanho mínimo 12 px (maiúsculas: 11 px);
-Sora com letter-spacing ≥ -0,4; usar `Typography.*` (displayXL…caption, button*, preco*) em vez de
-repetir tamanho/peso; nunca `fontWeight` nem outras famílias (em RN o peso escolhe-se pela família).
+Derivados para acessibilidade: `azulTexto #245E92` (texto/ícones/foco azuis sobre claro, 6,5:1),
+`verdeTexto #4A5510` e `aviso #6B5A00` (texto sobre Pear, ≥ 5:1), `textoSecundario #4A5560`,
+`textoTerciario #58626C`, `bordaForte #6B7A87` (contorno de campos, ≥ 3:1), `erro #B3261E`.
 
-## Cores — `src/theme/colors.ts` (`Paleta` / `Colors`) · `src/store/themeStore.ts` (`useCores`)
+Regras: Cornflower nunca leva texto branco (2,6:1) nem serve de texto/ícone sobre Canvas (2,5:1) —
+usa-se `principalTexto` (= `azulTexto` no claro, Cornflower no escuro). Estados nunca dependem só da cor.
 
-| Token | Valor | Função |
-|---|---|---|
-| `azul` | `#1A73E8` | identidade, botões primários (texto branco), ícones, seleção |
-| `gelo` | `#F8F9FA` | fundo principal |
-| `verde` | `#34A853` | preenchimentos/ícones de estado positivo |
-| `carvao` | `#202124` | títulos e texto principal |
-| `azulSuave` `verdeSuave` | `#E8F0FE` `#E6F4EA` | superfícies de seleção / sucesso |
-| `textoSecundario` · `borda` | `#5F6368` · `#DADCE0` | texto de apoio · divisores |
-| `erro` · `erroFundo` | `#B3261E` · `#FCE8E6` | erros |
+## Modo escuro
+Fundo `#14171A`, elevado `#1C2024`, suave `#262B30`, texto `#F2F4F5`/`#A3ADB6`/`#9AA5AE`,
+borda `#333A41`; Cornflower e Pear mantêm-se como acento e estado positivo/aviso.
 
-Derivados só por acessibilidade: `azulTexto #1557B0` (texto/links pequenos; o azul oficial dá 4,27:1 sobre o gelo),
-`verdeTexto #137333` (texto e botões de sucesso; o verde oficial dá 2,9:1), `textoTerciario #686D72`,
-`bordaForte #80868B` (contorno de campos, ≥ 3:1), `aviso #9A5400` / `avisoFundo #FEF7E0` (estado de atenção).
-
-Em componentes: `useCores()` (respeita modo claro/escuro). Para texto azul usar `cores.principalTexto`;
-para texto de sucesso `cores.sucesso`. Estados nunca dependem só da cor (texto ou ícone acompanham).
-
-## Verificação
-
-`npm run contraste` valida os pares texto/fundo (claro e escuro) contra WCAG AA e falha se algum regredir.
+## Tipografia
+Sora (títulos, ≥ 15 px) + Manrope (texto e interface). Ver `src/theme/typography.ts`.

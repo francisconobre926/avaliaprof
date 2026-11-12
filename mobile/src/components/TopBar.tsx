@@ -11,10 +11,12 @@
  * reservado ao logo e aos elementos interativos. Segue o tema claro/escuro.
  */
 import { ReactNode } from 'react';
-import { useRouter } from 'expo-router';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { useUserStore } from '../store/userStore';
+import { useNotificacoesStore } from '../store/notificacoesStore';
 import { useCores } from '../store/themeStore';
 import { Spacing } from '../theme/typography';
 import { Fonte } from '../theme/fonts';
@@ -53,24 +55,26 @@ interface TopBarProps {
   titulo?: string;
   /** Mostra a seta de voltar à esquerda. */
   onVoltar?: () => void;
-  /** Ações à direita. Por omissão, o sino de notificações. */
+  /** Ações à direita (opcional). */
   acoes?: ReactNode;
-  onNotificacoes?: () => void;
-  temNotificacoes?: boolean;
   /** Mantido por compatibilidade: a linha inferior é sempre apresentada. */
   comLinha?: boolean;
 }
 
-export default function TopBar({ titulo, onVoltar, acoes, onNotificacoes, temNotificacoes }: TopBarProps) {
-  const router = useRouter();
+export default function TopBar({ titulo, onVoltar, acoes }: TopBarProps) {
   const cores = useCores();
+  const router = useRouter();
+  const comSessao = useUserStore(s => !!s.utilizador);
+  const porLer = useNotificacoesStore(s => s.porLer);
+  // O sino aparece nos ecrãs principais (sem seta de voltar) quando há sessão.
+  const sino = comSessao && !onVoltar;
 
   return (
     <SafeAreaView
       edges={['top']}
       style={[styles.safe, { backgroundColor: cores.fundo, borderBottomColor: cores.bordaSubtil }]}
     >
-      <StatusBar barStyle={cores.ehEscuro ? 'light-content' : 'dark-content'} backgroundColor={cores.fundo} />
+      <StatusBar barStyle={cores.ehEscuro ? 'light-content' : 'dark-content'} />
       <View style={styles.barra}>
         <View style={styles.esquerda}>
           {onVoltar && (
@@ -88,21 +92,15 @@ export default function TopBar({ titulo, onVoltar, acoes, onNotificacoes, temNot
               {titulo}
             </Text>
           ) : (
-            <Text style={styles.logo} accessibilityRole="header" accessibilityLabel="GoHome">
-              <Text style={{ color: cores.textoPrincipal }}>Go</Text>
-              <Text style={{ color: cores.principal }}>Home</Text>
+            <Text style={styles.logo} accessibilityRole="header" accessibilityLabel="AvaliaProf">
+              <Text style={{ color: cores.textoPrincipal }}>Avalia</Text>
+              <Text style={{ color: cores.principalTexto }}>Prof</Text>
             </Text>
           )}
         </View>
         <View style={styles.direita}>
-          {acoes ?? (
-            <TopBarBotao
-              icone="notifications-outline"
-              rotulo="Notificações"
-              onPress={onNotificacoes ?? (() => router.push('/avisos' as any))}
-              ponto={temNotificacoes}
-            />
-          )}
+          {acoes}
+          {sino && <TopBarBotao icone={porLer > 0 ? 'notifications' : 'notifications-outline'} rotulo={porLer > 0 ? `Notificações, ${porLer} por ler` : 'Notificações'} ponto={porLer > 0} onPress={() => router.push('/notificacoes')} />}
         </View>
       </View>
     </SafeAreaView>

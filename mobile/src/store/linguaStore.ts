@@ -61,7 +61,7 @@ interface LinguaState {
   getNomeNativo: () => string;
 }
 
-const KEY_LINGUA = '@gohome_lingua';
+const KEY_LINGUA = '@avaliaprof_lingua';
 
 /**
  * Devolve a melhor língua default baseada no telemóvel.

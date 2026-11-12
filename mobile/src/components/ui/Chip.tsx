@@ -1,5 +1,5 @@
 /**
- * Chip — Etiqueta interactiva GoHome
+ * Chip — Etiqueta interactiva AvaliaProf
  *
  * Suporta: seleccionável, removível, com ícone
  * Usado em filtros, tags de categoria, interesses, etc.
@@ -56,7 +56,7 @@ export const Chip: React.FC<ChipProps> = ({
   };
 
   const corFundo = seleccionado ? cores.principal : cores.fundoSuave;
-  const corTexto = seleccionado ? Colors.branco : cores.textoPrincipal;
+  const corTexto = seleccionado ? cores.textoSobrePrincipal : cores.textoPrincipal;
   const corBorda = seleccionado ? cores.principal : cores.bordaSubtil;
 
   const Container: any = onPress ? TouchableOpacity : View;
@@ -66,6 +66,10 @@ export const Chip: React.FC<ChipProps> = ({
       onPress={handlePress}
       activeOpacity={0.8}
       disabled={disabled}
+      hitSlop={onPress ? 8 : undefined}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={label}
+      accessibilityState={onPress ? { selected: !!seleccionado, disabled: !!disabled } : undefined}
       style={[
         styles.container,
         {
@@ -81,7 +85,7 @@ export const Chip: React.FC<ChipProps> = ({
       )}
       <Text style={[styles.label, { color: corTexto }]}>{label}</Text>
       {onRemove && (
-        <TouchableOpacity onPress={handleRemove} hitSlop={8}>
+        <TouchableOpacity onPress={handleRemove} hitSlop={12} accessibilityRole="button" accessibilityLabel={`Remover ${label}`}>
           <Ionicons name="close" size={14} color={corTexto} />
         </TouchableOpacity>
       )}

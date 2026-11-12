@@ -1,5 +1,5 @@
 /**
- * Input — Campo de entrada profissional GoHome
+ * Input — Campo de entrada profissional AvaliaProf
  *
  * Tipos: text | password | phone | number | email | textarea
  * Suporta: label, icon left/right, error state, hint, counter, prefix (+258)
@@ -67,7 +67,7 @@ export const Input: React.FC<InputProps> = ({
   const borderColor = temErro
     ? cores.erro
     : focado
-    ? cores.principal
+    ? cores.principalTexto
     : cores.bordaSubtil;
 
   const keyboardType =
@@ -110,7 +110,7 @@ export const Input: React.FC<InputProps> = ({
           <Ionicons
             name={iconLeft}
             size={20}
-            color={focado ? cores.principal : cores.textoTerciario}
+            color={focado ? cores.principalTexto : cores.textoTerciario}
           />
         )}
 
@@ -144,11 +144,11 @@ export const Input: React.FC<InputProps> = ({
         />
 
         {iconRightComputed && (
-          <TouchableOpacity onPress={handleIconRightPress} hitSlop={10}>
+          <TouchableOpacity onPress={handleIconRightPress} hitSlop={12} accessibilityRole="button" accessibilityLabel={type === 'password' ? 'Mostrar ou esconder a senha' : 'Acção do campo'}>
             <Ionicons
               name={iconRightComputed}
               size={20}
-              color={focado ? cores.principal : cores.textoTerciario}
+              color={focado ? cores.principalTexto : cores.textoTerciario}
             />
           </TouchableOpacity>
         )}

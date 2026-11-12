@@ -27,7 +27,7 @@ export { Chip } from './Chip';
 
 export { EmptyState } from './EmptyState';
 
-export { SkeletonLoader, SkeletonLinha, SkeletonCardAnuncio } from './SkeletonLoader';
+export { SkeletonLoader, SkeletonLinha, SkeletonCardProfessor } from './SkeletonLoader';
 export type { SkeletonVariant } from './SkeletonLoader';
 
 export { ToastProvider, useToast } from './Toast';

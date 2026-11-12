@@ -1,5 +1,5 @@
 /**
- * Modal — Diálogo profissional GoHome
+ * Modal — Diálogo profissional AvaliaProf
  *
  * Variantes: bottom-sheet | center
  * Com backdrop opcional (blur efeito vidro)
@@ -107,6 +107,8 @@ export const Modal: React.FC<ModalProps> = ({
             style={StyleSheet.absoluteFill}
             activeOpacity={1}
             onPress={onClose}
+            accessibilityRole="button"
+            accessibilityLabel="Fechar"
           >
             <BackdropComponent style={StyleSheet.absoluteFill} {...backdropProps} />
           </TouchableOpacity>
@@ -148,6 +150,8 @@ export const Modal: React.FC<ModalProps> = ({
                   onPress={onClose}
                   style={[styles.closeBtn, { backgroundColor: cores.fundoSuave }]}
                   hitSlop={10}
+                  accessibilityRole="button"
+                  accessibilityLabel="Fechar"
                 >
                   <Ionicons name="close" size={20} color={cores.textoPrincipal} />
                 </TouchableOpacity>

@@ -1,36 +1,22 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { Role } from '../enums/role.enum';
 
+/** RBAC: sem @Roles() qualquer utilizador autenticado passa; com @Roles() só os papéis indicados. */
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
+    const required = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
-
-    // Sem @Roles() na rota, qualquer utilizador autenticado passa
-    if (!requiredRoles?.length) return true;
-
+    if (!required?.length) return true;
     const { user } = context.switchToHttp().getRequest();
-    if (!user || !requiredRoles.includes(user.role)) {
+    if (!user || !required.includes(user.role)) {
       throw new ForbiddenException('Não tens permissão para esta acção.');
-    }
-
-    // DDR secção 31: o admin só actua depois da verificação em dois passos
-    if (user.role === Role.ADMIN && !user.twoFactorVerified) {
-      throw new ForbiddenException(
-        'É necessário concluir a verificação em dois passos (2FA).',
-      );
     }
     return true;
   }

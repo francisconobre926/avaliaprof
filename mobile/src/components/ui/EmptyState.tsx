@@ -1,5 +1,5 @@
 /**
- * EmptyState — Estado vazio profissional GoHome
+ * EmptyState — Estado vazio profissional AvaliaProf
  *
  * Usado em: lista de favoritos vazia, sem mensagens, sem resultados de pesquisa, etc.
  * Props: icon, titulo, descricao, botão CTA opcional

@@ -1,61 +1,27 @@
-import {
-  Controller,
-  Get,
-  Patch,
-  Post,
-  Delete,
-  Param,
-  Body,
-  UseGuards,
-  UseInterceptors,
-  UploadedFile,
-  Request,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import type { Request as ExpressRequest } from 'express';
+import { memoryStorage } from 'multer';
+import { CurrentUser, type AuthUser } from '../common/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ChangePasswordDto, UpdateMeDto } from './dto/update-me.dto';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth/jwt-auth.guard';
 
-interface AuthenticatedRequest extends ExpressRequest {
-  user: { userId: string; email: string };
-}
-
-@Controller('users')
+@UseGuards(JwtAuthGuard)
+@Controller('me')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private users: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
-  @Get('me')
-  async getMe(@Request() req: AuthenticatedRequest) {
-    return this.usersService.findById(req.user.userId);
+  @Get() me(@CurrentUser() u: AuthUser) { return this.users.me(u.userId); }
+
+  @Patch() update(@CurrentUser() u: AuthUser, @Body() dto: UpdateMeDto) { return this.users.update(u.userId, dto); }
+
+  @Post('password') @HttpCode(200) password(@CurrentUser() u: AuthUser, @Body() dto: ChangePasswordDto) { return this.users.changePassword(u.userId, dto); }
+
+  @Post('photo')
+  @UseInterceptors(FileInterceptor('photo', { storage: memoryStorage(), limits: { fileSize: 3 * 1024 * 1024, files: 1 } }))
+  photo(@CurrentUser() u: AuthUser, @UploadedFile() file: Express.Multer.File) {
+    return this.users.setPhoto(u.userId, file);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Patch('me')
-  async updateMe(@Request() req: AuthenticatedRequest, @Body() dto: UpdateUserDto) {
-    return this.usersService.update(req.user.userId, dto);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('me/photo')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadPhoto(
-    @Request() req: AuthenticatedRequest,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    return this.usersService.setPhoto(req.user.userId, file);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Delete('me/photo')
-  async removePhoto(@Request() req: AuthenticatedRequest) {
-    return this.usersService.removePhoto(req.user.userId);
-  }
-
-  // Perfil público: sem email nem telefones
-  @Get(':id')
-  async getById(@Param('id') id: string) {
-    return this.usersService.findPublicById(id);
-  }
+  @Delete('photo') removePhoto(@CurrentUser() u: AuthUser) { return this.users.removePhoto(u.userId); }
 }

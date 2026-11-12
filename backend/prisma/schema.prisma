@@ -8,471 +8,450 @@ datasource db {
 }
 
 enum Role {
-  PROCURADOR
-  ANUNCIANTE
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+}
+
+enum CommentStatus {
+  PUBLISHED
+  BLOCKED
+  PENDING_REVIEW
+  HIDDEN
+  REMOVED
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum SubjectSource {
+  AUTO
+  MANUAL
+}
+
+enum SessionStatus {
+  ACTIVE
+  CLOSED
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+enum ClassRegime {
+  LABORAL
+  POS_LABORAL
+}
+
+enum PeriodStatus {
+  OPEN
+  CLOSED
+}
+
+model Course {
+  id             String          @id @default(uuid())
+  name           String          @unique
+  /// Abreviatura usada no nome das turmas (ex.: Info -> Info4Lab2L).
+  code           String          @unique
+  students       User[]
+  courseSubjects CourseSubject[]
+  periods        PeriodCourse[]
+  createdAt      DateTime        @default(now())
+  classGroups    ClassGroup[]
+
+  @@map("courses")
+}
+
+model Department {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  teachers  Teacher[]
+  subjects  Subject[]
+  createdAt DateTime  @default(now())
+
+  @@map("departments")
 }
 
 model User {
-  id                      String                   @id @default(uuid())
-  name                    String
-  email                   String                   @unique
-  password                String
-  phone                   String?
-  advertiserType          AdvertiserType?
-  alternatePhone          String?
-  contactChannels         ContactChannel[] @default([CHAT])
-  photoUrl                String?
-  photoKey                String?
-  isProcurador            Boolean                  @default(true)
-  isAnunciante            Boolean                  @default(false)
-  isAdmin                 Boolean                  @default(false)
-  auditLogs               AuditLog[]
-  emailVerified           Boolean                  @default(false)
-  emailVerifiedAt         DateTime?
-  termsAcceptedAt         DateTime?
-  createdAt               DateTime                 @default(now())
-  updatedAt               DateTime                 @updatedAt
-  listings                Listing[]
-  favorites               Favorite[]
-  unlocks                 Unlock[]
-  chatsAsProcurador       Chat[]                   @relation("ChatsProcurador")
-  chatsAsAnunciante       Chat[]                   @relation("ChatsAnunciante")
-  messages                Message[]
-  notifications           Notification[]
-  deviceTokens            DeviceToken[]
-  notificationPreferences NotificationPreference[]
-  reportsMade     Report[] @relation("ReportsMade")
-  reportsResolved Report[] @relation("ReportsResolved")
-  reviewsGiven    Review[] @relation("ReviewsGiven")
-  reviewsReceived Review[] @relation("ReviewsReceived")
-  searchRequests SearchRequest[]
-  identityVerifiedAt    DateTime?
-  verifications         Verification[] @relation("UserVerifications")
-  verificationsReviewed Verification[] @relation("VerificationsReviewed")
-  referralCode      String?  @unique
-  creditBalance     Decimal  @default(0) @db.Decimal(12, 2)
-  referralsMade     Referral[] @relation("ReferralsMade")
-  referralReceived  Referral?  @relation("ReferralReceived")
-  twoFactorSecret  String?
-  twoFactorEnabled Boolean @default(false)
+  id            String        @id @default(uuid())
+  name          String
+  email         String        @unique
+  /// Nulo enquanto o estudante cadastrado pelo administrador ainda não activou a conta.
+  password      String?
+  role          Role          @default(STUDENT)
+  status        AccountStatus @default(ACTIVE)
+  studentNumber String?       @unique
+  courseId      String?
+  course        Course?       @relation(fields: [courseId], references: [id])
+  photoUrl      String?
+  resetCodeHash String?
+  resetExpires  DateTime?
+  /// Tentativas erradas do código de recuperação/convite em curso (ao fim de 5 o código é invalidado).
+  resetAttempts Int           @default(0)
+  /// Falhas de login seguidas e bloqueio temporário da conta.
+  loginFailures Int           @default(0)
+  lockedUntil   DateTime?
+  /// Sobe ao terminar sessões em todo o lado ou ao mudar a senha: invalida os tokens de acesso já emitidos.
+  tokenVersion  Int           @default(1)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  evaluations   Evaluation[]
+  enrollments   StudentSubject[]
+  matriculas    Enrollment[]
+  teacher       Teacher?
+  reports       CommentReport[]
+  notifications Notification[]
+  refreshTokens RefreshToken[]
 
   @@map("users")
 }
 
-enum ListingPurpose {
-  ARRENDAR
-  VENDER
-  RESERVAR
+model Teacher {
+  id           String              @id @default(uuid())
+  name         String
+  photoUrl     String?
+  /// Código estável e opaco usado no QR Code (nunca o id interno).
+  publicCode   String              @unique @default(cuid())
+  /// Conta do docente (opcional: a ficha pode existir antes de o docente ter conta).
+  userId       String?             @unique
+  user         User?               @relation(fields: [userId], references: [id])
+  departmentId String
+  department   Department          @relation(fields: [departmentId], references: [id])
+  subjects     TeacherSubject[]
+  evaluations  Evaluation[]
+  sessions     EvaluationSession[]
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([name])
+  @@index([departmentId])
+  @@map("teachers")
 }
 
-enum ListingStatus {
-  ACTIVO
-  RESERVADO
-  VENDIDO
-  ARRENDADO
-  EXPIRADO
-  RASCUNHO
-  SUSPENSO
-  REMOVIDO
+model Subject {
+  id             String           @id @default(uuid())
+  name           String
+  departmentId   String
+  department     Department       @relation(fields: [departmentId], references: [id])
+  teachers       TeacherSubject[]
+  evaluations    Evaluation[]
+  courseSubjects CourseSubject[]
+  createdAt      DateTime         @default(now())
+
+  @@unique([departmentId, name])
+  @@map("subjects")
 }
 
-model Category {
-  id           String        @id @default(uuid())
-  name         String        @unique
-  listings     Listing[]
-  createdAt    DateTime      @default(now())
-  pricingRules PricingRule[]
-  searchRequests SearchRequest[]
+/// Uma cadeira pode existir em vários cursos, com ano e semestre próprios em cada um.
+model CourseSubject {
+  id             String                @id @default(uuid())
+  courseId       String
+  course         Course                @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  subjectId      String
+  subject        Subject               @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  courseYear     Int
+  semesterNumber Int
+  enrollments    StudentSubject[]
+  periods        PeriodCourseSubject[]
+  sessions       EvaluationSession[]
 
-  @@map("categories")
+  @@unique([courseId, subjectId])
+  @@index([subjectId])
+  @@map("course_subjects")
 }
 
-model Listing {
-  id         String   @id @default(uuid())
-  ownerId    String
-  owner      User     @relation(fields: [ownerId], references: [id])
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
+/// Cadeiras que o estudante frequenta num semestre (inscrição manual no MVP; importável no futuro).
+model StudentSubject {
+  id              String        @id @default(uuid())
+  studentId       String
+  student         User          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  courseSubjectId String
+  courseSubject   CourseSubject @relation(fields: [courseSubjectId], references: [id], onDelete: Cascade)
+  semesterId      String
+  semester        Semester      @relation(fields: [semesterId], references: [id])
+  /// AUTO: derivada da turma; MANUAL: acrescentada pelo administrador (ex.: cadeira em atraso).
+  source          SubjectSource @default(MANUAL)
+  createdAt       DateTime      @default(now())
 
-  title       String
-  purpose     ListingPurpose
-  description String
+  @@unique([studentId, courseSubjectId, semesterId])
+  @@index([studentId, semesterId])
+  @@index([courseSubjectId, semesterId])
+  @@map("student_subjects")
+}
 
-  price       Decimal @db.Decimal(12, 2)
-  pricePeriod String? // ex: "mensal" — só aplicável a arrendamento
+model TeacherSubject {
+  teacherId String
+  subjectId String
+  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 
-  province                 String
-  district                 String
-  city                     String
-  neighborhood             String
-  latitude                 Float
-  longitude                Float
-  exactLocationAfterUnlock Boolean @default(true)
+  @@id([teacherId, subjectId])
+  @@index([subjectId])
+  @@map("teacher_subjects")
+}
 
-  bedrooms       Int?
-  bathrooms      Int?
-  area           Float?
-  furnished      Boolean?
-  hasWater       Boolean?
-  hasElectricity Boolean?
-  hasWifi        Boolean?
-  hasParking     Boolean?
+model AcademicYear {
+  id        String     @id @default(uuid())
+  label     String     @unique
+  startsAt  DateTime
+  endsAt    DateTime
+  semesters Semester[]
 
-  conditions   String?
-  availability String?
+  @@map("academic_years")
+}
 
-  status ListingStatus @default(RASCUNHO)
+/// Semestre lectivo. Exactamente um deve estar marcado como corrente (`isCurrent`).
+model Semester {
+  id             String             @id @default(uuid())
+  label          String             @unique
+  academicYearId String
+  academicYear   AcademicYear       @relation(fields: [academicYearId], references: [id])
+  number         Int
+  startsAt       DateTime
+  endsAt         DateTime
+  isCurrent      Boolean            @default(false)
+  periods        EvaluationPeriod[]
+  enrollments    StudentSubject[]
+  classGroups    ClassGroup[]
+  matriculas     Enrollment[]
+  evaluations    Evaluation[]
+  createdAt      DateTime           @default(now())
 
-  createdAt    DateTime             @default(now())
-  updatedAt    DateTime             @updatedAt
-  favorites    Favorite[]
-  unlocks      Unlock[]
-  media        Media[]
-  publications ListingPublication[]
-  reports      Report[]
+  @@unique([academicYearId, number])
+  @@map("semesters")
+}
+
+/// Janela em que se pode avaliar. Sem linhas de âmbito = abrange todo o semestre.
+/// Está efectivamente aberto se `status = OPEN` e a hora do servidor está entre as datas.
+model EvaluationPeriod {
+  id                String                @id @default(uuid())
+  semesterId        String
+  semester          Semester              @relation(fields: [semesterId], references: [id])
+  opensAt           DateTime
+  closesAt          DateTime
+  status            PeriodStatus          @default(CLOSED)
+  courses           PeriodCourse[]
+  courseSubjects    PeriodCourseSubject[]
+  evaluations       Evaluation[]
+  /// Avisos já enviados (cada aviso só sai uma vez).
+  openedNotifiedAt  DateTime?
+  closingNotifiedAt DateTime?
+  createdAt         DateTime              @default(now())
+
+  @@index([semesterId])
+  @@index([semesterId, status, closesAt])
+  @@map("evaluation_periods")
+}
+
+model PeriodCourse {
+  periodId String
+  period   EvaluationPeriod @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  courseId String
+  course   Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([periodId, courseId])
+  @@map("period_courses")
+}
+
+model PeriodCourseSubject {
+  periodId        String
+  period          EvaluationPeriod @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  courseSubjectId String
+  courseSubject   CourseSubject    @relation(fields: [courseSubjectId], references: [id], onDelete: Cascade)
+
+  @@id([periodId, courseSubjectId])
+  @@map("period_course_subjects")
+}
+
+/// Avaliação de um professor numa cadeira e semestre. A lógica (Fase 4) vem depois;
+/// o esquema já garante a regra de unicidade e a idempotência da sincronização.
+model Evaluation {
+  id           String           @id @default(uuid())
+  clientId     String           @unique
+  studentId    String
+  student      User             @relation(fields: [studentId], references: [id])
+  teacherId    String
+  teacher      Teacher          @relation(fields: [teacherId], references: [id])
+  subjectId    String
+  subject      Subject          @relation(fields: [subjectId], references: [id])
+  semesterId   String
+  semester     Semester         @relation(fields: [semesterId], references: [id])
+  clarity      Int
+  punctuality  Int
+  availability Int
+  mastery      Int
+  fairness     Int
+  periodId     String
+  period       EvaluationPeriod @relation(fields: [periodId], references: [id])
+  /// Comentário em tabela própria: a nota e o comentário têm ciclos de vida independentes.
+  comment      Comment?
+  version      Int              @default(1)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([studentId, teacherId, subjectId, semesterId])
+  @@index([teacherId])
+  @@index([semesterId])
+  @@index([studentId, semesterId])
+  @@index([subjectId, semesterId])
+  @@index([periodId])
+  @@map("evaluations")
+}
+
+/// Comentário de uma avaliação. A ligação a `Evaluation` (e daí ao estudante) existe só na base de dados:
+/// nenhuma resposta da API a serializa. Só `PUBLISHED` é público.
+model Comment {
+  id           String          @id @default(uuid())
+  evaluationId String          @unique
+  evaluation   Evaluation      @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  text         String
+  /// Hash do texto normalizado, para detectar repetições (spam).
+  textHash     String
+  status       CommentStatus
+  /// Código do motivo (ex.: OFFENSIVE, PERSONAL_DATA, SPAM, SERIOUS_ACCUSATION).
+  reason       String?
   publishedAt  DateTime?
-  expiresAt    DateTime?
-  chats        Chat[]
+  /// Resposta pública do docente (moderada com as mesmas regras).
+  replyText    String?
+  replyAt      DateTime?
+  reports      CommentReport[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 
-  @@map("listings")
-}
-
-model Favorite {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  listingId String
-  listing   Listing  @relation(fields: [listingId], references: [id])
-  createdAt DateTime @default(now())
-
-  @@unique([userId, listingId])
-  @@map("favorites")
-}
-
-enum UnlockStatus {
-  CONFIRMADO
-  FALHOU
-}
-
-model Unlock {
-  id               String       @id @default(uuid())
-  userId           String
-  user             User         @relation(fields: [userId], references: [id])
-  listingId        String
-  listing          Listing      @relation(fields: [listingId], references: [id])
-  amount           Decimal      @db.Decimal(10, 2)
-  paymentReference String
-  status           UnlockStatus
-  createdAt        DateTime     @default(now())
-
-  @@unique([userId, listingId])
-  @@map("unlocks")
-}
-
-enum MediaType {
-  IMAGEM
-  VIDEO
-}
-
-model Media {
-  id        String    @id @default(uuid())
-  listingId String
-  listing   Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  type      MediaType
-  url       String
-  key       String
-  order     Int       @default(0)
-  size      Int
-  createdAt DateTime  @default(now())
-
-  @@map("media")
-}
-
-enum ChatStatus {
-  ATIVO
-  ARQUIVADO
-  BLOQUEADO
-  SUSPENSO
-}
-
-enum MessageType {
-  TEXTO
-  IMAGEM
-  LOCALIZACAO
-  LINK
-}
-
-model Chat {
-  id           String     @id @default(uuid())
-  listingId    String
-  listing      Listing    @relation(fields: [listingId], references: [id])
-  procuradorId String
-  procurador   User       @relation("ChatsProcurador", fields: [procuradorId], references: [id])
-  anuncianteId String
-  anunciante   User       @relation("ChatsAnunciante", fields: [anuncianteId], references: [id])
-  status       ChatStatus @default(ATIVO)
-  messages     Message[]
-  createdAt    DateTime   @default(now())
-  reviews   Review[]
-
-  @@unique([listingId, procuradorId])
-  @@map("chats")
-}
-
-model Message {
-  id        String      @id @default(uuid())
-  chatId    String
-  chat      Chat        @relation(fields: [chatId], references: [id])
-  senderId  String
-  sender    User        @relation(fields: [senderId], references: [id])
-  content   String
-  type      MessageType @default(TEXTO)
-  readAt    DateTime?
-  createdAt DateTime    @default(now())
-
-  @@map("messages")
-}
-
-enum NotificationType {
-  DESBLOQUEIO_RECEBIDO
-  NOVA_MENSAGEM
-  SISTEMA
-  NOVO_ANUNCIO_COMPATIVEL
-}
-
-model Notification {
-  id        String           @id @default(uuid())
-  userId    String
-  user      User             @relation(fields: [userId], references: [id])
-  type      NotificationType
-  title     String
-  body      String
-  readAt    DateTime?
-  createdAt DateTime         @default(now())
-
-  @@map("notifications")
-}
-
-model DeviceToken {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  token     String   @unique
-  platform  String?
-  createdAt DateTime @default(now())
-
-  @@map("device_tokens")
-}
-
-model NotificationPreference {
-  id      String           @id @default(uuid())
-  userId  String
-  user    User             @relation(fields: [userId], references: [id])
-  type    NotificationType
-  enabled Boolean          @default(true)
-
-  @@unique([userId, type])
-  @@map("notification_preferences")
-}
-
-model PricingRule {
-  id           String    @id @default(uuid())
-  categoryId   String?
-  category     Category? @relation(fields: [categoryId], references: [id])
-  city         String?
-  amount       Decimal   @db.Decimal(12, 2)
-  durationDays Int       @default(30)
-  isActive     Boolean   @default(true)
-  purpose  ListingPurpose?
-  minPrice Decimal?        @db.Decimal(14, 2) // exclusivo: valor acima disto
-  maxPrice Decimal?        @db.Decimal(14, 2) // inclusivo: até este valor
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([categoryId, city])
-}
-
-enum PublicationPaymentStatus {
-  CONFIRMADO
-  FALHOU
-}
-
-model ListingPublication {
-  id               String                   @id @default(uuid())
-  listingId        String
-  listing          Listing                  @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  userId           String
-  pricingRuleId    String?
-  promotionId      String?
-  amount           Decimal                  @db.Decimal(12, 2)
-  durationDays     Int
-  paymentReference String
-  status           PublicationPaymentStatus
-  createdAt        DateTime                 @default(now())
-  creditUsed       Decimal  @default(0) @db.Decimal(12, 2)
-
-  @@index([listingId])
-}
-
-enum ReportReason {
-  FRAUDE
-  INFORMACAO_FALSA
-  IMOVEL_INDISPONIVEL
-  CONTEUDO_IMPROPRIO
-  DUPLICADO
-  OUTRO
-}
-
-enum ReportStatus {
-  PENDENTE
-  PROCEDENTE
-  IMPROCEDENTE
-}
-
-model Report {
-  id             String       @id @default(uuid())
-  listingId      String
-  listing        Listing      @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  reporterId     String
-  reporter       User         @relation("ReportsMade", fields: [reporterId], references: [id])
-  reason         ReportReason
-  details        String?
-  status         ReportStatus @default(PENDENTE)
-  resolvedById   String?
-  resolvedBy     User?        @relation("ReportsResolved", fields: [resolvedById], references: [id])
-  resolvedAt     DateTime?
-  resolutionNote String?
-  createdAt      DateTime     @default(now())
-
-  @@unique([reporterId, listingId])
   @@index([status])
-  @@map("reports")
+  @@index([textHash])
+  @@map("comments")
 }
 
-model SearchRequest {
-  id         String          @id @default(uuid())
-  userId     String
-  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  categoryId String?
-  category   Category?       @relation(fields: [categoryId], references: [id])
-  purpose    ListingPurpose?
+/// Turma: Curso -> Ano curricular -> Semestre -> Turma. O semestre é concreto (ex.: 2026/2),
+/// logo já fixa o ano académico e o semestre (1.º/2.º).
+model ClassGroup {
+  id          String              @id @default(uuid())
+  /// Gerado pelo servidor: <curso><ano>Lab<semestre><L|P>, ex.: Info4Lab2L.
+  name        String
+  regime      ClassRegime         @default(LABORAL)
+  courseId    String
+  course      Course              @relation(fields: [courseId], references: [id])
+  courseYear  Int
+  semesterId  String
+  semester    Semester            @relation(fields: [semesterId], references: [id])
+  enrollments Enrollment[]
+  sessions    EvaluationSession[]
+  createdAt   DateTime            @default(now())
 
-  province String?
-  district String?
-  city     String?
-
-  minPrice Decimal? @db.Decimal(12, 2)
-  maxPrice Decimal? @db.Decimal(12, 2)
-  bedrooms Int?
-
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([isActive, city])
-  @@map("search_requests")
-}
-model Review {
-  id        String   @id @default(uuid())
-  chatId    String
-  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  authorId  String
-  author    User     @relation("ReviewsGiven", fields: [authorId], references: [id])
-  targetId  String
-  target    User     @relation("ReviewsReceived", fields: [targetId], references: [id])
-  rating    Int
-  comment   String?
-  createdAt DateTime @default(now())
-
-  @@unique([chatId, authorId])
-  @@index([targetId])
-  @@map("reviews")
+  @@unique([courseId, courseYear, semesterId, name])
+  @@unique([courseId, courseYear, semesterId, regime])
+  @@index([semesterId])
+  @@map("class_groups")
 }
 
-enum VerificationStatus {
-  PENDENTE
-  APROVADO
-  REJEITADO
+/// Matrícula de um estudante numa turma, num semestre. Só o administrador a cria e altera.
+/// Sem matrícula activa o estudante não vê cadeiras nem pode avaliar.
+model Enrollment {
+  id           String           @id @default(uuid())
+  studentId    String
+  student      User             @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  semesterId   String
+  semester     Semester         @relation(fields: [semesterId], references: [id])
+  classGroupId String
+  classGroup   ClassGroup       @relation(fields: [classGroupId], references: [id])
+  status       EnrollmentStatus @default(ACTIVE)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([studentId, semesterId])
+  @@index([classGroupId])
+  @@index([semesterId, status])
+  @@map("enrollments")
 }
 
-model Verification {
-  id              String             @id @default(uuid())
-  userId          String
-  user            User               @relation("UserVerifications", fields: [userId], references: [id], onDelete: Cascade)
-  status          VerificationStatus @default(PENDENTE)
-  note            String?
-  reviewedById    String?
-  reviewedBy      User?              @relation("VerificationsReviewed", fields: [reviewedById], references: [id])
-  reviewedAt      DateTime?
-  rejectionReason String?
-  createdAt       DateTime           @default(now())
+/// Sessão de avaliação por QR Code, criada pelo docente (complementa o período do administrador).
+/// O QR sozinho nunca autoriza: o servidor valida sempre conta, matrícula, inscrição e período.
+model EvaluationSession {
+  id              String        @id @default(uuid())
+  qrToken         String        @unique @default(cuid())
+  teacherId       String
+  teacher         Teacher       @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  courseSubjectId String
+  courseSubject   CourseSubject @relation(fields: [courseSubjectId], references: [id], onDelete: Cascade)
+  classGroupId    String?
+  classGroup      ClassGroup?   @relation(fields: [classGroupId], references: [id], onDelete: SetNull)
+  opensAt         DateTime
+  closesAt        DateTime
+  status          SessionStatus @default(ACTIVE)
+  createdAt       DateTime      @default(now())
 
-  @@index([userId, status])
+  @@index([teacherId])
+  @@map("evaluation_sessions")
+}
+
+/// Denúncia de um comentário público por um utilizador autenticado.
+model CommentReport {
+  id         String       @id @default(uuid())
+  commentId  String
+  comment    Comment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  reporterId String
+  reporter   User         @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  reason     String
+  status     ReportStatus @default(OPEN)
+  createdAt  DateTime     @default(now())
+
+  @@unique([commentId, reporterId])
   @@index([status])
-  @@map("verifications")
+  @@map("comment_reports")
 }
 
-model Promotion {
-  id              String   @id @default(uuid())
-  name            String
-  city            String
-  discountPercent Int      @default(50)
-  startsAt        DateTime
-  endsAt          DateTime
-  isActive        Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  @@index([city, isActive])
-  @@map("promotions")
-}
-
-enum ReferralStatus {
-  PENDENTE
-  PAGO
-}
-
-model Referral {
-  id          String         @id @default(uuid())
-  referrerId  String
-  referrer    User           @relation("ReferralsMade", fields: [referrerId], references: [id])
-  referredId  String         @unique
-  referred    User           @relation("ReferralReceived", fields: [referredId], references: [id])
-  status      ReferralStatus @default(PENDENTE)
-  bonusAmount Decimal?       @db.Decimal(12, 2)
-  paidAt      DateTime?
-  createdAt   DateTime       @default(now())
-
-  @@index([referrerId, status])
-  @@map("referrals")
-}
-
+/// Registo de acções administrativas sensíveis.
 model AuditLog {
-  id         String   @id @default(uuid())
-  adminId    String
-  admin      User     @relation(fields: [adminId], references: [id])
-  action     String
-  targetType String?
-  targetId   String?
-  details    Json?
-  createdAt  DateTime @default(now())
+  id        String   @id @default(uuid())
+  actorId   String
+  action    String
+  entity    String
+  entityId  String?
+  meta      Json?
+  createdAt DateTime @default(now())
 
-  @@index([adminId])
   @@index([createdAt])
   @@map("audit_logs")
 }
 
-enum AdvertiserType {
-  PROPRIETARIO
-  AGENTE
-  IMOBILIARIA
-  ORGANIZACAO
+/// Notificação dentro da app. `type` é um código estável (ex.: COMMENT_BLOCKED); `data` guarda o destino (ecrã) sem dados pessoais de terceiros.
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  title     String
+  body      String
+  data      Json?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt, createdAt])
+  @@map("notifications")
 }
 
-enum ContactChannel {
-  CHAT
-  TELEFONE
-  WHATSAPP
-  EMAIL
+/// Token de renovação (guardado só como hash). Rotativo: cada uso gera um novo e revoga o anterior.
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
 }

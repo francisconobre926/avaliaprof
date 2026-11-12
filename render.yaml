@@ -1,0 +1,41 @@
+# Blueprint do Render: API (NestJS). A base de dados fica no Neon (DATABASE_URL preenchida no painel).
+# No Render: New > Blueprint > escolher este repositório e ramo. Ver docs/DEPLOY_RENDER.md.
+services:
+  - type: web
+    name: avaliaprof-api
+    runtime: node
+    plan: free
+    region: frankfurt
+    rootDir: backend
+    # As devDependencies são precisas no build (Nest CLI, TypeScript) e no arranque (prisma migrate, seed).
+    buildCommand: npm ci --include=dev && npx prisma generate && npm run build
+    # Aplica as migrações pendentes antes de arrancar; com SEED_ON_START=true corre também o seed (idempotente).
+    startCommand: npx prisma migrate deploy && if [ "$SEED_ON_START" = "true" ]; then npx prisma db seed; fi && node dist/main
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      # Ligação DIRECTA do Neon (sem "-pooler" no endereço), com ?sslmode=require. Preencher no painel.
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      # O Render fica à frente da API: sem isto o limite de pedidos veria todos os utilizadores como um só IP.
+      - key: TRUST_PROXY
+        value: "1"
+      - key: SWAGGER_ENABLED
+        value: "false"
+      # Preencher no painel do Render (não ficam no repositório).
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      # true = cria o catálogo e os estudantes de EXEMPLO. Em uso real pôr false.
+      - key: SEED_DEV_CATALOG
+        value: "true"
+      # Pôr true no primeiro deploy para criar o admin e o catálogo; depois voltar a false.
+      - key: SEED_ON_START
+        value: "true"

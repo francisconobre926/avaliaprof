@@ -1,11 +1,13 @@
 /** Ponto único de entrada da camada de serviços. */
-export { API_ATIVA, API_URL } from './config';
+export { API_URL } from './config';
 export { authService } from './authService';
-export { anunciosService, converterAnuncioLocal } from './anunciosService';
-export { reservasService } from './reservasService';
-export { favoritosService } from './favoritosService';
-export { carteiraService } from './carteiraService';
-export { referenciaService } from './referenciaService';
-export { moderacaoService } from './moderacaoService';
-export { perfilService } from './perfilService';
-export { conversasService } from './conversasService';
+export { catalogoService, TAMANHO_PAGINA } from './catalogoService';
+export { ErroServico } from './erro';
+export { inscricaoService } from './inscricaoService';
+export { avaliacaoService } from './avaliacaoService';
+export { adminService } from './adminService';
+export { painelService } from './painelService';
+export { adminPainelService } from './adminPainelService';
+export { qrService } from './qrService';
+export { docenteService } from './docenteService';
+export { notificacoesService } from './notificacoesService';

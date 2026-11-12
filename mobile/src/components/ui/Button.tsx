@@ -1,5 +1,5 @@
 /**
- * Button — Componente de botão profissional GoHome
+ * Button — Componente de botão profissional AvaliaProf
  *
  * Variantes: primary | secondary | outline | ghost | danger
  * Tamanhos: sm | md | lg
@@ -75,9 +75,10 @@ export const Button: React.FC<ButtonProps> = ({
 
   // Cores por variante
   const corTexto = (() => {
-    if (variant === 'primary' || variant === 'danger') return Colors.branco;
+    if (variant === 'primary') return cores.textoSobrePrincipal;
+    if (variant === 'danger') return Colors.branco;
     if (variant === 'secondary') return cores.textoPrincipal;
-    if (variant === 'outline' || variant === 'ghost') return cores.principal;
+    if (variant === 'outline' || variant === 'ghost') return cores.principalTexto;
     return Colors.branco;
   })();
 
@@ -89,7 +90,7 @@ export const Button: React.FC<ButtonProps> = ({
     return 'transparent'; // primary usa gradiente
   })();
 
-  const corBorda = variant === 'outline' ? cores.principal : 'transparent';
+  const corBorda = variant === 'outline' ? cores.principalTexto : 'transparent';
 
   const containerBase: ViewStyle = {
     flexDirection: 'row',
@@ -141,6 +142,9 @@ export const Button: React.FC<ButtonProps> = ({
       disabled={disabled || loading}
       activeOpacity={0.85}
       style={[containerBase, style]}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: disabled || loading, busy: loading }}
     >
       {variant === 'primary' && !disabled && (
         <LinearGradient

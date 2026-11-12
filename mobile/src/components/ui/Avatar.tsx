@@ -1,5 +1,5 @@
 /**
- * Avatar — Imagem de perfil profissional GoHome
+ * Avatar — Imagem de perfil profissional AvaliaProf
  *
  * Tamanhos: sm (32) | md (44) | lg (64) | xl (96)
  * Fallback: iniciais do nome com cor derivada
@@ -39,7 +39,8 @@ function corPorNome(nome: string, cores: string[]): string {
   return cores[Math.abs(hash) % cores.length];
 }
 
-const PALETA_AVATARES = [Colors.azul, Colors.azul, Colors.verdeTexto, Colors.azul, Colors.azul, Colors.azul, Colors.erro];
+// Fundos claros da paleta (Mist, azul suave, Pear) com iniciais em preto: contraste ≥ 12:1.
+const PALETA_AVATARES = [Colors.fundoSuave, Colors.azulSuave, Colors.verdeSuave];
 
 export const Avatar: React.FC<AvatarProps> = ({
   nome,
@@ -83,7 +84,7 @@ export const Avatar: React.FC<AvatarProps> = ({
             justifyContent: 'center',
           }}
         >
-          <Text style={{ color: Colors.branco, fontSize: sz.font, fontFamily: Fonte.corpoSemi }}>
+          <Text style={{ color: Colors.carvao, fontSize: sz.font, fontFamily: Fonte.corpoSemi }}>
             {iniciais}
           </Text>
         </View>

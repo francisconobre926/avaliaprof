@@ -1,54 +1,38 @@
-import { Controller, Post, Get, Body, UseGuards, Request } from '@nestjs/common';
-import type { Request as ExpressRequest } from 'express';
-import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
-import { TwoFactorCodeDto, TwoFactorLoginDto } from './dto/two-factor.dto';
-import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
+import { CurrentUser, type AuthUser } from '../common/decorators/current-user.decorator';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Throttle } from '@nestjs/throttler';
+import { AuthService } from './auth.service';
+import { ActivateTeacherDto, ForgotDto, LoginDto, LogoutDto, RefreshDto, RegisterDto, ResetDto } from './dto/auth.dto';
 
-interface AuthenticatedRequest extends ExpressRequest {
-  user: { userId: string; email: string };
-}
-
+/** Limite apertado nas rotas de autenticação (anti força-bruta). AUTH_RATE_LIMIT só deve subir em testes. */
+@Throttle({ default: { limit: Number(process.env.AUTH_RATE_LIMIT ?? 10), ttl: 60_000 } })
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
-
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
-  @Post('register')
-  async register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
-  }
-
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
-  @Post('login')
-  async login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
-  }
-
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
-  @Post('2fa/login')
-  async loginWithTwoFactor(@Body() dto: TwoFactorLoginDto) {
-    return this.authService.loginWithTwoFactor(dto.tempToken, dto.code);
-  }
   
-  @UseGuards(JwtAuthGuard)
-  @Post('2fa/setup')
-  async setupTwoFactor(@Request() req: AuthenticatedRequest) {
-    return this.authService.setupTwoFactor(req.user.userId);
+  constructor(private auth: AuthService) { }
+
+  @Post('register') register(@Body() dto: RegisterDto) {
+    return this.auth.register(dto);
+  }
+  @Post('activate-teacher') @HttpCode(200) activateTeacher(@Body() dto: ActivateTeacherDto) { 
+    return this.auth.activateTeacher(dto); 
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
-  @Post('2fa/enable')
-  async enableTwoFactor(@Request() req: AuthenticatedRequest, @Body() dto: TwoFactorCodeDto) {
-    return this.authService.enableTwoFactor(req.user.userId, dto.code);
+  @Post('refresh') @HttpCode(200) refresh(@Body() dto: RefreshDto) { return this.auth.refresh(dto.refreshToken); }
+  @UseGuards(JwtAuthGuard) @Post('logout') @HttpCode(200) logout(@CurrentUser() u: AuthUser, @Body() dto: LogoutDto) { return this.auth.logout(u.userId, dto.refreshToken); }
+  @UseGuards(JwtAuthGuard) @Post('logout-all') @HttpCode(200) logoutAll(@CurrentUser() u: AuthUser) { return this.auth.revokeAll(u.userId); }
+  @Post('login') @HttpCode(200) login(@Body() dto: LoginDto) { 
+    return this.auth.login(dto); 
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('me')
-  async me(@Request() req: AuthenticatedRequest) {
-    return req.user;
+  @Post('forgot') @HttpCode(200) forgot(@Body() dto: ForgotDto) { 
+    return this.auth.forgot(dto); 
+  }
+
+  @Post('reset') @HttpCode(200) reset(@Body() dto: ResetDto) { 
+    
+    return this.auth.reset(dto); 
+
   }
 }

@@ -66,8 +66,8 @@ export default function AparenciaScreen() {
                 <Ionicons name="sparkles" size={12} color={Colors.branco} />
                 <Text style={styles.previewCardBadgeText}>DESTAQUE</Text>
               </View>
-              <Text style={styles.previewCardTitulo}>GoHome</Text>
-              <Text style={styles.previewCardSubtitulo}>Encontra o teu espaço</Text>
+              <Text style={styles.previewCardTitulo}>AvaliaProf</Text>
+              <Text style={styles.previewCardSubtitulo}>Avalia, compara, decide</Text>
             </View>
           </View>
 
@@ -75,6 +75,8 @@ export default function AparenciaScreen() {
             <TouchableOpacity
               style={[styles.previewBotao, { backgroundColor: cores.principal }]}
               activeOpacity={0.85}
+              accessibilityElementsHidden
+              importantForAccessibility="no-hide-descendants"
             >
               <Text style={styles.previewBotaoTexto}>Botão principal</Text>
             </TouchableOpacity>
@@ -111,6 +113,9 @@ export default function AparenciaScreen() {
                 },
               ]}
               onPress={() => mudarModo('claro')}
+              accessibilityRole="radio"
+              accessibilityLabel="Tema claro"
+              accessibilityState={{ selected: modo === 'claro' }}
               activeOpacity={0.85}
             >
               <View style={[styles.modoPreview, { backgroundColor: Colors.gelo }]}>
@@ -150,6 +155,9 @@ export default function AparenciaScreen() {
                 },
               ]}
               onPress={() => mudarModo('escuro')}
+              accessibilityRole="radio"
+              accessibilityLabel="Tema escuro"
+              accessibilityState={{ selected: modo === 'escuro' }}
               activeOpacity={0.85}
             >
               <View style={[styles.modoPreview, { backgroundColor: Colors.carvao }]}>
@@ -206,6 +214,9 @@ export default function AparenciaScreen() {
                   ]}
                   onPress={() => mudarCor(cor.id as CorDestaque)}
                   activeOpacity={0.85}
+                  accessibilityRole="radio"
+                  accessibilityLabel={`Cor ${cor.nome}`}
+                  accessibilityState={{ selected: seleccionada }}
                 >
                   <View style={styles.corCirculoContainer}>
                     <LinearGradient
@@ -263,6 +274,8 @@ export default function AparenciaScreen() {
           style={[styles.botaoReset, { borderColor: cores.bordaSubtil }]}
           onPress={resetTema}
           activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel="Restaurar predefinições"
         >
           <Icone name="restart" size={18} color={cores.textoSecundario} />
           <Text style={[styles.botaoResetTexto, { color: cores.textoSecundario }]}>

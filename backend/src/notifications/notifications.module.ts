@@ -1,18 +1,8 @@
-import { Module } from '@nestjs/common';
-import { PassportModule } from '@nestjs/passport';
-import { NotificationsService } from './notifications.service';
+import { Global, Module } from '@nestjs/common';
+import { AuthModule } from '../auth/auth.module';
 import { NotificationsController } from './notifications.controller';
-import { PrismaModule } from '../prisma/prisma.module';
-import { PUSH_PROVIDER } from './push/push-provider.interface';
-import { FcmPushProvider } from './push/fcm-push.provider';
+import { NotificationsService } from './notifications.service';
 
-@Module({
-  imports: [PrismaModule, PassportModule.register({ defaultStrategy: 'jwt' })],
-  controllers: [NotificationsController],
-  providers: [
-    NotificationsService,
-    { provide: PUSH_PROVIDER, useClass: FcmPushProvider },
-  ],
-  exports: [NotificationsService],
-})
+@Global()
+@Module({ imports: [AuthModule], controllers: [NotificationsController], providers: [NotificationsService], exports: [NotificationsService] })
 export class NotificationsModule {}

@@ -1,78 +1,47 @@
 import 'dotenv/config'; // tem de ser o primeiro import: carrega o .env antes de tudo
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
-import { IoAdapter } from '@nestjs/platform-socket.io';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import type { OpenAPIObject } from '@nestjs/swagger';
 import helmet from 'helmet';
+import { join } from 'path';
 import { AppModule } from './app.module';
-import {
-  getCorsOrigins,
-  getJwtSecret,
-  getLocationSecret,
-  isSwaggerEnabled,
-} from './config/env';
-
-const HTTP_METHODS = ['get', 'post', 'put', 'patch', 'delete'] as const;
-
-/**
- * Agrupa as rotas no Swagger pelo caminho: /reports -> "reports",
- * /admin/reports -> "admin/reports", /listings/:id/media -> "media".
- * Um @ApiTags posto à mão num controller tem prioridade.
- */
-function tagByPath(document: OpenAPIObject) {
-  for (const [path, item] of Object.entries(document.paths)) {
-    const [first, second] = path.split('/').filter(Boolean);
-    let tag = first ?? 'raiz';
-    if (first === 'admin' && second) tag = `admin/${second}`;
-    if (path.includes('/media')) tag = 'media';
-
-    for (const method of HTTP_METHODS) {
-      const operation = item[method];
-      if (operation && !operation.tags?.length) {
-        operation.tags = [tag];
-      }
-    }
-  }
-}
+import { UPLOADS_DIR, getCorsOrigins, getJwtSecret, isSwaggerEnabled } from './config/env';
 
 async function bootstrap() {
   // Falhar ao arrancar é melhor do que falhar no primeiro pedido
   getJwtSecret();
-  getLocationSecret();
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const swagger = isSwaggerEnabled();
 
-  const swaggerEnabled = isSwaggerEnabled();
+  // Atrás de um proxy (Render, nginx) o IP real vem em X-Forwarded-For. Sem isto o limite de pedidos
+  // contaria todos os utilizadores como um só. Só se activa por configuração, para não confiar no cabeçalho sem proxy.
+  const proxies = Number(process.env.TRUST_PROXY ?? 0);
+  if (proxies > 0) app.set('trust proxy', proxies);
 
-  // A página do Swagger precisa de scripts inline, que a política por defeito do helmet
-  // bloqueia. Só se relaxa quando o Swagger está ligado (fora de produção).
-  app.use(helmet(swaggerEnabled ? { contentSecurityPolicy: false } : {}));
+  // O Swagger precisa de scripts inline, que o helmet bloqueia por defeito.
+  app.use(helmet(swagger ? { contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: 'cross-origin' } } : { crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
   const origins = getCorsOrigins();
   app.enableCors({ origin: origins.length > 0 ? origins : false });
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }));
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-  app.useWebSocketAdapter(new IoAdapter(app));
+  // Fotografias de perfil (nomes aleatórios, tipo validado no upload)
+  app.useStaticAssets(join(process.cwd(), UPLOADS_DIR), { prefix: '/uploads/', index: false });
 
-  if (swaggerEnabled) {
+  if (swagger) {
     const config = new DocumentBuilder()
-      .setTitle('GoHome API')
-      .setDescription(
-        'API REST do GoHome 1.1. As rotas /admin/* exigem papel de admin com o 2FA concluído.',
-      )
-      .setVersion('1.1')
+      .setTitle('AvaliaProf API')
+      .setDescription('API REST da plataforma de avaliação de professores.')
+      .setVersion('1.0')
       .addBearerAuth()
-      .addSecurityRequirements('bearer')
       .build();
-
-    const document = SwaggerModule.createDocument(app, config);
-    tagByPath(document);
-    SwaggerModule.setup('docs', app, document, {
+    SwaggerModule.setup('docs', app, SwaggerModule.createDocument(app, config), {
       swaggerOptions: { persistAuthorization: true },
     });
   }
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
 bootstrap();

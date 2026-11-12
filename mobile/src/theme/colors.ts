@@ -1,58 +1,53 @@
 // ============================================================
-// Identidade visual GoHome — paleta oficial
+// Identidade visual AvaliaProf — paleta oficial
 //
-//   Azul          #1A73E8  identidade, ações principais, elementos interativos
-//   Branco gelo   #F8F9FA  fundos e superfícies
-//   Verde         #34A853  estados positivos, confirmações, sucesso
-//   Preto carvão  #202124  títulos, texto principal, estrutura
+//   Canvas      #FBFBF8  fundo principal
+//   Mist        #DBE3E9  cartões, bordas, inputs, chips
+//   Cornflower  #6AA6DA  cor primária (botões, destaques, ícones ativos)
+//   Pear        #E1E5AC  acento (badges, tags, alertas leves)
+//   Black       #000000  texto e títulos
 //
-// Complementares (só estados, superfícies e legibilidade):
-//   azul suave #E8F0FE · verde suave #E6F4EA · texto secundário #5F6368
-//   bordas #DADCE0 · fundo de erro #FCE8E6 · texto de erro #B3261E
-//
-// ACESSIBILIDADE (WCAG AA, medido sobre #F8F9FA / branco):
-//   • Azul #1A73E8 → 4,27:1 sobre gelo: usar como PREENCHIMENTO (botões com
-//     texto branco = 4,51:1), ícones e texto grande. Para texto pequeno
-//     usar azulTexto #1557B0 (6,59:1).
-//   • Verde #34A853 → 2,90:1: só preenchimentos, pontos e ícones. Para
-//     texto usar verdeTexto #137333 (5,65:1).
-//   • Texto secundário #5F6368 → 5,74:1. Terciário #686D72 → 4,7:1+.
+// ACESSIBILIDADE (WCAG AA):
+//   • Cornflower é claro: texto SOBRE ele é preto (8,1:1), nunca branco (2,6:1).
+//     Sobre Canvas serve como preenchimento/ícone; para TEXTO azul pequeno usar
+//     azulTexto #245E92 (6,5:1).
+//   • Pear é sempre fundo; o texto sobre ele é verdeTexto #4A5510 / aviso #6B5A00 (≥ 5:1).
 //   • Estados nunca dependem só da cor: acompanham sempre texto ou ícone.
 // ============================================================
 
 /** Paleta base — única fonte de verdade para valores hexadecimais. */
 export const Paleta = {
   // Oficiais
-  azul: '#1A73E8',
-  gelo: '#F8F9FA',
-  verde: '#34A853',
-  carvao: '#202124',
+  azul: '#6AA6DA',          // Cornflower
+  gelo: '#FBFBF8',            // Canvas
+  verde: '#8A9A2E',
+  carvao: '#000000',          // Black
 
   // Derivados do azul
-  azulTexto: '#1557B0',     // texto/links sobre fundos claros (≥ 6:1)
-  azulSuave: '#E8F0FE',     // superfícies selecionadas, pílulas
-  azulClaro: '#8AB4F8',     // texto/ícones azuis sobre fundo escuro
+  azulTexto: '#245E92',     // texto/links sobre fundos claros (≥ 6:1)
+  azulSuave: '#E6EFF8',     // superfícies selecionadas, pílulas
+  azulClaro: '#6AA6DA',     // texto/ícones azuis sobre fundo escuro
 
   // Derivados do verde
-  verdeTexto: '#137333',    // texto e botões de sucesso (texto branco ≥ 5:1)
-  verdeSuave: '#E6F4EA',
-  verdeClaro: '#81C995',    // sucesso sobre fundo escuro
+  verdeTexto: '#4A5510',    // texto e botões de sucesso (texto branco ≥ 5:1)
+  verdeSuave: '#E1E5AC',     // Pear
+  verdeClaro: '#E1E5AC',    // sucesso sobre fundo escuro
 
   // Neutros
   branco: '#FFFFFF',
-  fundoSuave: '#F1F3F4',    // chips, inputs, blocos sobre o gelo
-  textoSecundario: '#5F6368',
-  textoTerciario: '#686D72',
-  borda: '#DADCE0',         // divisores e contornos decorativos
-  bordaForte: '#80868B',    // contorno de campos/controlos (≥ 3:1)
+  fundoSuave: '#DBE3E9',    // Mist    // chips, inputs, blocos sobre o gelo
+  textoSecundario: '#4A5560',
+  textoTerciario: '#58626C',
+  borda: '#DBE3E9',             // Mist         // divisores e contornos decorativos
+  bordaForte: '#6B7A87',    // contorno de campos/controlos (≥ 3:1)
 
   // Estados
   erro: '#B3261E',
   erroFundo: '#FCE8E6',
   erroBorda: '#F5C6C2',
   erroEscuro: '#8C1D18',
-  aviso: '#9A5400',         // âmbar escuro: texto ≥ 4,5:1 sobre avisoFundo
-  avisoFundo: '#FEF7E0',
+  aviso: '#6B5A00',         // âmbar escuro: texto ≥ 4,5:1 sobre avisoFundo
+  avisoFundo: '#E1E5AC',   // Pear
 } as const;
 
 export const Colors = {
@@ -127,11 +122,11 @@ export const Colors = {
   infoFundo: Paleta.azulSuave,
 
   // ============ OVERLAYS ============
-  overlayEscuro: 'rgba(32, 33, 36, 0.72)',
-  overlayMedio: 'rgba(32, 33, 36, 0.48)',
-  overlayLeve: 'rgba(32, 33, 36, 0.22)',
+  overlayEscuro: 'rgba(0, 0, 0, 0.72)',
+  overlayMedio: 'rgba(0, 0, 0, 0.48)',
+  overlayLeve: 'rgba(0, 0, 0, 0.22)',
   vidro: 'rgba(255, 255, 255, 0.88)',
-  vidroEscuro: 'rgba(32, 33, 36, 0.86)',
+  vidroEscuro: 'rgba(0, 0, 0, 0.86)',
 
   // ============ LEGADO ============
   destaque: Paleta.azul,

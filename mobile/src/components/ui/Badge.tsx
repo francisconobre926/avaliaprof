@@ -1,5 +1,5 @@
 /**
- * Badge — Etiqueta de status profissional GoHome
+ * Badge — Etiqueta de status profissional AvaliaProf
  *
  * Cores semânticas: azul | laranja | verde | vermelho | cinza | premium
  * Tamanhos: sm | md

@@ -1,7 +1,7 @@
 import { Fonte } from './fonts';
 
 // ============================================================
-// Escala tipográfica GoHome
+// Escala tipográfica AvaliaProf
 //
 // Hierarquia:
 //   • Sora (títulos)  — display, h1–h3 e preços. Letter-spacing apenas
@@ -17,7 +17,7 @@ import { Fonte } from './fonts';
 //     (+ 44/48/56 só para números de destaque). Título de página = 28 (tituloPagina).
 // ============================================================
 export const Typography = {
-  // ---- Escala de páginas e cards (referência: aba Reservas) ----
+  // ---- Escala de páginas e cards (ecrãs e cards) ----
   tituloPagina: { fontSize: 28, lineHeight: 34, fontFamily: Fonte.tituloBold, letterSpacing: -0.4 },
   tituloSecao: { fontSize: 20, lineHeight: 26, fontFamily: Fonte.tituloSemi, letterSpacing: -0.2 },
   tituloCard: { fontSize: 16, lineHeight: 22, fontFamily: Fonte.corpoBold },
